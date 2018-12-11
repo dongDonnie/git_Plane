@@ -8,11 +8,11 @@ CampNormal176.data = {
     monsterWaves:[
         {wave:{groups:[1008,16,43,42,27],wait:0,delay:[1,2,2,3,4]},maps:{mapIndex:[0],mapSpeed:[600],mapScale:[1],mapLoop:[0]}},
         {wave:{groups:[1404],wait:0,delay:[0]}},
-        {wave:{groups:[1009,724,725,720],wait:0,delay:[0,2,4,6]}},
+        {wave:{groups:[1009,724,725,720],wait:0,delay:[0,2,3,4]}},
        
-        {wave:{groups:[1010,1011,836,837],wait:0,delay:[0.3,2,4,6]},maps:{mapIndex:[1],mapSpeed:[600],mapScale:[1],mapLoop:[1]}},
-        {wave:{groups:[1012,552,553],wait:0,delay:[0,2,4]}},
-        {wave:{groups:[1403,720,726,724],wait:0,delay:[0,2,4,6]}},
+        {wave:{groups:[1010,1011,836,837],wait:0,delay:[0.3,2,3,4]},maps:{mapIndex:[1],mapSpeed:[600],mapScale:[1],mapLoop:[1]}},
+        {wave:{groups:[1012,552,553],wait:0,delay:[0,1.5,3]}},
+        {wave:{groups:[1403,720,726,724],wait:0,delay:[0,2,3,4]}},
   
         {wave:{groups:[1013,546],wait:0,delay:[0,2]}},
     ],

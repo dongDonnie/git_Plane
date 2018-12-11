@@ -166,6 +166,7 @@ var ItemObject = cc.Class({
 
     clickItem: function () {
         var self = this;
+        cc.log('itemID: ', this.itemID);
         // cc.log(this.btnCallBackType);
         if (this.btnCallBackType == 0) {
             WindowManager.getInstance().pushView(WndTypeDefine.WindowType.E_DT_NORMALITEMINFO, function (wnd, name, type) {

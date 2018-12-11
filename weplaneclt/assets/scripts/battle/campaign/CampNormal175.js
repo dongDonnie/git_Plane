@@ -10,8 +10,8 @@ CampNormal175.data = {
         {wave:{groups:[1000,561,562],wait:0,delay:[0,0,2]}},
         {wave:{groups:[1001,882,837],wait:0,delay:[0,0,2]}},
         {wave:{groups:[1004,830,831],wait:0,delay:[0,0,2]}},
-        {wave:{groups:[1002,1003,546],wait:0,delay:[0,2,4]}},
-        {wave:{groups:[370,544,35,36],wait:0,delay:[0,2,3,4]}},
+        {wave:{groups:[1002,1003,546],wait:0,delay:[0,1.5,3]}},
+        {wave:{groups:[370,544,35,36],wait:0,delay:[0,1.5,3,3]}},
        
         {wave:{groups:[604],wait:0,delay:[0,2,4]}},
     ],

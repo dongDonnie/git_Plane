@@ -53,11 +53,7 @@ cc.Class({
         if (mode == NEW_MEMBER) {
             nodeNewRareItem.getChildByName('nodetop').getChildByName("spriteNewMember").active = true;
             nodeNewRareItem.getChildByName('nodetop').getChildByName("spriteNewGuazai").active = false;
-            if (require('config').NEED_GUIDE) {
-                this.addPlane(710, showType);
-            } else {
-                this.addPlane(itemID, showType);
-            }
+            this.addPlane(itemID, showType);
         } else if (mode == NEW_GUAZAI) {
             nodeNewRareItem.getChildByName('nodetop').getChildByName("spriteNewMember").active = false;
             nodeNewRareItem.getChildByName('nodetop').getChildByName("spriteNewGuazai").active = true;
@@ -70,6 +66,7 @@ cc.Class({
         let planeEntity = new PlaneEntity();
         planeEntity.newPart('Fighter/Fighter_' + id, 1, 'PlaneObject', showType, 0, 0);
         this.spriteNode.addChild(planeEntity);
+        planeEntity.part.transform();
         let fighterData = GlobalVar.tblApi.getDataBySingleKey('TblMember', id);
         this.labalItemName.string = fighterData.strName;
     },

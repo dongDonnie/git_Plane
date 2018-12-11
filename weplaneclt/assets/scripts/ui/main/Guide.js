@@ -251,6 +251,10 @@ const guide = cc.Class({
             return;
         } else if (self.step == 31) {
             self.seekNodeByName('NormalEquipment').getComponent('NormalEquipment').levelUp();
+            setTimeout(() => {
+                self.doNextStep();
+            }, 800);
+            return;
         }
 
         if (self.step == 39) {
@@ -362,7 +366,7 @@ const guide = cc.Class({
                 require("windowmgr").getInstance().popView(false, null, false);
             }
             var callback = function () {
-                require("CommonWnd").showGetNewRareItemWnd(null, 0, 2, RecvCallback);
+                require("CommonWnd").showGetNewRareItemWnd(710, 0, 3, RecvCallback);
                 self.cloneBtn('btnRecv');
             }
             cc.find('Canvas/GuideNode/fighter/btn_active').once('touchend', callback, this);

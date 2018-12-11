@@ -30,6 +30,7 @@ var UILogin = cc.Class({
 
     onLoad: function () {
         console.log("UILOGIN  onLoad!!!!!!");
+        cc.debug.setDisplayStats(false);
         GlobalVar.cleanAllMgr();
         GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_NEED_CREATE_ROLE, this.onBtnLoginClick, this);
         GlobalVar.networkManager().connectToServer('192.168.2.251', 9908, function () {
@@ -51,7 +52,8 @@ var UILogin = cc.Class({
     onSendBigLogin: function () {
         if (this.editboxAccount.string === "") {
             // console.log("名字不能为空");
-            return;
+            // return;
+            this.editboxAccount.string = 'qq';
         }
         let userID = this.editboxAccount.string;
         GlobalVar.handlerManager().loginHandler.sendLoginReq(userID);

@@ -193,7 +193,7 @@ const Mode = cc.Class({
         let endlessModeNum = GlobalVar.me().endlessData.getEndlessMode();
         this.endlessMode = GlobalVar.tblApi.getDataBySingleKey('TblEndlessRank', endlessModeNum + 1);
         this.defaultLv = this.endlessMode.nMonsterBasisGrade != 0 ? this.endlessMode.nMonsterBasisGrade : 2;
-        this.endlessScore = this.endlessMode.nMonsterBasisFraction != 0 ? this.endlessMode.nMonsterBasisFraction : 1000;
+        this.endlessScore = 0;
         this.killRecord = 0;
         this.totalWave = 0;
         for (let key in this.data) {

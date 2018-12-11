@@ -156,6 +156,8 @@ const NetworkManager = cc.Class({
                     GlobalVar.messageDispatcher.onNetMessage(msg.id, msg); //传递到分发器
                 }
                 //console.log('socket message data: ', msg);
+                if (msg.id != 1)
+                    console.log('socket message data: ', msg);
             };
         } else {
             if (this.reconnectCount <= this.reconnectMaxCount) {
@@ -165,6 +167,8 @@ const NetworkManager = cc.Class({
     },
 
     send(msg) {
+        if (msg.id != 1)
+            console.log('socket send data: ', msg);
         this.m_writeBuf.clear();
         if (GameServerProto.Encode(msg.id, msg.data, this.m_writeBuf) < 0) {
             return false;
