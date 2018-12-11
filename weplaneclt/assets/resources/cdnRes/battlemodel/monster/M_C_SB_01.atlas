@@ -1,0 +1,69 @@
+
+M_C_SB_01.png
+size: 512,128
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+images/1
+  rotate: false
+  xy: 2, 2
+  size: 117, 119
+  orig: 117, 119
+  offset: 0, 0
+  index: -1
+images/2
+  rotate: false
+  xy: 121, 3
+  size: 32, 17
+  orig: 32, 17
+  offset: 0, 0
+  index: -1
+images/3
+  rotate: false
+  xy: 253, 83
+  size: 38, 38
+  orig: 38, 38
+  offset: 0, 0
+  index: -1
+images/4
+  rotate: false
+  xy: 155, 6
+  size: 18, 14
+  orig: 18, 14
+  offset: 0, 0
+  index: -1
+images/5
+  rotate: false
+  xy: 211, 78
+  size: 40, 43
+  orig: 40, 43
+  offset: 0, 0
+  index: -1
+images/6
+  rotate: true
+  xy: 211, 34
+  size: 42, 40
+  orig: 42, 40
+  offset: 0, 0
+  index: -1
+images/7
+  rotate: false
+  xy: 253, 44
+  size: 27, 37
+  orig: 27, 37
+  offset: 0, 0
+  index: -1
+images/8
+  rotate: false
+  xy: 293, 94
+  size: 22, 27
+  orig: 22, 27
+  offset: 0, 0
+  index: -1
+images/9
+  rotate: false
+  xy: 121, 22
+  size: 88, 99
+  orig: 88, 99
+  offset: 0, 0
+  index: -1

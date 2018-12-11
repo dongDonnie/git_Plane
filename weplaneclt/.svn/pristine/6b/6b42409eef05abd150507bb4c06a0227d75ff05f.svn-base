@@ -1,0 +1,95 @@
+{
+"skeleton": { "hash": "02OBfcFdNJRr+u6FyeqU/merBjA", "spine": "2.1.27", "width": 318, "height": 292, "images": "./../feiji/R_lxz1h/" },
+"bones": [
+	{ "name": "root", "rotation": 180 },
+	{ "name": "R_lxz1h (1)", "parent": "root", "x": -0.94, "y": -77.52 },
+	{ "name": "R_lxz1h (2)", "parent": "root", "x": 77.46, "y": -21.84 },
+	{ "name": "R_lxz1h (2)2", "parent": "root", "x": -79.48, "y": -21.84 }
+],
+"slots": [
+	{ "name": "R_lxz1h (1)", "bone": "R_lxz1h (1)", "attachment": "R_lxz1h (1)" },
+	{ "name": "R_lxz1h (2)", "bone": "R_lxz1h (2)", "attachment": "R_lxz1h (2)" },
+	{ "name": "R_lxz1h (2)2", "bone": "R_lxz1h (2)2", "attachment": "R_lxz1h (2)" }
+],
+"skins": {
+	"default": {
+		"R_lxz1h (1)": {
+			"R_lxz1h (1)": { "x": 0.94, "y": 77.52, "width": 318, "height": 292 }
+		},
+		"R_lxz1h (2)": {
+			"R_lxz1h (2)": { "x": 1.14, "y": 0.35, "width": 51, "height": 51 }
+		},
+		"R_lxz1h (2)2": {
+			"R_lxz1h (2)": { "x": 1.14, "y": 0.35, "width": 51, "height": 51 }
+		}
+	}
+},
+"animations": {
+	"act1": {
+		"bones": {
+			"root": {
+				"rotate": [
+					{ "time": 0, "angle": 0, "curve": "stepped" },
+					{ "time": 0.8, "angle": 0 }
+				],
+				"translate": [
+					{ "time": 0, "x": 0, "y": 0, "curve": "stepped" },
+					{ "time": 0.8, "x": 0, "y": 0 }
+				],
+				"scale": [
+					{ "time": 0, "x": 1, "y": 1, "curve": "stepped" },
+					{ "time": 0.8, "x": 1, "y": 1 }
+				]
+			},
+			"R_lxz1h (1)": {
+				"rotate": [
+					{ "time": 0, "angle": 0, "curve": "stepped" },
+					{ "time": 0.8, "angle": 0 }
+				],
+				"translate": [
+					{ "time": 0, "x": 0, "y": 0, "curve": "stepped" },
+					{ "time": 0.8, "x": 0, "y": 0 }
+				],
+				"scale": [
+					{ "time": 0, "x": 1, "y": 1, "curve": "stepped" },
+					{ "time": 0.8, "x": 1, "y": 1 }
+				]
+			},
+			"R_lxz1h (2)": {
+				"rotate": [
+					{ "time": 0, "angle": 0 },
+					{ "time": 0.2, "angle": -80.25 },
+					{ "time": 0.4, "angle": 178.83 },
+					{ "time": 0.6, "angle": 90.81 },
+					{ "time": 0.8, "angle": 0 }
+				],
+				"translate": [
+					{ "time": 0, "x": 0, "y": 0, "curve": "stepped" },
+					{ "time": 0.8, "x": 0, "y": 0 }
+				],
+				"scale": [
+					{ "time": 0, "x": 1, "y": 1, "curve": "stepped" },
+					{ "time": 0.8, "x": 1, "y": 1 }
+				]
+			},
+			"R_lxz1h (2)2": {
+				"rotate": [
+					{ "time": 0, "angle": 0 },
+					{ "time": 0.2, "angle": -80.25 },
+					{ "time": 0.4, "angle": 178.83 },
+					{ "time": 0.6, "angle": 90.81 },
+					{ "time": 0.8, "angle": 0 }
+				],
+				"translate": [
+					{ "time": 0, "x": 0, "y": 0, "curve": "stepped" },
+					{ "time": 0.8, "x": 0, "y": 0 }
+				],
+				"scale": [
+					{ "time": 0, "x": 1, "y": 1, "curve": "stepped" },
+					{ "time": 0.8, "x": 1, "y": 1 }
+				]
+			}
+		}
+	}
+}
+}

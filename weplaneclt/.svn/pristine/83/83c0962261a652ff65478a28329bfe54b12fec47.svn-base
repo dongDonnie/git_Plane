@@ -1,0 +1,7 @@
+{
+  "ver": "1.0.0",
+  "uuid": "f4db81ba-834b-4115-81ba-784fa70e7aae",
+  "atlasJson": "{\"width\":303,\"imagePath\":\"M_R_CSXHJ_tex.png\",\"SubTexture\":[{\"frameWidth\":33,\"y\":353,\"frameHeight\":89,\"width\":31,\"frameX\":-1,\"height\":87,\"name\":\"M_R_CSXHJ (1)\",\"frameY\":-1,\"x\":1},{\"frameWidth\":271,\"y\":1,\"frameHeight\":281,\"width\":269,\"frameX\":-1,\"height\":279,\"name\":\"M_R_CSXHJ (2)\",\"frameY\":-1,\"x\":1},{\"frameWidth\":257,\"y\":282,\"frameHeight\":71,\"width\":255,\"frameX\":-1,\"height\":69,\"name\":\"M_R_CSXHJ (3)\",\"frameY\":-1,\"x\":1},{\"frameWidth\":45,\"y\":282,\"frameHeight\":161,\"width\":43,\"frameX\":-1,\"height\":159,\"name\":\"M_R_CSXHJ (4)\",\"frameY\":-1,\"x\":258}],\"height\":443,\"name\":\"M_R_CSXHJ\"}",
+  "texture": "3f1cacac-2a86-46f4-8b1a-76dddc77da93",
+  "subMetas": {}
+}

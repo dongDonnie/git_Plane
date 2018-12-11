@@ -1,0 +1,62 @@
+
+M_C_SB_04_B.png
+size: 512,64
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+images/10
+  rotate: true
+  xy: 202, 19
+  size: 40, 60
+  orig: 40, 60
+  offset: 0, 0
+  index: -1
+images/11
+  rotate: true
+  xy: 2, 15
+  size: 44, 80
+  orig: 44, 80
+  offset: 0, 0
+  index: -1
+images/12
+  rotate: true
+  xy: 264, 19
+  size: 40, 50
+  orig: 40, 50
+  offset: 0, 0
+  index: -1
+images/13
+  rotate: false
+  xy: 152, 4
+  size: 48, 55
+  orig: 48, 55
+  offset: 0, 0
+  index: -1
+images/14
+  rotate: false
+  xy: 364, 19
+  size: 43, 40
+  orig: 43, 40
+  offset: 0, 0
+  index: -1
+images/6
+  rotate: true
+  xy: 84, 2
+  size: 57, 66
+  orig: 57, 66
+  offset: 0, 0
+  index: -1
+images/7
+  rotate: false
+  xy: 409, 31
+  size: 49, 28
+  orig: 49, 28
+  offset: 0, 0
+  index: -1
+images/9
+  rotate: false
+  xy: 316, 21
+  size: 46, 38
+  orig: 46, 38
+  offset: 0, 0
+  index: -1

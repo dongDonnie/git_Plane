@@ -1,0 +1,20 @@
+
+m_ld.png
+size: 138,190
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+m_ld (1)
+  rotate: true
+  xy: 2, 2
+  size: 113, 134
+  orig: 113, 134
+  offset: 0, 0
+  index: -1
+m_ld (2)
+  rotate: false
+  xy: 2, 117
+  size: 98, 71
+  orig: 98, 71
+  offset: 0, 0
+  index: -1

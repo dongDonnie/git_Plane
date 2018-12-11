@@ -1,0 +1,7 @@
+{
+  "ver": "1.0.0",
+  "uuid": "fe895a6a-a4c1-4e42-8511-10c2a676485c",
+  "atlasJson": "{\"width\":256,\"imagePath\":\"M_R_LYJZ_tex.png\",\"height\":256,\"name\":\"M_R_LYJZ\",\"SubTexture\":[{\"frameY\":-1,\"y\":1,\"frameWidth\":90,\"frameX\":-1,\"frameHeight\":202,\"width\":89,\"height\":201,\"name\":\"M_R_LYJZ (1)\",\"x\":1},{\"frameY\":-1,\"y\":1,\"frameWidth\":24,\"frameX\":-1,\"frameHeight\":104,\"width\":23,\"height\":103,\"name\":\"M_R_LYJZ (3)\",\"x\":133},{\"frameY\":-1,\"y\":156,\"frameWidth\":21,\"frameX\":-1,\"frameHeight\":75,\"width\":20,\"height\":74,\"name\":\"M_R_LYJZ (4)\",\"x\":92},{\"frameY\":-1,\"y\":1,\"frameWidth\":40,\"frameX\":-1,\"frameHeight\":154,\"width\":39,\"height\":153,\"name\":\"M_R_LYJZ (5)\",\"x\":92}]}",
+  "texture": "b739a992-8889-4d8a-8521-cd72e38966bf",
+  "subMetas": {}
+}

@@ -1,0 +1,27 @@
+
+M_R_HSSD.png
+size: 512,512
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+M_R_HSSD (3)
+  rotate: false
+  xy: 319, 327
+  size: 30, 152
+  orig: 30, 152
+  offset: 0, 0
+  index: -1
+M_R_HSSD (4)
+  rotate: false
+  xy: 2, 164
+  size: 315, 315
+  orig: 315, 315
+  offset: 0, 0
+  index: -1
+M_R_HSSD (5)
+  rotate: false
+  xy: 2, 2
+  size: 231, 160
+  orig: 231, 160
+  offset: 0, 0
+  index: -1

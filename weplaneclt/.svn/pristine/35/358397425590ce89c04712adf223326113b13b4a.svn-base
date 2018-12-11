@@ -1,0 +1,7 @@
+{
+  "ver": "1.0.0",
+  "uuid": "5341db36-fce6-4481-b3ad-e92b9cdd8458",
+  "atlasJson": "{\"imagePath\":\"L_08_tex.png\",\"width\":128,\"SubTexture\":[{\"width\":22,\"y\":194,\"height\":60,\"name\":\"L_06_35\",\"x\":1},{\"width\":64,\"y\":1,\"height\":139,\"name\":\"10\",\"x\":1},{\"width\":24,\"y\":142,\"height\":28,\"name\":\"9\",\"x\":39},{\"width\":13,\"y\":232,\"height\":23,\"name\":\"7\",\"x\":44},{\"width\":36,\"y\":142,\"height\":50,\"name\":\"6\",\"x\":1},{\"width\":9,\"y\":172,\"height\":28,\"name\":\"5\",\"x\":60},{\"width\":17,\"y\":206,\"height\":24,\"name\":\"4\",\"x\":44},{\"width\":17,\"y\":194,\"height\":45,\"name\":\"8\",\"x\":25},{\"width\":14,\"y\":172,\"height\":32,\"name\":\"3\",\"x\":44},{\"width\":9,\"y\":142,\"height\":25,\"name\":\"2\",\"x\":65}],\"height\":256,\"name\":\"L_08\"}",
+  "texture": "b7958488-b23e-4b21-9001-c4d8bd0be03c",
+  "subMetas": {}
+}

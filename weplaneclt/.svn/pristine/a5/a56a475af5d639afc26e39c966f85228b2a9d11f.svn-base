@@ -1,0 +1,27 @@
+
+R_zfzg.png
+size: 222,183
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+R_zfzg (2)
+  rotate: true
+  xy: 62, 78
+  size: 103, 158
+  orig: 103, 158
+  offset: 0, 0
+  index: -1
+R_zfzg (3)
+  rotate: false
+  xy: 2, 3
+  size: 58, 178
+  orig: 58, 178
+  offset: 0, 0
+  index: -1
+R_zfzg (4)
+  rotate: false
+  xy: 62, 2
+  size: 74, 74
+  orig: 76, 76
+  offset: 1, 1
+  index: -1

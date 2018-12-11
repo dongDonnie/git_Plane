@@ -1,0 +1,76 @@
+
+M_C_C1.png
+size: 322,87
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+01
+  rotate: true
+  xy: 172, 32
+  size: 53, 49
+  orig: 53, 49
+  offset: 0, 0
+  index: -1
+02
+  rotate: true
+  xy: 68, 28
+  size: 57, 50
+  orig: 57, 50
+  offset: 0, 0
+  index: -1
+03
+  rotate: false
+  xy: 68, 2
+  size: 36, 24
+  orig: 36, 24
+  offset: 0, 0
+  index: -1
+033
+  rotate: false
+  xy: 144, 2
+  size: 36, 24
+  orig: 36, 24
+  offset: 0, 0
+  index: -1
+04
+  rotate: true
+  xy: 223, 37
+  size: 48, 47
+  orig: 48, 47
+  offset: 0, 0
+  index: -1
+05
+  rotate: true
+  xy: 120, 28
+  size: 57, 50
+  orig: 57, 50
+  offset: 0, 0
+  index: -1
+06
+  rotate: false
+  xy: 106, 2
+  size: 36, 24
+  orig: 36, 24
+  offset: 0, 0
+  index: -1
+066
+  rotate: false
+  xy: 182, 6
+  size: 36, 24
+  orig: 36, 24
+  offset: 0, 0
+  index: -1
+07
+  rotate: false
+  xy: 272, 38
+  size: 48, 47
+  orig: 48, 47
+  offset: 0, 0
+  index: -1
+08
+  rotate: false
+  xy: 2, 17
+  size: 64, 68
+  orig: 124, 122
+  offset: 30, 0
+  index: -1

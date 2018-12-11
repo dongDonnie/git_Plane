@@ -1,0 +1,7 @@
+{
+  "ver": "1.0.0",
+  "uuid": "3e00e5ef-42a2-467d-bad6-2da1fe0689c0",
+  "atlasJson": "{\"SubTexture\":[{\"width\":45,\"y\":1,\"height\":135,\"name\":\"14\",\"x\":1},{\"width\":64,\"y\":138,\"height\":64,\"name\":\"faguang_1\",\"x\":1},{\"width\":42,\"y\":1,\"height\":90,\"name\":\"9\",\"x\":48},{\"width\":8,\"y\":204,\"height\":34,\"name\":\"8\",\"x\":32},{\"width\":8,\"y\":204,\"height\":29,\"name\":\"7\",\"x\":42},{\"width\":33,\"y\":93,\"height\":39,\"name\":\"6\",\"x\":48},{\"width\":12,\"y\":234,\"height\":18,\"name\":\"5\",\"x\":16},{\"width\":14,\"y\":204,\"height\":28,\"name\":\"4\",\"x\":16},{\"width\":7,\"y\":235,\"height\":19,\"name\":\"3\",\"x\":42},{\"width\":10,\"y\":239,\"height\":14,\"name\":\"2\",\"x\":1},{\"width\":13,\"y\":204,\"height\":33,\"name\":\"1\",\"x\":1}],\"width\":128,\"height\":256,\"name\":\"L_07\",\"imagePath\":\"L_07_tex.png\"}",
+  "texture": "e6e3e9d4-f987-4290-9288-8b842410f403",
+  "subMetas": {}
+}

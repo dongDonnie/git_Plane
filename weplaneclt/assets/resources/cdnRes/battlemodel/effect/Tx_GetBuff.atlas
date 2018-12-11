@@ -1,0 +1,55 @@
+
+Tx_GetBuff.png
+size: 178,284
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+1
+  rotate: false
+  xy: 47, 22
+  size: 78, 41
+  orig: 78, 41
+  offset: 0, 0
+  index: -1
+2
+  rotate: false
+  xy: 47, 65
+  size: 78, 42
+  orig: 78, 42
+  offset: 0, 0
+  index: -1
+3
+  rotate: false
+  xy: 47, 109
+  size: 79, 43
+  orig: 79, 43
+  offset: 0, 0
+  index: -1
+4
+  rotate: true
+  xy: 127, 28
+  size: 79, 41
+  orig: 79, 41
+  offset: 0, 0
+  index: -1
+5
+  rotate: true
+  xy: 132, 126
+  size: 156, 44
+  orig: 156, 44
+  offset: 0, 0
+  index: -1
+6
+  rotate: true
+  xy: 2, 2
+  size: 150, 43
+  orig: 150, 43
+  offset: 0, 0
+  index: -1
+Tx_GetBuff08
+  rotate: false
+  xy: 2, 154
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1

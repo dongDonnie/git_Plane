@@ -1,0 +1,48 @@
+
+R_hjzj.png
+size: 1024,512
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+R_hjzj (1)
+  rotate: false
+  xy: 2, 2
+  size: 145, 146
+  orig: 145, 146
+  offset: 0, 0
+  index: -1
+R_hjzj (3)
+  rotate: false
+  xy: 149, 17
+  size: 131, 131
+  orig: 131, 131
+  offset: 0, 0
+  index: -1
+R_hjzj (4)
+  rotate: false
+  xy: 2, 150
+  size: 595, 325
+  orig: 595, 325
+  offset: 0, 0
+  index: -1
+R_hjzj (5)
+  rotate: false
+  xy: 813, 255
+  size: 208, 220
+  orig: 208, 220
+  offset: 0, 0
+  index: -1
+R_hjzj (6)
+  rotate: false
+  xy: 599, 17
+  size: 212, 458
+  orig: 212, 458
+  offset: 0, 0
+  index: -1
+R_hjzj (7)
+  rotate: false
+  xy: 813, 109
+  size: 144, 144
+  orig: 144, 144
+  offset: 0, 0
+  index: -1

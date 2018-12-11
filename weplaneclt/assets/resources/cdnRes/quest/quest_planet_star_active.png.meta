@@ -1,0 +1,32 @@
+{
+  "ver": "2.3.0",
+  "uuid": "2ccfb03c-23fd-4639-b1e7-8a4ef2ab0c32",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "platformSettings": {},
+  "subMetas": {
+    "quest_planet_star_active": {
+      "ver": "1.0.3",
+      "uuid": "51b93b4f-ec61-4ee1-a6b9-293c22bc5852",
+      "rawTextureUuid": "2ccfb03c-23fd-4639-b1e7-8a4ef2ab0c32",
+      "trimType": "auto",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 27,
+      "height": 26,
+      "rawWidth": 27,
+      "rawHeight": 26,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

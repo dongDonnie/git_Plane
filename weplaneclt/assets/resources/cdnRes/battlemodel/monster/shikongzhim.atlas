@@ -1,0 +1,160 @@
+
+shikongzhim.png
+size: 1024,1024
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+xingjizhimen1
+  rotate: true
+  xy: 2, 24
+  size: 128, 315
+  orig: 128, 315
+  offset: 0, 0
+  index: -1
+xingjizhimen3
+  rotate: false
+  xy: 319, 31
+  size: 39, 121
+  orig: 39, 121
+  offset: 0, 0
+  index: -1
+xingkongzhimeng44
+  rotate: false
+  xy: 845, 873
+  size: 153, 149
+  orig: 153, 149
+  offset: 0, 0
+  index: -1
+xingkongzhimeng666_0001
+  rotate: false
+  xy: 2, 734
+  size: 279, 288
+  orig: 279, 288
+  offset: 0, 0
+  index: -1
+xingkongzhimeng666_0003
+  rotate: false
+  xy: 2, 444
+  size: 279, 288
+  orig: 279, 288
+  offset: 0, 0
+  index: -1
+xingkongzhimeng666_0005
+  rotate: false
+  xy: 283, 734
+  size: 279, 288
+  orig: 279, 288
+  offset: 0, 0
+  index: -1
+xingkongzhimeng666_0007
+  rotate: false
+  xy: 2, 154
+  size: 279, 288
+  orig: 279, 288
+  offset: 0, 0
+  index: -1
+xingkongzhimeng666_0008
+  rotate: false
+  xy: 283, 444
+  size: 279, 288
+  orig: 279, 288
+  offset: 0, 0
+  index: -1
+xingkongzhimeng666_0009
+  rotate: false
+  xy: 564, 734
+  size: 279, 288
+  orig: 279, 288
+  offset: 0, 0
+  index: -1
+xingkongzhimeng666_0011
+  rotate: false
+  xy: 283, 154
+  size: 279, 288
+  orig: 279, 288
+  offset: 0, 0
+  index: -1
+xingkongzhimeng666_0013
+  rotate: false
+  xy: 564, 444
+  size: 279, 288
+  orig: 279, 288
+  offset: 0, 0
+  index: -1
+xingkongzhimeng777
+  rotate: false
+  xy: 564, 172
+  size: 270, 270
+  orig: 270, 270
+  offset: 0, 0
+  index: -1
+xingkuangzhimeng3_0001
+  rotate: false
+  xy: 845, 790
+  size: 72, 81
+  orig: 72, 81
+  offset: 0, 0
+  index: -1
+xingkuangzhimeng3_0003
+  rotate: false
+  xy: 360, 71
+  size: 72, 81
+  orig: 72, 81
+  offset: 0, 0
+  index: -1
+xingkuangzhimeng3_0005
+  rotate: false
+  xy: 845, 707
+  size: 72, 81
+  orig: 72, 81
+  offset: 0, 0
+  index: -1
+xingkuangzhimeng3_0007
+  rotate: false
+  xy: 919, 790
+  size: 72, 81
+  orig: 72, 81
+  offset: 0, 0
+  index: -1
+xingkuangzhimeng3_0009
+  rotate: false
+  xy: 434, 71
+  size: 72, 81
+  orig: 72, 81
+  offset: 0, 0
+  index: -1
+xingkuangzhimeng3_0011
+  rotate: false
+  xy: 845, 624
+  size: 72, 81
+  orig: 72, 81
+  offset: 0, 0
+  index: -1
+xingkuangzhimeng3_0013
+  rotate: false
+  xy: 919, 707
+  size: 72, 81
+  orig: 72, 81
+  offset: 0, 0
+  index: -1
+xingkuangzhimeng3_0015
+  rotate: false
+  xy: 845, 541
+  size: 72, 81
+  orig: 72, 81
+  offset: 0, 0
+  index: -1
+xingkuangzhimeng55
+  rotate: true
+  xy: 508, 89
+  size: 63, 41
+  orig: 63, 41
+  offset: 0, 0
+  index: -1
+xingkuangzhimeng66
+  rotate: true
+  xy: 319, 2
+  size: 27, 54
+  orig: 27, 54
+  offset: 0, 0
+  index: -1

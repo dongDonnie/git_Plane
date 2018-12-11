@@ -1,0 +1,7 @@
+{
+  "ver": "1.0.0",
+  "uuid": "2cbbd170-339d-465e-976f-394ecbc24599",
+  "atlasJson": "{\"width\":512,\"imagePath\":\"M_R_ZZDS_tex.png\",\"height\":256,\"name\":\"M_R_ZZDS\",\"SubTexture\":[{\"frameY\":0,\"y\":1,\"frameWidth\":33,\"frameX\":0,\"frameHeight\":84,\"width\":33,\"height\":84,\"name\":\"M_R_ZZDS (3)\",\"x\":309},{\"frameY\":0,\"y\":81,\"frameWidth\":23,\"frameX\":0,\"frameHeight\":63,\"width\":22,\"height\":62,\"name\":\"M_R_ZZDS (2)\",\"x\":170},{\"frameY\":0,\"y\":1,\"frameWidth\":167,\"frameX\":0,\"frameHeight\":184,\"width\":167,\"height\":184,\"name\":\"M_R_ZZDS (1)\",\"x\":1},{\"frameY\":0,\"y\":1,\"frameWidth\":137,\"frameX\":0,\"frameHeight\":79,\"width\":137,\"height\":78,\"name\":\"M_R_ZZDS (4)\",\"x\":170}]}",
+  "texture": "c657d985-80a7-4067-8b09-a8ebe48599e3",
+  "subMetas": {}
+}

@@ -1,0 +1,27 @@
+
+M_R_ZSXHJ.png
+size: 161,167
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+M_R_ZSXHJ (1)
+  rotate: false
+  xy: 2, 24
+  size: 157, 141
+  orig: 159, 141
+  offset: 1, 0
+  index: -1
+M_R_ZSXHJ (2)
+  rotate: false
+  xy: 75, 11
+  size: 78, 11
+  orig: 78, 12
+  offset: 0, 0
+  index: -1
+M_R_ZSXHJ (3)
+  rotate: true
+  xy: 2, 2
+  size: 20, 71
+  orig: 20, 71
+  offset: 0, 0
+  index: -1

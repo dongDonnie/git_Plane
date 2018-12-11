@@ -1,0 +1,32 @@
+{
+  "ver": "2.3.0",
+  "uuid": "abd108a9-c6f1-48b6-83df-ada0115f4765",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "platformSettings": {},
+  "subMetas": {
+    "fighter_universe_bg": {
+      "ver": "1.0.3",
+      "uuid": "7e6a4e3a-369f-49a7-8d9f-68486ef02700",
+      "rawTextureUuid": "abd108a9-c6f1-48b6-83df-ada0115f4765",
+      "trimType": "auto",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 640,
+      "height": 1007,
+      "rawWidth": 640,
+      "rawHeight": 1007,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

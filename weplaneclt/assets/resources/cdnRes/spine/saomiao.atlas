@@ -1,0 +1,202 @@
+
+saomiao.png
+size: 994,579
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+b0000
+  rotate: false
+  xy: 169, 400
+  size: 163, 19
+  orig: 170, 177
+  offset: 1, 152
+  index: -1
+b0002
+  rotate: false
+  xy: 825, 124
+  size: 162, 21
+  orig: 170, 177
+  offset: 2, 142
+  index: -1
+b0004
+  rotate: false
+  xy: 494, 24
+  size: 162, 36
+  orig: 170, 177
+  offset: 2, 127
+  index: -1
+b0006
+  rotate: false
+  xy: 332, 83
+  size: 162, 47
+  orig: 170, 177
+  offset: 2, 116
+  index: -1
+b0008
+  rotate: false
+  xy: 496, 62
+  size: 162, 59
+  orig: 170, 177
+  offset: 2, 105
+  index: -1
+b0010
+  rotate: false
+  xy: 330, 11
+  size: 162, 70
+  orig: 170, 177
+  offset: 2, 94
+  index: -1
+b0012
+  rotate: false
+  xy: 166, 10
+  size: 162, 80
+  orig: 170, 177
+  offset: 2, 84
+  index: -1
+b0014
+  rotate: false
+  xy: 2, 2
+  size: 162, 91
+  orig: 170, 177
+  offset: 2, 73
+  index: -1
+b0016
+  rotate: false
+  xy: 662, 20
+  size: 162, 102
+  orig: 170, 177
+  offset: 2, 62
+  index: -1
+b0018
+  rotate: false
+  xy: 826, 9
+  size: 162, 113
+  orig: 170, 177
+  offset: 2, 51
+  index: -1
+b0020
+  rotate: false
+  xy: 825, 147
+  size: 162, 123
+  orig: 170, 177
+  offset: 2, 41
+  index: -1
+b0022
+  rotate: false
+  xy: 334, 285
+  size: 163, 135
+  orig: 170, 177
+  offset: 2, 29
+  index: -1
+b0024
+  rotate: false
+  xy: 499, 275
+  size: 163, 146
+  orig: 170, 177
+  offset: 2, 18
+  index: -1
+b0026
+  rotate: false
+  xy: 664, 274
+  size: 163, 147
+  orig: 170, 177
+  offset: 2, 17
+  index: -1
+b0028
+  rotate: false
+  xy: 2, 252
+  size: 163, 157
+  orig: 170, 177
+  offset: 2, 7
+  index: -1
+b0030
+  rotate: false
+  xy: 169, 421
+  size: 163, 156
+  orig: 170, 177
+  offset: 2, 8
+  index: -1
+b0032
+  rotate: false
+  xy: 2, 95
+  size: 163, 155
+  orig: 170, 177
+  offset: 2, 9
+  index: -1
+b0034
+  rotate: false
+  xy: 334, 422
+  size: 163, 155
+  orig: 170, 177
+  offset: 2, 9
+  index: -1
+b0036
+  rotate: false
+  xy: 499, 423
+  size: 163, 154
+  orig: 170, 177
+  offset: 2, 10
+  index: -1
+b0038
+  rotate: false
+  xy: 664, 423
+  size: 163, 154
+  orig: 170, 177
+  offset: 2, 10
+  index: -1
+b0040
+  rotate: false
+  xy: 829, 424
+  size: 163, 153
+  orig: 170, 177
+  offset: 2, 11
+  index: -1
+b0042
+  rotate: false
+  xy: 167, 246
+  size: 163, 152
+  orig: 170, 177
+  offset: 2, 12
+  index: -1
+b0044
+  rotate: false
+  xy: 167, 92
+  size: 163, 152
+  orig: 170, 177
+  offset: 2, 12
+  index: -1
+b0046
+  rotate: false
+  xy: 332, 132
+  size: 163, 151
+  orig: 170, 177
+  offset: 2, 13
+  index: -1
+b0048
+  rotate: false
+  xy: 829, 272
+  size: 163, 150
+  orig: 170, 177
+  offset: 2, 14
+  index: -1
+b0050
+  rotate: false
+  xy: 497, 123
+  size: 163, 150
+  orig: 170, 177
+  offset: 2, 14
+  index: -1
+b0054
+  rotate: false
+  xy: 662, 124
+  size: 161, 148
+  orig: 170, 177
+  offset: 3, 16
+  index: -1
+saomiao0000
+  rotate: false
+  xy: 2, 411
+  size: 165, 166
+  orig: 170, 177
+  offset: 1, 5
+  index: -1

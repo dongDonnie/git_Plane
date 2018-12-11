@@ -1,0 +1,32 @@
+{
+  "ver": "2.3.0",
+  "uuid": "abf68776-e686-4e7b-827e-538741690fd3",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "platformSettings": {},
+  "subMetas": {
+    "monster_progress_lifebar": {
+      "ver": "1.0.3",
+      "uuid": "1355e45a-96e9-4e90-9c3f-f73f8e17c593",
+      "rawTextureUuid": "abf68776-e686-4e7b-827e-538741690fd3",
+      "trimType": "auto",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 5,
+      "trimY": 6,
+      "width": 101,
+      "height": 14,
+      "rawWidth": 111,
+      "rawHeight": 26,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

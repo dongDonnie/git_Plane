@@ -1,0 +1,32 @@
+{
+  "ver": "2.3.0",
+  "uuid": "d5f7d417-81f5-4cdb-9177-74a67c314973",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "platformSettings": {},
+  "subMetas": {
+    "fighter_hangar_scrolltrack": {
+      "ver": "1.0.3",
+      "uuid": "0cc3ba98-3e10-4226-8481-d5f8b1ff18ae",
+      "rawTextureUuid": "d5f7d417-81f5-4cdb-9177-74a67c314973",
+      "trimType": "auto",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": -248,
+      "trimX": 0,
+      "trimY": 725,
+      "width": 856,
+      "height": 182,
+      "rawWidth": 856,
+      "rawHeight": 1136,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

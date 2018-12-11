@@ -1,0 +1,34 @@
+
+M_C_M_03.png
+size: 128,64
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+1
+  rotate: false
+  xy: 65, 33
+  size: 36, 24
+  orig: 36, 24
+  offset: 0, 0
+  index: -1
+2
+  rotate: false
+  xy: 65, 11
+  size: 17, 20
+  orig: 17, 20
+  offset: 0, 0
+  index: -1
+3
+  rotate: true
+  xy: 2, 2
+  size: 55, 61
+  orig: 55, 61
+  offset: 0, 0
+  index: -1
+4
+  rotate: false
+  xy: 103, 46
+  size: 19, 11
+  orig: 19, 11
+  offset: 0, 0
+  index: -1

@@ -1,0 +1,34 @@
+
+R-ay.png
+size: 168,112
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+R-ay (1)
+  rotate: false
+  xy: 138, 62
+  size: 28, 48
+  orig: 30, 56
+  offset: 2, 7
+  index: -1
+R-ay (2)
+  rotate: false
+  xy: 2, 2
+  size: 134, 108
+  orig: 134, 108
+  offset: 0, 0
+  index: -1
+R-ay (3)
+  rotate: false
+  xy: 154, 36
+  size: 7, 24
+  orig: 8, 25
+  offset: 1, 0
+  index: -1
+R-ay (4)
+  rotate: false
+  xy: 138, 12
+  size: 14, 48
+  orig: 14, 50
+  offset: 0, 1
+  index: -1

@@ -1,0 +1,7 @@
+{
+  "ver": "1.0.0",
+  "uuid": "af1dd639-b3a7-4c2a-aa97-d718971ab3f2",
+  "atlasJson": "{\"width\":256,\"SubTexture\":[{\"width\":216,\"y\":1,\"height\":153,\"name\":\"1\",\"x\":1},{\"width\":101,\"y\":203,\"height\":45,\"name\":\"2\",\"x\":1},{\"width\":190,\"y\":156,\"height\":45,\"name\":\"3\",\"x\":1}],\"height\":256,\"name\":\"Tx_JsKill0_chai\",\"imagePath\":\"Tx_JsKill0_chai_tex.png\"}",
+  "texture": "c47adcdc-64a0-4ca4-ab25-b70639ac33b3",
+  "subMetas": {}
+}

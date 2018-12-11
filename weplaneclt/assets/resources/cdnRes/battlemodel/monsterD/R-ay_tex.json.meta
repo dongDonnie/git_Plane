@@ -1,0 +1,7 @@
+{
+  "ver": "1.0.0",
+  "uuid": "c8bf2b8c-5829-464e-bd35-9df75cecd1d6",
+  "atlasJson": "{\"width\":256,\"imagePath\":\"R-ay_tex.png\",\"height\":128,\"name\":\"R-ay\",\"SubTexture\":[{\"frameY\":0,\"y\":1,\"frameWidth\":143,\"frameX\":0,\"frameHeight\":115,\"width\":142,\"height\":114,\"name\":\"R-ay (2)\",\"x\":1},{\"frameY\":0,\"y\":1,\"frameWidth\":32,\"frameX\":-2,\"frameHeight\":60,\"width\":30,\"height\":52,\"name\":\"R-ay (1)\",\"x\":145},{\"frameY\":0,\"y\":55,\"frameWidth\":9,\"frameX\":0,\"frameHeight\":26,\"width\":8,\"height\":25,\"name\":\"R-ay (3)\",\"x\":161},{\"frameY\":0,\"y\":55,\"frameWidth\":15,\"frameX\":0,\"frameHeight\":54,\"width\":14,\"height\":53,\"name\":\"R-ay (4)\",\"x\":145}]}",
+  "texture": "4fcbd7db-85c1-44fd-a183-056d8a428583",
+  "subMetas": {}
+}

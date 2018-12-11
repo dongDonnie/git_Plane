@@ -1,0 +1,7 @@
+{
+  "ver": "1.0.0",
+  "uuid": "c297292c-fdcb-4766-b239-af4a10956c32",
+  "atlasJson": "{\"width\":138,\"imagePath\":\"R_pqd_tex.png\",\"SubTexture\":[{\"width\":20,\"y\":51,\"height\":48,\"name\":\"7\",\"x\":94},{\"width\":20,\"y\":1,\"height\":48,\"name\":\"6\",\"x\":94},{\"width\":91,\"y\":1,\"height\":117,\"name\":\"5\",\"x\":1},{\"width\":20,\"y\":1,\"height\":40,\"name\":\"2\",\"x\":116},{\"width\":20,\"y\":43,\"height\":40,\"name\":\"1\",\"x\":116}],\"height\":120,\"name\":\"R_pqd\"}",
+  "texture": "71701f89-671e-477f-add2-cd2bd3e8405c",
+  "subMetas": {}
+}

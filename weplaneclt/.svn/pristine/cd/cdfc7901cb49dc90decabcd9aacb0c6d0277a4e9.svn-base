@@ -1,0 +1,2188 @@
+<tables>
+    <types>
+        <type name="TblBattleAttrValue">
+            <item name="Key" type="UINT16"/>
+            <item name="Value" type="double"/>
+        </type>
+    
+        <type name="TblProp">
+            <item name="PropID" type="UINT16"/>
+            <item name="AddValue" type="INT32"/>
+        </type>
+
+        <type name="TblPropCoe">
+            <item name="PropID" type="UINT16"/>
+            <item name="Coe" type="double"/>
+        </type>
+
+        <type name="TblMultiProp">
+            <item name="ProNum" type="UINT16"/>
+            <item name="QualityUpValue" type="INT32"/>
+            <item name="LevelUpValue" type="INT32"/>
+        </type>
+
+        <type name="TblItemCount">
+            <item name="ItemID" type="UINT16"/>
+            <item name="Count" type="INT32"/>
+        </type>
+
+        <type name="TblItemProb">
+            <item name="ItemID" type="UINT16"/>
+            <item name="Count" type="INT32"/>
+            <item name="Prob" type="UINT32"/>
+        </type>
+
+        <type name="TblItemOutput">
+            <item name="SystemID" type="UINT16"/>
+            <item name="Param1" type="INT32"/>
+            <item name="Param2" type="INT32"/>
+        </type>
+
+        <type name="TblCountProb">
+            <item name="Count" type="INT32"/>
+            <item name="Prob" type="UINT32"/>
+        </type>
+
+        <type name="TblIDProb">
+            <item name="ID" type="UINT16"/>
+            <item name="Prob" type="UINT32"/>
+        </type>
+
+        <type name="TblMemberPingJia">
+            <item name="StarType" type="UINT8"/>
+            <item name="StarNum" type="UINT8"/>
+        </type>
+
+        <type name="TblLevelRange">
+            <item name="LevelBegin" type="UINT16"/>
+            <item name="LevelEnd" type="UINT16"/>
+        </type>
+        
+        <type name="TblChapterReward">
+            <item name="Stars" type="UINT16"/>
+            <item name="DropPackage" type="UINT16"/>
+        </type>
+
+        <type name="TblCampaignVipLimit">
+            <item name="Vip" type="UINT8"/>
+            <item name="Count" type="UINT8"/>
+        </type>
+
+        <type name="TblCampaignDrawCost">
+            <item name="Count" type="UINT8"/>
+            <item name="MoneyType" type="UINT8"/>
+            <item name="Cost" type="INT32"/>
+        </type>
+
+        <type name="TblCampaignPassTime">
+            <item name="Time" type="INT32"/>
+            <item name="Coe" type="UINT8"/>
+        </type>
+
+        <type name="TblCampaignDieTime">
+            <item name="Die" type="INT32"/>
+            <item name="Coe" type="UINT8"/>
+        </type>
+
+        <type name="TblDropGroup">
+            <item name="DropID" type="UINT16"/>
+            <item name="Prob" type="UINT16"/>
+        </type>
+
+        <type name="TblStoreCost">
+            <item name="Gold" type="double"/>
+            <item name="Diamond" type="double"/>
+            <item name="GoldProb" type="UINT16"/>
+            <item name="DiamondProb" type="UINT16"/>
+            <item name="FreeProb" type="UINT16"/>
+        </type>
+
+        <type name="TblTreasureCritProb">
+            <item name="Crit" type="UINT8"/>
+            <item name="Prob" type="UINT16"/>            
+        </type>
+
+        <type name="TblFuLiGiftVIPLimit">
+            <item name="Level" type="UINT8"/>
+            <item name="Limit" type="UINT16"/>
+        </type>
+
+        <type name="TblFuLiSevenCZPackage">
+            <item name="DiamondCZ" type="INT32"/>
+            <item name="PackageID" type="UINT16"/>
+        </type>
+        
+        <type name="TblFuLiSevenDare">
+            <item name="UCat" type="INT32"/>
+            <item name="Num" type="INT32"/>
+            <item name="Diamond" type="INT32"/>
+        </type>
+        
+        <type name="TblSkillAddPercent">
+            <item name="Quality" type="UINT16"/>
+            <item name="Percent" type="double"/>
+        </type>
+        
+        <type name="TblSkillAddValue">
+            <item name="Quality" type="UINT16"/>
+            <item name="Value" type="UINT32"/>
+        </type>
+        
+        <type name="TblSkillFormulaPara1">
+            <item name="Quality" type="UINT16"/>
+            <item name="X" type="double"/>
+            <item name="Y" type="double"/>
+        </type>
+        
+        <type name="TblSkillAttrValue">
+            <item name="AttrID" type="UINT16"/>
+            <item name="Quality" type="UINT16"/>
+            <item name="Value" type="INT32"/>
+        </type>
+        
+        <type name="TblSkillFormulaPara2">
+            <item name="AttrID" type="UINT16"/>
+            <item name="X" type="double"/>
+            <item name="Y" type="double"/>
+        </type>
+
+        <type name="TblMoneyCost">
+            <item name="Type" type="UINT8"/>
+            <item name="Cost" type="INT32"/>
+        </type>
+
+        <type name="TblFuLiGiftCost">
+            <item name="Num" type="UINT8"/>
+            <item name="Cost" type="INT32"/>
+        </type>
+
+        <type name="TblLotteryPackage">
+            <item name="Num" type="UINT16"/>
+            <item name="PackageID" type="UINT16"/>
+        </type>
+
+        <type name="TblMemberTechProp">
+            <item name="ID" type="UINT16"/>
+            <item name="Value" type="INT32"/>
+        </type>
+
+        <type name="TblIcon">
+            <item name="ID" type="UINT16"/>
+            <item name="Icon" type="INT32"/>
+        </type>
+
+        <type name="TblPieceCount">
+            <item name="Quality" type="UINT16"/>
+            <item name="PieceCount" type="INT32"/>
+        </type>
+
+        <type name="TblVIPLimit">
+            <item name="VIP" type="UINT8"/>
+            <item name="Limit" type="UINT16"/>
+        </type>
+
+        <type name="TblDailyLevelActive">
+            <item name="Level" type="UINT16"/>
+            <item name="Active" type="INT32"/>
+        </type>
+        
+        <type name="TblActionArray">
+            <item name="Act" type="string"/>
+            <item name="Loop" type="string"/>
+        </type>
+        
+    </types>
+
+    <table name="TblVersion" file="data/version.tbl" key="ID">
+        <col name="ID" type="UINT8"/>
+        <col name="Version" type="string"/>
+    </table>
+    
+    <table name="TblString" file="data/string.tbl" key="ID">
+        <col name="ID" type="UINT32"/>
+        <col name="Readme" type="comment"/>
+        <col name="StringDesc" type="string"/>
+    </table>
+
+    <table name="TblPropName" file="data/propname.tbl" key="PropID">
+        <col name="PropID" type="UINT16"/>
+        <col name="Name" type="string"/>
+        <col name="Icon" type="UINT16"/>
+        <col name="DispType" type="UINT8"/>
+    </table>
+
+    <table name="TblSystem" file="data/system.tbl" key="SystemID">
+        <col name="SystemID" type="UINT16"/>
+        <col name="Name" type="string"/>
+        <col name="OpenLevel" type="UINT16"/>
+        <col name="OpenVIP" type="UINT8"/>
+        <col name="OpenCond" type="UINT8"/>
+        <col name="LevelUpShow" type="UINT8"/>
+        <col name="Icon" type="UINT16"/>
+        <col name="TipsString" type="string"/>
+        <col name="LevelUpString" type="string"/>
+        <col name="DailyShow" type="UINT8"/>
+        <col name="Desc" type="comment"/>
+    </table>
+
+    <table name="TblTips" file="data/tips.tbl" key="TipsID">
+        <col name="TipsID" type="UINT32"/>
+        <col name="String" type="string"/>
+        <col name="Desc" type="comment"/>
+    </table>
+    
+    <table name="TblLeaderEquip" file="data/leaderequip.tbl" multikey="Pos,Quality">
+        <col name="Pos" type="UINT8"/>
+        <col name="Quality" type="UINT16"/>
+        <col name="Color" type="UINT8"/>
+        <col name="Name" type="string"/>
+        <col name="Icon" type="UINT16"/>
+        <col name="Prop" type="TblProp" vector="true"/>
+        <col name="UpCost" type="TblItemCount" vector="true"/>
+        <col name="Comment" type="comment"/>
+    </table>
+
+    <table name="TblLeaderEquipLevel" file="data/leaderequiplevel.tbl" key="Level">
+        <col name="Level" type="UINT16" />
+        <col name="GoldCost" type="INT32" vector="true"/>
+        <col name="Prop" type="TblProp" vector="true"/>
+        <col name="Comment" type="comment"/>
+    </table>
+    
+    <table name="TblLeaderEquipQH" file="data/leaderequipqh.tbl" multikey="Level,Part">
+        <col name="Level" type="UINT16"/>
+        <col name="Part" type="UINT8"/>
+        <col name="Result" type="double"/>
+        <col name="Item" type="TblItemCount"/>
+        <col name="Gold" type="INT32"/>
+        <col name="Diamond" type="INT32"/>
+        <col name="UpNeedEXP" type="INT32"/>
+        <col name="ProvideEXP" type="UINT16"/>
+    </table>
+
+    <table name="TblLeaderEquipOpen" file="data/leaderequipopen.tbl" key="Part" serveronly="true">
+        <col name="Part" type="UINT8"/>
+        <col name="Chapter" type="UINT8"/>
+        <col name="EquipID" type="UINT16"/>
+        <col name="Quality" type="UINT16"/>
+        <col name="Desc" type="string"/>
+    </table>
+
+    <table name="TblLeaderEquipCom" file="data/leaderequipcom.tbl" key="ComID" serveronly="true">
+        <col name="ComID" type="UINT16"/>
+        <col name="Prop" type="TblProp" vector="true"/>
+        <col name="CombatPoint" type="INT32"/>
+    </table>
+
+    <table name="TblRoleEquip" file="data/roleequip.tbl" key="EquipID" serveronly="true">
+        <col name="EquipID" type="UINT16"/>
+        <col name="Name" type="string"/>
+        <col name="Pos" type="UINT16"/>
+        <col name="Quality" type="UINT16"/>
+        <col name="QualityDisplay" type="string"/>
+        <col name="Prop" type="TblProp" vector="true"/>
+        <col name="SplitGetItemID" type="UINT16"/>
+        <col name="SplitGetItemCount" type="INT32"/>
+        <col name="DmSplitCost" type="INT32"/>
+        <col name="DmSplitGetItemID" type="UINT16"/>
+        <col name="DmSplitGetItemCount" type="INT32"/>
+        <col name="CombatPoint" type="INT32"/>
+        <col name="DescID" type="UINT32"/>
+        <col name="QhCoe" type="double"/>
+        <col name="Comment" type="comment"/>
+    </table>
+
+    <table name="TblRoleEquipPos" file="data/roleequippos.tbl" key="Pos" serveronly="true">
+        <col name="Pos" type="UINT8"/>
+        <col name="Name" type="string" />
+        <col name="Desc" type="string" />
+        <col name="BaseEquipID" type="UINT16" />
+        <col name="Comment" type="comment"/>
+    </table>
+
+    <table name="TblRoleEquipLingWu" file="data/roleequiplingwu.tbl" key="Level" serveronly="true">
+        <col name="Level" type="UINT16"/>
+        <col name="CostItemID" type="UINT16"/>
+        <col name="CostItemCount" type="INT32"/>
+        <col name="CostGold" type="INT32"/>
+        <col name="CostDiamond" type="INT32"/>
+        <col name="Effect" type="INT32"/>
+    </table>
+
+    <table name="TblRoleEquipCompose" file="data/roleequipcompose.tbl" key="PieceID" serveronly="true">
+        <col name="PieceID" type="UINT16"/>
+        <col name="PieceNum" type="INT32"/>
+        <col name="ComposeEquip" type="TblCountProb" vector="true"/>
+        <col name="CostGold" type="INT32"/>
+        <col name="CostDiamond" type="INT32"/>
+        <col name="Desc" type="comment"/>
+    </table>
+
+    <table name="TblRoleEquipGem" file="data/roleequipgem.tbl" key="Level" serveronly="true">
+        <col name="Level" type="UINT8"/>
+        <col name="PropCoe" type="double"/>
+        <col name="ItemID" type="UINT16" />
+        <col name="ComposeProb" type="TblCountProb" vector="true"/>
+        <col name="Desc" type="comment"/>
+    </table>
+
+    <table name="TblRoleEquipQh" file="data/roleequipqh.tbl" multikey="Pos,Level" serveronly="true">
+        <col name="Pos" type="UINT16"/>
+        <col name="Level" type="UINT16"/>
+        <col name="Prop" type="TblProp" vector="true"/>
+        <col name="Combat" type="INT32" />
+        <col name="NormalCost" type="TblItemCount" />
+        <col name="DiamondCost" type="INT32" />
+        <col name="Comment" type="comment"/>
+    </table>
+
+    <table name="TblLeaderIcon" file="data/leadericon.tbl" key="ID" serveronly="true">
+        <col name="ID" type="UINT16"/>
+        <col name="Type" type="UINT8"/>
+        <col name="IconResID" type="UINT16"/>
+        <col name="UnlockVip" type="UINT8"/>
+        <col name="Desc" type="comment"/>
+    </table>
+    
+    <table name="TblLeaderProp" file="data/leaderprop.tbl" key="PropID" serveronly="true">
+        <col name="PropID" type="UINT16"/>
+        <col name="Display" type="UINT8"/>
+    </table>
+
+    <table name="TblParam" file="data/param.tbl" key="ParamID">
+        <col name="ParamID" type="UINT16"/>
+        <col name="Name" type="comment"/>
+        <col name="Value" type="double"/>
+    </table>
+
+    <table name="TblItem" file="data/item.tbl" key="ItemID">
+        <col name="ItemID" type="UINT16"/>
+        <col name="Name" type="string"/>
+        <col name="Type" type="UINT8"/>
+        <col name="Quality" type="UINT16"/>
+        <col name="Color" type="UINT8"/>
+        <col name="Bound" type="UINT8"/>
+        <col name="EquipType" type="UINT8"/>
+        <col name="Level" type="UINT16"/>
+        <col name="LevelReq" type="UINT16"/>
+        <col name="Overlap" type="UINT16"/>
+        <col name="OwnLimit" type="UINT16"/>
+        <col name="LifeType" type="UINT8"/>
+        <col name="Life" type="INT32"/>
+        <col name="Result" type="INT32"/>
+        <col name="UseEffect" type="string"/>
+        <col name="Audio" type="string"/>
+        <col name="SellType" type="UINT8"/>
+        <col name="SellPrice" type="INT32"/>
+        <col name="UnitPrice" type="double"/>
+        <col name="Icon" type="UINT16"/>
+        <col name="Output" type="UINT16" vector="true"/>
+        <col name="ItemOutput" type="TblItemOutput" vector="true"/>
+        <col name="ItemDesc" type="string"/>
+    </table>
+    
+    <table name="TblItemType" file="data/itemtype.tbl" key="TypeID">
+        <col name="TypeID" type="UINT8"/>
+        <col name="TypeName" type="string"/>
+        <col name="BtnName" type="string"/>
+        <col name="IsAttr" type="UINT8"/>
+        <col name="IsFightScore" type="UINT8"/>
+        <col name="TipsTypeName" type="string"/>
+        <col name="BagTypeName" type="string"/>
+        <col name="IconTypeName" type="string"/>
+    </table>
+
+    <table name="TblChest" file="data/chest.tbl" key="ChestID">
+        <col name="ChestID" type="UINT16"/>
+        <col name="Items" type="TblItemCount" vector="true"/>
+    </table>
+
+    <table name="TblLevel" file="data/level.tbl" key="Level">
+        <col name="Level" type="UINT16"/>
+        <col name="Exp" type="UINT32"/>
+        <col name="Sp" type="UINT16"/>
+        <col name="Gold" type="INT32"/>
+        <col name="Battle_AttributePerLevel" type="TblProp" vector="true"/>
+    </table>
+
+    <table name="TblCompose" file="data/compose.tbl" key="ItemID" serveronly="true">
+        <col name="ItemID" type="UINT16"/>
+        <col name="Type" type="UINT8"/>
+        <col name="Material" type="TblItemCount" vector="true"/>
+        <col name="MoneyType" type="UINT8"/>
+        <col name="Gold" type="INT32"/>
+        <col name="Diamond" type="INT32"/>
+    </table>
+    
+    <table name="TblComposeBuy" file="data/composebuy.tbl" key="MaterialID" serveronly="true">
+        <col name="MaterialID" type="UINT16"/>
+        <col name="Diamond" type="INT32"/>
+        <col name="Comment" type="comment"/>
+    </table>
+
+    <table name="TblHeCheng" file="data/hecheng.tbl" key="ItemID" serveronly="true">
+        <col name="ItemID" type="UINT16"/>
+        <col name="Count" type="INT32"/>
+        <col name="PackageID" type="UINT16"/>
+        <col name="GoldCost" type="INT32"/>
+        <col name="DiamondCost" type="INT32"/>
+        <col name="Comment" type="comment"/>
+    </table>
+
+    <table name="TblMember" file="data/member.tbl" key="MemberID">
+        <col name="MemberID" type="UINT16"/>
+        <col name="Name" type="string"/>
+        <col name="Level" type="UINT16"/>
+        <col name="Quality" type="UINT16"/>
+        <col name="ElemType" type="UINT8"/>
+        <col name="PingJia" type="TblMemberPingJia"/>
+        <col name="PropCoe" type="TblPropCoe" vector="true"/>
+        <col name="CombatCoe" type="double"/>
+        <col name="MaxCombat" type="INT32"/>
+        <col name="IconID" type="UINT16"/>
+        <col name="GetType" type="UINT8"/>
+        <col name="GetPieceID" type="UINT16"/>
+        <col name="GetPieceNumber" type="INT32"/>
+        <col name="GetNeedGold" type="INT32"/>
+        <col name="GetNeedDiamond" type="INT32"/>
+        <col name="SkillCommon" type="UINT16"/>
+        <col name="SkillCommonBind" type="string" vector="true"/>
+        <col name="SkillCommonAction" type="string"/>
+        <col name="IsAutoCommon" type="UINT8"/>
+        <col name="SkillInitial" type="UINT16"/>
+        <col name="SkillInitialBind" type="string" vector="true"/>
+        <col name="SkillInitialAction" type="string"/>
+        <col name="SkillSub1" type="UINT16"/>
+        <col name="SkillSub1Bind" type="string" vector="true"/>
+        <col name="SkillSub1Action" type="string"/>
+        <col name="IsAutoSub1" type="UINT8"/>
+        <col name="SkillSub2" type="UINT16"/>
+        <col name="SkillSub2Bind" type="string" vector="true"/>
+        <col name="SkillSub2Action" type="string"/>
+        <col name="IsAutoSub2" type="UINT8"/>
+        <col name="SkillSub3" type="UINT16"/>
+        <col name="SkillSub3Bind" type="string" vector="true"/>
+        <col name="SkillSub3Action" type="string"/>
+        <col name="IsAutoSub3" type="UINT8"/>
+        <col name="MemberModel" type="string"/>
+        <col name="FinalModel" type="string"/>
+        <col name="SpecialID" type="UINT16" vector="true"/>
+        <col name="IsArenaUse" type="UINT8"/>
+        <col name="MemberStar" type="UINT16"/>
+        <col name="ReturnGold" type="INT32"/>
+        <col name="RebirthCostDiamond" type="INT32"/>
+        <col name="RelationID" type="UINT16" vector="true"/>
+        <col name="Scale" type="double"/>
+        <col name="ShareDropPackage" type="UINT16"/>
+        <col name="Description" type="string"/>
+    </table>
+
+    <table name="TblMemberLevel" file="data/memberlevel.tbl" setkey="MemberID">
+        <col name="MemberID" type="UINT16"/>
+        <col name="LevelMin" type="UINT16"/>
+        <col name="LevelMax" type="UINT16"/>
+        <col name="PropVar1" type="UINT16"/>
+        <col name="PropVar2" type="UINT16"/>
+        <col name="UpNeedExpVar1" type="double"/>
+        <col name="UpNeedExpVar2" type="UINT16"/>
+        <col name="UpNeedExpVar3" type="UINT16"/>
+        <col name="Description" type="string"/>
+    </table>
+
+    <table name="TblMemberQuality" file="data/memberquality.tbl" multikey="MemberID,Quality">
+        <col name="MemberID" type="UINT16"/>
+        <col name="Quality" type="UINT16"/>
+        <col name="QualityDisplay" type="string"/>
+        <col name="PropAll" type="TblProp" vector="true"/>
+        <col name="UpType" type="UINT8"/>
+        <col name="QualityUpGold" type="INT32"/>
+        <col name="QualityUpDiamond" type="INT32"/>
+        <col name="QualityUpPiece" type="UINT16"/>
+        <col name="QualityUpNumber" type="INT32"/>
+        <col name="QualityUpLevel" type="UINT16"/>
+        <col name="CombatPoint" type="INT32"/>
+        <col name="Description" type="string"/>
+    </table>
+
+    <table name="TblMemberEquip" file="data/memberequip.tbl" key="ID" serveronly="true">
+        <col name="ID" type="UINT16"/>
+        <col name="EquipName" type="string"/>
+        <col name="EquipPos" type="UINT8"/>
+        <col name="QualityDisplay" type="string"/>
+        <col name="Prop" type="TblProp" vector="true"/>
+        <col name="QualityProp" type="TblProp" vector="true"/>
+        <col name="UpGetItem" type="UINT16"/>
+        <col name="UpCostType" type="UINT8"/>
+        <col name="UpCostItem" type="TblItemCount" vector="true"/>
+        <col name="UpCostGold" type="INT32"/>
+        <col name="UpCostDiamond" type="INT32"/>
+        <col name="ReturnGold" type="INT32"/>
+        <col name="SplitGetItem" type="TblItemCount" vector="true"/>
+        <col name="RebirthCostDiamond" type="INT32"/>
+        <col name="RebirthGetItem" type="TblItemCount" vector="true"/>
+        <col name="CombatPoint" type="INT32"/>
+        <col name="QualityCombatPoint" type="INT32"/>
+        <col name="StarID" type="UINT8"/>
+        <col name="LevelUpGoldCoe" type="double"/>
+        <col name="Comment" type="comment"/>
+    </table>
+
+    <table name="TblMemberEquipPos" file="data/memberequippos.tbl" key="Pos" serveronly="true">
+        <col name="Pos" type="UINT8"/>
+        <col name="Name" type="string" />
+        <col name="Desc" type="string" />
+        <col name="Comment" type="comment"/>
+    </table>
+
+    <table name="TblMemberEquipLevel" file="data/memberequiplevel.tbl" key="Level" serveronly="true">
+        <col name="Level" type="UINT16" />
+        <col name="GoldCost" type="INT32" vector="true"/>
+        <col name="PropCoe" type="double"/>
+        <col name="Comment" type="comment"/>
+    </table>
+
+    <table name="TblMemberEquipLevelUp" file="data/memberequiplevelup.tbl" key="ID" serveronly="true">
+        <col name="ID" type="UINT8"/>
+        <col name="Prob" type="TblCountProb" vector="true"/>
+    </table>
+
+    <table name="TblMemberEquipTech" file="data/memberequiptech.tbl" multikey="Type,Level" serveronly="true">
+        <col name="Type" type="UINT8"/>
+        <col name="Level" type="UINT8"/>
+        <col name="Condition" type="UINT16" />
+        <col name="Prop" type="TblProp" vector="true"/>
+        <col name="CombatPoint" type="INT32"/>
+        <col name="Comment" type="comment" />
+    </table>
+
+    <table name="TblMix" file="data/mix.tbl" key="ID" serveronly="true">
+        <col name="ID" type="UINT8"/>
+        <col name="Name" type="string"/>
+        <col name="LevelReq" type="UINT16"/>
+        <col name="Tip" type="string"/>
+        <col name="Desc" type="comment"/>
+    </table>
+
+    <table name="TblMixLevel" file="data/mixlevel.tbl" key="Level" serveronly="true">
+        <col name="Level" type="UINT8"/>
+        <col name="LevelName" type="string"/>
+        <col name="UpType" type="UINT8"/>
+        <col name="NeedItems" type="TblItemCount" vector="true"/>
+        <col name="NeedGold" type="INT32"/>
+        <col name="NeedDiamond" type="INT32"/>
+        <col name="Result" type="UINT16"/>
+        <col name="DisplayResult" type="UINT16"/>
+        <col name="Desc" type="comment"/>
+    </table>
+
+    <table name="TblMixMaster" file="data/mixmaster.tbl" key="Level" serveronly="true">
+        <col name="Level" type="UINT8"/>
+        <col name="CombatConvert" type="INT32"/>
+        <col name="Mix1CombatReq" type="INT32"/>
+        <col name="Mix2CombatReq" type="INT32"/>
+        <col name="Mix3CombatReq" type="INT32"/>
+        <col name="Mix4CombatReq" type="INT32"/>
+    </table>
+
+    <table name="TblMixProp" file="data/mixprop.tbl" key="MixID" serveronly="true">
+        <col name="MixID" type="UINT8"/>
+        <col name="PropID" type="UINT16"/>
+        <col name="PropPerCombat" type="double"/>
+        <col name="CombatCoe" type="double"/>
+    </table>
+
+    <table name="TblBattleMonster" file="data/battlemonster.tbl" key="ID">
+        <col name="ID" type="UINT32"/>
+        <col name="Name" type="string"/>
+        <col name="MonsterName" type="string"/>
+        <col name="Solution" type="UINT32"/>
+        <col name="SkillIDs" type="UINT32" vector="true"/>
+        <col name="LevelMonsterID" type="UINT32"/>
+        <col name="Type" type="UINT32"/>
+        <col name="Scale" type="double"/>
+        <col name="Action" type="string"/>
+        <col name="DieEffect" type="string"/>
+        <col name="AnchorsPos" type="double" vector="true"/>
+        <col name="DeathMode" type="UINT8"/>
+        <col name="BoxCollider" type="string"/>
+        <col name="Extra" type="UINT32" vector="true"/>
+        <col name="MultiBlood" type="UINT8"/>
+    </table>
+    
+    <table name="TblBattleLevelMonster" file="data/battlelevelmonster.tbl" multikey="ID,Level">
+        <col name="ID" type="UINT8"/>
+        <col name="Level" type="UINT16"/>
+        <col name="CombatPoint" type="UINT32"/>
+        <col name="Attribute1" type="TblBattleAttrValue" vector="true"/>
+        <col name="Attribute2" type="TblBattleAttrValue" vector="true"/>
+        <col name="Attribute3" type="TblBattleAttrValue" vector="true"/>
+        <col name="Attribute4" type="TblBattleAttrValue" vector="true"/>
+        <col name="Attribute5" type="TblBattleAttrValue" vector="true"/>
+        <col name="Attribute6" type="TblBattleAttrValue" vector="true"/>
+        <col name="CollisionParam1" type="UINT32"/>
+        <col name="CollisionParam2" type="UINT32"/>
+    </table>
+
+    <table name="TblBattleBullet" file="data/battlebullet.tbl" key="ID">
+        <col name="ID" type="UINT32"/>
+        <col name="Name" type="string"/>
+        <col name="Scale" type="double"/>
+        <col name="Part" type="UINT32" />
+        <col name="DamageCoefficient" type="double"/>
+        <col name="Comment" type="comment"/>
+    </table>
+
+    <table name="TblBattleSkill" file="data/battleskill.tbl" key="ID">
+        <col name="ID" type="UINT32"/>
+        <col name="Solution" type="UINT32"/>
+        <col name="BulletIDs" type="UINT32" vector="true"/>
+        <col name="CD" type="double"/>
+        <col name="Scale" type="double"/>
+    </table>
+
+    <table name="TblBattleGroups" file="data/battlegroups.tbl" key="ID">
+        <col name="ID" type="UINT32"/>
+        <col name="MonsterIDs" type="UINT32" vector="true"/>
+        <col name="Position" type="string" vector="true"/>
+        <col name="Interval" type="double" vector="true"/>
+        <col name="Comment" type="comment"/>
+    </table>
+
+    <table name="TblBattleExtras" file="data/battleextras.tbl" key="ID">
+        <col name="ID" type="UINT32"/>
+        <col name="MonsterIDs" type="UINT32" vector="true"/>
+    </table>
+
+    <table name="TblChapter" file="data/chapter.tbl" setkey="TypeID">
+        <col name="TypeID" type="UINT8"/>
+        <col name="ChapterID" type="UINT8"/>
+        <col name="ChapterName" type="string"/>
+        <col name="OpenLv" type="UINT16"/>
+        <col name="OpenDay" type="UINT8" vector="true"/>
+        <col name="Reward" type="TblChapterReward" vector="true"/>
+        <col name="Campaigns" type="UINT16" vector="true"/>
+        <col name="BackgroundPic" type="UINT16"/>
+        <col name="Chest1" type="TblItemCount" vector="true"/>
+        <col name="Chest2" type="TblItemCount" vector="true"/>
+        <col name="Chest3" type="TblItemCount" vector="true"/>
+        <col name="Description" type="string"/>
+    </table>
+
+    <table name="TblCampaign" file="data/campaign.tbl" key="CampaignID">
+        <col name="CampaignID" type="UINT16"/>
+        <col name="CampaignName" type="string"/>
+        <col name="TypeID" type="UINT8"/>
+        <col name="ChapterID" type="UINT8"/>
+        <col name="Priority" type="UINT16"/>
+        <col name="IconID" type="UINT16"/>
+        <col name="BossID" type="UINT16"/>
+        <col name="JuQingID" type="UINT16"/>
+        <col name="OpenLv" type="UINT16"/>
+        <col name="MemberLimit" type="UINT8"/>
+        <col name="CamOpenDay" type="UINT8" vector="true"/>
+        <col name="ConfigFile" type="string"/>
+        <col name="DefaultMonsterLv" type="UINT16" />
+        <col name="BkMusic" type="string"/>
+        <col name="Fighting" type="INT32"/>
+        <col name="FightingLeast" type="INT32"/>
+        <col name="SPCost" type="UINT16"/>
+        <col name="GoldCost" type="INT32"/>
+        <col name="DailyLimit" type="TblCampaignVipLimit" vector="true"/>
+        <col name="DailyBuyLimit" type="TblCampaignVipLimit" vector="true"/>
+        <col name="ItemCost" type="UINT16" vector="true"/>
+        <col name="SaoDangTicket" type="UINT16"/>
+        <col name="RewardExp" type="INT32"/>
+        <col name="MemberExp" type="INT32"/>
+        <col name="RewardGold" type="INT32"/>
+        <col name="RewardDiamond" type="INT32"/>
+        <col name="RewardPackage" type="UINT16"/>
+        <col name="RewardMustDrop" type="UINT16"/>
+        <col name="RewardDiaplay" type="UINT16" vector="true"/>
+        <col name="FirstRewardExp" type="INT32"/>
+        <col name="FirstRewardGold" type="INT32"/>
+        <col name="FirstRewardDiamond" type="INT32"/>
+        <col name="FirstRewardPackage" type="UINT16"/>
+        <col name="FirstRewardDiaplay" type="UINT16" vector="true"/>
+        <col name="DrawReward" type="UINT16"/>
+        <col name="DrawTimes" type="TblCampaignVipLimit" vector="true"/>
+        <col name="DrawCost" type="TblCampaignDrawCost" vector="true"/>
+        <col name="PassTime" type="TblCampaignPassTime" vector="true"/>
+        <col name="DieTimes" type="TblCampaignDieTime" vector="true"/>
+        <col name="Score" type="INT32"/>
+        <col name="Description" type="string"/>
+    </table>
+
+    <table name="TblCampBuy" file="data/campbuy.tbl" key="BuyCount">
+        <col name="BuyCount" type="UINT8"/>
+        <col name="Diamond" type="INT32"/>
+    </table>
+
+    <table name="TblEndlessCampaign" file="data/endlesscampaign.tbl" key="CampaignID">
+        <col name="CampaignID" type="UINT16"/>
+        <col name="RandomType" type="UINT16"/>
+        <col name="Mode" type="UINT16"/>
+        <col name="MapID" type="UINT8" vector="true"/>
+        <col name="Speed" type="UINT8" vector="true"/>
+        <col name="Scale" type="UINT8" vector="true"/>
+        <col name="DropBuff" type="UINT8" vector="true"/>
+        <col name="DropBuffProb" type="INT32" vector="true"/>
+        <col name="HitProb" type="INT32" vector="true"/>
+        <col name="Buff" type="UINT8" vector="true"/>
+        <col name="DropDuation" type="UINT8" vector="true"/>
+        <col name="Warning" type="UINT16"/>
+        <col name="IsBOSS" type="UINT16"/>
+        <col name="Description" type="string"/>
+    </table>
+    
+    <table name="TblEndlessRank" file="data/endlessrank.tbl" key="RankID">
+        <col name="RankID" type="UINT8"/>
+        <col name="RankName" type="string"/>
+        <col name="ScoreReq" type="INT32"/>
+        <col name="RewardItem" type="UINT16"/>
+        <col name="RushRank" type="INT32"/>
+        <col name="Comment" type="comment"/>
+    </table>
+    
+    <table name="TblEndlessDrop" file="data/endlessdrop.tbl" key="JuDianID">
+        <col name="JuDianID" type="UINT16"/>
+        <col name="DropRate0" type="double"/>
+        <col name="DropRate1" type="double"/>
+        <col name="DropRate2" type="double"/>
+        <col name="DropRate3" type="double"/>
+        <col name="DropRate4" type="double"/>
+        <col name="DropRate5" type="double"/>
+    </table>
+
+    <table name="TblEndlessStatus" file="data/endlessstatus.tbl" key="StatusID">
+        <col name="StatusID" type="UINT8"/>
+        <col name="StatusName" type="string"/>
+        <col name="Cost" type="TblMoneyCost"/>
+        <col name="BlessProb" type="UINT16"/>
+        <col name="AutoUse" type="UINT8"/>
+        <col name="Icon" type="UINT8"/>
+        <col name="Desc" type="string"/>
+        <col name="Comment" type="comment"/>
+    </table>
+
+    <table name="TblEndlessBuyPpt" file="data/endlessbuyppt.tbl" key="Count">
+        <col name="Count" type="UINT8"/>
+        <col name="DiamondCost" type="INT32"/>
+    </table>
+
+    <table name="TblEndlessChanllege" file="data/endlesschanllege.tbl" key="ID">
+        <col name="ID" type="UINT8"/>
+        <col name="Reward" type="TblItemCount" vector="true"/>
+        <col name="FirstReward" type="TblItemCount" vector="true"/>
+        <col name="Prob" type="UINT16"/>
+    </table>
+
+    <table name="TblEndlessChanllegeScore" file="data/endlesschanllegescore.tbl" key="ID">
+        <col name="ID" type="UINT8"/>
+        <col name="Prob" type="TblCountProb" vector="true"/>
+    </table>
+
+    <table name="TblNuclear" file="data/nuclear.tbl" key="VipLevel" serveronly="true">
+        <col name="VipLevel" type="UINT8"/>
+        <col name="FreeCount" type="UINT8"/>
+        <col name="BuyCount" type="UINT16"/>
+        <col name="CostDiamond" type="INT32"/>
+        <col name="SinglePoint" type="INT32"/>
+        <col name="SingleAoePoint" type="INT32"/>
+        <col name="BossStartLevel" type="UINT16"/>
+        <col name="BossLevelAdd1" type="UINT16"/>
+        <col name="BossLevelAdd2" type="UINT16"/>
+        <col name="Desc" type="comment"/>
+    </table>
+
+    <table name="TblNuclearReward" file="data/nuclearreward.tbl" key="ID" serveronly="true">
+        <col name="ID" type="UINT8"/>
+        <col name="Icon" type="UINT16"/>
+        <col name="Title" type="string"/>
+        <col name="Condition" type="INT32"/>
+        <col name="Reward" type="TblItemCount" vector="true"/>
+        <col name="Desc" type="comment"/>
+    </table>
+
+    <table name="TblDropPackage" file="data/droppackage.tbl" key="DropPackageID" serveronly="true">
+        <col name="DropPackageID" type="UINT16"/>
+        <col name="DropType" type="UINT8" />
+        <col name="DropGroup" type="TblDropGroup" vector="true"/>
+        <col name="Comment" type="comment"/>
+    </table>
+
+    <table name="TblDropGroup" file="data/dropgroup.tbl" setkey="DropGroupID" serveronly="true">
+        <col name="DropGroupID" type="UINT16"/>
+        <col name="DropType" type="UINT8" />
+        <col name="MinNum" type="UINT8"/>
+        <col name="MaxNum" type="UINT8"/>
+        <col name="DropItem" type="TblItemProb"/>
+        <col name="IsRepeat" type="UINT8"/>
+        <col name="Comment" type="comment"/>
+    </table>
+
+    <table name="TblMustDrop" file="data/mustdrop.tbl" key="MustDropID" serveronly="true">
+        <col name="MustDropID" type="UINT16"/>
+        <col name="ItemID" type="UINT16" />
+        <col name="Count" type="INT32" vector="true"/>
+        <col name="Comment" type="comment"/>
+    </table>
+
+    <table name="TblRecharge" file="data/recharge.tbl" key="ID">
+        <col name="ID" type="UINT16"/>
+        <col name="Type" type="UINT8" />
+        <col name="Title" type="string" />
+        <col name="Tip" type="string"/>
+        <col name="Label" type="UINT8"/>
+        <col name="Diamond" type="INT32"/>
+        <col name="FirstDiamond" type="INT32"/>
+        <col name="GiftDiamond" type="INT32"/>
+        <col name="DayCount" type="INT32"/>
+        <col name="MoneyCost" type="double"/>
+        <col name="VipExp" type="INT32"/>
+        <col name="Effect" type="INT32"/>
+        <col name="IconID" type="UINT16"/>
+        <col name="Desc" type="comment"/>
+    </table>
+
+    <table name="TblHuiKui" file="data/huikui.tbl" setkey="HuiKuiID" serveronly="true">
+        <col name="HuiKuiID" type="UINT8" />
+        <col name="Target" type="INT32" />
+        <col name="ReplaceType" type="UINT8" />
+        <col name="Title" type="string"/>
+        <col name="RewardItem" type="TblItemCount" vector="true"/>
+        <col name="IconID" type="UINT16"/>
+        <col name="ProgressType" type="UINT8"/>
+        <col name="Desc" type="comment"/>
+    </table>
+
+    <table name="TblVipRight" file="data/vipright.tbl" key="Vip">
+        <col name="Vip" type="UINT8" />
+        <col name="Recharge" type="INT32" />
+        <col name="Item" type="TblItemCount" vector="true"/>
+        <col name="EndlessPowerPointInterval" type="UINT32" />
+        <col name="EndlessBuyPowerPoint" type="UINT8" />
+        <col name="ArenaFreeChallengeCount" type="UINT16" />
+        <col name="ArenaChallengeCountLimit" type="UINT16" />
+        <col name="BagSize" type="UINT16" />
+        <col name="BossTowerReset" type="UINT8" />
+        <col name="HeroSpBuy" type="UINT8" />
+        <col name="HeroSpMax" type="UINT16" />
+        <col name="ComposeBuyTimes" type="UINT16" />
+        <col name="GuildBossBuyCount" type="UINT8" />
+        <col name="DarkDraw" type="UINT8" />
+        <col name="HeroPosition" type="UINT8" />
+        <col name="PatrolBuy" type="UINT8" />
+        <col name="ExploreNaiLiMax" type="UINT16" />
+        <col name="BuildQueue" type="UINT16" />
+        <col name="BuildProductUp" type="UINT16" />
+        <col name="BuildEquipTimes" type="UINT16" />
+        <col name="FlyingChessStep" type="UINT8" />
+        <col name="FullBossDiamondQHTimes" type="UINT16" />
+        <col name="FullBossAttackReward" type="UINT16" />
+        <col name="MemberEquipRefineCrit" type="UINT16" />
+        <col name="StoreRefreshLimit" type="UINT16" />
+        <col name="Right" type="string" vector="true"/>
+        <col name="Desc" type="comment"/>
+    </table>
+
+    <table name="TblStoreLevel" file="data/storelevel.tbl" setkey="Type">
+        <col name="Type" type="UINT8"/>
+        <col name="MinLevel" type="UINT16"/>
+        <col name="MaxLevel" type="UINT16"/>
+        <col name="PackageID" type="UINT16"/>
+        <col name="RefreshType" type="UINT16"/>
+        <col name="Description" type="string"/>
+    </table>
+    
+    <table name="TblStoreCost" file="data/storecost.tbl" multikey="Type,ItemID">
+        <col name="Type" type="UINT8"/>
+        <col name="ItemID" type="UINT16"/>
+        <col name="Cost" type="TblStoreCost"/>
+        <col name="Description" type="string"/>
+    </table>
+
+    <table name="TblStore" file="data/store.tbl" multikey="Type,Index">
+        <col name="Type" type="UINT8"/>
+        <col name="Index" type="UINT16"/>
+        <col name="Item" type="TblItemCount"/>
+        <col name="Cost" type="TblItemCount" vector="true"/>
+        <col name="Desc" type="string"/>
+        <col name="Comment" type="comment"/>
+    </table>
+
+    <table name="TblTreasureGoldVIP" file="data/treasuregoldvip.tbl" key="VIPLevel">
+        <col name="VIPLevel" type="UINT8"/>
+        <col name="Times" type="UINT16"/>
+        <col name="Description" type="string"/>
+    </table>
+
+    <table name="TblTreasureGold" file="data/treasuregold.tbl" key="Times">
+        <col name="Times" type="UINT16"/>
+        <col name="Diamond" type="INT32"/>
+        <col name="PackageID" type="UINT16"/>
+        <col name="Tip" type="string"/>
+        <col name="CritProb" type="TblTreasureCritProb" vector="true"/>
+        <col name="LuckyPoint" type="UINT32"/>
+        <col name="Description" type="string"/>
+    </table>
+
+    <table name="TblTreasure" file="data/treasure.tbl" key="Type">
+        <col name="Type" type="UINT8"/>
+        <col name="CostType" type="UINT8"/>
+        <col name="Cost" type="INT32"/>
+        <col name="CostItem" type="TblItemCount" vector="true"/>
+        <col name="Icon" type="UINT16"/>
+        <col name="FirstCount" type="INT32"/>
+        <col name="FirstPackageID" type="UINT16"/>
+        <col name="PackageID" type="UINT16" vector="true"/>
+        <col name="ShowDropItem" type="TblItemCount" vector="true"/>
+        <col name="Description" type="string"/>
+    </table>
+
+    <table name="TblLotteryCost" file="data/lotterycost.tbl" key="Cg" serveronly="true">
+        <col name="Cg" type="UINT8"/>
+        <col name="Type" type="UINT8"/>
+        <col name="Cost" type="INT32"/>
+        <col name="Item" type="TblItemCount"/>
+        <col name="Description" type="string"/>
+    </table>
+
+    <table name="TblLottery" file="data/lottery.tbl" key="ClassID" serveronly="true">
+        <col name="ClassID" type="UINT8"/>
+        <col name="PackageClass" type="TblLotteryPackage" vector="true"/>
+        <col name="DropWeight" type="UINT16"/>
+        <col name="Comment" type="comment"/>
+    </table>
+
+    <table name="TblSignin" file="data/signin.tbl" multikey="Plan,Day">
+        <col name="Plan" type="UINT16"/>
+        <col name="Day" type="UINT8"/>
+        <col name="Reward" type="TblItemCount" vector="true"/>
+        <col name="VIPReward" type="TblItemCount" vector="true"/>
+        <col name="VIPLevel" type="UINT8"/>
+        <col name="HeapReward" type="TblItemCount" vector="true"/>
+        <col name="GoldCost" type="INT32"/>
+        <col name="Description" type="string"/>
+    </table>
+
+    <table name="TblGuildLevel" file="data/guildlevel.tbl" key="Level" serveronly="true">
+        <col name="Level" type="UINT16"/>
+        <col name="NeedExp" type="UINT32"/>
+        <col name="Capacity" type="UINT8"/>
+        <col name="Description" type="comment"/>
+        <col name="IconID" type="UINT32"/>
+        <col name="DailyMaxExp" type="UINT32"/>
+    </table>
+
+    <table name="TblGuildHonor" file="data/guildhonor.tbl" key="ID" serveronly="true">
+        <col name="ID" type="UINT16"/>
+        <col name="Name" type="string"/>
+        <col name="IconID" type="UINT16"/>
+        <col name="OpenType" type="UINT8"/>
+        <col name="Ucat1" type="UINT16"/>
+        <col name="Description" type="comment"/>
+        <col name="Tip" type="string"/>
+    </table>
+    
+    <table name="TblGuildHonorItem" file="data/guildhonoritem.tbl" key="ItemID" serveronly="true">
+        <col name="ItemID" type="UINT16"/>
+        <col name="ContributionValue" type="UINT32"/>
+        <col name="GuildExp" type="UINT32"/>
+    </table>
+
+    <table name="TblGuildHonorLevel" file="data/guildhonorlevel.tbl" multikey="ID,Level" serveronly="true">
+        <col name="ID" type="UINT16"/>
+        <col name="Level" type="UINT16"/>
+        <col name="Prop" type="TblProp" vector="true"/>
+        <col name="LevelUpCost" type="UINT8"/>
+        <col name="Gold" type="INT32"/>
+        <col name="Diamond" type="INT32"/>
+        <col name="Contribution" type="INT32"/>
+        <col name="Combat" type="INT32"/>
+        <col name="Description" type="comment"/>
+    </table>
+
+    <table name="TblGuildBoss" file="data/guildboss.tbl" key="BossID" serveronly="true">
+        <col name="BossID" type="UINT8"/>
+        <col name="BossName" type="string"/>
+        <col name="BossHP" type="double"/>
+        <col name="KillReward" type="TblItemCount" vector="true"/>
+        <col name="IconID" type="UINT16"/>
+        <col name="CampaignID" type="UINT16"/>
+        <col name="Desc" type="comment"/>
+    </table>
+
+    <table name="TblGuildBossReward" file="data/guildbossreward.tbl" key="ID" serveronly="true">
+        <col name="ID" type="UINT8"/>
+        <col name="Icon" type="UINT16"/>
+        <col name="Title" type="string"/>
+        <col name="DamageReq" type="double"/>
+        <col name="Reward" type="TblItemCount" vector="true"/>
+        <col name="Desc" type="comment"/>
+    </table>
+
+    <table name="TblGuildBossPlayerRank" file="data/guildbossplayerrank.tbl" key="ID" serveronly="true">
+        <col name="ID" type="UINT8"/>
+        <col name="MinRank" type="UINT32"/>
+        <col name="MaxRank" type="UINT32"/>
+        <col name="Reward" type="TblItemCount" vector="true"/>
+    </table>
+
+    <table name="TblGuildBossGuildRank" file="data/guildbossguildrank.tbl" key="ID" serveronly="true">
+        <col name="ID" type="UINT8"/>
+        <col name="MinRank" type="UINT32"/>
+        <col name="MaxRank" type="UINT32"/>
+        <col name="Reward" type="TblItemCount" vector="true"/>
+    </table>
+
+    <table name="TblSender" file="data/sender.tbl" key="ID" serveronly="true">
+        <col name="ID" type="UINT16"/>
+        <col name="Name" type="string"/>
+        <col name="IconID" type="UINT16"/>
+        <col name="Desc" type="comment"/>
+    </table>
+
+    <table name="TblSpVip" file="data/spvip.tbl" key="Vip">
+        <col name="Vip" type="UINT8"/>
+        <col name="BuySpTimes" type="UINT8"/>
+        <col name="SpLimit" type="UINT16"/>
+        <col name="SpGetBack" type="UINT16"/>
+        <col name="NebulaEnergyBuyTimes" type="UINT8"/>
+        <col name="NebulaEnergyLimit" type="UINT16"/>
+        <col name="Desc" type="comment"/>
+    </table>
+
+    <table name="TblSpGetBack" file="data/spgetback.tbl" key="Sp" serveronly="true">
+        <col name="Sp" type="UINT16"/>
+        <col name="GoldGet" type="UINT16"/>
+        <col name="GoldCost" type="INT32"/>
+        <col name="DiamondGet" type="UINT16"/>
+        <col name="DiamondCost" type="INT32"/>
+        <col name="Desc" type="comment"/>
+    </table>
+
+    <table name="TblSpBuy" file="data/spbuy.tbl" key="Times">
+        <col name="Times" type="UINT8"/>
+        <col name="GetSp" type="UINT16"/>
+        <col name="DiamondCost" type="INT32"/>
+        <col name="GetNebulaEnergy" type="UINT16"/>
+        <col name="EnergyDiamondCost" type="INT32"/>
+        <col name="GetDice" type="UINT16"/>
+        <col name="BuyDiceDiamondCost" type="INT32"/>
+        <col name="GetRemoteDice" type="UINT16"/>
+        <col name="BuyRemoteDiceDiamondCost" type="INT32"/>
+        <col name="Desc" type="comment"/>
+    </table>
+
+    <table name="TblGuildBossBuy" file="data/guildbossbuy.tbl" key="Times" serveronly="true">
+        <col name="Times" type="UINT8"/>
+        <col name="DiamondCost" type="INT32"/>
+    </table>
+
+    <table name="TblDaily" file="data/daily.tbl" key="ID">
+        <col name="ID" type="UINT16"/>
+        <col name="Name" type="string"/>
+        <col name="Content" type="string"/>
+        <col name="Var" type="INT32"/>
+        <col name="Icon" type="UINT16"/>
+        <col name="StartTime" type="UINT16"/>
+        <col name="EndTime" type="UINT16"/>
+        <col name="Reward" type="TblItemCount" vector="true"/>
+        <col name="Active" type="TblDailyLevelActive" vector="true"/>
+        <col name="Sort" type="UINT8"/>
+        <col name="Level" type="UINT16"/>
+        <col name="WindowID" type="UINT16"/>
+        <col name="Description" type="comment"/>
+    </table>
+
+    <table name="TblDailyActive" file="data/dailyactive.tbl" key="Active">
+        <col name="Active" type="INT32"/>
+        <col name="Reward" type="TblItemCount" vector="true"/>
+        <col name="Level" type="UINT16"/>
+        <col name="Description" type="comment"/>
+    </table>
+
+    <table name="TblDailyVIP" file="data/dailyvip.tbl" key="Level">
+        <col name="Level" type="UINT16"/>
+        <col name="Reward" type="TblItemCount" vector="true"/>
+        <col name="VIPExp" type="INT32"/>
+        <col name="Description" type="comment"/>
+    </table>
+
+    <table name="TblAchieve" file="data/achieve.tbl" setkey="SID" serveronly="true">
+        <col name="SID" type="UINT16"/>
+        <col name="ID" type="UINT16"/>
+        <col name="Icon" type="UINT16"/>
+        <col name="Name" type="string"/>
+        <col name="Cond" type="INT32"/>
+        <col name="Var" type="INT32"/>
+        <col name="Reward" type="TblItemCount" vector="true"/>
+        <col name="Level" type="UINT16"/>
+        <col name="System" type="UINT8"/>
+        <col name="Description" type="comment"/>
+    </table>
+
+    <table name="TblRoleName" file="data/rolename.tbl" setkey="ID" serveronly="true">
+        <col name="ID" type="UINT32" />
+        <col name="CiZu" type="string"/>
+    </table>
+
+    <table name="TblFuLiGiftLimit" file="data/fuligiftlimit.tbl" key="ID">
+        <col name="ID" type="UINT16" />
+        <col name="Name" type="string"/>
+        <col name="Desc" type="string"/>
+        <col name="Icon" type="UINT16" />
+        <col name="Limit" type="UINT16" />
+        <col name="Type" type="UINT8" />
+        <col name="Cost" type="TblFuLiGiftCost" vector="true" />
+        <col name="Discount" type="TblFuLiGiftCost" vector="true" />
+        <col name="VIPLimit" type="TblFuLiGiftVIPLimit" vector="true" />
+        <col name="Items" type="TblItemCount" />
+        <col name="Level" type="UINT16" />
+        <col name="ShowType" type="UINT8" />
+        <col name="Description" type="comment" />
+    </table>
+
+    <table name="TblFuLiGiftVIP" file="data/fuligiftvip.tbl" key="ID" serveronly="true">
+        <col name="ID" type="UINT16" />
+        <col name="Name" type="string"/>
+        <col name="Desc" type="string"/>
+        <col name="Icon" type="UINT16" />
+        <col name="Cost" type="INT32" />
+        <col name="Price" type="INT32" />
+        <col name="Level" type="UINT8" />
+        <col name="Items" type="TblItemCount" />
+        <col name="Description" type="comment" />
+    </table>
+    
+    <table name="TblFuLiSeven" file="data/fuliseven.tbl" multikey="Act,Day" serveronly="true">
+        <col name="Act" type="UINT8" />
+        <col name="Day" type="UINT8" />
+        <col name="All" type="TblItemCount" vector="true" />
+        <col name="CZ" type="TblFuLiSevenCZPackage" vector="true" />
+        <col name="BuyItem" type="TblItemCount" vector="true" />
+        <col name="Price" type="INT32" />
+        <col name="Name" type="string"/>
+        <col name="List" type="TblFuLiSevenDare" vector="true"/>
+        <col name="ConStr" type="string" vector="true"/>
+        <col name="Description" type="comment" />
+    </table>
+
+    <table name="TblFuLiCZ" file="data/fulicz.tbl" key="ID">
+        <col name="ID" type="UINT8" />
+        <col name="Name" type="string"/>
+        <col name="Desc" type="string"/>
+        <col name="Icon" type="UINT16" />
+        <col name="Cost" type="INT32" />
+        <col name="Price" type="INT32" />
+        <col name="Items" type="TblItemCount" vector="true" />
+        <col name="Condition" type="UINT32" />
+        <col name="Description" type="comment" />
+    </table>
+
+    <table name="TblRobot" file="data/robot.tbl" key="ID" serveronly="true">
+        <col name="ID" type="UINT16"/>
+        <col name="Level" type="UINT16"/>
+        <col name="CombatPoint" type="INT32"/>
+        <col name="MainGetType" type="UINT8" vector="true"/>
+        <col name="SecCount" type="UINT8"/>
+        <col name="PetMechaGetType" type="UINT8" vector="true"/>
+    </table>
+
+    <table name="TblRobotName" file="data/robotname.tbl" key="ID" serveronly="true">
+        <col name="ID" type="UINT16"/>
+        <col name="RobotName" type="string" />
+    </table>
+
+    <table name="TblArenaReward" file="data/arenareward.tbl" key="ID" serveronly="true">
+        <col name="ID" type="UINT8"/>
+        <col name="MinRank" type="UINT32"/>
+        <col name="MaxRank" type="UINT32"/>
+        <col name="DayReward" type="TblItemCount" vector="true" />
+        <col name="ExcRank" type="double"/>
+    </table>
+
+    <table name="TblArenaWinLose" file="data/arenawinlose.tbl" key="ID" serveronly="true">
+        <col name="ID" type="UINT8"/>
+        <col name="MinCombatVal" type="UINT16"/>
+        <col name="MaxCombatVal" type="UINT16"/>
+        <col name="HighWinning" type="UINT16"/>
+    </table>
+
+    <table name="TblDropTag" file="data/droptag.tbl" setkey="DropGroupID" serveronly="true">
+        <col name="DropGroupID" type="UINT16"/>
+        <col name="MinNum" type="UINT8"/>
+        <col name="MaxNum" type="UINT8"/>
+        <col name="DropItem" type="TblItemProb"/>
+        <col name="IsRepeat" type="UINT8"/>
+        <col name="Comment" type="comment"/>
+    </table>
+
+    <table name="TblGuide" file="data/guide.tbl" key="StepID" serveronly="true">
+        <col name="StepID" type="UINT16"/>
+        <col name="NextStepID" type="UINT16"/>
+        <col name="SceneType" type="UINT8"/>
+        <col name="JsonName" type="string"/>
+        <col name="UniqueWidget" type = "UINT8"/>
+        <col name="WidgetPath" type="string"/>
+        <col name="DelayTime" type="UINT16"/>
+        <col name="MaskOpacity" type="UINT8"/>
+        <col name="ScrollViewName" type="string"/>
+        <col name="ScrollPercent" type="UINT8"/>
+        <col name="NeedNetCallbackID" type="UINT32"/>
+        <col name="UseCustomRect" type="UINT8"/>
+        <col name="CustomRectLeft" type="UINT16"/>
+        <col name="CustomRectTop" type="UINT16"/>
+        <col name="CustomRectWidth" type="UINT16"/>
+        <col name="CustomRectHeight" type="UINT16"/>
+        <col name="Icon" type="string"/>
+        <col name="Desc" type="string"/>
+        <col name="Comment" type="comment"/>
+    </table>
+
+    <table name="TblAMSRule" file="data/amsrule.tbl" key="RuleID">
+        <col name="RuleID" type="UINT16"/>
+        <col name="RuleType" type="UINT8"/>
+        <col name="RuleName" type="string"/>
+        <col name="Desc" type="comment"/>
+    </table>
+
+    <table name="TblMemberPieceCrystal" file="data/memberpiececrystal.tbl" key="ItemID" serveronly="true">
+        <col name="ItemID" type="UINT16"/>
+        <col name="Crystal" type="INT32"/>
+        <col name="ItemDesc" type="string"/>
+        <col name="Description" type="comment"/>
+    </table>
+
+    <table name="TblErrString" file="data/errstring.tbl" key="ErrCode">
+        <col name="ErrCode" type="INT32"/>
+        <col name="String" type="string"/>
+    </table>
+
+    <table name="TblEndlessDropUp" file="data/endlessdropup.tbl" key="ID">
+        <col name="ID" type="UINT16"/>
+        <col name="Count" type="UINT16"/>
+        <col name="DropUp" type="double"/>
+    </table>
+
+    <table name="TblHeroCampaign" file="data/herocampaign.tbl" key="HeroCampaignID" serveronly="true">
+        <col name="HeroCampaignID" type="UINT16"/>
+        <col name="Name" type="string"/>
+        <col name="Type" type="UINT8"/>
+        <col name="HeroChestID" type="UINT16"/>
+        <col name="HeroSP" type="UINT16"/>
+        <col name="IconID" type="UINT16"/>
+        <col name="BossID" type="UINT16"/>
+        <col name="LevelReq" type="UINT16"/>
+        <col name="CombatReq" type="INT32"/>
+        <col name="CombatRecommend" type="INT32"/>
+        <col name="ConfigFile" type="string"/>
+        <col name="DefaultMonsterLv" type="UINT16"/>
+        <col name="BkMusic" type="string"/>
+        <col name="DailyLimit" type="UINT8"/>
+        <col name="DailyBuyLimit" type="TblCampaignVipLimit" vector="true"/>
+        <col name="SaoDangTicket" type="UINT16"/>
+        <col name="RewardGold" type="INT32"/>
+        <col name="RewardPackage" type="UINT16"/>
+        <col name="RewardMustDrop" type="UINT16"/>
+        <col name="RewardDiaplay" type="UINT16" vector="true"/>
+        <col name="FirstRewardPackage" type="UINT16"/>
+        <col name="FirstRewardDiaplay" type="UINT16" vector="true"/>
+        <col name="Desc" type="comment"/>
+    </table>
+
+    <table name="TblHeroChest" file="data/herochest.tbl" key="ChestID" serveronly="true">
+        <col name="ChestID" type="UINT16"/>
+        <col name="IconID" type="UINT16"/>
+        <col name="CostItemID" type="UINT16"/>
+        <col name="CostItemCount" type="INT32"/>
+        <col name="Package" type="UINT16"/>
+        <col name="PackageDiaplay" type="TblItemCount" vector="true"/>
+        <col name="Desc" type="string"/>
+    </table>
+
+    <table name="TblHeroCampBuy" file="data/herocampbuy.tbl" key="BuyCount" serveronly="true">
+        <col name="BuyCount" type="UINT8"/>
+        <col name="Diamond" type="INT32"/>
+    </table>
+
+    <table name="TblHeroSpBuy" file="data/herospbuy.tbl" key="Times" serveronly="true">
+        <col name="Times" type="UINT8"/>
+        <col name="GetSp" type="UINT16"/>
+        <col name="DiamondCost" type="INT32"/>
+        <col name="Desc" type="comment"/>
+    </table>
+
+    <table name="TblNebulaMine" file="data/nebulamine.tbl" key="ID" serveronly="true">
+        <col name="ID" type="UINT8"/>
+        <col name="ItemsReq" type="TblItemCount" vector="true" />
+        <col name="Package" type="UINT16"/>
+        <col name="Desc" type="comment"/>
+    </table>
+
+    <table name="TblNebulaChest" file="data/nebulachest.tbl" key="ChestID" serveronly="true">
+        <col name="ChestID" type="UINT8"/>
+        <col name="Package" type="UINT16"/>
+        <col name="ZiZuanCost" type="INT32"/>
+        <col name="DiamondCost" type="INT32"/>
+        <col name="Tip1" type="string"/>
+        <col name="Desc" type="comment"/>
+    </table>
+    
+    <table name="TblNebulaRobType" file="data/nebularobtype.tbl" key="Material" serveronly="true">
+        <col name="Material" type="UINT8"/>
+        <col name="EnergyCost" type="UINT16"/>
+        <col name="RobItemID" type="UINT16"/>
+        <col name="Desc" type="comment"/>
+    </table>
+
+    <table name="TblNebulaRobRate" file="data/nebularobrate.tbl" key="ID" serveronly="true">
+        <col name="ID" type="UINT8"/>
+        <col name="Desc" type="string"/>
+        <col name="SuccessRate" type="double"/>
+        <col name="CombatRateMin" type="double"/>
+        <col name="CombatRateMax" type="double"/>
+    </table>
+
+    <table name="TblNebulaRobot" file="data/nebularobot.tbl" key="Level" serveronly="true">
+        <col name="Level" type="UINT16"/>
+        <col name="CombatPoint" type="INT32"/>
+        <col name="RandMember" type="UINT16" vector="true"/>
+        <col name="RandPet" type="UINT16" vector="true"/>
+        <col name="MemberSkills" type="UINT16" vector="true"/>
+    </table>
+
+    <table name="TblNebulaRobComb" file="data/nebularobcomb.tbl" key="ID" serveronly="true">
+        <col name="ID" type="UINT16"/>
+        <col name="Comb" type="UINT8" vector="true"/>
+    </table>
+
+    <table name="TblMiBaoStore" file="data/mibaostore.tbl" setkey="BuyTimes" serveronly="true">
+        <col name="BuyTimes" type="UINT8"/>
+        <col name="MinLevel" type="UINT16"/>
+        <col name="MaxLevel" type="UINT16"/>
+        <col name="PackageID" type="UINT16"/>
+        <col name="Cost" type="INT32"/>
+        <col name="Price" type="INT32"/>
+        <col name="Rebate" type="INT32"/>
+        <col name="Desc" type="comment"/>
+    </table>
+
+    <table name="TblMemberTech" file="data/membertech.tbl" key="ID" serveronly="true">
+        <col name="ID" type="UINT8"/>
+        <col name="MinQuality" type="UINT16"/>
+        <col name="MaxQuality" type="UINT16"/>
+        <col name="MaxTotalProp" type="TblMemberTechProp" vector="true"/>
+        <col name="NonnegativeLimit" type="TblMemberTechProp" vector="true"/>
+        <col name="Desc" type="comment"/>
+    </table>
+
+    <table name="TblMemberTechCost" file="data/membertechcost.tbl" key="ID" serveronly="true">
+        <col name="ID" type="UINT8"/>
+        <col name="Cost" type="TblItemCount" vector="true"/>
+        <col name="CostReturn" type="TblItemCount" vector="true" />
+        <col name="MinProp" type="TblMemberTechProp" vector="true"/>
+        <col name="MaxProp" type="TblMemberTechProp" vector="true"/>
+        <col name="NonnegativeProb" type="INT32"/>
+        <col name="Desc" type="comment"/>
+    </table>
+
+    <table name="TblVIPStore" file="data/vipstore.tbl" setkey="BuyTimes" serveronly="true">
+        <col name="BuyTimes" type="UINT8"/>
+        <col name="MinLevel" type="UINT16"/>
+        <col name="MaxLevel" type="UINT16"/>
+        <col name="PackageID" type="UINT16"/>
+        <col name="VIPLevel" type="UINT8"/>
+        <col name="Cost" type="INT32"/>
+        <col name="Price" type="INT32"/>
+        <col name="Rebate" type="INT32"/>
+        <col name="Desc" type="comment"/>
+    </table>
+
+    <table name="TblWarCampaign" file="data/warcampaign.tbl" key="WarCampaignID" serveronly="true">
+        <col name="WarCampaignID" type="UINT16"/>
+        <col name="WarCampaignName" type="string"/>
+        <col name="ConfigFile" type="string"/>
+        <col name="IconID" type="UINT16"/>
+        <col name="BossID" type="UINT16"/>
+        <col name="BkMusic" type="string"/>
+        <col name="SaoDangDiamond" type="UINT16"/>
+        <col name="Desc" type="comment"/>
+    </table>
+
+    <table name="TblWarChapterType" file="data/warchaptertype.tbl" key="WarChapterTpyeID" serveronly="true">
+        <col name="WarChapterTpyeID" type="UINT16"/>
+        <col name="Chest1" type="TblItemCount" vector="true"/>
+        <col name="Chest2" type="TblItemCount" vector="true"/>
+        <col name="Chest3" type="TblItemCount" vector="true"/>
+        <col name="Campaigns" type="UINT16" vector="true"/>
+        <col name="RewardPackage" type="UINT16"/>
+        <col name="RewardDiaplay" type="TblItemCount" vector="true"/>
+        <col name="BuyPackage" type="UINT16"/>
+        <col name="BuyPrice" type="INT32"/>
+        <col name="Desc" type="comment"/>
+    </table>
+
+    <table name="TblWarChapter" file="data/warchapter.tbl" key="WarChapterID" serveronly="true">
+        <col name="WarChapterID" type="UINT8"/>
+        <col name="WarChapterName" type="string"/>
+        <col name="CombatReq" type="UINT32" vector="true"/>
+        <col name="CombatReqRecommend" type="UINT32" vector="true"/>
+        <col name="CombatReqSkip" type="UINT32" vector="true"/>
+        <col name="WarChapterType" type="UINT16"/>
+        <col name="LevelReq" type="UINT16"/>
+        <col name="CampaignsLevel" type="UINT16" vector="true"/>
+        <col name="BackgroundPic" type="UINT16"/>
+        <col name="Desc" type="comment"/>
+    </table>
+
+    <table name="TblDarkCombat" file="data/darkcombat.tbl" key="Level" serveronly="true">
+        <col name="Level" type="UINT16"/>
+        <col name="CombatMin" type="INT32"/>
+        <col name="CombatMax" type="INT32"/>
+    </table>
+
+    <table name="TblDarkBoss" file="data/darkboss.tbl" key="ID" serveronly="true">
+        <col name="ID" type="UINT16"/>
+        <col name="TitlePicID" type="UINT16"/>
+        <col name="BossName" type="string"/>
+        <col name="CampaignID" type="UINT16"/>
+        <col name="Difficulty" type="UINT8"/>
+        <col name="CombatCoe" type="double"/>
+        <col name="StopItemID" type="UINT16"/>
+        <col name="DropPackage" type="UINT16"/>
+        <col name="DropDisplay" type="UINT16" vector="true"/>
+        <col name="DropDisplay2" type="TblItemCount" vector="true" />
+        <col name="MustDropDisplay" type="UINT16" vector="true" />
+        <col name="Treasure" type="UINT16"/>
+        <col name="Desc" type="comment"/>
+    </table>
+
+    <table name="TblDarkLevel" file="data/darklevel.tbl" key="Level" serveronly="true">
+        <col name="Level" type="UINT16"/>
+        <col name="Name" type="string"/>
+        <col name="Prop" type="TblProp" vector="true"/>
+        <col name="Combat" type="INT32"/>
+        <col name="BossProb" type="TblIDProb" vector="true"/>
+        <col name="Desc" type="comment"/>
+    </table>
+
+    <table name="TblDarkTech" file="data/darktech.tbl" setkey="Level" serveronly="true">
+        <col name="Level" type="UINT16"/>
+        <col name="ID" type="UINT8"/>
+        <col name="Name" type="string"/>
+        <col name="Prop" type="TblProp" vector="true"/>
+        <col name="Combat" type="INT32"/>
+        <col name="ActiveItem" type="UINT16" vector="true"/>
+        <col name="LevelLimit" type="UINT16"/>
+        <col name="Desc" type="comment"/>
+    </table>
+
+    <table name="TblDarkRefresh" file="data/darkrefresh.tbl" key="Times" serveronly="true">
+        <col name="Times" type="UINT8"/>
+        <col name="Diamond" type="INT32"/>
+    </table>
+
+    <table name="TblDarkDraw" file="data/darkdraw.tbl" multikey="Difficulty,Times" serveronly="true">
+        <col name="Difficulty" type="UINT8"/>
+        <col name="Times" type="UINT8"/>
+        <col name="Diamond" type="INT32"/>
+    </table>
+
+    <table name="TblDarkStore" file="data/darkstore.tbl" key="ItemID" serveronly="true">
+        <col name="ItemID" type="UINT16"/>
+        <col name="BuyDarkPoint" type="INT32"/>
+        <col name="SellDarkPoint" type="INT32"/>
+        <col name="Desc" type="comment"/>
+    </table>
+
+    <table name="TblZiZuanGiftLimit" file="data/reddiamondlimit.tbl" key="ID" serveronly="true">
+        <col name="ID" type="UINT16" />
+        <col name="Name" type="string"/>
+        <col name="Desc" type="string"/>
+        <col name="Icon" type="UINT16" />
+        <col name="Limit" type="UINT16" />
+        <col name="Type" type="UINT8" />
+        <col name="Cost" type="TblFuLiGiftCost" vector="true" />
+        <col name="VIPLimit" type="TblFuLiGiftVIPLimit" vector="true" />
+        <col name="Items" type="TblItemCount" />
+        <col name="Level" type="UINT16" />
+        <col name="ShowType" type="UINT8" />
+        <col name="Description" type="comment" />
+    </table>
+
+    <table name="TblFund" file="data/fund.tbl" setkey="ID" serveronly="true">
+        <col name="ID" type="UINT8" />
+        <col name="Name" type="string" />
+        <col name="BuyCond" type="INT32" />
+        <col name="Cost" type="INT32" />
+        <col name="GetType" type="UINT8" />
+        <col name="GetCond" type="INT32" />
+        <col name="Reward" type="INT32" />
+        <col name="Back" type="string"/>
+        <col name="Desc" type="comment" />
+    </table>
+
+    <table name="TblNuclearStore" file="data/nuclearstore.tbl" key="ID" serveronly="true">
+        <col name="ID" type="UINT16" />
+        <col name="Item" type="TblItemCount" />
+        <col name="Name" type="string"/>
+        <col name="Desc" type="string"/>
+        <col name="Cond" type="INT32" />
+        <col name="CostType" type="UINT8" />
+        <col name="Cost" type="INT32" />
+        <col name="Description" type="comment" />
+    </table>
+
+    <table name="TblTowerFloorStore" file="data/towerfloorstore.tbl" key="CondFloor" serveronly="true">
+        <col name="CondFloor" type="UINT16" />
+        <col name="DropPackages" type="UINT16" vector="true"/>
+        <col name="CostType" type="UINT8" />
+        <col name="Cost" type="INT32" />
+        <col name="AddCost" type="INT32" />
+        <col name="Description" type="comment" />
+    </table>
+
+    <table name="TblGuaZai" file="data/guazai.tbl" key="ID">
+        <col name="ID" type="UINT16" />
+        <col name="Name" type="string" />
+        <col name="Position" type="UINT8" />
+        <col name="StarType" type="UINT8" />
+        <col name="Color" type="UINT8" />
+        <col name="Quality" type="UINT16" />
+        <col name="QualityDisplay" type="string" />
+        <col name="Judge" type="UINT16" />
+        <col name="Property" type="TblProp" vector="true"/>
+        <col name="AdvanProp" type="TblProp" vector="true"/>
+        <col name="QualityUpNeed" type="TblItemCount" vector="true" />
+        <col name="NextItemID" type="UINT16" />
+        <col name="SkillID" type="UINT16" />
+        <col name="DefIconID" type="UINT16" />
+        <col name="Model" type="string" />
+        <col name="RebirthCostDiamond" type="INT32"/>
+        <col name="RebirthGetItem" type="TblItemCount" vector="true"/>
+        <col name="Description" type="string" />
+        <col name="Comment" type="comment" />
+    </table>
+
+    <table name="TblGuaZaiLevel" file="data/guazailevel.tbl" multikey="Position,Level">
+        <col name="Position" type="UINT8" />
+        <col name="Level" type="UINT16" />
+        <col name="UpNeedEXP" type="INT32" />
+        <col name="PropCoe" type="double" />
+    </table>
+
+    <table name="TblGuaZaiStarUp" file="data/guazaistarup.tbl" multikey="Type,StarNum">
+        <col name="Type" type="UINT8" />
+        <col name="StarNum" type="UINT8" />
+        <col name="UpNeedExp" type="INT32" />
+        <col name="SingleExp" type="INT32" />
+        <col name="SingleProp" type="TblProp" vector="true"/>
+        <col name="StarMaterial1" type="TblItemCount" vector="true" />
+        <col name="StarMaterial2" type="TblItemCount" vector="true" />
+        <col name="DiamondCostReturn" type="TblItemCount" vector="true" />
+        <col name="CritVIP" type="UINT8" />
+        <col name="CritRate" type="INT32" />
+        <col name="ExtraProp" type="TblProp" vector="true"/>
+    </table>
+
+    <table name="TblGuaZaiJingTong" file="data/guazaijingtong.tbl" key="ID">
+        <col name="ID" type="UINT8" />
+        <col name="Name" type="string" />
+        <col name="Effect" type="TblProp" vector="true"/>
+        <col name="EffectDesc" type="UINT32" />
+        <col name="Color" type="UINT8" />
+        <col name="NeedNum" type="UINT8" />
+        <col name="NeedQual" type="UINT16" />
+        <col name="LimitDesc" type="UINT32" />
+        <col name="Icon" type="UINT16" />
+        <col name="Comment" type="comment" />
+    </table>
+
+    <table name="TblMystery" file="data/mystery.tbl" key="ID" serveronly="true">
+        <col name="ID" type="UINT16" />
+        <col name="Name" type="string" />
+        <col name="ActType" type="UINT8" vector="true" />
+        <col name="TypeValue" type="UINT16" vector="true" />
+        <col name="SkillID" type="UINT16" />
+        <col name="FinalModel" type="string" />
+        <col name="PotentialID" type="UINT16" />
+        <col name="Icon" type="UINT16" />
+        <col name="Comment" type="comment" />
+    </table>
+    
+    <table name="TblMysteryLevel" file="data/mysterylevel.tbl" multikey="ID,Level" serveronly="true">
+        <col name="ID" type="UINT16" />
+        <col name="Level" type="UINT16" />
+        <col name="UPCost" type="TblItemCount" vector="true" />
+        <col name="UPGoldCost" type="INT32" />
+        <col name="Prop" type="TblProp" vector="true"/>
+    </table>
+
+    <table name="TblMysteryPotential" file="data/mysterypotential.tbl" setkey="ID" serveronly="true">
+        <col name="ID" type="UINT16" />
+        <col name="Sequence" type="UINT8" />
+        <col name="Name" type="string" />
+        <col name="LevelLimit" type="UINT16" />
+        <col name="Prop" type="TblProp" vector="true"/>
+        <col name="Description" type="string" />
+        <col name="Comment" type="comment" />
+    </table>
+
+    <table name="TblDress" file="data/dress.tbl" key="ID" serveronly="true">
+        <col name="ID" type="UINT16" />
+        <col name="PlaneID" type="UINT16" />
+        <col name="PlaneSkillID" type="UINT16" />
+        <col name="Name" type="string" />
+        <col name="Quality" type="string" />
+        <col name="Potential" type="UINT16" />
+        <col name="Open" type="TblItemCount" vector="true" />
+        <col name="GetProp" type="TblProp" vector="true"/>
+        <col name="Type" type="UINT16" />
+        <col name="MemberModel" type="string" />
+        <col name="Description" type="string" />
+        <col name="AdvanceLimit" type="UINT16" />
+        <col name="IconID" type="UINT16" />
+        <col name="GetType" type="UINT8" />
+        <col name="Comment" type="comment" />
+    </table>
+
+    <table name="TblDressType" file="data/dresstype.tbl" multikey="Type,Level" serveronly="true">
+        <col name="Type" type="UINT16" />
+        <col name="Level" type="UINT16" />
+        <col name="Advance" type="TblItemCount" vector="true" />
+        <col name="CollectProp" type="TblProp" vector="true"/>
+        <col name="Prop" type="TblProp" vector="true"/>
+        <col name="Comment" type="comment" />
+    </table>
+
+    <table name="TblMemberStar" file="data/memberstar.tbl" multikey="StarID,StarLevel" serveronly="true">
+        <col name="StarID" type="UINT16" />
+        <col name="StarLevel" type="UINT16" />
+        <col name="Item1" type="TblItemCount" vector="true" />
+        <col name="Item2" type="TblItemCount" vector="true" />
+        <col name="Prop" type="TblProp" vector="true" />
+        <col name="PropMore" type="TblProp" vector="true" />
+        <col name="Comment" type="comment" />
+    </table>
+
+    <table name="TblSpecial" file="data/special.tbl" key="ID" serveronly="true">
+        <col name="ID" type="UINT16" />
+        <col name="Name" type="string" />
+        <col name="OpenLimit" type="UINT16" />
+        <col name="Icon" type="TblIcon" vector="true" />
+    </table>
+
+    <table name="TblSpecialLevel" file="data/speciallevel.tbl" multikey="ID,Level" serveronly="true">
+        <col name="ID" type="UINT16" />
+        <col name="Level" type="UINT16" />
+        <col name="Prop" type="TblProp" vector="true" />
+        <col name="Cost" type="TblItemCount" vector="true" />
+        <col name="QualityID" type="UINT16" />
+    </table>
+
+    <table name="TblSpecialQuality" file="data/specialquality.tbl" key="ID" serveronly="true">
+        <col name="ID" type="UINT16" />
+        <col name="UPCost" type="TblItemCount" vector="true" />
+        <col name="Prop" type="TblProp" vector="true" />
+    </table>
+
+    <table name="TblCommander" file="data/commander.tbl" key="ID" serveronly="true">
+        <col name="ID" type="UINT16" />
+        <col name="Name" type="string" />
+        <col name="Advance" type="UINT16" />
+        <col name="ActiveNeed" type="TblItemCount" vector="true" />
+        <col name="DriverIconID" type="string" />
+        <col name="CommanderModel" type="string" />
+        <col name="LevelupType" type="UINT16" />
+        <col name="QualityUpType" type="UINT16" />
+        <col name="StarupType" type="UINT16" />
+        <col name="SkillID" type="UINT16" />
+        <col name="Description" type="string" />
+        <col name="Comment" type="comment" />
+    </table>
+
+    <table name="TblCommanderLevel" file="data/commanderlevel.tbl" multikey="Type,Level" serveronly="true">
+        <col name="Type" type="UINT16" />
+        <col name="Level" type="UINT16" />
+        <col name="Prop" type="TblProp" vector="true" />
+        <col name="Cost" type="TblItemCount" vector="true" />
+    </table>
+
+    <table name="TblCommanderQuality" file="data/commanderquality.tbl" multikey="Type,Quality" serveronly="true">
+        <col name="Type" type="UINT16" />
+        <col name="Quality" type="UINT16" />
+        <col name="Prop" type="TblProp" vector="true" />
+        <col name="Cost" type="TblItemCount" vector="true" />
+        <col name="Display" type="string"/>
+    </table>
+
+    <table name="TblCommanderStar" file="data/commanderstar.tbl" multikey="Type,Star" serveronly="true">
+        <col name="Type" type="UINT16" />
+        <col name="Star" type="UINT16" />
+        <col name="Prop" type="TblProp" vector="true" />
+        <col name="Cost" type="TblItemCount" vector="true" />
+    </table>
+
+    <table name="TblCommanderAddtion" file="data/commanderaddtion.tbl" key="ID" serveronly="true">
+        <col name="ID" type="UINT8" />
+        <col name="Advance" type="UINT16" />
+        <col name="Num" type="UINT8" />
+        <col name="MainAddProp" type="TblProp" vector="true" />
+        <col name="AddProp" type="TblProp" vector="true" />
+        <col name="Description" type="string" />
+    </table>
+
+    <table name="TblRefresh" file="data/refresh.tbl" multikey="Type,Times">
+        <col name="Type" type="UINT16" />
+        <col name="Times" type="UINT16" />
+        <col name="Cost1" type="TblItemCount" vector="true" />
+        <col name="Cost2" type="TblItemCount" vector="true" />
+        <col name="Comment" type="comment" />
+    </table>
+
+    <table name="TblPatrolTask" file="data/patroltask.tbl" key="ID" serveronly="true">
+        <col name="ID" type="UINT16" />
+        <col name="Star" type="UINT8" />
+        <col name="Name" type="string" />
+        <col name="Time" type="UINT16" />
+        <col name="Exp" type="UINT16" />
+        <col name="Prob" type="UINT16" />
+        <col name="Award" type="TblItemCount" vector="true" />
+        <col name="MoreFragment" type="TblPieceCount" vector="true" />
+        <col name="ThreeBonus" type="INT32" />
+        <col name="Comment" type="comment" />
+    </table>
+
+    <table name="TblPatrolMemberSp" file="data/patrolmembersp.tbl" key="Times" serveronly="true">
+        <col name="Times" type="UINT16" />
+        <col name="GetSp" type="UINT16" />
+        <col name="DiamondCost" type="INT32" />
+        <col name="Comment" type="comment" />
+    </table>
+
+    <table name="TblRankStore" file="data/rankstore.tbl" setkey="StoreID" serveronly="true">
+        <col name="StoreID" type="UINT16" />
+        <col name="ID" type="UINT16" />
+        <col name="Goods" type="TblItemCount" vector="true" />
+        <col name="Price" type="TblItemCount" vector="true" />
+        <col name="LevelLimit" type="UINT16" />
+        <col name="NeedRank" type="UINT16" />
+        <col name="PurchaseNum" type="TblVIPLimit" vector="true" />
+        <col name="Comment" type="comment" />
+    </table>
+
+    <table name="TblExplore" file="data/explore.tbl" key="AreaID" serveronly="true">
+        <col name="AreaID" type="UINT8" />
+        <col name="Name" type="string" />
+        <col name="CampaignID" type="UINT16" />
+        <col name="RewardProgress" type="UINT16" />
+        <col name="Reward" type="TblItemCount" vector="true" />
+        <col name="GoldExpProb" type="UINT16" />
+        <col name="Exp" type="UINT16" />
+        <col name="Gold" type="UINT16" />
+        <col name="Prob2" type="UINT16" />
+        <col name="Prob4" type="UINT16" />
+        <col name="Prob8" type="UINT16" />
+        <col name="PackageID" type="UINT16" />
+        <col name="GemProb" type="UINT16" />
+        <col name="GemPackageID" type="UINT16" />
+        <col name="GemTime" type="UINT16" />
+        <col name="Comment" type="comment" />
+    </table>
+
+    <table name="TblExploreGemCost" file="data/exploregemcost.tbl" key="Times" serveronly="true">
+        <col name="Times" type="UINT16" />
+        <col name="Diamond" type="INT32" />
+        <col name="Comment" type="comment" />
+    </table>
+
+    <table name="TblExploreTreasure" file="data/exploretreasure.tbl" key="ID" serveronly="true">
+        <col name="ID" type="UINT8" />
+        <col name="CostItems" type="TblItemCount" vector="true" />
+        <col name="PackageID" type="UINT16" />
+        <col name="Comment" type="comment" />
+    </table>
+
+    <table name="TblHonor" file="data/honor.tbl" key="RankID" serveronly="true">
+        <col name="RankID" type="UINT8" />
+        <col name="RankName" type="string" />
+        <col name="Icon" type="UINT16" />
+        <col name="UpNeedExp" type="INT32" />
+        <col name="SingleExp" type="INT32" />
+        <col name="SingleProp" type="TblProp" vector="true" />
+        <col name="Cost" type="INT32" />
+        <col name="Comment" type="comment" />
+    </table>
+
+    <table name="TblHonorGiven" file="data/honorgiven.tbl" key="ID" serveronly="true">
+        <col name="ID" type="UINT8" />
+        <col name="Name" type="string" />
+        <col name="Honor" type="UINT16" />
+        <col name="CostItem" type="TblItemCount" />
+        <col name="Comment" type="comment" />
+    </table>
+
+    <table name="TblTongShuai" file="data/tongshuai.tbl" setkey="Tid" serveronly="true">
+        <col name="Tid" type="UINT8" />
+        <col name="Level" type="UINT16" />
+        <col name="CostItem" type="TblItemCount" />
+        <col name="Prop" type="TblProp" />
+        <col name="Icon" type="string" />
+        <col name="Comment" type="comment" />
+    </table>
+
+    <table name="TblMainTask" file="data/maintask.tbl" setkey="Type" serveronly="true">
+        <col name="Type" type="UINT8" />
+        <col name="ID" type="UINT16" />
+        <col name="Var" type="INT32" />
+        <col name="Name" type="string" />
+        <col name="Icon" type="UINT16" />
+        <col name="Reward" type="TblItemCount" vector="true" />
+        <col name="WindowID" type="UINT16" />
+        <col name="Comment" type="comment" />
+    </table>
+
+    <table name="TblMainTaskReward" file="data/maintaskreward.tbl" key="Index" serveronly="true">
+        <col name="Index" type="UINT8" />
+        <col name="Progress" type="UINT16" />
+        <col name="Reward" type="TblItemCount" vector="true" />
+        <col name="Comment" type="comment" />
+    </table>
+
+    <table name="TblBuild" file="data/build.tbl" multikey="ID,Level" serveronly="true">
+        <col name="ID" type="UINT16" />
+        <col name="Level" type="UINT16" />
+        <col name="BaseLevel" type="UINT16" />
+        <col name="Prop" type="TblProp" vector="true" />
+        <col name="Limit" type="INT32" />
+        <col name="Boom" type="INT32" />
+        <col name="Cost" type="TblItemCount" vector="true" />
+        <col name="BuildTime" type="UINT32" />
+        <col name="Comment" type="comment" />
+    </table>
+
+    <table name="TblBuildRankReward" file="data/buildrankreward.tbl" key="ID" serveronly="true">
+        <col name="ID" type="UINT16" />
+        <col name="MinRank" type="UINT32" />
+        <col name="MaxRank" type="UINT32" />
+        <col name="DayReward" type="TblItemCount" vector="true" />
+        <col name="Comment" type="comment" />
+    </table>
+
+    <table name="TblBuildRes" file="data/buildres.tbl" key="ID" serveronly="true">
+        <col name="ID" type="UINT16" />
+        <col name="ResType" type="UINT8" />
+        <col name="Name" type="string" />
+        <col name="Type" type="UINT16" />
+        <col name="LockLevel" type="UINT16" />
+        <col name="Icon" type="string" />
+        <col name="Comment" type="comment" />
+    </table>
+
+    <table name="TblBuildResLevel" file="data/buildreslevel.tbl" multikey="Type,Level" serveronly="true">
+        <col name="Type" type="UINT16" />
+        <col name="Level" type="UINT16" />
+        <col name="Production" type="INT32" />
+        <col name="BuildTime" type="UINT32" />
+        <col name="Cost" type="TblItemCount" vector="true" />
+        <col name="Boom" type="INT32" />
+        <col name="Comment" type="comment" />
+    </table>
+
+    <table name="TblBuildTech" file="data/buildtech.tbl" multikey="ID,Level" serveronly="true">
+        <col name="ID" type="UINT16" />
+        <col name="Level" type="UINT16" />
+        <col name="Prop" type="TblProp" />
+        <col name="BuildTime" type="UINT32" />
+        <col name="Cost" type="TblItemCount" vector="true" />
+        <col name="Boom" type="INT32" />
+        <col name="Icon" type="string" />
+        <col name="Comment" type="comment" />
+    </table>
+
+    <table name="TblBuildEquip" file="data/buildequip.tbl" key="ID" serveronly="true">
+        <col name="ID" type="UINT16" />
+        <col name="Type" type="UINT8" />
+        <col name="ItemID" type="UINT16" />
+        <col name="OpenLevel" type="UINT16" />
+        <col name="Paper" type="TblItemCount" />
+        <col name="Cost" type="TblItemCount" vector="true" />
+        <col name="CostTime" type="UINT32" />
+        <col name="IsVisible" type="UINT8" />
+        <col name="Comment" type="comment" />
+    </table>
+
+    <table name="TblBuildEquipReward" file="data/buildequipreward.tbl" setkey="Level" serveronly="true">
+        <col name="Level" type="UINT16" />
+        <col name="ID" type="UINT8" />
+        <col name="Title" type="string" />
+        <col name="Item" type="TblItemCount" vector="true" />
+        <col name="CostDiamond" type="INT32" />
+        <col name="Comment" type="comment" />
+    </table>
+
+    <table name="TblFeedBack" file="data/feedback.tbl" setkey="VIP" serveronly="true">
+        <col name="VIP" type="UINT8" />
+        <col name="ID" type="UINT8" />
+        <col name="CZ" type="INT32" />
+        <col name="PackageID" type="UINT16" />
+        <col name="Prob" type="UINT16" />
+        <col name="Value" type="INT32" />
+        <col name="Rate" type="string" />
+        <col name="Time" type="UINT32" />
+        <col name="Comment" type="comment" />
+    </table>
+
+    <table name="TblMemberEquipStar" file="data/memberequipstar.tbl" multikey="ID,StarLevel" serveronly="true">
+        <col name="ID" type="UINT8" />
+        <col name="StarLevel" type="UINT16" />
+        <col name="NeedExp" type="INT32" />
+        <col name="SingleExp" type="UINT16" />
+        <col name="Prop" type="TblProp" vector="true" />
+        <col name="StarUp1" type="TblItemCount" vector="true" />
+        <col name="StarUp2" type="TblItemCount" vector="true" />
+        <col name="DiamondCostReturn" type="TblItemCount" vector="true" />
+        <col name="CritVIP" type="UINT8" />
+        <col name="CritRate" type="INT32" />
+        <col name="Comment" type="comment" />
+    </table>
+
+    <table name="TblRelation" file="data/relation.tbl" key="ID" serveronly="true">
+        <col name="ID" type="UINT16" />
+        <col name="Name" type="string" />
+        <col name="Prop" type="TblProp" vector="true" />
+        <col name="ItemType" type="UINT8" />
+        <col name="ItemID" type="UINT16" vector="true" />
+        <col name="Desc" type="string" />
+        <col name="UnlockDesc" type="string" />
+        <col name="Comment" type="comment" />
+    </table>
+
+    <table name="TblStoreDevil" file="data/storedevil.tbl" key="ID" serveronly="true">
+        <col name="ID" type="UINT16"/>
+        <col name="Tab" type="UINT8"/>
+        <col name="Item" type="TblItemCount" vector="true"/>
+        <col name="Price_Type" type="UINT8" />
+        <col name="Price" type="INT32" />
+        <col name="Price_DisCount" type="INT32" />
+        <col name="BossTowerLimit" type="UINT16"/>
+        <col name="BuyLimit" type="UINT8"/>
+        <col name="Comment" type="comment"/>
+    </table>
+
+    <table name="TblVipBonus" file="data/vipbonus.tbl" key="Vip" serveronly="true">
+        <col name="Vip" type="UINT8"/>
+        <col name="CZItem" type="TblItemCount" vector="true"/>
+        <col name="BonusItem" type="TblItemCount" vector="true"/>
+        <col name="Comment" type="comment"/>
+    </table>
+
+    <table name="TblGuaZaiHeCheng" file="data/guazaihecheng.tbl" key="Quality">
+        <col name="Quality" type="UINT16"/>
+        <col name="PackageID" type="UINT16"/>
+        <col name="Comment" type="comment"/>
+    </table>
+
+    <table name="TblBossTowerReset" file="data/bosstowerreset.tbl" key="Times" serveronly="true">
+        <col name="Times" type="UINT16"/>
+        <col name="Price" type="INT32"/>
+        <col name="Comment" type="comment"/>
+    </table>
+
+    <table name="TblScrollNotice" file="data/scrollnotice.tbl" key="ID" serveronly="true">
+        <col name="ID" type="UINT8"/>
+        <col name="Msg" type="string"/>
+        <col name="Comment" type="comment"/>
+    </table>
+
+    <table name="TblBuildTask" file="data/buildtask.tbl" setkey="Type" serveronly="true">
+        <col name="Type" type="UINT8"/>
+        <col name="ID" type="UINT8"/>
+        <col name="ShowVar" type="UINT32"/>
+        <col name="Name" type="string"/>
+        <col name="Goal" type="string"/>
+        <col name="Description" type="string"/>
+        <col name="Opeartion" type="string"/>
+        <col name="Condition" type="UINT32"/>
+        <col name="Reward" type="TblItemCount" vector="true"/>
+        <col name="WindowID" type="UINT16"/>
+        <col name="OpenVar" type="UINT32"/>
+        <col name="Comment" type="comment"/>
+    </table>
+
+    <table name="TblGuildRedBag" file="data/guildredbag.tbl" key="Times" serveronly="true">
+        <col name="Times" type="UINT8"/>
+        <col name="Price" type="INT32"/>
+        <col name="Item" type="TblItemCount" vector="true"/>
+        <col name="PackageID" type="UINT16"/>
+        <col name="Comment" type="comment"/>
+    </table>
+
+    <table name="TblTreasureGoldReward" file="data/treasuregoldreward.tbl" key="Times">
+        <col name="Times" type="UINT8"/>
+        <col name="Item" type="TblItemCount"/>
+        <col name="Comment" type="comment"/>
+    </table>
+
+    <table name="TblMemberCompose" file="data/membercompose.tbl" key="ItemID" serveronly="true">
+        <col name="ItemID" type="UINT16"/>
+        <col name="Number" type="INT32"/>
+        <col name="ComposeSoul" type="INT32"/>
+        <col name="HigherID" type="TblItemCount"/>
+        <col name="Comment" type="comment"/>
+    </table>
+
+    <table name="TblFuLiMillion" file="data/fulimillion.tbl" key="RewardID" serveronly="true">
+        <col name="RewardID" type="UINT16"/>
+        <col name="Type" type="UINT8"/>
+        <col name="Dariy" type="UINT16"/>
+        <col name="Vip" type="UINT8"/>
+        <col name="Item" type="TblItemCount" vector="true"/>
+        <col name="VIPItem" type="TblItemCount" vector="true"/>
+        <col name="Comment" type="comment"/>
+    </table>
+
+    <table name="TblNewTask" file="data/newtask.tbl" key="ID">
+        <col name="ID" type="UINT16" />
+        <col name="Type" type="UINT8" />
+        <col name="Var" type="INT32" />
+        <col name="Name" type="string" />
+        <col name="Reward" type="TblItemCount" vector="true" />
+        <col name="WindowID" type="UINT16" />
+        <col name="Comment" type="comment" />
+    </table>
+
+    <table name="TblRankReward" file="data/rankreward.tbl" setkey="Type" serveronly="true">
+        <col name="Type" type="UINT8" />
+        <col name="ID" type="UINT16" />
+        <col name="MinRank" type="UINT32" />
+        <col name="MaxRank" type="UINT32" />
+        <col name="Reward" type="TblItemCount" vector="true" />
+    </table>
+    
+    <table name="TblFlyingChess" file="data/flyingchess.tbl" key="ID" serveronly="true">
+        <col name="ID" type="UINT16" />
+        <col name="ChestType" type="UINT8" />
+        <col name="EventType" type="UINT8" />
+        <col name="Integration" type="UINT32" />
+        <col name="Honor" type="UINT32" />
+        <col name="SuccessRate" type="UINT16" />
+        <col name="PaperID" type="UINT16" />
+        <col name="RefreshID" type="UINT16" />
+        <col name="DropPackage" type="UINT16"/>
+        <col name="RewardDisplay" type="TblItemCount" vector="true" />
+        <col name="Comment" type="comment" />
+    </table>
+    
+    <table name="TblFlyingChessPaper" file="data/flyingchesspaper.tbl" key="ID" serveronly="true">
+        <col name="ID" type="UINT16" />
+        <col name="Question" type="string" />
+        <col name="OptionA" type="string" />
+        <col name="OptionB" type="string" />
+        <col name="OptionC" type="string" />
+        <col name="OptionD" type="string" />
+        <col name="Answer" type="UINT8" />
+        <col name="Comment" type="comment" />
+    </table>
+    
+    <table name="TblFlyingChessRankReward" file="data/flyingchessrankreward.tbl" key="ID" serveronly="true">
+        <col name="ID" type="UINT16" />
+        <col name="MinRank" type="UINT32" />
+        <col name="MaxRank" type="UINT32" />
+        <col name="DayReward" type="TblItemCount" vector="true" />
+        <col name="Comment" type="comment" />
+    </table>
+    
+    <table name="TblFlyingChessIntegrationReward" file="data/flyingchessintegrationreward.tbl" key="ID" serveronly="true">
+        <col name="ID" type="UINT8"/>
+        <col name="Icon" type="UINT16"/>
+        <col name="Title" type="string"/>
+        <col name="Condition" type="INT32"/>
+        <col name="Reward" type="TblItemCount" vector="true"/>
+        <col name="Desc" type="comment"/>
+    </table>
+    
+    <table name="TblMemberWeapon" file="data/memberweapon.tbl" key="ID" serveronly="true">
+        <col name="ID" type="UINT16" />
+        <col name="Name" type="string" />
+        <col name="MemberID" type="UINT16" />
+        <col name="PingJia" type="UINT8" />
+        <col name="CostID" type="UINT16" />
+        <col name="CostCount" type="UINT16" />
+        <col name="SkillID" type="UINT32" />
+        <col name="Description" type="string" />
+        <col name="Effect" type="string" />
+        <col name="Comment" type="comment" />
+    </table>
+    
+    <table name="TblMemberWeaponLevel" file="data/memberweaponlevel.tbl" multikey="ID,Level" serveronly="true">
+        <col name="ID" type="UINT16" />
+        <col name="Level" type="UINT16" />
+        <col name="Cost" type="TblItemCount" vector="true" />
+        <col name="Prop" type="TblProp" vector="true" />
+        <col name="QualityID" type="UINT16" />
+    </table>
+
+    <table name="TblMemberWeaponQuality" file="data/memberweaponquality.tbl" key="ID" serveronly="true">
+        <col name="ID" type="UINT16" />
+        <col name="UPCost" type="TblItemCount" vector="true" />
+        <col name="Prop" type="TblProp" vector="true" />
+        <col name="SkillID" type="UINT32" />
+        <col name="Display" type="string" />
+        <col name="Description" type="string" />
+    </table>
+
+    <table name="TblFullBoss" file="data/fullboss.tbl" key="WDay" serveronly="true">
+        <col name="WDay" type="UINT8"/>
+        <col name="BossName" type="string"/>
+        <col name="BossHP" type="double"/>
+        <col name="KillReward" type="TblItemCount" vector="true"/>
+        <col name="IconID" type="UINT16"/>
+        <col name="CampaignID" type="UINT16"/>
+        <col name="Desc" type="comment"/>
+    </table>
+
+    <table name="TblFullBossReward" file="data/fullbossreward.tbl" key="ID" serveronly="true">
+        <col name="ID" type="UINT8"/>
+        <col name="Icon" type="UINT16"/>
+        <col name="Title" type="string"/>
+        <col name="DamageReq" type="double"/>
+        <col name="Reward" type="TblItemCount" vector="true"/>
+        <col name="Desc" type="comment"/>
+    </table>
+
+    <table name="TblFullBossPlayerRank" file="data/fullbossplayerrank.tbl" key="ID" serveronly="true">
+        <col name="ID" type="UINT8"/>
+        <col name="MinRank" type="UINT32"/>
+        <col name="MaxRank" type="UINT32"/>
+        <col name="Reward" type="TblItemCount" vector="true"/>
+    </table>
+
+    <table name="TblMemberEquipRefine" file="data/memberequiprefine.tbl" multikey="EquipPos,Level" serveronly="true">
+        <col name="EquipPos" type="UINT8" />
+        <col name="Level" type="UINT16" />
+        <col name="AddProp" type="UINT16" />
+        <col name="RefineMax" type="UINT16" />
+        <col name="SingleProp" type="TblProp" />
+        <col name="RefineCost" type="TblItemCount" vector="true" />
+        <col name="LevelUpCost" type="TblItemCount" vector="true" />
+        <col name="LevelName" type="string"/>
+        <col name="Desc" type="comment" />
+    </table>
+
+    <table name="TblGuaZaiAwake" file="data/guazaiawake.tbl" multikey="Position,Level" serveronly="true">
+        <col name="Position" type="UINT8" />
+        <col name="Level" type="UINT16" />
+        <col name="UpNeedExp" type="INT32" />
+        <col name="Prop" type="TblProp" vector="true" />
+        <col name="UpCost" type="TblItemCount" vector="true" />
+        <col name="Desc" type="comment" />
+    </table>
+
+    <table name="TblItemBagUnlock" file="data/itembagunlock.tbl" key="Unlock">
+        <col name="Unlock" type="UINT16" />
+        <col name="Diamond" type="INT32" />
+    </table>
+
+</tables>

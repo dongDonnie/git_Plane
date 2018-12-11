@@ -1,0 +1,41 @@
+
+feijihechengguang666.png
+size: 1024,512
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+feijihechengguang1
+  rotate: true
+  xy: 496, 412
+  size: 60, 480
+  orig: 60, 480
+  offset: 0, 0
+  index: -1
+feijihechengguang2
+  rotate: false
+  xy: 2, 2
+  size: 180, 470
+  orig: 180, 470
+  offset: 0, 0
+  index: -1
+feijihechengguang3
+  rotate: false
+  xy: 184, 30
+  size: 130, 130
+  orig: 130, 130
+  offset: 0, 0
+  index: -1
+guang111
+  rotate: true
+  xy: 496, 160
+  size: 250, 270
+  orig: 250, 270
+  offset: 0, 0
+  index: -1
+guang333
+  rotate: false
+  xy: 184, 162
+  size: 310, 310
+  orig: 310, 310
+  offset: 0, 0
+  index: -1

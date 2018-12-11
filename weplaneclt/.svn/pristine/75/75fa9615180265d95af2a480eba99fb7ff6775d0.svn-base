@@ -1,0 +1,7 @@
+{
+  "ver": "1.0.0",
+  "uuid": "c4c25dfb-761a-410f-9961-07053a996c7c",
+  "atlasJson": "{\"width\":234,\"imagePath\":\"Tx_GetBuff_tex.png\",\"SubTexture\":[{\"width\":128,\"y\":1,\"height\":128,\"name\":\"Tx_GetBuff08\",\"x\":1},{\"width\":78,\"y\":88,\"height\":41,\"name\":\"1\",\"x\":131},{\"width\":78,\"y\":1,\"height\":42,\"name\":\"2\",\"x\":131},{\"width\":156,\"y\":131,\"height\":44,\"name\":\"5\",\"x\":1},{\"width\":150,\"y\":177,\"height\":43,\"name\":\"6\",\"x\":1},{\"width\":79,\"y\":177,\"height\":43,\"name\":\"3\",\"x\":153},{\"width\":79,\"y\":45,\"height\":41,\"name\":\"4\",\"x\":131}],\"height\":222,\"name\":\"Tx_GetBuff\"}",
+  "texture": "e6b0831e-7b8a-4391-8a12-e6063cb646b8",
+  "subMetas": {}
+}

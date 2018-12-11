@@ -1,0 +1,7 @@
+{
+  "ver": "1.0.0",
+  "uuid": "c98bf0e0-055b-459d-b029-45628a84cf5b",
+  "atlasJson": "{\"width\":512,\"imagePath\":\"M_R_XXXYQ_tex.png\",\"height\":512,\"name\":\"M_R_XXXYQ\",\"SubTexture\":[{\"frameY\":-1,\"y\":83,\"frameWidth\":80,\"frameX\":-1,\"frameHeight\":83,\"width\":78,\"height\":81,\"name\":\"M_R_XXXYQ (2)\",\"x\":420},{\"frameY\":-1,\"y\":1,\"frameWidth\":317,\"frameX\":-1,\"frameHeight\":293,\"width\":315,\"height\":291,\"name\":\"M_R_XXXYQ (3)\",\"x\":1},{\"frameY\":-1,\"y\":1,\"frameWidth\":85,\"frameX\":-1,\"frameHeight\":82,\"width\":83,\"height\":80,\"name\":\"M_R_XXXYQ (4)\",\"x\":420},{\"frameY\":-1,\"y\":1,\"frameWidth\":102,\"frameX\":-1,\"frameHeight\":101,\"width\":100,\"height\":99,\"name\":\"M_R_XXXYQ (5)\",\"x\":318},{\"frameY\":-1,\"y\":102,\"frameWidth\":46,\"frameX\":-1,\"frameHeight\":42,\"width\":44,\"height\":40,\"name\":\"M_R_XXXYQ (1)\",\"x\":318}]}",
+  "texture": "6ac8f760-adac-46c6-9075-a9aabd13a3c4",
+  "subMetas": {}
+}

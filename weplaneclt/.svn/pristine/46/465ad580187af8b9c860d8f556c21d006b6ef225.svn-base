@@ -1,0 +1,7 @@
+{
+  "ver": "1.0.0",
+  "uuid": "b72ac0f7-fac4-4723-93fe-feebf5b2add5",
+  "atlasJson": "{\"imagePath\":\"M_R_HSSD_tex.png\",\"width\":512,\"SubTexture\":[{\"y\":316,\"frameY\":-1,\"frameWidth\":30,\"width\":28,\"frameX\":-1,\"frameHeight\":152,\"height\":150,\"name\":\"M_R_HSSD (3)\",\"x\":232},{\"y\":1,\"frameY\":-1,\"frameWidth\":315,\"width\":313,\"frameX\":-1,\"frameHeight\":315,\"height\":313,\"name\":\"M_R_HSSD (4)\",\"x\":1},{\"y\":316,\"frameY\":-1,\"frameWidth\":231,\"width\":229,\"frameX\":-1,\"frameHeight\":160,\"height\":158,\"name\":\"M_R_HSSD (5)\",\"x\":1}],\"height\":512,\"name\":\"M_R_HSSD\"}",
+  "texture": "3e706099-0f3d-41b6-95a8-8eaede65f1fb",
+  "subMetas": {}
+}

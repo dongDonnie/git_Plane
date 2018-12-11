@@ -1,0 +1,7 @@
+{
+  "ver": "1.0.0",
+  "uuid": "2ccdaa0a-7c56-4e31-9274-6367ced7ac04",
+  "atlasJson": "{\"width\":512,\"imagePath\":\"baoxiangfeiji_tex.png\",\"height\":1024,\"name\":\"baoxiangfeiji\",\"SubTexture\":[{\"width\":123,\"y\":426,\"height\":160,\"name\":\"8\",\"x\":130},{\"width\":123,\"y\":1,\"height\":160,\"name\":\"7\",\"x\":312},{\"width\":127,\"y\":426,\"height\":272,\"name\":\"6\",\"x\":1},{\"width\":127,\"y\":258,\"height\":272,\"name\":\"5\",\"x\":304},{\"width\":134,\"y\":667,\"height\":133,\"name\":\"4\",\"x\":130},{\"width\":134,\"y\":532,\"height\":133,\"name\":\"3\",\"x\":255},{\"width\":309,\"y\":1,\"height\":255,\"name\":\"2\",\"x\":1},{\"width\":301,\"y\":258,\"height\":166,\"name\":\"1\",\"x\":1}]}",
+  "texture": "99bcf616-1ac0-4235-8629-a750da8685d1",
+  "subMetas": {}
+}

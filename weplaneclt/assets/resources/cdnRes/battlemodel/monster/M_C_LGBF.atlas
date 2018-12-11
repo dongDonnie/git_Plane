@@ -1,0 +1,97 @@
+
+M_C_LGBF.png
+size: 292,270
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+1
+  rotate: false
+  xy: 187, 112
+  size: 35, 50
+  orig: 35, 50
+  offset: 0, 0
+  index: -1
+10
+  rotate: false
+  xy: 224, 38
+  size: 36, 35
+  orig: 36, 35
+  offset: 0, 0
+  index: -1
+11
+  rotate: true
+  xy: 2, 62
+  size: 206, 126
+  orig: 206, 133
+  offset: 0, 7
+  index: -1
+12
+  rotate: true
+  xy: 130, 65
+  size: 97, 21
+  orig: 97, 21
+  offset: 0, 0
+  index: -1
+13
+  rotate: true
+  xy: 2, 2
+  size: 58, 51
+  orig: 58, 51
+  offset: 0, 0
+  index: -1
+2
+  rotate: true
+  xy: 224, 75
+  size: 35, 50
+  orig: 35, 50
+  offset: 0, 0
+  index: -1
+3
+  rotate: true
+  xy: 153, 71
+  size: 91, 32
+  orig: 97, 39
+  offset: 0, 7
+  index: -1
+4
+  rotate: false
+  xy: 123, 7
+  size: 47, 53
+  orig: 47, 53
+  offset: 0, 0
+  index: -1
+5
+  rotate: false
+  xy: 130, 164
+  size: 160, 104
+  orig: 160, 104
+  offset: 0, 0
+  index: -1
+6
+  rotate: true
+  xy: 55, 7
+  size: 53, 66
+  orig: 53, 66
+  offset: 0, 0
+  index: -1
+7
+  rotate: false
+  xy: 172, 5
+  size: 50, 64
+  orig: 50, 65
+  offset: 0, 1
+  index: -1
+8
+  rotate: true
+  xy: 224, 112
+  size: 50, 64
+  orig: 50, 65
+  offset: 0, 1
+  index: -1
+9
+  rotate: true
+  xy: 187, 73
+  size: 37, 35
+  orig: 37, 35
+  offset: 0, 0
+  index: -1

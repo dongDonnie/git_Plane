@@ -1,0 +1,7 @@
+{
+  "ver": "1.0.0",
+  "uuid": "e227efdb-8747-48b7-bc44-9a4d0b7b6d2a",
+  "atlasJson": "{\"width\":119,\"imagePath\":\"R-tyd_tex.png\",\"SubTexture\":[{\"width\":17,\"y\":1,\"height\":54,\"name\":\"4\",\"x\":100},{\"width\":97,\"y\":1,\"height\":98,\"name\":\"3\",\"x\":1},{\"width\":17,\"y\":57,\"height\":41,\"name\":\"1\",\"x\":100}],\"height\":101,\"name\":\"R-tyd\"}",
+  "texture": "f2075c51-6eaa-4984-9067-5d27a900635f",
+  "subMetas": {}
+}

@@ -1,0 +1,32 @@
+{
+  "ver": "2.3.0",
+  "uuid": "0116ba3b-8964-4362-bb8b-03e366ef98e8",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "platformSettings": {},
+  "subMetas": {
+    "quest_chapter_bg_active": {
+      "ver": "1.0.3",
+      "uuid": "4fc6ded9-a703-4f62-b679-38aad7cc25a7",
+      "rawTextureUuid": "0116ba3b-8964-4362-bb8b-03e366ef98e8",
+      "trimType": "auto",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 184,
+      "height": 266,
+      "rawWidth": 184,
+      "rawHeight": 266,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

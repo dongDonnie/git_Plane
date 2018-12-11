@@ -1,0 +1,32 @@
+{
+  "ver": "2.3.0",
+  "uuid": "d4836c69-2afa-4a85-b968-f9323c62ebcf",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "platformSettings": {},
+  "subMetas": {
+    "TX_FireBird_Bullet_S_5": {
+      "ver": "1.0.3",
+      "uuid": "aa6c6d1b-600a-481c-ba96-b078a2e22483",
+      "rawTextureUuid": "d4836c69-2afa-4a85-b968-f9323c62ebcf",
+      "trimType": "auto",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 80,
+      "height": 150,
+      "rawWidth": 80,
+      "rawHeight": 150,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

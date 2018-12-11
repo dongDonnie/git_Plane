@@ -1,0 +1,7 @@
+{
+  "ver": "1.0.0",
+  "uuid": "894782aa-f999-46e7-873e-a968ffdc4b5a",
+  "atlasJson": "{\"SubTexture\":[{\"width\":300,\"y\":1,\"height\":242,\"name\":\"ssss\",\"x\":314},{\"width\":116,\"y\":140,\"height\":59,\"name\":\"g\",\"x\":881},{\"width\":142,\"y\":1,\"height\":137,\"name\":\"guangyuan\",\"x\":881},{\"width\":80,\"y\":476,\"height\":87,\"name\":\"levelupbanner\",\"x\":186},{\"width\":200,\"y\":277,\"height\":197,\"name\":\"nengliangqiu\",\"x\":1},{\"frameHeight\":256,\"y\":245,\"frameX\":0,\"width\":254,\"frameY\":0,\"height\":256,\"name\":\"pianxu\",\"frameWidth\":256,\"x\":314},{\"width\":311,\"y\":1,\"height\":274,\"name\":\"liziguang\",\"x\":1},{\"frameHeight\":79,\"y\":262,\"frameX\":-5,\"width\":169,\"frameY\":0,\"height\":69,\"name\":\"chanrao\",\"frameWidth\":174,\"x\":570},{\"width\":263,\"y\":1,\"height\":259,\"name\":\"ssss2\",\"x\":616},{\"width\":183,\"y\":476,\"height\":183,\"name\":\"quannnn\",\"x\":1}],\"width\":1024,\"height\":1024,\"name\":\"sp_ui_boundary_aggregation3307\",\"imagePath\":\"sp_ui_boundary_aggregation3307_tex.png\"}",
+  "texture": "c21e7cfb-42e6-43ae-b0dd-61581074b66f",
+  "subMetas": {}
+}

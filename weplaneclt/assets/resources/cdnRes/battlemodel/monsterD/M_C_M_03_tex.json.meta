@@ -1,0 +1,7 @@
+{
+  "ver": "1.0.0",
+  "uuid": "caf0cd6d-565a-4bf8-ae76-cd7f1051ca83",
+  "atlasJson": "{\"width\":512,\"SubTexture\":[{\"y\":1,\"frameWidth\":74,\"x\":435,\"frameHeight\":44,\"width\":72,\"frameY\":-1,\"height\":42,\"name\":\"4\",\"frameX\":-1},{\"width\":143,\"y\":1,\"height\":97,\"name\":\"1\",\"x\":223},{\"y\":1,\"frameWidth\":67,\"x\":368,\"frameHeight\":78,\"width\":65,\"frameY\":-1,\"height\":76,\"name\":\"2\",\"frameX\":-1},{\"width\":220,\"y\":1,\"height\":245,\"name\":\"3\",\"x\":1}],\"height\":256,\"name\":\"M_C_M_03\",\"imagePath\":\"M_C_M_03_tex.png\"}",
+  "texture": "3be42b96-dce0-499d-ab3c-4fa82beaff46",
+  "subMetas": {}
+}

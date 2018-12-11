@@ -1,0 +1,326 @@
+const RootBase = require("RootBase");
+const WindowManager = require("windowmgr");
+const WndTypeDefine = require("wndtypedefine");
+const GlobalVar = require('globalvar')
+const EventMsgID = require("eventmsgid");
+const GlobalFunc = require('GlobalFunctions')
+const i18n = require('LanguageData');
+
+
+const MODE_GET_BUY_ITEM = 0;
+const MODE_GET_DRAW_ITEM = 1;
+const MODE_GET_NEW_PLANE_OR_GUAZAI = 2;
+
+const AUDIO_GETITEM = 'cdnRes/audio/main/effect/huodewuping';
+
+cc.Class({
+    extends: RootBase,
+
+    properties: {
+        spriteBackLight: {
+            default: null,
+            type: cc.Sprite
+        },
+        spriteGetPic: {
+            default: null,
+            type: cc.Sprite
+        },
+        spriteGetNameBg: {
+            default: null,
+            type: cc.Sprite
+        },
+        labelGetText: {
+            default: null,
+            type: cc.Label
+        },
+        labelGetName: {
+            default: null,
+            type: cc.Label
+        },
+        layoutItemContent: {
+            default: null,
+            type: cc.Node
+        },
+        itemModel: {
+            default: null,
+            type: cc.Node,
+        },
+        itemStack: [],
+    },
+
+    onLoad: function () {
+        this._super();
+        i18n.init('zh');
+        this.typeName = WndTypeDefine.WindowType.E_DT_NORMALTREASUREEXPLOIT;
+        
+
+        this.spriteBackLight.node.runAction(cc.repeatForever(cc.rotateBy(8, 360)));
+        this.animeStartParam(0, 0);
+        this._closeCallback = null;
+        this.node.getChildByName("nodeTreasure").getChildByName("spriteContinueTip").runAction(cc.repeatForever(cc.sequence(cc.fadeOut(0.7),cc.fadeIn(0.7))));
+
+        this.isTenDrawAnimePlaying = false;
+        this.stopAnimeFunc = null;
+    },
+
+    setCloseCallback: function (callback) {
+        if (!!callback){
+            this._closeCallback = callback;
+        }
+    },
+
+    animeStartParam(paramScale, paramOpacity) {
+        this.node.setScale(paramScale, paramScale);
+        this.node.opacity = paramOpacity;
+    },
+
+    init: function (itemDatas, mode) {
+        let layout = this.layoutItemContent.getComponent(cc.Layout);
+
+        // this.sliceItemData(itemDatas);
+        let self = this;
+        this.layoutItemContent.removeAllChildren();
+        this.itemStack = [];
+        if (mode == MODE_GET_DRAW_ITEM) {
+            let count = itemDatas.length - 1;
+            if (count == 1) {
+                layout.paddingLeft = 260;
+                layout.paddingRight = 260;
+            } else if (count == 2) {
+                layout.paddingLeft = 170;
+                layout.paddingRight = 170;
+                layout.spacingX = 100;
+            } else if (count == 3) {
+                layout.paddingLeft = 115;
+                layout.paddingRight = 115;
+                layout.spacingX = 50;
+            } else {
+                layout.paddingLeft = 30;
+                layout.paddingRight = 30;
+                layout.spacingX = 20;
+                layout.spacingY = -10;
+            }
+            if (count == 10){
+                let newItemDatas = this.sortItems(itemDatas);
+                this.canClose = false;
+                layout.enabled = false;
+                this.isTenDrawAnimePlaying = true;
+                for (let i = 0; i < newItemDatas.length; i++) {
+                    if (i != 0) {
+                        let data = newItemDatas[i];
+                        let item = this.addItem(data, mode);
+                        this.itemStack.push(item);
+                        item.scale = 0;
+                        item.x = 320;
+                        // item.y = -360;
+                        item.y = -(2 + item.height);
+                        let newX = 30 + item.width/2 + (i-1)%5 * (20 + item.width);
+                        let newY = -(12 + item.height/2 + Math.floor((i-1)/5)*(item.height -10))
+                        item.runAction(cc.sequence(cc.delayTime(0.3 * (i - 1)), cc.spawn(cc.rotateBy(0.5, 1080),cc.moveTo(0.5, newX, newY), cc.scaleTo(0.5, 1))));
+                    } else {
+                        let itemName = GlobalVar.tblApi.getDataBySingleKey('TblItem', newItemDatas[i].ItemID).strName;
+                        this.setGetName(itemName + "*" + newItemDatas[i].Count);
+                        setTimeout(() => {
+                            self.isTenDrawAnimePlaying = false;
+                        }, 3500);
+                    }
+                }
+                this.stopAnimeFunc = function () {
+                    self.isTenDrawAnimePlaying = false;
+                    let item = this.itemStack[0];
+                    for (let i = 0; i< this.itemStack.length; i++){
+                        let newX = 30 + item.width/2 + i%5 * (20 + item.width);
+                        let newY = -(12 + item.height/2 + Math.floor(i/5)*(item.height -10))
+                        this.itemStack[i].stopAllActions();
+                        this.itemStack[i].angle = 0;
+                        this.itemStack[i].scale = 1;
+                        this.itemStack[i].x = newX;
+                        this.itemStack[i].y = newY;
+                    }
+                };
+            }else{
+                layout.enabled = true;
+                layout.updateLayout();
+                for (let i = 0; i < itemDatas.length; i++) {
+                    if (i != 0) {
+                        let data = itemDatas[i];
+                        let item = this.addItem(data, mode);
+                        this.itemStack.push(item);
+                    } else {
+                        let itemName = GlobalVar.tblApi.getDataBySingleKey('TblItem', itemDatas[i].ItemID).strName;
+                        this.setGetName(itemName + "*" + itemDatas[i].Count);
+                    }
+                }
+            }
+
+        } else {
+            let count = itemDatas.length;
+            if (count == 1) {
+                layout.paddingLeft = 260;
+                layout.paddingRight = 260;
+            } else if (count == 2) {
+                layout.paddingLeft = 170;
+                layout.paddingRight = 170;
+                layout.spacingX = 100;
+            } else if (count == 3) {
+                layout.paddingLeft = 115;
+                layout.paddingRight = 115;
+                layout.spacingX = 50;
+            } else {
+                layout.paddingLeft = 45;
+                layout.paddingRight = 45;
+                layout.spacingX = 50;
+            }
+            layout.enabled = true;
+            layout.updateLayout();
+            this.node.getChildByName("nodeTreasure").getChildByName("spriteGetNameBg").active = false;
+            for (let i = 0; i < itemDatas.length; i++) {
+                let data = itemDatas[i];
+                let item = this.addItem(data);
+                this.itemStack.push(item);
+            }
+        }
+
+        this.setGetText(i18n.t('label.4000244'));
+        // 播放音效
+        GlobalVar.soundManager().playEffect(AUDIO_GETITEM);
+    },
+
+    addItem: function (data, mode) {
+        let item = null;
+        // if (this.layoutItemContent.children.length == 0) {
+        //     item = this.itemModel;
+        // } else {
+        item = cc.instantiate(this.itemModel);
+        // }
+        item.opacity = 255;
+        item.parent = this.layoutItemContent;
+        let itemData = null;
+        if (data.Count == 1){
+            data.Count = -1;
+        }
+        let itemObj =  item.getChildByName("ItemObject").getComponent("ItemObject");
+        if (data.ItemID) {
+            itemData = itemObj.updateItem(data.ItemID, data.Count);
+            itemObj.setLabelNumberData(data.Count, true);
+        } else if (data.wItemID) {
+            itemData = itemObj.updateItem(data.wItemID, data.nCount)
+            itemObj.setLabelNumberData(data.nCount, true);
+        }
+        if (mode == MODE_GET_DRAW_ITEM) {
+            item.getChildByName("labelItemName").getComponent(cc.Label).string = "";
+        }else{
+            item.getChildByName("labelItemName").getComponent(cc.Label).string = itemData.strName;
+        }
+        item.getChildByName("labelItemName").color = GlobalFunc.getCCColorByQuality(itemData.wQuality);
+        return item;
+    },
+
+    sliceItemData: function(itemDatas){
+        for (let i = 0; i< itemDatas.length; i++){
+            let data = itemDatas[i];
+            let itemID = data.ItemID || data.wItemID;
+            let tblData = GlobalVar.tblApi.getDataBySingleKey('TblItem', itemID);
+            let itemCount = data.Count || data.nCount;
+            let overLap = tblData.wOverlap;
+            if (itemCount > overLap){
+                let sliceCount = Math.floor(itemCount/overLap);
+                let sliceLeft = (itemCount % overLap);
+                let newArr = [];
+                for (let j = 0; j<sliceCount;j++){
+                    let newItem = [];
+                    newItem.ItemID = itemID;
+                    newItem.Count = overLap;
+                    newArr.push(newItem);
+                }
+                if (sliceLeft != 0){
+                    let newItem = [];
+                    newItem.ItemID = itemID;
+                    newItem.Count = overLap;
+                    newArr.push(newItem);
+                }
+                let length = newArr.length;
+                itemDatas.splice(i, 1);
+                newArr.unshift(i, 0);
+                Array.prototype.splice.apply(itemDatas, newArr);
+                i += length-1;
+            }
+        }
+    },
+
+    sortItems: function (itemDatas) {
+        let newArr = [];
+        for (let i = 1; i<itemDatas.length; i++){
+            newArr.push(itemDatas[i]);
+        }
+        function compare() {
+            return function (a, b) {
+                // 按照是否完成排序
+                let qualityA = GlobalVar.tblApi.getDataBySingleKey("TblItem", a.ItemID).wQuality;
+                let qualityB = GlobalVar.tblApi.getDataBySingleKey("TblItem", b.ItemID).wQuality;
+                if (qualityA != qualityB){
+                    return -(qualityA - qualityB);
+                }
+            }
+        }
+
+        newArr.sort(compare());
+        newArr.splice(0, 0, itemDatas[0]);
+        return newArr;
+    },
+
+    update: function(){
+
+    },
+
+    animePlayCallBack(name) {
+        if (name == "Escape") {
+            this._super("Escape");
+            GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_RECIVE_DRAW_REWARD);
+            let self = this;
+            WindowManager.getInstance().popView(false, function () {
+                if (!!self._closeCallback){
+                    self._closeCallback();
+                    self._closeCallback = null;
+                }
+            }, false);
+        } else if (name == "Enter") {
+            this._super("Enter");
+            this.node.opacity = 255;
+            // this.itemStack = [];
+        }
+    },
+
+    setGetText: function (text) {
+        this.labelGetText.string = text;
+    },
+
+    setGetName: function (text) {
+        this.labelGetName.string = text;
+    },
+
+    enter: function (isRefresh) {
+        if (isRefresh) {
+            this._super(true);
+        } else {
+            this._super(false);
+        }
+    },
+
+    escape: function (isRefresh) {
+        if (isRefresh) {
+            this._super(true);
+        } else {
+            this._super(false);
+        }
+    },
+
+    onBtnRecv: function () {
+        if (this.isTenDrawAnimePlaying){
+            this.stopAnimeFunc && this.stopAnimeFunc();
+        }else{
+            this.close();
+        }
+    },
+
+});

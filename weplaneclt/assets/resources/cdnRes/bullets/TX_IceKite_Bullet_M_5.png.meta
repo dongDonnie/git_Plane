@@ -1,0 +1,32 @@
+{
+  "ver": "2.3.0",
+  "uuid": "6c4f55e3-26ba-46d4-839e-8465fead3a8c",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "platformSettings": {},
+  "subMetas": {
+    "TX_IceKite_Bullet_M_5": {
+      "ver": "1.0.3",
+      "uuid": "264b20e3-23c8-46c9-ace7-7d614d2eb254",
+      "rawTextureUuid": "6c4f55e3-26ba-46d4-839e-8465fead3a8c",
+      "trimType": "auto",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 80,
+      "height": 150,
+      "rawWidth": 80,
+      "rawHeight": 150,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

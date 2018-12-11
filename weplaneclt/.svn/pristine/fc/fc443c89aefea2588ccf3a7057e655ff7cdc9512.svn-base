@@ -1,0 +1,32 @@
+{
+  "ver": "2.3.0",
+  "uuid": "905e0a4a-26a1-4120-9b2c-09fe78c3fc6b",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "platformSettings": {},
+  "subMetas": {
+    "battle_questinfo_bg": {
+      "ver": "1.0.3",
+      "uuid": "068f5b9f-d65f-4e00-a42e-3f41f41502a2",
+      "rawTextureUuid": "905e0a4a-26a1-4120-9b2c-09fe78c3fc6b",
+      "trimType": "auto",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 631,
+      "height": 279,
+      "rawWidth": 631,
+      "rawHeight": 279,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

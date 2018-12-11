@@ -1,0 +1,49 @@
+var CampNormal3 = module.exports;
+
+CampNormal3.data = {
+    maps:[
+        ["fg_fight_bg_0","fg_fight_bg_0","fg_fight_bg_0"],
+        ["kjznb-tongdao","kjznb-tongdao","kjznb-tongdao"],
+    ],
+    monsterWaves:[
+        {wave:{groups:[663,23],wait:0,delay:[0.5,1.5]},maps:{mapIndex:[0,1],mapSpeed:[250,500],mapScale:[1,1],mapLoop:[1,1]}},
+        {wave:{groups:[664,51],wait:0,delay:[0,1.8]}},
+        {wave:{groups:[665],wait:0,delay:[0]},maps:{mapIndex:[0,1],mapSpeed:[250,1000],mapScale:[1,1.5],mapLoop:[1,1]}},
+        {wave:{groups:[666,23,42],wait:0,delay:[0,0.5,2]}},
+        {wave:{groups:[667],wait:0,delay:[0.5]}},
+        {wave:{groups:[668,302],wait:0,delay:[0,4]}},
+        {wave:{groups:[669],wait:0,delay:[0,3]}},
+    ],
+    monsterExtra:[23,24,25,1313,1314,1315,1316,1317],
+    totalHint:[
+        {
+            checkTime:-1,
+            condition:[
+                {interval:12},
+            ],
+            effect:[
+                {drop:10000},
+            ]
+        },
+        {
+            eventKey:0,
+            checkTime:1,
+            condition:[
+                {wave:{index:1,step:8}},
+            ],
+            effect:[
+                {extra:{open:-1,delay:1.2}},
+            ],
+        },
+        {
+            eventKey:0,
+            checkTime:1,
+            condition:[
+                {wave:{index:2,step:6}},
+            ],
+            effect:[
+                {extra:{open:-2}},
+            ],
+        },
+    ],
+}

@@ -1,0 +1,137 @@
+{
+  "__type__": "cc.AnimationClip",
+  "_name": "QuantumBrust",
+  "_objFlags": 0,
+  "_native": "",
+  "_duration": 0.5333333333333333,
+  "sample": 30,
+  "speed": 1,
+  "wrapMode": "1",
+  "curveData": {
+    "comps": {
+      "cc.Sprite": {
+        "spriteFrame": [
+          {
+            "frame": 0,
+            "value": {
+              "__uuid__": "e9c98963-22b9-4087-a75f-53447f918daa"
+            }
+          },
+          {
+            "frame": 0.03333333333333333,
+            "value": {
+              "__uuid__": "b4b45399-fb8b-45b9-add7-c3967bf00ca1"
+            }
+          },
+          {
+            "frame": 0.06666666666666667,
+            "value": {
+              "__uuid__": "145f7e15-22d5-4e3b-b11b-49a3c5ab5319"
+            }
+          },
+          {
+            "frame": 0.1,
+            "value": {
+              "__uuid__": "4066c737-7d89-4e02-9bae-9be953f78ad5"
+            }
+          },
+          {
+            "frame": 0.13333333333333333,
+            "value": {
+              "__uuid__": "3cb22427-cab4-4ae8-b847-afe4317ef747"
+            }
+          },
+          {
+            "frame": 0.16666666666666666,
+            "value": {
+              "__uuid__": "41bcbb53-0077-4a0e-b197-07ff5283d08f"
+            }
+          },
+          {
+            "frame": 0.2,
+            "value": {
+              "__uuid__": "faccb9f3-b0f2-4d4a-adc6-0448eb0e9e25"
+            }
+          },
+          {
+            "frame": 0.23333333333333334,
+            "value": {
+              "__uuid__": "cc40946d-e2e6-49a1-be06-78518b5d947e"
+            }
+          },
+          {
+            "frame": 0.26666666666666666,
+            "value": {
+              "__uuid__": "95ca375e-244c-46fa-a86b-5c28b484e076"
+            }
+          },
+          {
+            "frame": 0.3,
+            "value": {
+              "__uuid__": "0ce0f9ef-f0c3-40c4-9dbb-156612f3afa5"
+            }
+          },
+          {
+            "frame": 0.3333333333333333,
+            "value": {
+              "__uuid__": "af7da874-0fe7-4592-b11e-3c339903e1ec"
+            }
+          },
+          {
+            "frame": 0.36666666666666664,
+            "value": {
+              "__uuid__": "12020229-b119-47a8-bc5c-80f3e2538ff6"
+            }
+          },
+          {
+            "frame": 0.4,
+            "value": {
+              "__uuid__": "26be55d0-0ed0-4f62-a810-e2a816373e0d"
+            }
+          },
+          {
+            "frame": 0.43333333333333335,
+            "value": {
+              "__uuid__": "76768459-33ee-4fa3-bc34-47be761d1976"
+            }
+          },
+          {
+            "frame": 0.4666666666666667,
+            "value": {
+              "__uuid__": "01157756-8243-4db6-8701-c8375aa2b0b3"
+            }
+          },
+          {
+            "frame": 0.5,
+            "value": {
+              "__uuid__": "52df6981-7930-45a6-8a2d-ab103929c53e"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "events": [
+    {
+      "frame": 0,
+      "func": "animePlayCallBack",
+      "params": [
+        "Start"
+      ]
+    },
+    {
+      "frame": 0.16666666666666666,
+      "func": "animePlayCallBack",
+      "params": [
+        "Process"
+      ]
+    },
+    {
+      "frame": 0.5333333333333333,
+      "func": "animePlayCallBack",
+      "params": [
+        "Complete"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+
+R_fbd.png
+size: 176,116
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+1
+  rotate: false
+  xy: 123, 28
+  size: 46, 23
+  orig: 48, 25
+  offset: 1, 0
+  index: -1
+2
+  rotate: true
+  xy: 65, 5
+  size: 23, 48
+  orig: 23, 48
+  offset: 0, 0
+  index: -1
+3
+  rotate: false
+  xy: 151, 66
+  size: 23, 48
+  orig: 23, 48
+  offset: 0, 0
+  index: -1
+4
+  rotate: true
+  xy: 2, 30
+  size: 84, 119
+  orig: 84, 119
+  offset: 0, 0
+  index: -1
+5
+  rotate: true
+  xy: 2, 2
+  size: 26, 61
+  orig: 26, 61
+  offset: 0, 0
+  index: -1
+6
+  rotate: false
+  xy: 123, 53
+  size: 26, 61
+  orig: 26, 61
+  offset: 0, 0
+  index: -1

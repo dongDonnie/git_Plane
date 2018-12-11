@@ -1,0 +1,76 @@
+
+L_03.png
+size: 124,144
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+2
+  rotate: false
+  xy: 102, 93
+  size: 16, 23
+  orig: 16, 23
+  offset: 0, 0
+  index: -1
+3
+  rotate: false
+  xy: 102, 68
+  size: 15, 23
+  orig: 15, 23
+  offset: 0, 0
+  index: -1
+4
+  rotate: true
+  xy: 67, 4
+  size: 5, 21
+  orig: 5, 21
+  offset: 0, 0
+  index: -1
+5
+  rotate: true
+  xy: 92, 31
+  size: 29, 30
+  orig: 29, 30
+  offset: 0, 0
+  index: -1
+6
+  rotate: false
+  xy: 92, 62
+  size: 7, 18
+  orig: 7, 18
+  offset: 0, 0
+  index: -1
+7
+  rotate: false
+  xy: 102, 118
+  size: 20, 24
+  orig: 20, 24
+  offset: 0, 0
+  index: -1
+8
+  rotate: true
+  xy: 67, 11
+  size: 7, 18
+  orig: 7, 18
+  offset: 0, 0
+  index: -1
+9
+  rotate: true
+  xy: 2, 2
+  size: 78, 63
+  orig: 78, 63
+  offset: 0, 0
+  index: -1
+L_03_29
+  rotate: false
+  xy: 67, 20
+  size: 23, 60
+  orig: 25, 60
+  offset: 1, 0
+  index: -1
+L_03_30
+  rotate: true
+  xy: 2, 82
+  size: 60, 98
+  orig: 60, 100
+  offset: 0, 2
+  index: -1

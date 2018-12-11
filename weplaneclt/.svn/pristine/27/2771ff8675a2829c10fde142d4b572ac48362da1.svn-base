@@ -1,0 +1,22 @@
+{
+  "name": "rSprite",
+  "version": "0.0.1",
+  "description": "The package template for getting started.",
+  "author": "Cocos Creator",
+  "main": "main.js",
+  "main-menu": {
+    "i18n:MAIN_MENU.package.title/rSprite/open": {
+      "message": "rSprite:open"
+    },
+    "i18n:MAIN_MENU.package.title/rSprite/hello": {
+      "message": "rSprite:say-hello"
+    }
+  },
+  "panel": {
+    "main": "panel/index.js",
+    "type": "dockable",
+    "title": "rSprite",
+    "width": 400,
+    "height": 300
+  }
+}

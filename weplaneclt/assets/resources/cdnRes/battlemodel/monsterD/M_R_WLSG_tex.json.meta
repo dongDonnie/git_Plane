@@ -1,0 +1,7 @@
+{
+  "ver": "1.0.0",
+  "uuid": "0c7f90bf-a198-4eb6-9a07-10d38399d164",
+  "atlasJson": "{\"width\":256,\"imagePath\":\"M_R_WLSG_tex.png\",\"height\":256,\"name\":\"M_R_WLSG\",\"SubTexture\":[{\"frameY\":-1,\"y\":1,\"frameWidth\":27,\"frameX\":-1,\"frameHeight\":82,\"width\":26,\"height\":81,\"name\":\"M_R_WLSG (1)\",\"x\":204},{\"frameY\":-1,\"y\":1,\"frameWidth\":203,\"frameX\":-1,\"frameHeight\":205,\"width\":201,\"height\":204,\"name\":\"M_R_WLSG (2)\",\"x\":1}]}",
+  "texture": "7736972a-342e-46a6-8c78-8661c412207f",
+  "subMetas": {}
+}

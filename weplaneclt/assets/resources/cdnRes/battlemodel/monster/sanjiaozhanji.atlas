@@ -1,0 +1,97 @@
+
+sanjiaozhanji.png
+size: 1000,658
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+1
+  rotate: false
+  xy: 507, 55
+  size: 116, 126
+  orig: 120, 129
+  offset: 2, 1
+  index: -1
+10
+  rotate: true
+  xy: 391, 412
+  size: 244, 361
+  orig: 244, 361
+  offset: 0, 0
+  index: -1
+11
+  rotate: false
+  xy: 249, 179
+  size: 200, 228
+  orig: 200, 228
+  offset: 0, 0
+  index: -1
+12
+  rotate: false
+  xy: 451, 183
+  size: 201, 227
+  orig: 201, 227
+  offset: 0, 0
+  index: -1
+13
+  rotate: false
+  xy: 379, 48
+  size: 126, 129
+  orig: 126, 129
+  offset: 0, 0
+  index: -1
+14
+  rotate: false
+  xy: 2, 409
+  size: 387, 247
+  orig: 387, 247
+  offset: 0, 0
+  index: -1
+2
+  rotate: false
+  xy: 249, 50
+  size: 128, 127
+  orig: 129, 131
+  offset: 0, 3
+  index: -1
+3
+  rotate: false
+  xy: 654, 197
+  size: 192, 213
+  orig: 195, 215
+  offset: 2, 0
+  index: -1
+4
+  rotate: true
+  xy: 654, 2
+  size: 193, 204
+  orig: 194, 205
+  offset: 0, 0
+  index: -1
+5
+  rotate: false
+  xy: 848, 273
+  size: 148, 140
+  orig: 149, 142
+  offset: 1, 1
+  index: -1
+6
+  rotate: false
+  xy: 754, 415
+  size: 244, 241
+  orig: 256, 255
+  offset: 5, 7
+  index: -1
+7
+  rotate: false
+  xy: 848, 204
+  size: 52, 67
+  orig: 53, 68
+  offset: 1, 1
+  index: -1
+9
+  rotate: false
+  xy: 2, 45
+  size: 245, 362
+  orig: 245, 362
+  offset: 0, 0
+  index: -1

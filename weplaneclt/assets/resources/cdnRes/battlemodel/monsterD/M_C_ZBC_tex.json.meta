@@ -1,0 +1,7 @@
+{
+  "ver": "1.0.0",
+  "uuid": "65fe2cb7-27a2-4988-b2db-07077e8a6dac",
+  "atlasJson": "{\"width\":256,\"imagePath\":\"M_C_ZBC_tex.png\",\"height\":256,\"name\":\"M_C_ZBC\",\"SubTexture\":[{\"width\":63,\"y\":1,\"height\":67,\"name\":\"9\",\"x\":125},{\"width\":61,\"y\":1,\"height\":68,\"name\":\"8\",\"x\":190},{\"width\":122,\"y\":1,\"height\":119,\"name\":\"7\",\"x\":1},{\"width\":39,\"y\":70,\"height\":55,\"name\":\"6\",\"x\":125},{\"width\":36,\"y\":122,\"height\":32,\"name\":\"5\",\"x\":85},{\"width\":37,\"y\":71,\"height\":31,\"name\":\"4\",\"x\":166},{\"width\":39,\"y\":122,\"height\":32,\"name\":\"3\",\"x\":44},{\"width\":23,\"y\":71,\"height\":31,\"name\":\"2\",\"x\":205},{\"width\":41,\"y\":122,\"height\":41,\"name\":\"1\",\"x\":1}]}",
+  "texture": "4132309a-a478-4988-ac9f-de152117f46a",
+  "subMetas": {}
+}

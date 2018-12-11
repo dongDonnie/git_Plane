@@ -1,0 +1,32 @@
+{
+  "ver": "2.3.0",
+  "uuid": "0eb15a62-2927-48fd-bbea-c197477270c5",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "platformSettings": {},
+  "subMetas": {
+    "gold_treasure_open": {
+      "ver": "1.0.3",
+      "uuid": "18cad699-7b42-4297-bf34-3d960515f453",
+      "rawTextureUuid": "0eb15a62-2927-48fd-bbea-c197477270c5",
+      "trimType": "custom",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 92,
+      "height": 107,
+      "rawWidth": 92,
+      "rawHeight": 107,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

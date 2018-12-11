@@ -1,0 +1,66 @@
+{
+  "__type__": "cc.AnimationClip",
+  "_name": "animeCount",
+  "_objFlags": 0,
+  "_native": "",
+  "_duration": 2.5,
+  "sample": 60,
+  "speed": 1,
+  "wrapMode": 1,
+  "curveData": {
+    "comps": {
+      "cc.Sprite": {}
+    },
+    "props": {},
+    "paths": {
+      "Number": {
+        "comps": {
+          "cc.Sprite": {
+            "spriteFrame": [
+              {
+                "frame": 0,
+                "value": {
+                  "__uuid__": "6b8773c4-14a2-497a-9ea8-e4ee68c951e5"
+                }
+              },
+              {
+                "frame": 1,
+                "value": {
+                  "__uuid__": "6bb8fb47-f24c-49a6-ad7f-6aa4f83b563f"
+                }
+              },
+              {
+                "frame": 2,
+                "value": {
+                  "__uuid__": "32a48338-5889-4b98-b1f4-de6a5358530f"
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+  },
+  "events": [
+    {
+      "frame": 0,
+      "func": "playCountEffect",
+      "params": []
+    },
+    {
+      "frame": 1,
+      "func": "playCountEffect",
+      "params": []
+    },
+    {
+      "frame": 2,
+      "func": "playCountEffect",
+      "params": []
+    },
+    {
+      "frame": 2.5,
+      "func": "countdown",
+      "params": []
+    }
+  ]
+}

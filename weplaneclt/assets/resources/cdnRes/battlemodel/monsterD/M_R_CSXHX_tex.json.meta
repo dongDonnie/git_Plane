@@ -1,0 +1,7 @@
+{
+  "ver": "1.0.0",
+  "uuid": "6fca8be6-b16d-4607-8145-4547fa3c6bfc",
+  "atlasJson": "{\"width\":256,\"imagePath\":\"M_R_CSXHX_tex.png\",\"height\":256,\"name\":\"M_R_CSXHX\",\"SubTexture\":[{\"frameY\":-1,\"y\":144,\"frameWidth\":23,\"frameX\":-1,\"frameHeight\":81,\"width\":22,\"height\":80,\"name\":\"M_R_CSXHX (2)\",\"x\":100},{\"frameY\":-1,\"y\":191,\"frameWidth\":17,\"frameX\":-1,\"frameHeight\":45,\"width\":16,\"height\":44,\"name\":\"M_R_CSXHX (4)\",\"x\":1},{\"frameY\":-1,\"y\":1,\"frameWidth\":157,\"frameX\":-1,\"frameHeight\":142,\"width\":156,\"height\":141,\"name\":\"M_R_CSXHX (1)\",\"x\":1},{\"frameY\":-1,\"y\":144,\"frameWidth\":98,\"frameX\":-1,\"frameHeight\":46,\"width\":97,\"height\":45,\"name\":\"M_R_CSXHX (3)\",\"x\":1}]}",
+  "texture": "3777d911-685b-48ed-9d0c-69de0a7b32be",
+  "subMetas": {}
+}
