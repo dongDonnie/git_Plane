@@ -20,8 +20,16 @@ var EventManager = cc.Class({
     },
 
     addEventListener: function (event, fun, target) {
-        if (event == null || fun == null || target == null) {
-            cc.error('invalid param');
+        if (event == null) {
+            cc.error('invalid eventName');
+            return;
+        }
+        if (fun == null){
+            cc.error('invalid fun');
+            return;
+        }
+        if (target == null){
+            cc.error('invalid  target');
             return;
         }
         var obj = this.listenerList[event];

@@ -53,7 +53,7 @@ CampNormal83.data = {
                 {wave:{index:5,step:8}},
             ],
             effect:[
-                {extra:{open:-1,delay:2.8}},
+                {extra:{open:-1,delay:1.2}},
             ],
         },
         {

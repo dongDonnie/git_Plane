@@ -101,7 +101,7 @@ var WindowManager = cc.Class({
                 if (prefab != null) {
                     self.mapViewData[typeName] = cc.instantiate(prefab);
                     self.addView(type, true, true, callback, param);
-                    //console.log('pushview: ', self.vectorViewStack);
+                    console.log('pushview: ', self.vectorViewStack);
                     self.showLog("PushView: resmanager loadres success, push success!");
                 } else {
                     self.showLog("PushView: push view failed!");
@@ -109,7 +109,7 @@ var WindowManager = cc.Class({
             });
         } else {
             this.addView(type, true, true, callback, param);
-            //console.log('pushview: ', this.vectorViewStack);
+            console.log('pushview: ', this.vectorViewStack);
             this.showLog("PushView: windowmanager has this view, push success!");
         }
     },
@@ -404,12 +404,15 @@ var WindowManager = cc.Class({
                             wnd.getComponent(type).judgeHaveRewardBox();
                         });
                     } else if (this.record == WndTypeDefine.WindowType.E_DT_NORMAL_QUESTLIST_VIEW) {
-                        WindowManager.getInstance().pushView(WndTypeDefine.WindowType.E_DT_NORMAL_QUESTLIST_VIEW, function (wnd, type, name) {
+                        this.pushView(WndTypeDefine.WindowType.E_DT_NORMAL_QUESTLIST_VIEW, function (wnd, type, name) {
                             // wnd.getComponent(type).initQuestListViewData(true);
                             wnd.getComponent(type).setForce(true);
+                            wnd.getComponent(type).needShowRecommond();
+                            wnd.getComponent(type).needShowTestPlayFinish();
                         });
                     }
                 }
+                this.record = '';
             }
         }
     },

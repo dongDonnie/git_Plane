@@ -113,6 +113,7 @@
       "__id__": 4
     },
     "dbArmature": null,
+    "dbArmatureCallback": null,
     "collider": {
       "__id__": 2
     },
@@ -121,6 +122,7 @@
     "objectType": 0,
     "entity": null,
     "defaultAction": null,
+    "tbl": null,
     "_id": ""
   },
   {
@@ -137,10 +139,10 @@
     "_animationName": "start_3",
     "playTimes": 0,
     "_N$dragonAsset": {
-      "__uuid__": "5dd2c128-0c65-449f-bcb4-8ec53a7df541"
+      "__uuid__": "522fbd98-d202-4cc1-9336-e93687facd4d"
     },
     "_N$dragonAtlasAsset": {
-      "__uuid__": "a455810b-51ad-4298-9803-d14eb475cbd5"
+      "__uuid__": "ce24868e-f67c-4b11-8431-ce5d1e9e1130"
     },
     "_N$_defaultArmatureIndex": 0,
     "_N$_animationIndex": 10,

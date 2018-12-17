@@ -197,8 +197,8 @@ var Me = cc.Class({
         if (this.levelUpFlag && this.levelUpData) {
             this.setLevelUpData(this.levelUpData);
         }
-        this.levelUpFlag = false;
-        this.levelUpData = null;
+        // this.levelUpFlag = false;
+        // this.levelUpData = null;
     },
     setLevelUpFlag: function () {
         this.levelUpFlag = false;

@@ -232,7 +232,7 @@ cc.Class({
     },
 
     setDrawConfirmContent: function (name, type, title, text, drawMode, ticketsEnough, diamondEnough, pFunCloseCallback, pFunConfirmCallback, pFunCancelCallback, confirmName, cancelName) {
-        let CONTENT_TEXT = 0, CONTENT_DRAWINFO = 1, CONTENT_BOXPREVIEW = 2, CONTENT_SP_BUY = 3;
+        let CONTENT_DRAWINFO = 1;
         let contentMode = CONTENT_DRAWINFO;
         this.selectContent(contentMode);
 
@@ -240,24 +240,9 @@ cc.Class({
         this.setContent(3, name, type, title, "", pFunCloseCallback, pFunConfirmCallback, pFunCancelCallback, "", confirmName, cancelName);
     },
 
-    setBuySpContent: function (name, type, title, closeCallBack, confirmCallBack, cancelCallBack, confirmName, cancelName) {
-        let CONTENT_TEXT = 0, CONTENT_DRAWINFO = 1, CONTENT_BOXPREVIEW = 2, CONTENT_SP_BUY = 3;
-        let contentMode = CONTENT_SP_BUY;
-        this.selectContent(contentMode);
-
-        cancelCallBack = function () {
-            
-        };
-
-
-        confirmCallBack = this.setBuySpTip(confirmCallBack);
-        this.setContent(4, name, type, title, "", closeCallBack, confirmCallBack, cancelCallBack, "", confirmName, cancelName);
-        this.node.height = 500;
-    },
-
     setResetQuestContent: function (name, type, title, resetDesc, diamondCost, closeCallBack, confirmCallBack, cancelCallBack, confirmName, cancelName) {
-        let CONTENT_TEXT = 0, CONTENT_DRAWINFO = 1, CONTENT_BOXPREVIEW = 2, CONTENT_SP_BUY = 3, CONTENT_QUESTRESET = 4;
-        let contentMode = CONTENT_QUESTRESET = 4;
+        let CONTENT_QUESTRESET = 3;
+        let contentMode = CONTENT_QUESTRESET;
         this.selectContent(contentMode);
 
         this.setResetQuestTip(resetDesc, diamondCost);
@@ -266,7 +251,7 @@ cc.Class({
     },
 
     setItemBoxContent: function (name, type, title, condition, vecItems, closeCallBack, confirmCallBack, cancelCallBack, confirmName, cancelName) {
-        let CONTENT_TEXT = 0, CONTENT_DRAWINFO = 1, CONTENT_BOXPREVIEW = 2, CONTENT_SP_BUY = 3;
+        let CONTENT_BOXPREVIEW = 2;
         let contentMode = CONTENT_BOXPREVIEW;
         this.selectContent(contentMode);
 
@@ -276,19 +261,12 @@ cc.Class({
     },
 
     setDrawBoxPreviewContent: function (name, type, title, closeCallBack, confirmCallBack, cancelCallBack) {
-        let CONTENT_DRAWBOXVIEW = 5;
+        let CONTENT_DRAWBOXVIEW = 4;
         let contentMode = CONTENT_DRAWBOXVIEW;
         this.selectContent(contentMode);
 
         this.setContent(0, name, type, title, "", closeCallBack, confirmCallBack, cancelCallBack, "", "", "");
         this.node.height = 820;
-    },
-
-    setBigGiftBagContent: function (name, type, closeCallBack, confirmCallBack, cancelCallBack, prefabName) {
-        let contentMode = 6;
-        this.selectContent(contentMode);
-        this.setContent(1, name, type, "", "", closeCallBack, confirmCallBack, cancelCallBack, prefabName, "分享到群", "");
-        this.node.height = 500;
     },
 
     setDrawTip: function (drawMode, text, ticketsEnough, diamondEnough) {

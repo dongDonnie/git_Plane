@@ -8,6 +8,9 @@ const GameServerProto = require("GameServerProto");
 const i18n = require('LanguageData');
 const CampPlanetPosData = require('CampPlanetPosData');
 const BattleManager = require('BattleManager');
+const config = require("config");
+const Guide = require('Guide');
+const WindowManager = require("windowmgr");
 
 cc.Class({
     extends: RootBase,
@@ -72,6 +75,8 @@ cc.Class({
         this.isFirstIn = true;
         this.curChapterIndex = -1;
         this.clickedChapter = false;
+        this.needShowRecommondWnd = false;
+        this.needShowTestPlayFinishWnd = false;
     },
 
     setForce: function (force) {
@@ -97,6 +102,7 @@ cc.Class({
                 BattleManager.getInstance().quitOutSide();
                 BattleManager.getInstance().startOutside(uiNode.getChildByName('UIMain').getChildByName('nodeBottom').getChildByName('planeNode'), GlobalVar.me().memberData.getStandingByFighterID(), true);
             }
+            this.canUpdate = false;
         } else if (name == "Enter") {
             this._super("Enter")
             if (!this.clickedChapter){
@@ -110,9 +116,19 @@ cc.Class({
             }else{
                 this.clickedChapter = false;
             }
+            
             this.node.getChildByName("nodeCenter").active = true;
             this.node.getChildByName("nodeTop").active = true;
             this.node.getChildByName("nodeBottom").active = true;
+
+            if (this.needShowTestPlayFinishWnd && !config.NEED_GUIDE && GlobalVar.getShareSwitch()){
+                CommonWnd.showShareTestPlayFinishWnd();
+            }
+            else if (this.needShowRecommondWnd && !config.NEED_GUIDE && GlobalVar.getShareSwitch()){
+                CommonWnd.showRecommandWnd();
+            }
+            this.needShowTestPlayFinishWnd = false;
+            this.needShowRecommondWnd = false;
         }
     },
 
@@ -149,6 +165,13 @@ cc.Class({
         // this.nodeMaps.y += 100;
     },
 
+    needShowRecommond: function () {
+        this.needShowRecommondWnd = !GlobalVar.me().shareData.getShareRecommandState();
+    },
+    needShowTestPlayFinish: function () {
+        this.needShowTestPlayFinishWnd = !!GlobalVar.me().shareData.testPlayMemberID;
+    },
+
     registerEvents: function () {
         this.nodeMaps.on(cc.Node.EventType.TOUCH_END, this.mapTouchEnd, this);
         this.nodeMaps.on(cc.Node.EventType.TOUCH_CANCEL, this.mapTouchEnd, this);
@@ -177,7 +200,6 @@ cc.Class({
             this.changeQuest(this.curChapterIndex + 1);
         }
     },
-
 
     initQuestListViewData: function () {
         this.force = typeof this.force !== 'undefined' ? this.force : false;
@@ -486,6 +508,7 @@ cc.Class({
         this.clickedChapter = true;
         CommonWnd.showChapterListView(this.chapterType, this.curChapterIndex);
         // this.node.active = false;
+        this.canUpdate = false;
     },
 
     onBtnPlanet(event) {
@@ -553,4 +576,29 @@ cc.Class({
         GlobalVar.eventManager().removeListenerWithTarget(this);
     },
 
+    update: function (dt) {
+        if (config.NEED_GUIDE) return;
+        if (!this.canUpdate) {
+            this.canUpdate = true;
+            this.curTime = (new Date()).getTime();
+            cc.find('Canvas/guideNode').active = false;
+            return;
+        }
+        let curChapterID = GlobalVar.me().campData.getLastChapterID(this.chapterType);
+        if (curChapterID == 1) {
+            let windView = WindowManager.getInstance().getTopViewTypeName();
+            let nowTime = (new Date()).getTime();
+            if (windView != this.typeName) {
+                this.curTime = nowTime;
+                return;
+            }
+            if (nowTime - this.curTime > 10000) {
+                this.curTime = nowTime;
+                Guide.getInstance().showFinger();
+            }
+            if (cc.find('Canvas/guideNode').active) {
+                this.curTime = nowTime;
+            }
+        }
+    },
 });

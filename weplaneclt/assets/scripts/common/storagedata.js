@@ -44,6 +44,16 @@ StoredData.Type.ShareTimes = "shareTiems";
 StoredData.Type.TotalShareTimes = "totalShareTimes";
 StoredData.Type.ServerListData = "serverListData";
 StoredData.Type.BattleAssitTimes = "battleAssitTimes";
+StoredData.Type.FuLiShare = "fuLiShare";
+StoredData.Type.ClearCache = "clearcache";
+
+StoredData.setClearCache = function (clear) {
+    StoredData.setItem(StoredData.Type.ClearCache, typeof clear !=='undefined'?clear:false);
+};
+
+StoredData.getClearCache = function () {
+    return StoredData.getItem(StoredData.Type.ClearCache);
+};
 
 StoredData.setUserName = function (username) {
     StoredData.setItem(StoredData.Type.UserName, username);
@@ -100,7 +110,6 @@ StoredData.setEndlessMode = function (index) {
 
     StoredData.setItem(StoredData.Type.EndlessMode, JSON.stringify(endlessModeData));
 }
-
 StoredData.getEndlessMode = function (){
     let endlessModeData = null;
     let localData = StoredData.getItem(StoredData.Type.EndlessMode);
@@ -119,119 +128,77 @@ StoredData.getEndlessMode = function (){
 }
 
 StoredData.setShareTimesWithKey = function (key, saveType, endTime) {
-    // saveType 标记是每日清除还是活动后清除
-    let shareTimesData = null;
-    let localData = StoredData.getItem(StoredData.Type.ShareTimes);
-    if (localData){
-        shareTimesData = JSON.parse(localData);
-    }
-    // let shareTimesData = JSON.parse(StoredData.getItem(StoredData.Type.ShareTimes) || "{}");
-    if (!shareTimesData){
-        shareTimesData = {};
-    }
-    let timesData = shareTimesData[key];
-    let curTime = GlobalVar.me().serverTime;
-    if (!timesData || saveType != timesData.saveType){
-        timesData = {};
-        timesData.timeStamp = curTime;
-        timesData.times = 0;
-        timesData.endTime = endTime;
-        timesData.saveType = saveType;
-    }else if (timesData.saveType == GameServerProto.PT_AMS_ACT_LIMIT_DAILY){
-        let a = parseInt((curTime - 5 * 3600) / (3600 * 24));
-        let b = parseInt((timesData.timeStamp - 5 * 3600)/ (3600 * 24));
-        if (a > b){
-            timesData.timeStamp = curTime;
-            timesData.times = 0;
-            timesData.saveType = saveType;
-            timesData.endTime = endTime;
-        }
-    }else if (timesData.saveType == GameServerProto.PT_AMS_ACT_LIMIT_LONG){
-        if (curTime > timesData.endTime){
-            timesData.endTime = endTime;
-            timesData.times = 0;
-            timesData.saveType = saveType;
-        }
-    }
-    timesData.times += 1;
-    shareTimesData[key] = timesData;
+    let shareTimesData = StoredData.getShareDataWithKey(key, saveType, endTime);
+    shareTimesData[key][GlobalVar.me().roleID].times += 1;
     console.log("保存分享次数到本地：", shareTimesData);
     StoredData.setItem(StoredData.Type.ShareTimes, JSON.stringify(shareTimesData));
-    return timesData.times;
+    return shareTimesData[key][GlobalVar.me().roleID].times;
 };
-
 StoredData.getShareTimesWithKey = function (key, saveType, endTime) {
+    let shareTimesData = StoredData.getShareDataWithKey(key, saveType, endTime);
+    console.log("从本地获取分享次数数据:", shareTimesData);
+    StoredData.setItem(StoredData.Type.ShareTimes, JSON.stringify(shareTimesData));
+    return shareTimesData[key][GlobalVar.me().roleID].times;
+};
+StoredData.getShareDataWithKey = function (key, saveType, endTime) {
     let shareTimesData = null;
     let localData = StoredData.getItem(StoredData.Type.ShareTimes);
     if (localData){
         shareTimesData = JSON.parse(localData);
     }
 
-    // let shareTimesData = JSON.parse(StoredData.getItem(StoredData.Type.ShareTimes) || "{}");
-    console.log("从本地获取分享次数数据:", shareTimesData);
     if (!shareTimesData){
         shareTimesData = {};
     }
     let timesData = shareTimesData[key];
-    let timesReset = false;
+    if (!timesData){
+        shareTimesData[key] = {};
+    }
+    let roleData = shareTimesData[key][GlobalVar.me().roleID];
 
     let curTime = GlobalVar.me().serverTime;
-    if (!timesData || saveType != timesData.saveType){
-        timesData = {};
-        timesData.timeStamp = curTime;
-        timesData.times = 0;
-        timesData.endTime = endTime;
-        timesData.saveType = saveType;
-    }else if (timesData.saveType == GameServerProto.PT_AMS_ACT_LIMIT_DAILY){
-        let a = parseInt((curTime - 5 * 3600) / (3600 * 24));
-        let b = parseInt((timesData.timeStamp - 5 * 3600)/ (3600 * 24));
+    if (!roleData || saveType != roleData.saveType){
+        roleData = {};
+        roleData.timeStamp = curTime;
+        roleData.times = 0;
+        roleData.endTime = endTime;
+        roleData.saveType = saveType;
+    }else if (roleData.saveType == GameServerProto.PT_AMS_ACT_LIMIT_DAILY){
+        let a = parseInt((curTime - 5 * 3600 + 8 * 3600) / (3600 * 24));
+        let b = parseInt((roleData.timeStamp - 5 * 3600 + 8 * 3600)/ (3600 * 24));
         if (a > b){
-            timesData.timeStamp = curTime;
-            timesData.times = 0;
-            timesData.saveType = saveType;
-            timesData.endTime = endTime;
+            roleData.timeStamp = curTime;
+            roleData.times = 0;
+            roleData.saveType = saveType;
+            roleData.endTime = endTime;
         }
-    }else if (timesData.saveType == GameServerProto.PT_AMS_ACT_LIMIT_LONG){
-        if (curTime > timesData.endTime){
-            timesData.timeStamp = curTime;
-            timesData.endTime = endTime;
-            timesData.times = 0;
-            timesData.saveType = saveType;
+    }else if (roleData.saveType == GameServerProto.PT_AMS_ACT_LIMIT_LONG){
+        if (curTime > roleData.endTime){
+            roleData.timeStamp = curTime;
+            roleData.endTime = endTime;
+            roleData.times = 0;
+            roleData.saveType = saveType;
         }
+    }else if (roleData.saveType == 0){
+        
     }
-    shareTimesData[key] = timesData;
-    
-    StoredData.setItem(StoredData.Type.ShareTimes, JSON.stringify(shareTimesData));
-    return timesData.times;
-};
+    shareTimesData[key][GlobalVar.me().roleID] = roleData;
+    return shareTimesData;
+},
 
 StoredData.setTotalShareTimes = function () {
-    let totalTimesData = null;
-    let localData = StoredData.getItem(StoredData.Type.TotalShareTimes);
-    if (localData){
-        totalTimesData = JSON.parse(localData);
-    }
-    // let totalTimesData = JSON.parse(StoredData.getItem(StoredData.Type.TotalShareTimes) || "{}" );
-    if (totalTimesData){
-        let curTime = GlobalVar.me().serverTime;
-        let a = parseInt((curTime - 5 * 3600) / (3600 * 24));
-        let b = parseInt((totalTimesData.timeStamp - 5 * 3600)/ (3600 * 24));
-        if (a > b){
-            totalTimesData = {};
-            totalTimesData.timeStamp = curTime;
-            totalTimesData.times = 0;
-        }
-    }else{
-        totalTimesData = {};
-        totalTimesData.timeStamp = GlobalVar.me().serverTime;
-        totalTimesData.times = 0
-    }
-    totalTimesData.times += 1;
-
+    let totalTimesData = StoredData.getTotalShareData();
+    totalTimesData[GlobalVar.me().roleID].times += 1;
     console.log("保存总分享次数到本地:", totalTimesData);
     StoredData.setItem(StoredData.Type.TotalShareTimes, JSON.stringify(totalTimesData));
 };
 StoredData.getTotalShareTimes = function () {
+    let totalTimesData = StoredData.getTotalShareData();
+    console.log("判断后的分享数据:", totalTimesData);
+    StoredData.setItem(StoredData.Type.TotalShareTimes, JSON.stringify(totalTimesData));
+    return totalTimesData[GlobalVar.me().roleID].times;
+};
+StoredData.getTotalShareData = function () {
     let totalTimesData = null;
     let localData = StoredData.getItem(StoredData.Type.TotalShareTimes);
     if (localData){
@@ -240,81 +207,81 @@ StoredData.getTotalShareTimes = function () {
     // let totalTimesData = JSON.parse(StoredData.getItem(StoredData.Type.TotalShareTimes) || "{}");
 
     console.log("从本地获取总分享次数:", totalTimesData);
+    let roleData = null;
     if (totalTimesData){
+        roleData = totalTimesData[GlobalVar.me().roleID];
+        if (!roleData){
+            roleData = {};
+            roleData.timeStamp = GlobalVar.me().serverTime;
+            roleData.times = 0;
+        }
+
         let curTime = GlobalVar.me().serverTime;
-        let a = parseInt((curTime - 5 * 3600) / (3600 * 24));
-        let b = parseInt((totalTimesData.timeStamp - 5 * 3600)/ (3600 * 24));
+        let a = parseInt((curTime - 5 * 3600 + 8 * 3600) / (3600 * 24));
+        let b = parseInt((roleData.timeStamp - 5 * 3600 + 8 * 3600)/ (3600 * 24));
         if (a > b){
-            totalTimesData.timeStamp = curTime;
-            totalTimesData.times = 0;
+            roleData.timeStamp = curTime;
+            roleData.times = 0;
         }
     }else {
         totalTimesData = {};
-        totalTimesData.timeStamp = GlobalVar.me().serverTime;
-        totalTimesData.times = 0;
+        roleData = {};
+        roleData.timeStamp = GlobalVar.me().serverTime;
+        roleData.times = 0;
     }
-
-    console.log("判断后的分享数据:", totalTimesData);
-    StoredData.setItem(StoredData.Type.TotalShareTimes, JSON.stringify(totalTimesData));
-    return totalTimesData.times;
+    totalTimesData[GlobalVar.me().roleID] = roleData;
+    return totalTimesData;
 };
 
 StoredData.setBattleAssitTimes = function () {
-    let assitTimesData = null;
-    let localData = StoredData.getItem(StoredData.Type.BattleAssitTimes);
-    if (localData){
-        assitTimesData = JSON.parse(localData);
-    }
-    if (assitTimesData){
-        let curTime = GlobalVar.me().serverTime;
-        let a = parseInt((curTime - 5 * 3600) / (3600 * 24));
-        let b = parseInt((assitTimesData.timeStamp - 5 * 3600)/ (3600 * 24));
-        if (a > b){
-            assitTimesData = {};
-            assitTimesData.timeStamp = curTime;
-            assitTimesData.times = 0;
-        }
-    }else{
-        assitTimesData = {};
-        assitTimesData.timeStamp = GlobalVar.me().serverTime;
-        assitTimesData.times = 0
-    }
-    assitTimesData.times += 1;
-
+    let assitTimesData = StoredData.getBattleAssitData();
+    assitTimesData[GlobalVar.me().roleID].times += 1;
     console.log("保存空中支援的已免费获得次数:", assitTimesData);
     StoredData.setItem(StoredData.Type.BattleAssitTimes, JSON.stringify(assitTimesData));
 };
-
 StoredData.getBattleAssitTimes = function () {
+    let assitTimesData = StoredData.getBattleAssitData();
+    console.log("获得空中支援的已免费获得次数:", assitTimesData);
+    StoredData.setItem(StoredData.Type.BattleAssitTimes, JSON.stringify(assitTimesData));
+    return assitTimesData[GlobalVar.me().roleID].times;
+};
+StoredData.getBattleAssitData = function () {
     let assitTimesData = null;
     let localData = StoredData.getItem(StoredData.Type.BattleAssitTimes);
     if (localData){
         assitTimesData = JSON.parse(localData);
     };
+    let roleData = null;
     if (assitTimesData){
+        roleData = assitTimesData[GlobalVar.me().roleID];
+        if (!roleData){
+            roleData = {};
+            roleData.timeStamp = GlobalVar.me().serverTime;
+            roleData.times = 0;
+        }
+
         let curTime = GlobalVar.me().serverTime;
-        let a = parseInt((curTime - 5 * 3600) / (3600 * 24));
-        let b = parseInt((assitTimesData.timeStamp - 5 * 3600) / (3600 * 24));
+        let a = parseInt((curTime - 5 * 3600 + 8 * 3600) / (3600 * 24));
+        let b = parseInt((roleData.timeStamp - 5 * 3600 + 8 * 3600) / (3600 * 24));
         if (a > b){
-            assitTimesData.timeStamp = curTime;
-            assitTimesData.times = 0;
+            roleData.timeStamp = curTime;
+            roleData.times = 0;
         }
     }else{
         assitTimesData = {};
-        assitTimesData.timeStamp = GlobalVar.me().serverTime;
-        assitTimesData.times = 0;
+        roleData = {};
+        roleData.timeStamp = GlobalVar.me().serverTime;
+        roleData.times = 0;
     }
-    console.log("获得空中支援的已免费获得次数:", assitTimesData);
-    StoredData.setItem(StoredData.Type.BattleAssitTimes, JSON.stringify(assitTimesData));
-    return assitTimesData.times;
+    assitTimesData[GlobalVar.me().roleID] = roleData;
+    return assitTimesData;
 };
 
 StoredData.setLocalServerListData = function (serverListData) {
     console.log("保存服务器列表数据到本地:", serverListData);
     let str = JSON.stringify(serverListData);
     StoredData.setItem(StoredData.Type.ServerListData, str);
-},
-
+};
 StoredData.getLocalServerListData = function () {
     let serverData = null;
     let localData = StoredData.getItem(StoredData.Type.ServerListData);
@@ -324,3 +291,36 @@ StoredData.getLocalServerListData = function () {
     console.log("从本地获取服务器列表信息:", serverData);
     return serverData;
 };
+
+// StoredData.getFuliShareState = function (key) {
+//     let fuliShareData = StoredData.getFuliShareData(key);
+//     let curTime = GlobalVar.me().serverTime;
+//     let a = parseInt((curTime - 5 * 3600 + 8 * 3600) / (3600 * 24));
+//     let b = parseInt((fuliShareData[key][GlobalVar.me().roleID].timeStamp - 5 * 3600 + 8 * 3600) / (3600 * 24));
+//     return a > b;
+// };
+// StoredData.setFuliShareState = function (key) {
+//     let fuliShareData = StoredData.getFuliShareData(key);
+//     fuliShareData[key][GlobalVar.me().roleID].timeStamp = GlobalVar.me().serverTime;
+//     StoredData.setItem(StoredData.Type.FuLiShare, JSON.stringify(fuliShareData));
+// };
+// StoredData.getFuliShareData = function (key) {
+//     let fuliShareData = null;
+//     let localData = StoredData.getItem(StoredData.Type.FuLiShare);
+//     if (localData){
+//         fuliShareData = JSON.parse(localData);
+//     }else{
+//         fuliShareData = {};
+//     }
+
+//     if (!fuliShareData[key]){
+//         fuliShareData[key] = {};
+//         fuliShareData[key][GlobalVar.me().roleID] = {};
+//         fuliShareData[key][GlobalVar.me().roleID].timeStamp = 0;
+//     }else if (!fuliShareData[key][GlobalVar.me().roleID]){
+//         fuliShareData[key][GlobalVar.me().roleID] = {};
+//         fuliShareData[key][GlobalVar.me().roleID].timeStamp = 0;
+//     }
+
+//     return fuliShareData;
+// };

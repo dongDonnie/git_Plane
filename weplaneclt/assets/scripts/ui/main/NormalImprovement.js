@@ -100,7 +100,7 @@ cc.Class({
         GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_LEADEREQUIP_LEVELUP, this.onLevelUp, this);
         GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_LEADEREQUIP_QUALITYUP, this.onQualityUp, this);
         GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_BAG_ADDITEM_NTF, this.bagAddItem, this);
-
+        GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_GET_SWEEP_RESULT, this.refreshUI, this);
     },
 
     touchStart: function () {
@@ -767,6 +767,10 @@ cc.Class({
     bagAddItem: function (data) {
         if (this.curOperaType)
             this.initQualityUp();
+    },
+
+    refreshUI: function () {
+        this.initQualityUp();
     },
 
     close: function () {

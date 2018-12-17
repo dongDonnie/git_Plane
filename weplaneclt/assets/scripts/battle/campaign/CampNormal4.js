@@ -11,7 +11,7 @@ CampNormal4.data = {
         {wave:{groups:[676],wait:0,delay:[0]}},
         {wave:{groups:[98],wait:0,delay:[0],anime:1,isBOSS:1},maps:{mapIndex:[1],mapSpeed:[500],mapScale:[1],mapLoop:[0]}},
     ],
-    monsterExtra:[23,24,25,559,560,552,1308,1309,1310,1311,1312],
+    monsterExtra:[23,24,25,559,560,552,1308,1309,1310,1311,1312,23,24,25,559,560,552,1308,1309,1310,1311,1312],
     totalHint:[
         {
             checkTime:-1,
@@ -29,7 +29,7 @@ CampNormal4.data = {
                 {wave:{index:2,step:8}},
             ],
             effect:[
-                {extra:{open:-1,delay:1.2}},
+                {extra:{open:-1,delay:1}},
             ],
         },
         {

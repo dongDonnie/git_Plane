@@ -115,16 +115,16 @@
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
     "_armatureName": "armatureName",
-    "_animationName": "",
+    "_animationName": "putong",
     "playTimes": 0,
     "_N$dragonAsset": {
-      "__uuid__": "88c0731f-5557-466c-a7bd-9179715821af"
+      "__uuid__": "1fa43aa8-b136-43f5-8885-c5dd08ab75d1"
     },
     "_N$dragonAtlasAsset": {
-      "__uuid__": "d9e76052-1476-4b47-818f-0fca06b11e43"
+      "__uuid__": "32bf0420-b5ad-4e5a-b8f6-da93df0387eb"
     },
     "_N$_defaultArmatureIndex": 0,
-    "_N$_animationIndex": 0,
+    "_N$_animationIndex": 8,
     "_N$timeScale": 1,
     "_N$debugBones": false,
     "_id": ""

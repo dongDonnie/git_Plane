@@ -931,7 +931,7 @@ const Mode = cc.Class({
                 //this.selectExtra(effect.extra);
                 this.recordExtra(effect.extra.open, effect.extra.delay);
             } else if (typeof effect.drop !== 'undefined') {
-                let pos = cc.v3(cc.winSize.width * Math.random(), cc.winSize.height - 20);
+                let pos = cc.v3((Math.random() * (cc.winSize.width - 200)) + 100, cc.winSize.height - 20);
                 this.solution.solution_buff(effect.drop, pos);
             } else if (typeof effect.result !== 'undefined') {
                 this.step = campaignStep.GAMEEND;

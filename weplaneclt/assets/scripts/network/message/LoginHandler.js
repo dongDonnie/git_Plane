@@ -84,7 +84,7 @@ cc.Class({
             }
             let msg = {
                 ProgVer: 100,
-                ResVer: "1.0.0",
+                ResVer: GlobalVar.tblApi.getData('TblVersion')[1].strVersion,
                 Account: userID,
                 Password: "123",
                 DeviceID: "33223",
@@ -103,7 +103,7 @@ cc.Class({
         } else {
             let msg = {
                 ProgVer: 100,
-                ResVer: "1.0.0",
+                ResVer: GlobalVar.tblApi.getData('TblVersion')[1].strVersion,
                 Account: userID,
                 Password: "123",
                 DeviceID: "33223",

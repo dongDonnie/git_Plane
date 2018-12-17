@@ -12,7 +12,7 @@ CampNormal89.data = {
         {wave:{groups:[1241,1242,1243,1244],wait:0,delay:[0,2,2,2]}},
         {wave:{groups:[1246,838],wait:0,delay:[0,0]}},
         {wave:{groups:[1239,794,797],wait:0,delay:[0,1,2]}},
-        {wave:{groups:[1247,842],wait:0,delay:[0,0]}},
+        {wave:{groups:[1247,842],wait:0,delay:[0,0]}},  {wave:{groups:[1238,836],wait:0,delay:[0,2]}},
         {wave:{groups:[1241,1242,1243,1244],wait:0,delay:[0,2,2,2]}},
     ],
 
@@ -42,7 +42,7 @@ CampNormal89.data = {
             eventKey:0,
             checkTime:1,
             condition:[
-                {wave:{index:8,step:8}},
+                {wave:{index:9,step:8}},
             ],
             effect:[
                 {extra:{open:-2}},

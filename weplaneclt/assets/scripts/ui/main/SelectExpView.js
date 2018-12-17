@@ -111,6 +111,8 @@ cc.Class({
             tab.getChildByName("labelExpNumber").color = GlobalFunc.getSystemColor(9);
             if (!isActive) {
                 tab.getChildByName("btnoSelect").getComponent('ButtonObject').textLabel = '去获取';
+            } else {
+                tab.getChildByName("btnoSelect").getComponent('ButtonObject').textLabel = '选择';
             }
 
             // if(!isActive){

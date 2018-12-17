@@ -9,7 +9,7 @@ CampNormal65.data = {
         {wave:{groups:[866,837,836],wait:0,delay:[0.3,1.5,1.5]},maps:{mapIndex:[0],mapSpeed:[800],mapScale:[1],mapLoop:[0]}},
         {wave:{groups:[868,831,39],wait:0,delay:[0,2,3]},maps:{mapIndex:[1],mapSpeed:[800],mapScale:[1],mapLoop:[1]}},
         {wave:{groups:[869,44,45],wait:0,delay:[0,1.5,2]}},
-        {wave:{groups:[1392,996],wait:0,delay:[0,0]}},
+        {wave:{groups:[1391,996],wait:0,delay:[0,0]}},
         {wave:{groups:[1393,562,554],wait:0,delay:[0,0,2]}},
         {wave:{groups:[870,842],wait:0,delay:[0,0]}},
         {wave:{groups:[1019,993,995],wait:0,delay:[0,0,1]}},

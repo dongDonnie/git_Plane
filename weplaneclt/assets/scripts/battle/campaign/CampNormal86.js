@@ -9,9 +9,9 @@ CampNormal86.data = {
         {wave:{groups:[1127,42,43],wait:0,delay:[1,2,3]},maps:{mapIndex:[0],mapSpeed:[600],mapScale:[1],mapLoop:[1]}},
         {wave:{groups:[1128],wait:0,delay:[0,2,4]}},
         {wave:{groups:[1399],wait:0,delay:[0,2,4]}},
-        {wave:{groups:[1398],wait:0,delay:[0,2,4]}},
+        {wave:{groups:[1398],wait:0,delay:[0,2,4]}},  {wave:{groups:[1131,1132],wait:0,delay:[0,3.5,4]}},
         {wave:{groups:[1130],wait:0,delay:[0,2,4]}},
-        {wave:{groups:[1129],wait:0,delay:[0,2,4]}},
+        {wave:{groups:[1129],wait:0,delay:[0,2,4]}},  {wave:{groups:[1128],wait:0,delay:[0,2,4]}},
         {wave:{groups:[1131,1132],wait:0,delay:[0,3.5,4]}},
         {wave:{groups:[1133,1134],wait:0,delay:[0,4]}},
     
@@ -42,7 +42,7 @@ CampNormal86.data = {
             eventKey:0,
             checkTime:1,
             condition:[
-                {wave:{index:7,step:8}},
+                {wave:{index:9,step:8}},
             ],
             effect:[
                 {extra:{open:-2}},

@@ -117,7 +117,7 @@ cc.Class({
 
         if (!!heroManager.planeEntity && cc.isValid(heroManager.planeEntity)) {
 
-            if(heroManager.planeEntity.hp<=0){
+            if (heroManager.planeEntity.hp <= 0) {
                 return;
             }
 
@@ -410,23 +410,24 @@ cc.Class({
             GlobalVar.soundManager().playEffect('cdnRes/audio/battle/effect/weapon_up');
             this.heroManager.skillLevelUp(3);
         } else if (buff.objectID == Defines.Assist.PROTECT) {
-            GlobalVar.soundManager().playEffect('cdnRes/audio/battle/effect/blood_cure');
             hero.addProtectTime(Defines.PROTECT_TIME);
         } else if (buff.objectID == Defines.Assist.HP) {
-            GlobalVar.soundManager().playEffect('cdnRes/audio/battle/effect/blood_cure');
             hero.addHP();
         } else if (buff.objectID == Defines.Assist.MP) {
-            hero.addHP();
+            
+        } else if (buff.objectID == Defines.Assist.DASH) {
+            hero.addDashTime(Defines.DASH_TIME);
         } else if (buff.objectID == Defines.Assist.GHOST) {
-            //this.heroManager.planeEntity.addProtectTime(Defines.PROTECT_TIME);
+            
         } else if (buff.objectID == Defines.Assist.GREENSTONE) {
-            GlobalVar.soundManager().playEffect('cdnRes/audio/battle/effect/gold_bing');
+            hero.addCrystal(1);
         } else if (buff.objectID == Defines.Assist.BLUESTONE) {
-            GlobalVar.soundManager().playEffect('cdnRes/audio/battle/effect/gold_bing');
+            hero.addCrystal(2);
         } else if (buff.objectID == Defines.Assist.PURPERSTONE) {
-            GlobalVar.soundManager().playEffect('cdnRes/audio/battle/effect/gold_bing');
+            hero.addCrystal(3);
         } else if (buff.objectID == Defines.Assist.GOLD) {
-            this.heroManager.planeEntity.addGold(buff.objectID);
+            //this.heroManager.planeEntity.addGold(buff.objectID);
+            hero.addGold(buff.objectID);
         } else if (buff.objectID >= Defines.Assist.CHEST1 && buff.objectID <= Defines.Assist.CHEST6) {
             hero.addChest(buff.objectID);
         }
@@ -543,10 +544,10 @@ cc.Class({
         let size = monster.getCollider().size;
         let r = Math.min(size.width / 2, size.height / 2);
         let posM = monster.getPosition();
-        if(monster.baseObject!=null && cc.isValid(monster.baseObject)){
-            let posBM=monster.baseObject.getPosition();
-            posM=posM.add(posBM).add(offset);
-        } 
+        if (monster.baseObject != null && cc.isValid(monster.baseObject)) {
+            let posBM = monster.baseObject.getPosition();
+            posM = posM.add(posBM).add(offset);
+        }
         let posB = bullet.getPosition();
         let v = posB.sub(posM);
         let angle = Math.atan2(v.y, v.x) * 180 / Math.PI;
@@ -589,6 +590,45 @@ cc.Class({
         dmgMsg.pos = monster.getPosition();
         dmgMsg.dmg = monster.hitWithDamage(dmgMsg.dmg, true);
         if (dmgMsg.dmg >= 0) {
+            monster.flyDamageMsg(dmgMsg.dmg, dmgMsg.critical, dmgMsg.pos, true, true);
+        }
+        if (monster.isDead) {
+            monster.setClearBulletWhenDead(true);
+        }
+        return dmgMsg;
+    },
+
+    collisionMonsterWithDash(monster) {
+        if (monster.collisionSwitch == false || monster.isShow == false) {
+            return;
+        }
+
+        let damage = 0;
+        let critical = false;
+        if (monster.tbl.dwType == 4 || monster.tbl.dwType == 5) {
+            let rand = Math.random() + 0.2;
+            damage = monster.maxHp * (rand);
+            if (rand >= 0.7) {
+                critical = true;
+            }
+        } else if (monster.tbl.dwType == 2 || monster.tbl.dwType == 3) {
+            let rand=Math.random() + 0.4;
+            damage = monster.maxHp * (rand);
+            if (rand >= 0.8) {
+                critical = true;
+            }
+        } else {
+            damage = monster.maxHp;
+        }
+
+        let dmgMsg = {
+            dmg: Math.floor(damage),
+        };
+
+        dmgMsg.pos = monster.getPosition();
+        dmgMsg.dmg = monster.hitWithDamage(dmgMsg.dmg);
+        dmgMsg.critical = critical;
+        if (dmgMsg.dmg > 0) {
             monster.flyDamageMsg(dmgMsg.dmg, dmgMsg.critical, dmgMsg.pos, true, true);
         }
         if (monster.isDead) {

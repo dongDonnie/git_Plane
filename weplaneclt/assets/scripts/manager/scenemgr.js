@@ -91,6 +91,10 @@ var SceneManager = cc.Class({
         this.gotoScene(SceneDefines.LOGIN_STATE);
     },
 
+    resetOpen:function(){
+        this.gotoScene(SceneDefines.INIT_STATE);
+    },
+
     getCurrentScene: function () {
         return this.curScene;
     },

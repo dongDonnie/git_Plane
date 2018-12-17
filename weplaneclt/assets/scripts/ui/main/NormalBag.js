@@ -91,6 +91,7 @@ cc.Class({
     chooseModeByOpenType: function (openType) {
 
         if (openType == 1) {
+            this.bagScroll = this.getNodeByName("nodeType1").getChildByName("scrollviewItem").getComponent(cc.ScrollView);
             this.getNodeByName("nodeType1").active = true;
             this.getNodeByName("nodeType2").active = false;
             let bagWidget = this.node.getComponent(cc.Widget);
@@ -100,23 +101,24 @@ cc.Class({
             }
             bagWidget.updateAlignment();
             let Widget = this.bagScroll.node.getComponent(cc.Widget);
-            Widget.top = 40;
-            Widget.bottom = 80;
+            // Widget.top = 40;
+            // Widget.bottom = 80;
             Widget.updateAlignment();
         }
         else {
+            this.bagScroll = this.getNodeByName("nodeType2").getChildByName("scrollviewItem").getComponent(cc.ScrollView);
             this.getNodeByName("nodeType2").active = true;
             this.getNodeByName("nodeType1").active = false;
             let bagWidget = this.node.getComponent(cc.Widget);
             bagWidget.bottom = 90;
             bagWidget.updateAlignment();
             let Widget = this.bagScroll.node.getComponent(cc.Widget);
-            Widget.top = 258;
-            Widget.bottom = 218;
-            if (GlobalFunc.isAllScreen()) {
-                Widget.top += 120;
-                Widget.bottom += 120;
-            }
+            // Widget.top = 258;
+            // Widget.bottom = 218;
+            // if (GlobalFunc.isAllScreen()) {
+            //     Widget.top += 120;
+            //     Widget.bottom += 120;
+            // }
             Widget.updateAlignment();
         }
 

@@ -98,6 +98,7 @@ cc.Class({
                 this.countDownTimerID = -1;
             }
             if (this.bShowUseRewardTip){
+                this.bShowUseRewardTip = false;
                 CommonWnd.showItemBag(-1, null, null, null, 1);
             }else if (!this.deleteMode) {
                 let TYPE_RANKING_QUEST = 0, TYPE_RANKING_ENDLESS = 1;
@@ -118,10 +119,11 @@ cc.Class({
             this.deleteMode = false;
             this.registerEvent();
 
-            let curMode = GlobalVar.me().endlessData.getEndlessMode();
-            let labelCurMode = this.node.getChildByName("nodeCenter").getChildByName("labelCurMode");
-            labelCurMode.color = new cc.Color(MODE_COLOR[curMode][0], MODE_COLOR[curMode][1], MODE_COLOR[curMode][2]);
-            labelCurMode.getComponent(cc.Label).string = i18n.t('endlessModeText.' + curMode);
+
+            // let curMode = GlobalVar.me().endlessData.getEndlessMode();
+            // let labelCurMode = this.node.getChildByName("nodeCenter").getChildByName("labelCurMode");
+            // labelCurMode.color = new cc.Color(MODE_COLOR[curMode][0], MODE_COLOR[curMode][1], MODE_COLOR[curMode][2]);
+            // labelCurMode.getComponent(cc.Label).string = i18n.t('endlessModeText.' + curMode);
 
             
             this.node.getChildByName("nodeTop").active = true;
@@ -153,8 +155,12 @@ cc.Class({
 
     showRewardTip: function (data) {
         let self = this;
-        CommonWnd.showMessage(null, CommonWnd.bothConfirmAndCancel, i18n.t('label.4000216'), i18n.t('label.4000264'), null, function(){
+        CommonWnd.showMessage(null, CommonWnd.bothConfirmAndCancel, i18n.t('label.4000216'), i18n.t('label.4000264'), function(){
+            self.bShowUseRewardTip = false;
+        }, function(){
             self.animePlay(0);
+        }, function () {
+            self.bShowUseRewardTip = false;
         });
     },
 
@@ -349,6 +355,12 @@ cc.Class({
 
     initEndlessView: function (msg) {
 
+        let rankID = GlobalVar.me().endlessData.getRankID();
+        let labelCurMode = this.node.getChildByName("nodeCenter").getChildByName("labelCurMode");
+        labelCurMode.color = new cc.Color(MODE_COLOR[rankID - 1][0], MODE_COLOR[rankID - 1][1], MODE_COLOR[rankID - 1][2]);
+        labelCurMode.getComponent(cc.Label).string = i18n.t('endlessModeText.' + (rankID - 1));
+        
+
         let data = msg.Bag;
         this.labelHistoryHighestScore.string = data.HistoryMaxScore;  //设置历史最高分和本周最高分显示
         this.labelWeekHighestScore.string = data.WeekMaxScore;
@@ -528,6 +540,7 @@ cc.Class({
             BattleManager.getInstance().isEndlessFlag = true;
             BattleManager.getInstance().setCampName('CampEndless');
             BattleManager.getInstance().setMusic('audio/battle/music/battle_bk0');
+            BattleManager.getInstance().setAnotherFighter();
             GlobalVar.sceneManager().gotoScene(SceneDefines.BATTLE_STATE);
         })
         GlobalVar.soundManager().playEffect('cdnRes/audio/main/effect/click_gobattle');

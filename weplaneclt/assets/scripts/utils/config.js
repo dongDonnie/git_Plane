@@ -24,7 +24,7 @@ Config.SERVER_URL_GONGGAO = "http://ysup.phonecoolgame.com/json.php?_c=svrnotice
 Config.NEED_GUIDE = true;
 
 //是否开启GM命令
-Config.GM_SWITCH = false;
+Config.GM_SWITCH = true;
 
 //是否隐藏vip (根据login s2c的值会自动设置)
 Config.HIDE_VIP = false;

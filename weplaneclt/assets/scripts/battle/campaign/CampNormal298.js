@@ -10,7 +10,7 @@ CampNormal298.data = {
         {wave:{groups:[773,776,1360],wait:0,delay:[0,1.2,2]}}, {wave:{groups:[1366,792,798],wait:0,delay:[0,2,3]}},
         {wave:{groups:[1365,772,777],wait:0,delay:[0,1,2]}},
         {wave:{groups:[1363,1364],wait:0,delay:[0,1]}},
-     
+        {wave:{groups:[1366,792,798],wait:0,delay:[0,2,3]}},
         {wave:{groups:[792,795,798,1361,1362],wait:0,delay:[0,0,0,0.8,2]}},
         {wave:{groups:[1405,690,800],wait:0,delay:[0,1.5,3]}},
     ],

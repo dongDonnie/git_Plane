@@ -44,11 +44,41 @@ var UIMain = cc.Class({
             weChatAPI.getShareConfig();
             weChatAPI.setWithShareTicket(true);
             weChatAPI.getMaterials(function (data) {
-                console.log("Materials:", data);   
+                console.log("Materials:", data);
+                wx.showShareMenu();
+                wx.onShareAppMessage(res => {
+                    if (res.from === 'button') {
+                      console.log("来自页面内转发按钮");
+                      console.log(res.target);
+                    }
+                    else {
+                      console.log("来自右上角转发菜单")
+                    }
+                    return {
+                      title: '王牌机战',
+                    //   path: '',
+                      imageUrl: data[0][0].cdnurl,
+                      success: (res) => {
+                        console.log("转发成功", res);
+                      },
+                      fail: (res) => {
+                        console.log("转发失败", res);
+                      }
+                    }
+                })
             });
+            //weChatAPI.createRewardedVideoAd();
             
             if (GlobalVar.me().loginData.getLoginReqDataServerID()) {
                 weChatAPI.reportServerLogin(GlobalVar.me().loginData.getLoginReqDataAccount(), GlobalVar.me().loginData.getLoginReqDataServerID(), GlobalVar.me().serverTime * 100);
+            }
+
+            if (GlobalVar.me().roleID == GlobalVar.me().roleName){
+                weChatAPI.getUserInfo(function(userInfo){
+                    GlobalVar.me().roleName = userInfo.nickName;
+                    GlobalVar.me().loginData.setLoginReqDataAvatar(userInfo.avatarUrl);
+                    GlobalVar.handlerManager().mainHandler.sendReNameReq(GlobalVar.me().roleID, userInfo.nickName, userInfo.avatarUrl);
+                })
             }
         }
 
@@ -85,6 +115,10 @@ var UIMain = cc.Class({
         
         GlobalVar.handlerManager().campHandler.sendGetCampBagReq(GameServerProto.PT_CAMPTYPE_MAIN);
 
+        if (!config.NEED_GUIDE && !GlobalVar.me().shareData.getShareDailyState() && GlobalVar.getShareSwitch()){
+            GlobalVar.me().shareData.data.FuliDaily = 1;
+            CommonWnd.showShareDailyWnd();
+        }
     },
 
     update:function(dt){
@@ -141,8 +175,9 @@ var UIMain = cc.Class({
     },
 
     judgeLevelUp: function () {
-        if(!config.NEED_GUIDE)
+        if(!config.NEED_GUIDE){
             GlobalVar.me().getLevelUpData();
+        }
     },
 
     updateExpBar: function () {
@@ -687,7 +722,7 @@ var UIMain = cc.Class({
 
     skipGuide: function () {
         config.NEED_GUIDE = false;
-        cc.find('Canvas/GuideNode').active = false;
+        cc.find('Canvas/guideNode').active = false;
     },
 
     setMode: function () {
@@ -696,7 +731,7 @@ var UIMain = cc.Class({
             this.getNodeByName('btnSendGM').active = false;
             this.getNodeByName('btnoBattleDemo').active = false;
             this.getNodeByName('btnoBattleEditor').active = false;
-            cc.find('Canvas/GuideNode/skip').active = false;
+            cc.find('Canvas/guideNode/skip').active = false;
         }
     },
 });

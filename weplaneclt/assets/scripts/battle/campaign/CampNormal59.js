@@ -7,7 +7,7 @@ CampNormal59.data = {
     ],
     monsterWaves:[
         {wave:{groups:[375],wait:0,delay:[2]},maps:{mapIndex:[0,1],mapSpeed:[400,1000],mapScale:[1,1.2],mapLoop:[1,1]}},
-        {wave:{groups:[36,17,23,415,39,40,416],wait:0,delay:[0,0,2,3,4,5,5]}},
+        {wave:{groups:[36,17,23,415,39,40,416],wait:0,delay:[0,0,2,3,4,5,5]}}, {wave:{groups:[1442,52,546],wait:0,delay:[0,1,2]}},
         {wave:{groups:[425,39,38,374,43],wait:0,delay:[0,1,1,4,4]}},
         {wave:{groups:[427,39,38],wait:0,delay:[0,1,1]}},
         {wave:{groups:[1440,43,544],wait:0,delay:[0,1,2]}},

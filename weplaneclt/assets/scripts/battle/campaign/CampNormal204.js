@@ -7,7 +7,7 @@ CampNormal204.data = {
     ],
     monsterWaves:[
         {wave:{groups:[387,37],wait:0,delay:[2,3.5]},maps:{mapIndex:[0],mapSpeed:[600],mapScale:[1],mapLoop:[1]}},
-       
+        {wave:{groups:[390,18],wait:0,delay:[0,0]}},
         {wave:{groups:[389,17],wait:0,delay:[0,0]}},
         {wave:{groups:[388,114,27],wait:0,delay:[0,0,0]}},
         {wave:{groups:[390,18],wait:0,delay:[0,0]}},
@@ -29,7 +29,7 @@ CampNormal204.data = {
             eventKey:0,
             checkTime:1,
             condition:[
-                {wave:{index:3,step:8}},
+                {wave:{index:4,step:8}},
             ],
             effect:[
                 {extra:{open:-1,delay:1}},
@@ -39,7 +39,7 @@ CampNormal204.data = {
             eventKey:0,
             checkTime:1,
             condition:[
-                {wave:{index:4,step:5}},
+                {wave:{index:5,step:5}},
             ],
             effect:[
                 {extra:{open:-2}},

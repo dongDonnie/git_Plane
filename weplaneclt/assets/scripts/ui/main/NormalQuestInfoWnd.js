@@ -8,6 +8,8 @@ const CommonWnd = require("CommonWnd");
 const i18n = require('LanguageData');
 const BattleManager = require('BattleManager');
 const SceneDefines = require("scenedefines");
+const weChatAPI = require("weChatAPI");
+const config = require("config");
 
 cc.Class({
     extends: RootBase,
@@ -409,7 +411,46 @@ cc.Class({
         }
 
         this.btnStartBattle.interactable = false;
-        GlobalVar.handlerManager().campHandler.sendCampBeginReq(this.tblData.byChapterID, this.tblData.wCampaignID)
+
+        let self = this;
+
+        let timesLimit = GlobalVar.tblApi.getDataBySingleKey('TblParam', GameServerProto.PTPARAM_MEMBER_TESTPLAY_DAYMAX).dValue;
+        let curTimes = GlobalVar.me().shareData.getShareMemberTestPlay();
+        //console.log("ShareMemberTestPlay:", curTimes, "/", timesLimit);
+        let randomNum = Math.random()*100 + 1;
+        let show = false;
+        if (this.tblData.wIconID > 1 && randomNum > 20){
+            show = true;
+        }
+        if (show && curTimes < timesLimit && !config.NEED_GUIDE){
+            let totalMemberData = GlobalVar.tblApi.getData('TblMember');
+            let ids = [];
+            for (let i in totalMemberData){
+                if (totalMemberData[i].byGetType == 1){
+                    ids.push(parseInt(i));
+                }
+            }
+    
+            for (let i = 0; i<ids.length;i++){
+                let memberData = GlobalVar.me().memberData.getMemberByID(ids[i]);
+                if (memberData){
+                    ids.splice(i, 1);
+                    i -= 1;
+                }
+            }
+            
+            if (ids.length == 0){
+                GlobalVar.handlerManager().campHandler.sendCampBeginReq(this.tblData.byChapterID, this.tblData.wCampaignID);
+            }else{
+                CommonWnd.showShareMemberTestPlayWnd(function () {
+                    GlobalVar.handlerManager().campHandler.sendCampBeginReq(self.tblData.byChapterID, self.tblData.wCampaignID);
+                });
+            }
+        }else{
+            GlobalVar.handlerManager().campHandler.sendCampBeginReq(this.tblData.byChapterID, this.tblData.wCampaignID);
+        }
+
+        // GlobalVar.handlerManager().campHandler.sendCampBeginReq(this.tblData.byChapterID, this.tblData.wCampaignID)
 
         // BattleManager.getInstance().isCampaignFlag = true;
         // BattleManager.getInstance().setNormalCampaign(this.tblData.wCampaignID);
@@ -419,6 +460,10 @@ cc.Class({
     onGameStartNTF: function (msg) {
         // cc.log('onGameStartNTF', msg);
         if (msg.ErrCode == 0 && typeof msg.OK !== 'undefined') {
+            if (GlobalVar.me().shareData.testPlayMemberID){
+                GlobalVar.me().memberData.setOneTimeChuZhanMemberID(GlobalVar.me().shareData.testPlayMemberID);
+            }
+
             var self=this;
             this.btnOrangeAnime.active = false;
             this.btnYellowAnime.active = true;

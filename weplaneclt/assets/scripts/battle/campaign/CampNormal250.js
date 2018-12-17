@@ -10,7 +10,7 @@ CampNormal250.data = {
          {wave:{groups:[982,882,793,833,795],wait:0,delay:[0,1,2,2,3,3]}},
        
         {wave:{groups:[983,419,312,420,414],wait:0,delay:[0,1,2,3,4,5]}},        {wave:{groups:[980,981,792,796,793],wait:0,delay:[0,1,2,3,4]}},
-        {wave:{groups:[81],wait:0,delay:[0],anime:1,isBOSS:1}},
+        {wave:{groups:[89],wait:0,delay:[0],anime:1,isBOSS:1}},
     ],
     monsterExtra:[311,312,313,314,315,316,317],
 

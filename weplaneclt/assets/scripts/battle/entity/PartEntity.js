@@ -5,6 +5,7 @@ const BattleManager = require('BattleManager');
 const BM = require('BulletMapping');
 var ShaderUtils = require("ShaderUtils");
 const weChatAPI = require("weChatAPI");
+const config = require("config");
 
 var FighterState = cc.Enum({
     StandingBy: 0,
@@ -37,6 +38,8 @@ cc.Class({
         this.state = FighterState.StandingBy;
         this.protectTime = 0;
         this.invincibleTime = 0;
+        this.dashTime = 0;
+        this.magnetTime = 0;
 
         this.partData = {};
         this.partData.status = 0;
@@ -63,6 +66,8 @@ cc.Class({
         this.skillLevel = 0;
         this.state = FighterState.StandingBy;
         this.protectTime = 0;
+        this.dashTime = 0;
+        this.magnetTime = 0;
         this.invincibleTime = 0;
     },
 
@@ -94,9 +99,9 @@ cc.Class({
                 if (this.objectType == Defines.ObjectType.OBJ_HERO) {
                     let index = objectName.lastIndexOf('_');
                     let id = objectName.substring(index + 1, objectName.length);
-                    
+
                     this.partObject.setPosition(cc.v3(0, -65));
-                    if(id=='710'){
+                    if (id == '710') {
                         this.partObject.setPosition(cc.v3(0, -35));
                     }
                     // if(id=='1810'){
@@ -109,7 +114,7 @@ cc.Class({
 
                 //this.shaderRender=this.part.getSpine();
 
-                if(this.objectType==Defines.ObjectType.OBJ_HERO && this.showType==0){
+                if (this.objectType == Defines.ObjectType.OBJ_HERO && this.showType == 0) {
                     this.addMotionStreak('huoyan');
                 }
             } else {
@@ -117,12 +122,12 @@ cc.Class({
             }
             return true;
         } else if (this.objectType == Defines.ObjectType.OBJ_ASSIST) {
-            let itemData= GlobalVar.tblApi.getDataBySingleKey('TblItem', objectName);
-            let path='';
-            if(itemData.byColor!=6){
-                path='cdnRes/itemicon/'+itemData.byType+'/'+itemData.byColor+'/'+objectName;
-            }else{
-                path='cdnRes/itemicon/'+itemData.byType+'/5/'+objectName;
+            let itemData = GlobalVar.tblApi.getDataBySingleKey('TblItem', objectName);
+            let path = '';
+            if (itemData.byColor != 6) {
+                path = 'cdnRes/itemicon/' + itemData.byType + '/' + itemData.byColor + '/' + objectName;
+            } else {
+                path = 'cdnRes/itemicon/' + itemData.byType + '/5/' + objectName;
             }
             this.partObject = new cc.Node();
             let sp = this.partObject.addComponent(cc.Sprite);
@@ -157,8 +162,8 @@ cc.Class({
         return this.partObject.getComponent(cc.BoxCollider);
     },
 
-    getPointCollider:function(){
-        if(this.partObject!=null & cc.isValid(this.partObject)){
+    getPointCollider: function () {
+        if (this.partObject != null & cc.isValid(this.partObject)) {
             return this.partObject.getChildByName('point').getComponent(cc.BoxCollider);
         }
         return null;
@@ -200,6 +205,12 @@ cc.Class({
             }
             if (this.protectTime > 0) {
                 this.protectTime -= dt;
+            }
+            if (this.magnetTime > 0) {
+                this.magnetTime -= dt;
+                if (this.magnetTime < 0) {
+                    this.magnetTime = 0;
+                }
             }
             if (this.lastSkillTime <= 0) {
                 if (this.skillLevel <= this.partData.skillIDs.length - 2 || this.partData.skillIDs.length <= 1) {
@@ -245,7 +256,7 @@ cc.Class({
         }
 
         if (this.state == FighterState.Normal && this.part != null) {
-            if(this.objectName.indexOf('Fighter/Fighter_')!=-1 && this.showType == 0){
+            if (this.objectName.indexOf('Fighter/Fighter_') != -1 && this.showType == 0) {
                 GlobalVar.soundManager().playEffect('cdnRes/audio/battle/effect/baozou');
             }
             this.part.crazyStart();
@@ -281,7 +292,7 @@ cc.Class({
     skillLevelUp(plus) {
         let sl = this.partData.skillIDs.length;
         this.skillLevel = Math.min(sl - 1, this.skillLevel + plus);
-        if (this.skillLevel < sl - 1 || this.skillLevel==0 && sl==1) {
+        if (this.skillLevel < sl - 1 || this.skillLevel == 0 && sl == 1) {
             this.useNormalBullet();
         } else {
             let cd = this.useSuperBullet();
@@ -311,9 +322,21 @@ cc.Class({
         this.hp = Math.min(this.maxHp, this.hp + plus);
     },
 
-    hitWithDamage(dmg,immediately) {
-        immediately=typeof immediately!=='undefined'?immediately:0;
-        
+    addDashTime(time) {
+        this.dashTime = time;
+    },
+
+    addMagnetTime(time) {
+        this.magnetTime = time;
+    },
+
+    hitWithDamage(dmg, immediately) {
+        immediately = typeof immediately !== 'undefined' ? immediately : 0;
+
+        if (!!BattleManager.getInstance().dashMode) {
+            return;
+        }
+
         if (this.invincibleTime > 0) {
             return;
         }
@@ -322,12 +345,12 @@ cc.Class({
             return;
         }
 
-        if(immediately==1){
+        if (immediately == 1) {
             dmg = this.maxHp;
-        }else if(immediately==2){
-            dmg=this.maxHp*0.3;
-        }else if(immediately==3){
-            dmg=this.maxHp*0.5;
+        } else if (immediately == 2) {
+            dmg = this.maxHp * 0.3;
+        } else if (immediately == 3) {
+            dmg = this.maxHp * 0.5;
         }
 
         // if (this.state == FighterState.Crazy) {
@@ -339,6 +362,10 @@ cc.Class({
 
         this.invincibleTime = Defines.INVINCIBLE_TIME;
         this.runHurtEffect();
+
+        if (config.NEED_GUIDE) {
+            return;
+        }
 
         if (this.hp > dmg) {
             this.hp -= dmg;
@@ -357,35 +384,35 @@ cc.Class({
         this.runAction(cc.sequence(act.clone(), act.clone(), act.clone(), act.clone()));
     },
 
-    addMotionStreak: function (res,color, fadeTime, minSeg, stroke, fastMode) {
+    addMotionStreak: function (res, color, fadeTime, minSeg, stroke, fastMode) {
         //if (this.motionNode == null) {
-            res=typeof res!=='undefined'?res:'huoyan';
-            let motionNode = this.addComponent(cc.MotionStreak);
-            var self=this;
-            GlobalVar.resManager().loadRes(ResMapping.ResType.Texture2D,'cdnRes/battlemodel/motionstreak/'+res, function (tex) {
-                motionNode.texture=tex;
-            });
-            motionNode.fadeTime = typeof fadeTime !== 'undefined' ? fadeTime : 0.5;
-            motionNode.minSeg = typeof minSeg !== 'undefined' ? minSeg : 1;
-            motionNode.stroke = typeof stroke !== 'undefined' ? stroke : 30;
-            motionNode.fastMode = typeof fastMode !== 'undefined' ? fastMode : false;
-            motionNode.color = typeof color !== 'undefined' ? color : new cc.Color(255, 255, 255);
+        res = typeof res !== 'undefined' ? res : 'huoyan';
+        let motionNode = this.addComponent(cc.MotionStreak);
+        var self = this;
+        GlobalVar.resManager().loadRes(ResMapping.ResType.Texture2D, 'cdnRes/battlemodel/motionstreak/' + res, function (tex) {
+            motionNode.texture = tex;
+        });
+        motionNode.fadeTime = typeof fadeTime !== 'undefined' ? fadeTime : 0.5;
+        motionNode.minSeg = typeof minSeg !== 'undefined' ? minSeg : 1;
+        motionNode.stroke = typeof stroke !== 'undefined' ? stroke : 30;
+        motionNode.fastMode = typeof fastMode !== 'undefined' ? fastMode : false;
+        motionNode.color = typeof color !== 'undefined' ? color : new cc.Color(255, 255, 255);
         //}
     },
 
     flyIntoScreen(callback) {
         this.invincibleTime = 1.6;
-        if (BattleManager.getInstance().gameState == Defines.GameResult.START){
+        if (BattleManager.getInstance().gameState == Defines.GameResult.START) {
             GlobalVar.soundManager().playEffect('cdnRes/audio/battle/effect/hero_appear');
-        }else{
+        } else {
             GlobalVar.soundManager().playEffect('cdnRes/audio/battle/effect/leave_battle');
         }
-        var self=this;
+        var self = this;
         if (!!callback) {
             this.runAction(
                 cc.sequence(
                     cc.moveBy(1.0, cc.v3(0, 0.7 * cc.winSize.height)),
-                    cc.callFunc(function(){
+                    cc.callFunc(function () {
                         self.removeComponent(cc.MotionStreak);
                     }),
                     cc.moveBy(0.5, cc.v3(0, -0.3 * cc.winSize.height)),
@@ -396,7 +423,7 @@ cc.Class({
             this.runAction(
                 cc.sequence(
                     cc.moveBy(1.0, cc.v3(0, 0.7 * cc.winSize.height)),
-                    cc.callFunc(function(){
+                    cc.callFunc(function () {
                         self.removeComponent(cc.MotionStreak);
                     }),
                     cc.moveBy(0.5, cc.v3(0, -0.3 * cc.winSize.height))
@@ -406,7 +433,7 @@ cc.Class({
     },
 
     flyOutOffScreen(callback) {
-        if(this.objectType==Defines.ObjectType.OBJ_HERO && this.showType==0){
+        if (this.objectType == Defines.ObjectType.OBJ_HERO && this.showType == 0) {
             this.addMotionStreak('huoyan');
             GlobalVar.soundManager().playEffect('cdnRes/audio/battle/effect/leave_battle');
         }

@@ -63,7 +63,7 @@ cc.Class({
             this._super("Enter");
             this.waitForClose = false;
             this.showItem = false;
-            GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_RECV_MAIL_REWARD, this.closeWindow, this);
+            // GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_RECV_MAIL_REWARD, this.closeWindow, this);
             this.setAttachments();
         }
     },

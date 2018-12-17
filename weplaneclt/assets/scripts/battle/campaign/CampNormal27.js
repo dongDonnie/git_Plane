@@ -30,7 +30,7 @@ CampNormal27.data = {
                 {wave:{index:3,step:8}},
             ],
             effect:[
-                {extra:{open:-1,delay:1.4}},
+                {extra:{open:-1,delay:1.2}},
             ],
         },
         {

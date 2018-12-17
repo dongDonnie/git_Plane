@@ -6,12 +6,12 @@ CampNormal245.data = {
     ],
     monsterWaves:[
         {wave:{groups:[1326,19,25,26],wait:0,delay:[1.5,2,3,3]},maps:{mapIndex:[0],mapSpeed:[600],mapScale:[1],mapLoop:[1]}},
-       
+        {wave:{groups:[1327,35],wait:0,delay:[0,1]}},
         {wave:{groups:[1328,31],wait:0,delay:[0,0]}},        {wave:{groups:[1330],wait:0,delay:[0,1]}},
         {wave:{groups:[1329,27],wait:0,delay:[0,1]}},
         {wave:{groups:[1332],wait:0,delay:[0,1]}},
         {wave:{groups:[1331],wait:0,delay:[0,1]}}, {wave:{groups:[1327,35],wait:0,delay:[0,1]}},
-      
+        {wave:{groups:[1330],wait:0,delay:[0,1]}},
         {wave:{groups:[1333],wait:0,delay:[0,1]}},
     ],
 
@@ -41,7 +41,7 @@ CampNormal245.data = {
             eventKey:0,
             checkTime:1,
             condition:[
-                {wave:{index:7,step:8}},
+                {wave:{index:9,step:8}},
             ],
             effect:[
                 {extra:{open:-2}},

@@ -55,6 +55,7 @@ var memberData = cc.Class({
         this.isQualityUp = false;
         this.showCombatLate = false;
         this.oneTimeChuZhanMemberID = 0;
+        this.assistFighterID=0;
     },
 
     setMemberData: function (data) {
@@ -172,6 +173,14 @@ var memberData = cc.Class({
 
     getStandingByFighterConf: function () {
         return this.standingbyData.ChuZhanConf;
+    },
+
+    setAssistFighterID:function(id){
+        this.assistFighterID=typeof id !== 'undefined' ? id : 0;
+    },
+
+    getAssistFighterID:function(){
+        return this.assistFighterID;
     },
 
     saveActiveData: function (msg) {

@@ -113,6 +113,7 @@
       "__id__": 4
     },
     "dbArmature": null,
+    "dbArmatureCallback": null,
     "collider": {
       "__id__": 2
     },
@@ -121,6 +122,7 @@
     "objectType": 0,
     "entity": null,
     "defaultAction": null,
+    "tbl": null,
     "_id": ""
   },
   {

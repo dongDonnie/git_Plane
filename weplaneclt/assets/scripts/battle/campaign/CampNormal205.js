@@ -8,13 +8,13 @@ CampNormal205.data = {
     ],
     monsterWaves:[
         {wave:{groups:[608,27,609,573],wait:0,delay:[0.3,1,2.5,4.5]},maps:{mapIndex:[0,1],mapSpeed:[400,800],mapScale:[1,1],mapLoop:[1,1]}},
-        {wave:{groups:[610,563,564],wait:0,delay:[0.2,1,2.6]}},
+        {wave:{groups:[610,563,564],wait:0,delay:[0.2,1,2.6]}},{wave:{groups:[615,543],wait:0,delay:[0,1.5]}},
         {wave:{groups:[1444,40,41],wait:0,delay:[0,1,2]}},
         {wave:{groups:[611,554,555],wait:0,delay:[0,1,2.4]}},
  
         {wave:{groups:[613,587,590],wait:0,delay:[0,1,2.4]}},
         {wave:{groups:[612,375],wait:0,delay:[0,2.4]}},
-      
+        {wave:{groups:[1444,40,41],wait:0,delay:[0,1,2]}},
         {wave:{groups:[615,543],wait:0,delay:[0,1.5]}},
         {wave:{groups:[1445],wait:0,delay:[0,2.4]}},
     ],
@@ -37,14 +37,14 @@ CampNormal205.data = {
                 {wave:{index:1,step:6}},
             ],
             effect:[
-                {extra:{open:-1,delay:3}},
+                {extra:{open:-1,delay:2.8}},
             ],
         },
         {
             eventKey:0,
             checkTime:1,
             condition:[
-                {wave:{index:7,step:6}},
+                {wave:{index:9,step:6}},
             ],
             effect:[
                 {extra:{open:-2}},

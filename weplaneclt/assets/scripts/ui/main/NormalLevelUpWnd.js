@@ -91,7 +91,7 @@ cc.Class({
         let labelLevelCur = spriteTipBg.getChildByName("labelLevelCur").getComponent(cc.Label);
         labelLevelBefore.string = levelUpData.LevelOld;
         labelLevelCur.string = levelUpData.LevelCur;
-        this.levelOld = levelUpData.LevelOld
+        this.levelOld = levelUpData.LevelOld;
     },
 
     addItem: function (data, mode) {
@@ -161,6 +161,8 @@ cc.Class({
                 let limitLevel = GlobalVar.tblApi.getDataBySingleKey('TblSystem', 24).wOpenLevel;
                 if (GlobalVar.me().getLevel() >= limitLevel && self.levelOld < limitLevel) {
                     require('Guide').getInstance().guideToEndless();
+                }else{
+                    WindowManager.getInstance().resumeView();
                 }
             }, false);
         } else if (name == "Enter") {

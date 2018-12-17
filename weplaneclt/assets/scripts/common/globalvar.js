@@ -76,8 +76,16 @@ GlobalVar.getShareSwitch = function () {
     if (cc.sys.platform == cc.sys.WECHAT_GAME){
         return GlobalVar.shareOpen;
     }
+    return true;
+},
+GlobalVar.videoAdOpen = false;
+GlobalVar.getVideoAdSwitch = function () {
+    if (cc.sys.platform == cc.sys.WECHAT_GAME){
+        return GlobalVar.videoAdOpen;
+    }
     return false;
 },
+
 
 GlobalVar.showAuthorization = true;
 

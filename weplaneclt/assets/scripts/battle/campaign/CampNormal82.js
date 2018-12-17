@@ -12,7 +12,7 @@ CampNormal82.data = {
         {wave:{groups:[1090,1091,800,694],wait:0,delay:[0,2,4,4]}},
         {wave:{groups:[1092,882,550,551],wait:0,delay:[0,2,3,4]}},
         {wave:{groups:[1088,1089,800,836],wait:0,delay:[0,2,4,4]}},
-        {wave:{groups:[1086,420,1066,1067],wait:0,delay:[0,2,4,4]}},
+        {wave:{groups:[1086,420,1066,1067],wait:0,delay:[0,2,4,4]}},  {wave:{groups:[1085,419,45,14],wait:0,delay:[0,2,4,4]}},
         {wave:{groups:[1087,793,797,1069,1078],wait:0,delay:[0,2,2,4,4]}},
         {wave:{groups:[1093,793,795,26,27],wait:0,delay:[0,1,2,3,4]}},
         {wave:{groups:[1094,800,792,798],wait:0,delay:[0,2,3,3]}},

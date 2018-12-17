@@ -43,17 +43,17 @@ var EntityManager = cc.Class({
         this.poolManager = require('PoolManager').getInstance();
     },
 
-    update(dt) {
+    update(dt, count) {
 
         this.updateNewList(dt);
 
         this.updateBltList(dt);
 
-        this.updateMonsterList(dt);
+        this.updateMonsterList(dt, count);
 
         this.updateBuffList(dt);
 
-        this.updateGoldList(dt);
+        this.updateGoldList(dt, count);
 
         this.updateSundriesList(dt);
 
@@ -125,7 +125,8 @@ var EntityManager = cc.Class({
         this.entityNewList.splice(0, this.entityNewList.length);
     },
 
-    updateMonsterList(dt) {
+    updateMonsterList(dt, count) {
+        count = typeof count !== 'undefined' ? count : 0;
         for (let entity of this.entityMonsterList) {
             if (entity.isDead) {
                 if (!this.pauseDeadMonster) {
@@ -133,7 +134,13 @@ var EntityManager = cc.Class({
                     //this.scenarioManager.kill(entity);
                 }
             } else {
-                entity.update(dt);
+                if (!count) {
+                    entity.update(dt);
+                } else {
+                    for (let i = 0; i < count; i++) {
+                        entity.update(dt);
+                    }
+                }
             }
         }
     },
@@ -148,12 +155,19 @@ var EntityManager = cc.Class({
         }
     },
 
-    updateGoldList(dt) {
+    updateGoldList(dt, count) {
+        count = typeof count !== 'undefined' ? count : 0;
         for (let entity of this.entityGoldList) {
             if (entity.isDead) {
                 this.entityDeadGoldList.push(entity);
             } else {
-                entity.update(dt);
+                if (!count) {
+                    entity.update(dt);
+                } else {
+                    for (let i = 0; i < count; i++) {
+                        entity.update(dt);
+                    }
+                }
             }
         }
     },
@@ -186,10 +200,34 @@ var EntityManager = cc.Class({
         for (let entity of this.entityMonsterList) {
             entity.pauseAction();
         }
+        for (let entity of this.entityMonBltList) {
+            entity.pauseAction();
+        }
+        for (let entity of this.entityHeroBltList) {
+            entity.pauseAction();
+        }
+        for (let entity of this.entityBuffList) {
+            entity.pauseAction();
+        }
+        for (let entity of this.entityExecuteList) {
+            entity.pauseAction();
+        }
     },
 
     resumeEntity() {
         for (let entity of this.entityMonsterList) {
+            entity.resumeAction();
+        }
+        for (let entity of this.entityMonBltList) {
+            entity.resumeAction();
+        }
+        for (let entity of this.entityHeroBltList) {
+            entity.resumeAction();
+        }
+        for (let entity of this.entityBuffList) {
+            entity.resumeAction();
+        }
+        for (let entity of this.entityExecuteList) {
             entity.resumeAction();
         }
     },
@@ -284,7 +322,7 @@ var EntityManager = cc.Class({
                     }
                 }
 
-            }  else if (entity.objectType == Defines.ObjectType.OBJ_GOLD) {
+            } else if (entity.objectType == Defines.ObjectType.OBJ_GOLD) {
 
                 for (let j = 0; j < this.entityGoldList.length; ++j) {
                     if (entity == this.entityGoldList[j]) {
@@ -329,7 +367,7 @@ var EntityManager = cc.Class({
                     var self = this;
                     entity.deathMode(function (monster) {
                         monster.deleteObject();
-                        if(!!monster.isKill){
+                        if (!!monster.isKill) {
                             self.scenarioManager.kill(monster);
                         }
                         self.poolManager.putEntity(Defines.PoolType.MONSTER, monster);
@@ -377,7 +415,7 @@ var EntityManager = cc.Class({
 
         if (owner.objectType == Defines.ObjectType.OBJ_HERO) {
             for (let entity of this.entityHeroBltList) {
-                if (entity.owner.uuid == owner.uuid){
+                if (entity.owner.uuid == owner.uuid) {
                     entity.isDead = true;
                 }
             }

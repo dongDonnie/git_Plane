@@ -24,8 +24,8 @@ var BattleScene = cc.Class({
         this.uiNode = cc.find("Canvas/UINode");
         this.openScene();
         this.battleManager.start(this.node, cc.find('Canvas/GameNode'));
-        if(this.battleManager.getMusic()!=null){
-            GlobalVar.soundManager().playBGM("cdnRes/"+this.battleManager.getMusic());
+        if (this.battleManager.getMusic() != null) {
+            GlobalVar.soundManager().playBGM("cdnRes/" + this.battleManager.getMusic());
         }
         // if (this.battleManager.isEditorFlag) {
         //     this.loadPrefab("UIBattleEditor")
@@ -34,13 +34,13 @@ var BattleScene = cc.Class({
         // }
     },
 
-    start:function(){
+    start: function () {
         if (this.battleManager.isEditorFlag) {
             this.loadPrefab("UIBattleEditor")
         } else {
             //this.loadPrefab("UIBattle");
         }
-        
+
     },
 
     onDestroy() {
@@ -55,15 +55,18 @@ var BattleScene = cc.Class({
         } else if (this.battleManager.gameState == BattleDefines.GameResult.END) {
             this.showEndWnd();
             this.battleManager.gameState = BattleDefines.GameResult.NONE;
-        }else if(this.battleManager.gameState==BattleDefines.GameResult.PREPARE){
+        } else if (this.battleManager.gameState == BattleDefines.GameResult.PREPARE) {
             this.showCountWnd();
             this.battleManager.gameState = BattleDefines.GameResult.PAUSE;
-        }else if(this.battleManager.gameState==BattleDefines.GameResult.CARD){
+        } else if (this.battleManager.gameState == BattleDefines.GameResult.CARD) {
             this.showDrawRewardWnd();
             this.battleManager.gameState = BattleDefines.GameResult.NONE;
-        }else if(this.battleManager.gameState==BattleDefines.GameResult.WAITREVIVE){
+        } else if (this.battleManager.gameState == BattleDefines.GameResult.WAITREVIVE) {
             this.showReviveWnd();
             this.battleManager.gameState = BattleDefines.GameResult.PAUSE;
+        } else if (this.battleManager.gameState == BattleDefines.GameResult.DASHOPEN) {
+            this.showChargeWnd();
+            this.battleManager.gameState = BattleDefines.GameResult.SHOW;
         }
     },
 
@@ -78,22 +81,26 @@ var BattleScene = cc.Class({
     },
 
     showEndWnd() {
-        if (!GlobalVar.me().isKickedOut){
+        if (!GlobalVar.me().isKickedOut) {
             this.loadPrefab("UIBattleEnd");
-        }else{
+        } else {
             GlobalVar.sceneManager().gotoScene(SceneDefines.LOGIN_STATE);
         }
     },
 
-    showCountWnd(){
+    showCountWnd() {
         this.loadPrefab("UIBattleCount");
     },
 
-    showDrawRewardWnd(){
+    showDrawRewardWnd() {
         this.loadPrefab("UIBattleCard");
     },
 
-    showReviveWnd(){
+    showReviveWnd() {
         this.loadPrefab("UIBattleRevive");
+    },
+
+    showChargeWnd() {
+        this.loadPrefab("UIBattleCharge");
     }
 });

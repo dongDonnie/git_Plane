@@ -58,6 +58,10 @@ WndTypeDefine.WindowType = {
     E_DT_NORMAL_PLANE_QUALITY_UP_WND:"NormalPlaneQualityUpWnd",
     E_DT_NORMAL_FREE_GET_WND: "NormalFreeGetWnd",
     E_DT_NORMAL_BUY_SP_WND: "NormalBuySpWnd",
+    E_DT_NORMAL_RECOMMAND_WND: "NormalRecommandWnd",
+    E_DT_NORMAL_SHAREDIALY_WND: "NormalShareDailyWnd",
+    E_DT_NORMAL_SHARETESTPLAY_WND: "NormalShareMemberTestPlayWnd",
+    E_DT_NORMAL_SHARETESTPLAYFINISH_WND: "NormalShareTestPlayFinishWnd",
 };
 
 WndTypeDefine.WindowTypeID = {

@@ -222,7 +222,7 @@ cc.Class({
             this.nodeStandingBy.active = true;
             this.updateState();
             this.updateAdvanceProp(id);
-            this.hotAdvance.active = !!GlobalVar.me().memberData.qualityUpHotFlag[id];
+            this.hotAdvance.active = !!(GlobalVar.me().memberData.qualityUpHotFlag[id] || GlobalVar.me().memberData.levelUpHotFlag[id]);
         }
 
         BattleManager.getInstance().quitOutSide();

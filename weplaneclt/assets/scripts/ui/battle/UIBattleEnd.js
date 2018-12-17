@@ -64,6 +64,7 @@ cc.Class({
         this.node.getComponent(cc.Widget).updateAlignment();
         this.animeStartParam(0, 0);
         this.setEndNode();
+        GlobalVar.me().memberData.setOneTimeChuZhanMemberID();
     },
 
     animeStartParam: function (paramScale, paramOpacity) {
@@ -114,6 +115,7 @@ cc.Class({
             GlobalVar.handlerManager().endlessHandler.sendEndlessEndBattleReq(endlessScore, 0, bmgr.endlessGetChsetCount, token);
             if (cc.sys.platform == cc.sys.WECHAT_GAME) {
                 let historyMaxScore = GlobalVar.me().endlessData.getHistoryMaxScore();
+                console.log("my history max score:", historyMaxScore, "  cur round score: ", endlessScore);
                 if (endlessScore >= historyMaxScore) {
                     weChatAPI.submitUserData("score", endlessScore);
                 }
@@ -273,7 +275,7 @@ cc.Class({
             nodeEndless.getChildByName("nodeRecvGold").active = false;
             nodeEndless.getChildByName("spriteContinueTip").active = true;
             this.node.getChildByName("btnEnd").active = true;
-        }else{
+        }else {
             nodeEndless.getChildByName("nodeRecvGold").active = true;
             nodeEndless.getChildByName("spriteContinueTip").active = false;
             this.node.getChildByName("btnEnd").active = false;
@@ -388,15 +390,28 @@ cc.Class({
         }else{
             getGold = parseInt(this.labelTenGetGold.string);
 
-            if (cc.sys.platform !== cc.sys.WECHAT_GAME){
-                return;
+            let nodeEndless = this.nodeAccountList[2];
+            if (cc.sys.platform == cc.sys.WECHAT_GAME){
+                weChatAPI.shareNormal(107, function () {
+                    self.alreadRecvGoldBtnClick = true;
+                    nodeEndless.getChildByName("nodeRecvGold").active = false;
+                    nodeEndless.getChildByName("nodeGet").getChildByName("labelGetValue").getComponent(cc.Label).string = getGold;
+                    nodeEndless.getChildByName("nodeGet").active = true;
+                    nodeEndless.getChildByName("spriteContinueTip").active = true;
+                    self.node.getChildByName("btnEnd").active = true;
+                    GlobalVar.handlerManager().endlessHandler.sendEndlessGetGoldReq(getGold);
+                    // GlobalVar.sceneManager().gotoScene(SceneDefines.MAIN_STATE);
+                });
+            }else{
+                this.alreadRecvGoldBtnClick = true;
+                nodeEndless.getChildByName("nodeRecvGold").active = false;
+                nodeEndless.getChildByName("nodeGet").getChildByName("labelGetValue").getComponent(cc.Label).string = getGold;
+                nodeEndless.getChildByName("nodeGet").active = true;
+                nodeEndless.getChildByName("spriteContinueTip").active = true;
+                this.node.getChildByName("btnEnd").active = true;
+                GlobalVar.handlerManager().endlessHandler.sendEndlessGetGoldReq(getGold);
             }
 
-            weChatAPI.shareNormal(107, function () {
-                self.alreadRecvGoldBtnClick = true;
-                GlobalVar.handlerManager().endlessHandler.sendEndlessGetGoldReq(getGold);
-                GlobalVar.sceneManager().gotoScene(SceneDefines.MAIN_STATE);
-            });
         }
     },
 

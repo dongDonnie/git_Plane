@@ -47,6 +47,18 @@ cc.Class({
         return z;
     },
 
+    pauseAction() {
+        if (this.baseObject != null) {
+            this.baseObject.getComponent("ExecuteObject").animePlay(1);
+        }
+    },
+
+    resumeAction() {
+        if (this.baseObject != null) {
+            this.baseObject.getComponent("ExecuteObject").animePlay(2);
+        }
+    },
+
     update(dt) {
         this._super(dt);
     },

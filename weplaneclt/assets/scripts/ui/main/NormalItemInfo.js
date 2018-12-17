@@ -251,7 +251,7 @@ cc.Class({
         let item = cc.instantiate(this.itemPrefab);
         let itemData = item.getComponent("ItemObject").updateItem(id, -1, level);
 
-        this.node.height = 420;
+        this.node.height = 450;
         this.labelTitle.getComponent(cc.Widget).updateAlignment();
         this.btnConfirm.getComponent(cc.Widget).updateAlignment();
         this.btnClose.getComponent(cc.Widget).updateAlignment();

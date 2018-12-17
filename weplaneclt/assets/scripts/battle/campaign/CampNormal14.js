@@ -4,7 +4,7 @@ CampNormal14.data = {
     maps:[
         ["bfc-a","bfc-a","bfc-a"],
         ["bfc-b-01hebing","bfc-b-01hebing","bfc-b-01hebing"],
-        ["bfc-c-01xianjie","bfc-c-01xianjie","bfc-c-01xianjie"],
+
     ],
     monsterWaves:[
         {wave:{groups:[857,837],wait:0,delay:[0.3,1.5]},maps:{mapIndex:[0,1],mapSpeed:[400,800],mapScale:[1,1],mapLoop:[1,1]}},

@@ -49,15 +49,6 @@ module.exports = {
         });
     },
 
-    showBuySpConfirmWnd: function (callback, title, pFunCloseCallback, pFunConfirmCallback, pFunCancelCallback, confirmName, cancelName) {
-        WindowManager.getInstance().pushView(WndTypeDefine.WindowType.E_DT_COMMON_WND, function (wnd, name, type) {
-            wnd.getComponent(WndTypeDefine.WindowType.E_DT_COMMON_WND).setBuySpContent(name, type, title, pFunCloseCallback, pFunConfirmCallback, pFunCancelCallback, confirmName, cancelName);
-            if (callback) {
-                callback(wnd, name, type);
-            }
-        });
-    },
-
     showRewardBoxWnd: function (callback, title, condition, vecItems, pFunCloseCallback, pFunConfirmCallback, pFunCancelCallback, confirmName, cancelName) {
         WindowManager.getInstance().pushView(WndTypeDefine.WindowType.E_DT_COMMON_WND, function (wnd, name, type) {
             wnd.getComponent(WndTypeDefine.WindowType.E_DT_COMMON_WND).setItemBoxContent(name, type, title, condition, vecItems, pFunCloseCallback, pFunConfirmCallback, pFunCancelCallback, confirmName, cancelName);
@@ -359,8 +350,36 @@ module.exports = {
             closeCallback && closeCallback();
             return;
         }
+        if (!GlobalVar.getShareSwitch()){
+            if (errCode == GameServerProto.PTERR_GOLD_LACK){
+                this.showRichTreasureWnd();
+                closeCallback && closeCallback();
+                return;
+            }
+            if (errCode == GameServerProto.PTERR_DIAMOND_LACK && !GlobalVar.srcSwitch()){
+                this.showRechargeWnd();
+                closeCallback && closeCallback();
+                return;
+            }
+        }
+
         WindowManager.getInstance().pushView(WndTypeDefine.WindowType.E_DT_NORMAL_FREE_GET_WND, function(wnd, name, type) {
             wnd.getComponent(type).initFreeGetWnd(errCode, shareCallback, purchaseCallback, closeCallback);
         });
+    },
+
+    showRecommandWnd: function () {
+        WindowManager.getInstance().pushView(WndTypeDefine.WindowType.E_DT_NORMAL_RECOMMAND_WND);
+    },
+    showShareDailyWnd: function () {
+        WindowManager.getInstance().pushView(WndTypeDefine.WindowType.E_DT_NORMAL_SHAREDIALY_WND);
+    },
+    showShareMemberTestPlayWnd: function (callback) {
+        WindowManager.getInstance().pushView(WndTypeDefine.WindowType.E_DT_NORMAL_SHARETESTPLAY_WND, function(wnd, name, type){
+            wnd.getComponent(type).setCallback(callback);
+        });
+    },
+    showShareTestPlayFinishWnd: function () {
+        WindowManager.getInstance().pushView(WndTypeDefine.WindowType.E_DT_NORMAL_SHARETESTPLAYFINISH_WND);
     },
 };

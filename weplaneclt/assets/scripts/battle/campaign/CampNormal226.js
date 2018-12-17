@@ -10,7 +10,7 @@ CampNormal226.data = {
         {wave:{groups:[1012,552,553],wait:0,delay:[0,2,3]}}, 
         {wave:{groups:[1009,724,725,720],wait:0,delay:[0,2,3,4]}},
         {wave:{groups:[1010,1011,836,837],wait:0,delay:[0.3,2,3,3]},maps:{mapIndex:[1],mapSpeed:[600],mapScale:[1],mapLoop:[1]}},
-        {wave:{groups:[1404],wait:0,delay:[0]}},  
+        {wave:{groups:[1404],wait:0,delay:[0]}},  {wave:{groups:[1012,552,553],wait:0,delay:[0,2,3]}}, {wave:{groups:[1009,724,725,720],wait:0,delay:[0,2,3,4]}},
         {wave:{groups:[1403,720,726,724],wait:0,delay:[0,2,3,4]}},
         {wave:{groups:[1013,546],wait:0,delay:[0,2]}},
     ],

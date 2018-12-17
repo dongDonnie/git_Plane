@@ -7,11 +7,11 @@ CampNormal287.data = {
     ],
     monsterWaves:[
         {wave:{groups:[1140,1066,1067],wait:0,delay:[1.5,2,2.5]},maps:{mapIndex:[0,1],mapSpeed:[180,400],mapScale:[1,1],mapLoop:[1,1]}},
-        {wave:{groups:[1141,841,792],wait:0,delay:[0,1.5,1.5]}},        {wave:{groups:[1146,800],wait:0,delay:[0,1.5,2,3,3,3]}},
+        {wave:{groups:[1141,841,792],wait:0,delay:[0,1.5,1.5]}},     {wave:{groups:[1143,794,797],wait:0,delay:[0,1,2]}},    {wave:{groups:[1146,800],wait:0,delay:[0,1.5,2,3,3,3]}},
         {wave:{groups:[1145,1154,1165,1156],wait:0,delay:[0,1.2,1.2,1.2]}},
         {wave:{groups:[1143,794,797],wait:0,delay:[0,1,2]}},
       
-        {wave:{groups:[1142,800],wait:0,delay:[0,1,2,3,3,3]}},
+        {wave:{groups:[1142,800],wait:0,delay:[0,1,2,3,3,3]}},  {wave:{groups:[1141,841,792],wait:0,delay:[0,1.5,1.5]}},   
         {wave:{groups:[91],wait:0,delay:[0,1,2,3],anime:1,isBOSS:1}},
     ],
 
@@ -41,7 +41,7 @@ CampNormal287.data = {
             eventKey:0,
             checkTime:1,
             condition:[
-                {wave:{index:5,step:6}},
+                {wave:{index:7,step:6}},
             ],
             effect:[
                 {extra:{open:-2}},
@@ -51,7 +51,7 @@ CampNormal287.data = {
             eventKey:0,
             checkTime:1,
             condition:[
-                {wave:{index:5,step:8}},
+                {wave:{index:7,step:8}},
             ],
             effect:[
                 {extra:{open:-1,delay:1.4}},
@@ -61,7 +61,7 @@ CampNormal287.data = {
             eventKey:0,
             checkTime:1,
             condition:[
-                {wave:{index:6,step:5}},
+                {wave:{index:8,step:5}},
             ],
             effect:[
                 {extra:{open:-2}},

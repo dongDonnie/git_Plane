@@ -2,6 +2,7 @@ const Defines = require('BattleDefines')
 const GlobalVar = require('globalvar')
 const ResMapping = require('resmapping')
 const GlobalFunc = require('GlobalFunctions')
+const GameServerProto = require("GameServerProto")
 
 const BattleManager = cc.Class({
     extends: cc.Component,
@@ -55,6 +56,19 @@ const BattleManager = cc.Class({
         endlessGoldCount: 0,
 
         damagePlus: 1,
+
+        dashMode: 0,
+        dashStep: 0,
+        dashPlusTime: 0,
+        dashDamageTime: 0,
+        isOpenDash: false,
+        forceDash: false,
+
+        sBombEffectType: 0,
+        sBombBurstArray: [],
+        sBombBurstInterval: 0,
+        sBombCallback: null,
+        sBombIntervalID: -1,
     },
 
     ctor() {
@@ -232,7 +246,28 @@ const BattleManager = cc.Class({
             }
             bmgr.managers[Defines.MgrType.SCENARIO].update(Defines.BATTLE_FRAME_SECOND);
             bmgr.managers[Defines.MgrType.HERO].update(Defines.BATTLE_FRAME_SECOND);
-            bmgr.gameState = Defines.GameResult.RUNNING;
+
+            if (bmgr.isEndlessFlag) {
+                if (GlobalVar.getShareSwitch() && GlobalVar.me().endlessData.getEndlessChargeRewardTimes() < GlobalVar.tblApi.getDataBySingleKey('TblParam', GameServerProto.PTPARAM_ENDLESS_CHARGE_DAYMAX).dValue) {
+                    bmgr.gameState = Defines.GameResult.DASHOPEN;
+                } else {
+                    bmgr.gameState = Defines.GameResult.RUNNING;
+                }
+            } else {
+                bmgr.gameState = Defines.GameResult.RUNNING;
+            }
+
+            // if (!!bmgr.dashMode) {
+            //     if (bmgr.dashMode == 1) {
+            //         bmgr.gameState = Defines.GameResult.DASHSTART;
+            //         bmgr.isOpenDash = true;
+            //         bmgr.managers[Defines.MgrType.HERO].openDash(bmgr.isOpenDash);
+            //     } else {
+            //         bmgr.gameState = Defines.GameResult.RUNNING;
+            //     }
+            // } else {
+
+            // }
         } else if (bmgr.gameState == Defines.GameResult.RUNNING) {
             bmgr.currentTime += Defines.BATTLE_FRAME_SECOND;
             if (bmgr.isEditorFlag == false) {
@@ -244,6 +279,7 @@ const BattleManager = cc.Class({
         } else if (bmgr.gameState == Defines.GameResult.INTERRUPT) {
             bmgr.managers[Defines.MgrType.ENTITY].pauseEntity();
             bmgr.managers[Defines.MgrType.HERO].pauseEntity();
+            bmgr.pauseEffect();
         } else if (bmgr.gameState == Defines.GameResult.DEADDELAY) {
             bmgr.currentTime += Defines.BATTLE_FRAME_SECOND;
             if (bmgr.isEditorFlag == false) {
@@ -258,6 +294,7 @@ const BattleManager = cc.Class({
         } else if (bmgr.gameState == Defines.GameResult.WAITREVIVE) {
             bmgr.managers[Defines.MgrType.ENTITY].pauseEntity();
             bmgr.managers[Defines.MgrType.HERO].pauseEntity();
+            bmgr.pauseEffect();
         } else if (bmgr.gameState == Defines.GameResult.PAUSE) {
 
         } else if (bmgr.gameState == Defines.GameResult.PREPARE) {
@@ -265,11 +302,23 @@ const BattleManager = cc.Class({
         } else if (bmgr.gameState == Defines.GameResult.RESUME) {
             bmgr.managers[Defines.MgrType.ENTITY].resumeEntity();
             bmgr.managers[Defines.MgrType.HERO].resumeEntity();
-            bmgr.gameState = Defines.GameResult.RUNNING;
+            bmgr.resumeEffect();
+            if (!!bmgr.dashMode) {
+                if (bmgr.dashMode == 1) {
+                    bmgr.gameState = Defines.GameResult.DASHSTART;
+                } else if (bmgr.dashMode == 2) {
+                    bmgr.gameState = Defines.GameResult.DASH;
+                } else {
+                    bmgr.gameState = Defines.GameResult.DASHEND;
+                }
+            } else {
+                bmgr.gameState = Defines.GameResult.RUNNING;
+            }
         } else if (bmgr.gameState == Defines.GameResult.REVIVE) {
             bmgr.managers[Defines.MgrType.ENTITY].resumeEntity();
             bmgr.managers[Defines.MgrType.HERO].resumeEntity();
             bmgr.managers[Defines.MgrType.HERO].revive();
+            bmgr.resumeEffect();
             bmgr.gameState = Defines.GameResult.RESTART;
         } else if (bmgr.gameState == Defines.GameResult.RESTART) {
             bmgr.currentTime += Defines.BATTLE_FRAME_SECOND;
@@ -289,9 +338,6 @@ const BattleManager = cc.Class({
             bmgr.managers[Defines.MgrType.FACTORY].update(Defines.BATTLE_FRAME_SECOND);
             bmgr.managers[Defines.MgrType.ENTITY].update(Defines.BATTLE_FRAME_SECOND);
             bmgr.managers[Defines.MgrType.HERO].update(Defines.BATTLE_FRAME_SECOND);
-            // for (let mgr in bmgr.managers) {
-            //     bmgr.managers[mgr].update(Defines.BATTLE_FRAME_SECOND);
-            // }
             if (bmgr.managers[Defines.MgrType.HERO].planeEntity != null &&
                 bmgr.managers[Defines.MgrType.ENTITY].entityBuffList.length == 0 &&
                 bmgr.endGameAnimeCount < 0) {
@@ -301,16 +347,12 @@ const BattleManager = cc.Class({
         } else if (bmgr.gameState == Defines.GameResult.FAILED) {
 
         } else if (bmgr.gameState == Defines.GameResult.FLYOUT) {
-            //bmgr.managers[Defines.MgrType.SCENARIO].update(Defines.BATTLE_FRAME_SECOND);
             bmgr.managers[Defines.MgrType.HERO].update(Defines.BATTLE_FRAME_SECOND);
         } else if (bmgr.gameState == Defines.GameResult.COUNT) {
             bmgr.currentTime += Defines.BATTLE_FRAME_SECOND;
             if (bmgr.isEditorFlag == false) {
                 bmgr.collision.update(Defines.BATTLE_FRAME_SECOND);
             }
-            // bmgr.managers[Defines.MgrType.FACTORY].update(Defines.BATTLE_FRAME_SECOND);
-            // bmgr.managers[Defines.MgrType.ENTITY].update(Defines.BATTLE_FRAME_SECOND);
-            // bmgr.managers[Defines.MgrType.HERO].update(Defines.BATTLE_FRAME_SECOND);
             for (let mgr in bmgr.managers) {
                 bmgr.managers[mgr].update(Defines.BATTLE_FRAME_SECOND);
             }
@@ -326,6 +368,74 @@ const BattleManager = cc.Class({
                 })
                 bmgr.gameState = Defines.GameResult.SUCCESS;
             }
+        } else if (bmgr.gameState == Defines.GameResult.DASHSTART ||
+            bmgr.gameState == Defines.GameResult.DASH ||
+            bmgr.gameState == Defines.GameResult.DASHEND) {
+            bmgr.currentTime += Defines.BATTLE_FRAME_SECOND;
+            if (bmgr.isEditorFlag == false) {
+                bmgr.collision.update(Defines.BATTLE_FRAME_SECOND);
+            }
+            bmgr.dashDamageTime += Defines.BATTLE_FRAME_SECOND;
+            if (bmgr.dashDamageTime >= 0.032) {
+                for (let monster of bmgr.managers[Defines.MgrType.ENTITY].entityMonsterList) {
+                    bmgr.collision.collisionMonsterWithDash(monster);
+                }
+                bmgr.dashDamageTime = 0;
+            }
+            for (let mgr in bmgr.managers) {
+                bmgr.managers[mgr].update(Defines.BATTLE_FRAME_SECOND, bmgr.dashStep);
+            }
+            if (bmgr.gameState == Defines.GameResult.DASHSTART) {
+                bmgr.dashPlusTime += Defines.BATTLE_FRAME_SECOND;
+                if (bmgr.dashStep <= 0) {
+                    bmgr.dashStep++;
+                } else if (bmgr.dashStep > 0 && bmgr.dashStep < 4) {
+                    if (bmgr.dashPlusTime >= 0.4) {
+                        bmgr.dashStep += 0.5;
+                        if (bmgr.dashStep >= 4) {
+                            bmgr.dashStep = 4;
+                        }
+                        bmgr.dashPlusTime = 0;
+                    }
+                } else if (bmgr.dashStep >= 4) {
+                    bmgr.dashPlusTime = 0;
+                    bmgr.dashMode = 2;
+                    bmgr.gameState = Defines.GameResult.DASH;
+                }
+            } else if (bmgr.gameState == Defines.GameResult.DASHEND) {
+                bmgr.dashPlusTime += Defines.BATTLE_FRAME_SECOND;
+                if (bmgr.dashStep > 1) {
+                    if (bmgr.dashPlusTime >= 0.4) {
+                        bmgr.dashStep -= 0.5;
+                        if (bmgr.dashStep <= 1) {
+                            bmgr.dashStep = 1;
+                        }
+                        bmgr.dashPlusTime = 0;
+                    }
+                } else if (bmgr.dashStep <= 1 && bmgr.dashStep > 0) {
+                    bmgr.dashStep--;
+                } else if (bmgr.dashStep <= 0) {
+                    bmgr.dashStep = 0;
+                    bmgr.dashMode = 0;
+                    bmgr.dashPlusTime = 0;
+                    if (bmgr.isOpenDash) {
+                        bmgr.managers[Defines.MgrType.HERO].openDash(-2);
+                        bmgr.isOpenDash = false;
+                    } else {
+                        bmgr.managers[Defines.MgrType.HERO].openDash();
+                    }
+                    bmgr.gameState = Defines.GameResult.RUNNING;
+                }
+            } else {
+                if (bmgr.dashMode == 3) {
+                    bmgr.gameState = Defines.GameResult.DASHEND;
+                }
+            }
+        } else if (bmgr.gameState == Defines.GameResult.SHOW) {
+            bmgr.managers[Defines.MgrType.SCENARIO].mapUpdate(Defines.BATTLE_FRAME_SECOND);
+            bmgr.managers[Defines.MgrType.HERO].update(Defines.BATTLE_FRAME_SECOND);
+        } else if (bmgr.gameState == Defines.GameResult.DASHOPEN) {
+
         } else if (bmgr.gameState == Defines.GameResult.NONE) {
 
         } else if (bmgr.gameState == Defines.GameResult.CARD) {
@@ -370,6 +480,25 @@ const BattleManager = cc.Class({
 
     getMusic() {
         return this.music;
+    },
+
+    setAnotherFighter() {
+        let chuzhan = GlobalVar.me().memberData.getStandingByFighterID();
+        let msgChuzhan = chuzhan;
+        if (this.battleMsg != null) {
+            msgChuzhan = this.battleMsg.ChuZhanConf.ChuZhanMemberID;
+        }
+        let randPlaneIDs = [];
+        let members = GlobalVar.tblApi.getData('TblMember');
+        for (let id in members) {
+            if (members[id].stPingJia.byStarNum < 4 && members[id].wMemberID != chuzhan && members[id].wMemberID != msgChuzhan) {
+                randPlaneIDs.push(members[id].wMemberID);
+            }
+        }
+        let rand = Math.floor(Math.random() * randPlaneIDs.length);
+        if (rand < randPlaneIDs.length) {
+            GlobalVar.me().memberData.setAssistFighterID(randPlaneIDs[rand]);
+        }
     },
 
     release() {
@@ -529,30 +658,39 @@ const BattleManager = cc.Class({
     },
 
     screenBomb: function (effectType, burstArray, burstTime, callback) {
-        effectType = typeof effectType !== 'undefined' ? effectType : 0;
-        switch (effectType) {
+        this.sBombEffectType = typeof effectType !== 'undefined' ? effectType : 0;
+        if (typeof burstArray !== 'undefined') {
+            this.sBombBurstArray = burstArray;
+        }
+        if(this.sBombBurstInterval==0){
+            this.sBombBurstInterval = (typeof burstTime !== 'undefined' ? burstTime : 1000) / (this.sBombBurstArray.length > 0 ? this.sBombBurstArray.length : 1) * 1000;
+        }
+        if (!!callback) {
+            this.sBombCallback = callback;
+        }
+        switch (this.sBombEffectType) {
             case 0:
-                effectType = 'cdnRes/battlemodel/prefab/effect/bBomb';
+                this.sBombEffectType = 'cdnRes/battlemodel/prefab/effect/bBomb';
                 break;
             case 1:
-                effectType = 'cdnRes/battlemodel/prefab/effect/bugBomb';
+                this.sBombEffectType = 'cdnRes/battlemodel/prefab/effect/bugBomb';
                 break;
             case 2:
-                effectType = 'cdnRes/battlemodel/prefab/effect/lBomb';
+                this.sBombEffectType = 'cdnRes/battlemodel/prefab/effect/lBomb';
                 break;
             case 3:
-                effectType = 'cdnRes/battlemodel/prefab/effect/miBomb';
+                this.sBombEffectType = 'cdnRes/battlemodel/prefab/effect/miBomb';
                 break;
             default:
-                effectType = '';
+                this.sBombEffectType = 'cdnRes/battlemodel/prefab/effect/bBomb';
                 break;
         }
-        if (effectType != '' && typeof burstArray !== 'undefined') {
+        if (this.sBombEffectType != '' && typeof burstArray !== 'undefined') {
             burstTime = typeof burstTime !== 'undefined' ? burstTime : 1;
             var self = this;
-            GlobalVar.resManager().loadRes(ResMapping.ResType.Prefab, effectType, function (prefab) {
+            GlobalVar.resManager().loadRes(ResMapping.ResType.Prefab, this.sBombEffectType, function (prefab) {
                 if (prefab != null) {
-                    let bombInterval = setInterval(function () {
+                    self.sBombIntervalID = setInterval(function () {
                         let bomb = cc.instantiate(prefab);
                         let pos = burstArray.shift();
                         bomb.setPosition(pos);
@@ -560,12 +698,14 @@ const BattleManager = cc.Class({
                         GlobalVar.soundManager().playEffect('cdnRes/audio/battle/effect/explode_boss');
                         bomb.runAction(cc.sequence(cc.delayTime(0.4), cc.removeSelf(true)));
                         if (burstArray.length == 0) {
-                            clearInterval(bombInterval);
-                            if (!!callback) {
-                                callback();
+                            clearInterval(self.sBombIntervalID);
+                            self.sBombIntervalID = -1;
+                            self.sBombBurstInterval=0;
+                            if (!!self.sBombCallback) {
+                                self.sBombCallback();
                             }
                         }
-                    }, burstTime / (burstArray.length > 0 ? burstArray.length : 1) * 1000);
+                    }, self.sBombBurstInterval);
                 }
             });
         }
@@ -792,6 +932,83 @@ const BattleManager = cc.Class({
             let uiBattle = uiNode.getChildByName("UIBattle");
             if (uiBattle != null) {
                 uiBattle.getComponent("UIBattle").setBossHpBar(entity);
+            }
+        }
+    },
+
+    pauseEffect: function () {
+        if (this.displayContainer.getChildByName('6000') != null) {
+            let effect = this.displayContainer.getChildByName('6000');
+            let spine = effect.getComponent(sp.Skeleton);
+            if (spine != null) {
+                spine.paused = true;
+            }
+            let dragonbone = effect.getComponent(dragonBones.ArmatureDisplay);
+            if (dragonbone != null) {
+                let dbArmature = dragonbone.armature();
+                if (dbArmature != null) {
+                    dbArmature.animation.stop();
+                }
+            }
+        }
+        if (this.displayContainer.getChildByName('7000') != null) {
+            let effect = this.displayContainer.getChildByName('7000');
+            let spine = effect.getComponent(sp.Skeleton);
+            if (spine != null) {
+                spine.paused = true;
+            }
+            let dragonbone = effect.getComponent(dragonBones.ArmatureDisplay);
+            if (dragonbone != null && !!effect.playing) {
+                let dbArmature = dragonbone.armature();
+                if (dbArmature != null) {
+                    dbArmature.animation.stop();
+                }
+            }
+        }
+        if(this.sBombIntervalID!=-1){
+            clearInterval(this.sBombIntervalID);
+            this.sBombIntervalID=-2;
+        }
+    },
+
+    resumeEffect: function () {
+        if (this.displayContainer.getChildByName('6000') != null) {
+            let effect = this.displayContainer.getChildByName('6000');
+            let spine = effect.getComponent(sp.Skeleton);
+            if (spine != null) {
+                spine.paused = false;
+            }
+            let dragonbone = effect.getComponent(dragonBones.ArmatureDisplay);
+            if (dragonbone != null) {
+                let dbArmature = dragonbone.armature();
+                if (dbArmature != null) {
+                    dbArmature.animation.play();
+                }
+            }
+        }
+        if (this.displayContainer.getChildByName('7000') != null) {
+            let effect = this.displayContainer.getChildByName('7000');
+            let spine = effect.getComponent(sp.Skeleton);
+            if (spine != null) {
+                spine.paused = false;
+            }
+            let dragonbone = effect.getComponent(dragonBones.ArmatureDisplay);
+            if (dragonbone != null && !!effect.playing) {
+                let dbArmature = dragonbone.armature();
+                if (dbArmature != null) {
+                    dbArmature.animation.play();
+                }
+            }
+        }
+        if(this.sBombIntervalID==-2){
+            if(this.sBombBurstArray.length==0){
+                this.sBombIntervalID=-1;
+                this.sBombBurstInterval=0;
+                if(!!this.sBombCallback){
+                    this.sBombCallback();
+                }
+            }else{
+                this.screenBomb(this.sBombEffectType,this.sBombBurstArray,0,this.sBombCallback)
             }
         }
     },

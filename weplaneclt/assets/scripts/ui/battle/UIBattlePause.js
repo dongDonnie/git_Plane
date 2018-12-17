@@ -22,6 +22,7 @@ var UIBattlePause = cc.Class({
     },
 
     clickGiveUp: function () {
+        GlobalVar.me().memberData.setOneTimeChuZhanMemberID();
         if (this.battleManager.isEndlessFlag) {
             this.battleManager.result = 2;
             this.battleManager.gameState = Defines.GameResult.END;

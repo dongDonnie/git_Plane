@@ -315,7 +315,7 @@ cc.Class({
 
             let labelRequire = model.getChildByName("labelRequire");
             let requireData = GlobalVar.tblApi.getDataBySingleKey('TblAMSRule', ruleCfg.RuleList[0].RuleID);
-            let requireStr = requireData.strRuleName.replace("{0}", ruleCfg.RuleList[0].Compare.replace(">=", "大于") + ruleCfg.RuleList[0].Var);
+            let requireStr = requireData.strRuleName.replace("{0}", ruleCfg.RuleList[0].Compare.replace(">=", "达到").replace("==", "").replace("<=", "小于") + ruleCfg.RuleList[0].Var);
             labelRequire.getComponent(cc.Label).string = requireStr;
 
             model.getChildByName("btnRecv").active = true;
@@ -432,6 +432,7 @@ cc.Class({
                     str = str.replace("%max", data.Act.LimitNum * rule.Var);
                     str = str.replace("%cur", curStep);
                     nodeBtn.getChildByName("labelShare").getComponent(cc.Label).string = str;
+                    nodeBtn.getChildByName("labelShare").active = (rule.Var > 1)
                 } else if (rule.RuleID == GameServerProto.PT_AMS_RULEID_AD) {
                     isAD = true;
                 } else {
@@ -439,23 +440,6 @@ cc.Class({
                 }
             }
         }
-
-
-        // 抽奖提示
-        if (data.Join[0] && data.Join[0].Join >= data.Act.LimitNum) {
-            nodeBtn.getChildByName("btnPurchase").getComponent(cc.Button).interactable = false
-            nodeBtn.getChildByName("btnPurchase").getComponent("ButtonObject").setText("已参与")
-        } else {
-            nodeBtn.getChildByName("btnPurchase").getComponent(cc.Button).interactable = true
-            let btnText = "购 买";
-            (isFree || isShareComplete) && (btnText = "抽 奖");
-            isShare && !isShareComplete && (btnText = "分享到群");
-            isAD && (btnText = "  观看视频");
-            nodeBtn.getChildByName("btnPurchase").getComponent("ButtonObject").setText(btnText);
-        }
-        nodeBtn.getChildByName("labelJoin").getComponent(cc.Label).string = i18n.t('label.4000401').replace("%d", data.Act.LimitNum - curJoinTime);
-        // nodeBtn.setScale(0);
-        // nodeBtn.runAction(cc.sequence(cc.scaleTo(0.15, 1.1), cc.scaleTo(0.05, 1)));
 
         // 抽奖消耗
         let nodeCost = nodeBtn.getChildByName("nodeCost");
@@ -476,7 +460,24 @@ cc.Class({
             } else {
                 nodeCost.getChildByName("labelCost").getComponent(cc.Label).string = costItem.Count;
             }
+        } 
+
+        // 抽奖提示
+        if (data.Join[0] && data.Join[0].Join >= data.Act.LimitNum) {
+            nodeBtn.getChildByName("btnPurchase").getComponent(cc.Button).interactable = false
+            nodeBtn.getChildByName("btnPurchase").getComponent("ButtonObject").setText("已参与")
+        } else {
+            nodeBtn.getChildByName("btnPurchase").getComponent(cc.Button).interactable = true
+            let btnText = "购 买";
+            (isFree || isShareComplete) && (btnText = "抽 奖");
+            isShare && !isShareComplete && (btnText = "分享到群");
+            isAD && (btnText = "  观看视频");
+            nodeBtn.getChildByName("btnPurchase").getComponent("ButtonObject").setText(btnText);
         }
+        nodeBtn.getChildByName("labelJoin").getComponent(cc.Label).string = i18n.t('label.4000401').replace("%d", data.Act.LimitNum - curJoinTime);
+        // nodeBtn.setScale(0);
+        // nodeBtn.runAction(cc.sequence(cc.scaleTo(0.15, 1.1), cc.scaleTo(0.05, 1)));
+
 
         // 添加物品展示
         let self = this;
@@ -545,27 +546,12 @@ cc.Class({
                     str = str.replace("%max", data.Act.LimitNum * rule.Var);
                     str = str.replace("%cur", curStep);
                     nodeBuy.getChildByName("labelShare").getComponent(cc.Label).string = str;
+                    nodeBuy.getChildByName("labelShare").active = (rule.Var > 1)
                 } else if (rule.RuleID == GameServerProto.PT_AMS_RULEID_AD) {
                     isAD = true;
                 }
             }
         }
-
-
-        // 抽奖提示
-        if (data.Join[0] && data.Join[0].Join >= data.Act.LimitNum) {
-            nodeBuy.getChildByName("btnPurchase").getComponent(cc.Button).interactable = false
-            nodeBuy.getChildByName("btnPurchase").getComponent("ButtonObject").setText("已参与");
-        } else {
-            nodeBuy.getChildByName("btnPurchase").getComponent(cc.Button).interactable = true;
-            let btnText = "购 买";
-            (isFree || isShareComplete) && (btnText = "抽 奖");
-            isShare && !isShareComplete && (btnText = "分享到群");
-            isAD && (btnText = "  观看视频");
-            nodeBuy.getChildByName("btnPurchase").getComponent("ButtonObject").setText(btnText);
-        }
-
-        nodeBuy.getChildByName("labelJoin").getComponent(cc.Label).string = i18n.t('label.4000401').replace("%d", data.Act.LimitNum - curJoinTime);
 
         // 抽奖消耗
         let nodeCost = nodeBuy.getChildByName("nodeCost");
@@ -587,6 +573,21 @@ cc.Class({
                 nodeCost.getChildByName("labelCostValue").getComponent(cc.Label).string = costItem.Count;
             }
         }
+
+        // 抽奖提示
+        if (data.Join[0] && data.Join[0].Join >= data.Act.LimitNum) {
+            nodeBuy.getChildByName("btnPurchase").getComponent(cc.Button).interactable = false
+            nodeBuy.getChildByName("btnPurchase").getComponent("ButtonObject").setText("已参与");
+        } else {
+            nodeBuy.getChildByName("btnPurchase").getComponent(cc.Button).interactable = true;
+            let btnText = "购 买";
+            (isFree || isShareComplete) && (btnText = "抽 奖");
+            isShare && !isShareComplete && (btnText = "分享到群");
+            isAD && (btnText = "  观看视频");
+            nodeBuy.getChildByName("btnPurchase").getComponent("ButtonObject").setText(btnText);
+        }
+
+        nodeBuy.getChildByName("labelJoin").getComponent(cc.Label).string = i18n.t('label.4000401').replace("%d", data.Act.LimitNum - curJoinTime);
 
         // 奖品展示
         let opCfg = data.Act.OpCfg;

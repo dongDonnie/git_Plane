@@ -12,7 +12,7 @@ CampNormal58.data = {
         {wave:{groups:[1437,795,798,1069],wait:0,delay:[0,0,0,1]}},
         {wave:{groups:[410,1207,1107,800],wait:0,delay:[0,0,1,2]},maps:{mapIndex:[0,2],mapSpeed:[400,600],mapScale:[1,1],mapLoop:[1,1]}},
         {wave:{groups:[411,42,1182,1216,14],wait:0,delay:[0,0.5,1.5,1.5,2]}},
-        {wave:{groups:[412,690],wait:0,delay:[0,1]}},
+        {wave:{groups:[412,690],wait:0,delay:[0,1]}}, {wave:{groups:[409,792,794,16,18],wait:0,delay:[0,1,1,2,2]}},
         {wave:{groups:[1438,792,794,796,798,800],wait:0,delay:[0,0.8,1.6,2.4,3,3.5]}},
     ],
     monsterExtra:[23,24,25,1313,1314,1315,1316,1317],

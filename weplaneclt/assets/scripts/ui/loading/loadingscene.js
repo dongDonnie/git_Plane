@@ -34,6 +34,14 @@ var LoadingScene = cc.Class({
             default: null,
             type: cc.Label
         },
+        spriteBg: {
+            default: null,
+            type: cc.Sprite,
+        },
+        loadingBarFade: {
+            default: null,
+            type: cc.ProgressBar,
+        },
     },
 
     statics: {
@@ -64,6 +72,29 @@ var LoadingScene = cc.Class({
         });
 
         this.loadingState === LoadingState.E_WAITING
+
+        this.firstLoading = GlobalVar.isFirstTimesLoading;
+        GlobalVar.isFirstTimesLoading = false;
+
+        if (this.firstLoading){
+            console
+            // this.loadingBar.progress = 0.2;
+            this.loadingBar.node.y = -360;
+            this.loadingBarFade.node.y = -325;
+            this.spriteBg.node.getComponent("RemoteSprite").setFrame(0);
+            // this.spriteBg.node.anchorY = 0.5;
+            // this.spriteBg.node.Y = 0;
+            // this.spriteBg.node.getComponent(cc.Widget).bottom = -132;
+            this.loadingBar.node.parent.getChildByName("spriteTipBg").active = false;
+            this.loadingBar.node.parent.getChildByName("spriteTipText").active = false;
+            this.loadingBar.node.parent.getChildByName("labelTip").active = false;
+            this.loadingBar.node.parent.getChildByName("spriteChara").active = false;
+            this.loadingBar.node.parent.getChildByName("label").active = false;
+            this.loadingBar.node.parent.getChildByName("labelProgressPercent").active = false;
+            this.loadingBar.node.parent.getChildByName("spriteFang").active = true;
+            this.loadingBarFade.node.active = true;
+            this.loadingBarFade.progress = 0.2;
+        }
     },
 
     start: function () {
@@ -136,11 +167,17 @@ var LoadingScene = cc.Class({
                 this.loadingState = LoadingState.E_FINISH;
             }else{
                 var self=this;
-                let action = cc.progressLoading(2, 0/*this.loadingBar.progress*/, 1, null, function (per) {
-                    self.loadingBar.node.getChildByName("spriteLight").x = self.loadingBar.totalLength * per;
+                let action = cc.progressLoading(2, /*0*/this.loadingBar.progress, 1, null, function (per) {
+                    self.loadingBar.node.getChildByName("spriteLight").x = self.loadingBar.barSprite.node.width * per;
                     self.labelProgressPercent.string = Math.floor(per * 100) + "%";
                 });
                 this.loadingBar.node.runAction(action);
+                if (this.firstLoading){
+                    let actionFade = cc.progressLoading(2, this.loadingBarFade.progress, 1, null, function (per) {
+                        self.loadingBarFade.node.getChildByName("spriteLight").x = self.loadingBarFade.barSprite.node.width * per;
+                    })
+                    this.loadingBarFade.node.runAction(actionFade);
+                }
             }
 
             var self=this;
@@ -198,6 +235,7 @@ var LoadingScene = cc.Class({
         //     }
         // }
         //this.loadingBar.node.stopAllActions();
+        let percentFade = percent * 0.8 + 0.2;
         let action = cc.progressLoading(2, this.loadingBar.progress, percent<=1?percent:1, function () {
             if (percent >= 1) {
                 if (step == -1 || step >= self.totalCount) {
@@ -205,10 +243,17 @@ var LoadingScene = cc.Class({
                 }
             }
         }, function (per) {
-            self.loadingBar.node.getChildByName("spriteLight").x = self.loadingBar.totalLength * per;
+            self.loadingBar.node.getChildByName("spriteLight").x = self.loadingBar.barSprite.node.width * per;
             self.labelProgressPercent.string = Math.floor(per * 100) + "%";
         });
         this.loadingBar.node.runAction(action);
+
+        if (this.firstLoading){
+            let actionFade = cc.progressLoading(2, this.loadingBarFade.progress, percentFade<=1?percentFade:1, null, function (per) {
+                self.loadingBarFade.node.getChildByName("spriteLight").x = self.loadingBar.barSprite.node.width * per;
+            });
+            this.loadingBarFade.node.runAction(actionFade);
+        }
     },
 
 });

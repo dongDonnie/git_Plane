@@ -135,12 +135,17 @@ const HeroManager = cc.Class({
                     this.BomberEntity.splice(0, this.BomberEntity.length);
                 }
             }
-        } else if (BattleManager.getInstance().gameState == Defines.GameResult.SUCCESS ||
-            BattleManager.getInstance().gameState == Defines.GameResult.FLYOUT ||
-            BattleManager.getInstance().gameState == Defines.GameResult.COUNT ||
-            BattleManager.getInstance().gameState == Defines.GameResult.START ||
-            BattleManager.getInstance().gameState == Defines.GameResult.READY ||
-            BattleManager.getInstance().gameState == Defines.GameResult.RESTART) {
+        } else if (BattleManager.getInstance().gameState == Defines.GameResult.SUCCESS || BattleManager.getInstance().gameState == Defines.GameResult.FLYOUT ||
+            BattleManager.getInstance().gameState == Defines.GameResult.COUNT || BattleManager.getInstance().gameState == Defines.GameResult.START ||
+            BattleManager.getInstance().gameState == Defines.GameResult.READY || BattleManager.getInstance().gameState == Defines.GameResult.RESTART ||
+            BattleManager.getInstance().gameState == Defines.GameResult.DASHSTART || BattleManager.getInstance().gameState == Defines.GameResult.DASH ||
+            BattleManager.getInstance().gameState == Defines.GameResult.DASHEND || BattleManager.getInstance().gameState == Defines.GameResult.SHOW) {
+
+            if (BattleManager.getInstance().gameState == Defines.GameResult.DASHSTART ||
+                BattleManager.getInstance().gameState == Defines.GameResult.DASH ||
+                BattleManager.getInstance().gameState == Defines.GameResult.DASHEND) {
+                this.planeEntity.updateDashTime(dt);
+            }
             for (let i = 0; i < 2; i++) {
                 if (typeof this.assistEntity[i] !== 'undefined') {
                     this.assistEntity[i].chaseFighter(dt);
@@ -149,6 +154,7 @@ const HeroManager = cc.Class({
                     this.wingmanEntity[i].chaseFighter(dt);
                 }
             }
+
         }
     },
 
@@ -228,7 +234,7 @@ const HeroManager = cc.Class({
                         assistLeft.setSkillIDs(s3);
                         displayNode.addChild(assistLeft, Defines.Z.ASSIST);
                         this.assistEntity.push(assistLeft);
-                        assistLeft.setScale(-0.6,0.6);
+                        assistLeft.setScale(-0.6, 0.6);
 
                         let assistRight = new WingmanEntity();
                         assistRight.newPart(data.strModel, Defines.ObjectType.OBJ_ASSIST, '', this.showType, 1, 1);
@@ -236,7 +242,7 @@ const HeroManager = cc.Class({
                         assistRight.setSkillIDs(s4);
                         displayNode.addChild(assistRight, Defines.Z.ASSIST);
                         this.assistEntity.push(assistRight);
-                        assistRight.setScale(0.6,0.6);
+                        assistRight.setScale(0.6, 0.6);
 
                         if (!!props) {
                             props[Defines.PropName.AssistAttack] = guazaiProp[Defines.PropName.AssistAttack];
@@ -301,7 +307,11 @@ const HeroManager = cc.Class({
             return;
         }
         this.friendEntity = new FriendEntity();
-        this.friendEntity.newPart('Fighter/Fighter_' + member, Defines.ObjectType.OBJ_HERO, 'PlaneObject', 0, 0, 0);
+        let assistID = GlobalVar.me().memberData.getAssistFighterID();
+        if (assistID == 0) {
+            assistID = member;
+        }
+        this.friendEntity.newPart('Fighter/Fighter_' + assistID, Defines.ObjectType.OBJ_HERO, 'PlaneObject', 0, 0, 0);
 
         if (typeof props !== 'undefined' && props != null) {
             this.friendEntity.setProp(member, props);
@@ -328,9 +338,12 @@ const HeroManager = cc.Class({
                 break;
             }
             let bomber = new PlaneEntity();
-            let index = this.planeEntity.objectName.lastIndexOf('_');
-            let id = this.planeEntity.objectName.substring(index + 1, this.planeEntity.objectName.length);
-            bomber.newPart('Fighter/Fighter_' + id, Defines.ObjectType.OBJ_HERO, 'PlaneObject', 3, 0, 0);
+            let assistID = GlobalVar.me().memberData.getAssistFighterID();
+            if (assistID == 0){
+                let index = this.planeEntity.objectName.lastIndexOf('_');
+                assistID = this.planeEntity.objectName.substring(index + 1, this.planeEntity.objectName.length);
+            }
+            bomber.newPart('Fighter/Fighter_' + assistID, Defines.ObjectType.OBJ_HERO, 'PlaneObject', 3, 0, 0);
             bomber.setPosition(i * 180 + 140, 0);
             BattleManager.getInstance().displayContainer.addChild(bomber, Defines.Z.BOMBER);
             this.BomberEntity.push(bomber);
@@ -419,6 +432,11 @@ const HeroManager = cc.Class({
         this.assistEntity.splice(0, this.assistEntity.length);
     },
 
+    openDash: function (open) {
+        open = typeof open !== 'undefined' ? open : false;
+        this.planeEntity.addDashTime(open);
+    },
+
     skillLevelUp: function (level) {
         if (!BattleManager.getInstance().isDemo) {
             if (level == 1) {
@@ -489,7 +507,10 @@ const HeroManager = cc.Class({
             return;
         }
 
-        if (BattleManager.getInstance().gameState != Defines.GameResult.RUNNING) {
+        if (BattleManager.getInstance().gameState != Defines.GameResult.RUNNING &&
+            BattleManager.getInstance().gameState != Defines.GameResult.DASHSTART &&
+            BattleManager.getInstance().gameState != Defines.GameResult.DASH &&
+            BattleManager.getInstance().gameState != Defines.GameResult.DASHEND) {
             return;
         }
 

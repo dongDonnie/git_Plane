@@ -168,9 +168,7 @@ cc.Class({
             if (GlobalVar.srcSwitch() && GlobalVar.getShareSwitch()) {
                 btnType = BUTTON_TYPE_SHARE_ONLY;
             }else if (!GlobalVar.srcSwitch()){
-                if (GlobalVar.getShareSwitch()){
-                    btnType = BUTTON_TYPE_PURCHASE_ONLY;
-                }else{
+                if (!GlobalVar.getShareSwitch()){
                     btnType = BUTTON_TYPE_PURCHASE_ONLY;
                 }
             }

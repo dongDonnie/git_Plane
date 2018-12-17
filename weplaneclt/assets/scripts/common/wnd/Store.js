@@ -469,7 +469,7 @@ cc.Class({
         let refreshLimitTimes = GlobalVar.tblApi.getDataBySingleKey('TblVipRight', GlobalVar.me().vipLevel).wStoreRefreshLimit;
 
         if (self.refreshTimes >= refreshLimitTimes){
-            GlobalVar.comMsg.showMsg("今日刷新次数用尽");
+            GlobalVar.comMsg.showMsg("今日刷新次数用尽(" + refreshLimitTimes + "次)");
             return;
         }
         var refreshPlan = GlobalVar.me().storeData.getRefreshCostPlan();

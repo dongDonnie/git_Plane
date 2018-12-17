@@ -54,7 +54,7 @@ BattleDefines.ObjectType = cc.Enum({
     OBJ_ASSIST: 13,
     OBJ_EXECUTE: 14,
     OBJ_SUNDRIES: 15,
-    OBJ_GOLD:16,
+    OBJ_GOLD: 16,
 });
 
 BattleDefines.BulletType = cc.Enum({
@@ -98,8 +98,10 @@ BattleDefines.FORCE_DESTORY = 400;
 BattleDefines.DEFAULT_INTERVAL = 3;
 BattleDefines.INVINCIBLE_TIME = 1.6;
 BattleDefines.PROTECT_TIME = 7.0;
+BattleDefines.DASH_TIME = 8.0;
 BattleDefines.MAX_COUNT = 99999999;
 BattleDefines.SKILLCD = 5;
+BattleDefines.ASSISTCD = 120;
 BattleDefines.CRAZYCOUNT = 5;
 BattleDefines.DEMOCOUNT = 3;
 BattleDefines.FRIENDDURATION = 30.0;
@@ -120,11 +122,16 @@ BattleDefines.GameResult = cc.Enum({
     FAILED: 10,
     FLYOUT: 11,
     CARD: 12,
-    DEADDELAY:13,
-    REVIVE:14,
-    WAITREVIVE:15,
-    RESTART:16,
-    COUNT: 17,
+    DEADDELAY: 13,
+    REVIVE: 14,
+    WAITREVIVE: 15,
+    RESTART: 16,
+    DASHSTART: 17,
+    DASH: 18,
+    DASHEND: 19,
+    DASHOPEN: 20,
+    SHOW: 21,
+    COUNT: 22,
 });
 
 BattleDefines.GroupStatus = cc.Enum({
@@ -145,7 +152,7 @@ BattleDefines.Z = cc.Enum({
     RAY: 4,
     KILL: 5,
     MONSTER: 6,
-    MONSTERHP:7,
+    MONSTERHP: 7,
     FIGHTERBULLET: 8,
     FIGHTER: 9,
     BARRIER: 10,
@@ -158,15 +165,15 @@ BattleDefines.Z = cc.Enum({
     CHEST: 17,
     CRTSTAL: 18,
     MONSTERBULLET: 19,
-    MONSTERBULLETCLEAR:20,
-    MONSTERBULLETHIT:21,
-    HEROBULLETHIT:22,
+    MONSTERBULLETCLEAR: 20,
+    MONSTERBULLETHIT: 21,
+    HEROBULLETHIT: 22,
     FLYDAMAGEMSG: 23,
     INVICIBLE: 24,
     EXECUTESHADOW: 25,
     EXECUTE: 26,
-    BOMBER:27,
-    UNDEFEAT:28,
+    BOMBER: 27,
+    UNDEFEAT: 28,
     WARNING: 29,
 });
 
@@ -176,17 +183,19 @@ BattleDefines.Assist = {
     PROTECT: 10002,
     HP: 10003,
     MP: 10004,
-    GHOST: 10005,
+    MAGNET: 10005,
+    DASH: 10006,
+    GHOST: 10007,
     GREENSTONE: 20000,
     BLUESTONE: 20001,
     PURPERSTONE: 20002,
     GOLD: 30000,
-    CHEST1:30001,
-    CHEST2:30002,
-    CHEST3:30003,
-    CHEST4:30004,
-    CHEST5:30005,
-    CHEST6:30006,
+    CHEST1: 30001,
+    CHEST2: 30002,
+    CHEST3: 30003,
+    CHEST4: 30004,
+    CHEST5: 30005,
+    CHEST6: 30006,
     STONYSMALL: 40000,
     STONYMIDDLE: 40001,
     STONYBIG: 40002,

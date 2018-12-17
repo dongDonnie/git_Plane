@@ -104,7 +104,7 @@ var SoundManager = cc.Class({
 
     playEffect(name, callback) {
         if(this.curEffectName==name && name=='gold_bing'){
-            return;
+            this.stopEffect();
         }
         this.playAudio('EFFECT', name, false, this.effectVolume, callback);
     },
@@ -160,7 +160,6 @@ var SoundManager = cc.Class({
             if (!!callback) {
                 callback();
             }
-            self.curEffectName='';
         });
         if (type == 'BGM') {
             this.currentBGM = audioIndex;

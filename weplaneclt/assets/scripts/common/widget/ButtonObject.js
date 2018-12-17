@@ -7,6 +7,7 @@ let audio = cc.Enum({
     open: 5,
     check: 6,
     switch: 7,
+    none: 8,
 });
 
 let audioNames = {
@@ -18,6 +19,7 @@ let audioNames = {
     5: 'cdnRes/audio/main/effect/openView',
     6: 'cdnRes/audio/clips/sound_check',
     7: 'cdnRes/audio/main/effect/button_click',
+    8: '',
 };
 
 let colorType = cc.Enum({
@@ -84,14 +86,9 @@ var ButtonObject = cc.Class({
             default: true,
             visible: false,
         },
-        btnPress: {
-            default: false,
-            visible: false,
-        },
     },
 
     onLoad: function () {
-        this.btnPress = false;
         this.node.on('touchstart', this.onTouchStart, this);
         this.node.on('touchend', this.onTouchEnd, this);
         this.node.on('touchcancel', this.onTouchCancel, this);
@@ -122,13 +119,6 @@ var ButtonObject = cc.Class({
         ButtonObject.isPress = null;
         
         if (config.NEED_GUIDE) {
-            if (this.btnPress) {
-                setTimeout(() => {
-                    this.btnPress = false;
-                }, 1000);
-                return;
-            }
-            this.btnPress = true;
             Guide.getInstance().clickBtn(event.currentTarget.name);
         }
     },
@@ -141,7 +131,7 @@ var ButtonObject = cc.Class({
     },
 
     playAudio: function (event) {
-        if (!this.btnState) {
+        if (!this.btnState || (this.audioType == audio.none)) {
             return;
         }
         let name = audioNames[this.audioType];

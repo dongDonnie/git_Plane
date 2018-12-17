@@ -343,7 +343,7 @@ var Factory = cc.Class({
             buff.objectType = Defines.ObjectType.OBJ_GOLD;
         }
 
-        buff.setBuff(id);
+        buff.setObjectData(buff.objectType, id);
         //buff.newObject();
 
         buff.isDead = false;

@@ -1,4 +1,5 @@
 const GlobalVar = require("globalvar")
+const PLANE_SCORLL_AUDIO = 'cdnRes/audio/main/effect/zhanjiscrolleffect';
 cc.Class({
     extends: cc.Component,
 
@@ -169,7 +170,6 @@ cc.Class({
             } else if (i == 5) {
                 this._poPlaneRight = this.stackArray[centerIndex + i - 2];
             }
-
             let fIconX = (i * nWidth) / 4 - nWidth / 2;
             let fIconY = this._calcEllipseY(fIconX);
             this.fighterStack[this.stackArray[centerIndex + i - 2]].setScale(fIconY / (this.PLANE_LIST_ELLIPSE_B) * 0.9);
@@ -211,7 +211,7 @@ cc.Class({
 
             if (right.x > 0.5 * this.node.getContentSize().width + 0.5 * right.getContentSize().width) {
                 //right.active = false;
-
+                GlobalVar.soundManager().playEffect(PLANE_SCORLL_AUDIO);
                 let newPosition = this.fighterStack[this.stackArray[0]].getPosition();
                 newPosition.x -= (this.fighter.getContentSize().width + this.spaceX);
                 this.fighterStack[this.stackArray[this.stackArray.length - 1]].setPosition(newPosition);
@@ -247,7 +247,7 @@ cc.Class({
 
             if (left.x < -0.5 * this.node.getContentSize().width - 0.5 * left.getContentSize().width) {
                 //left.active = false;
-
+                GlobalVar.soundManager().playEffect(PLANE_SCORLL_AUDIO);
                 let newPosition = this.fighterStack[this.stackArray[this.stackArray.length - 1]].getPosition();
                 newPosition.x += (this.fighter.getContentSize().width + this.spaceX);
                 this.fighterStack[this.stackArray[0]].setPosition(newPosition);

@@ -43,7 +43,7 @@ CampNormal46.data = {
             eventKey:0,
             checkTime:1,
             condition:[
-                {wave:{index:8,step:8}},
+                {wave:{index:8,step:6}},
             ],
             effect:[
                 {extra:{open:-2}},

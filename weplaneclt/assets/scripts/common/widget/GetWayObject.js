@@ -7,73 +7,9 @@ const WindowManager = require("windowmgr");
 const i18n = require('LanguageData');
 var GetWayObject = cc.Class({
     extends: UIBase,
-
+    
     ctor: function () {
-        this.iconFrameStack = {};
-        this.iconFrameStack[0] = {
-            local: "cdnRes/daily/dailyicon_power.png",
-            url: ""
-        };
-        this.iconFrameStack[1] = {
-            local: "cdnRes/itemicon/99/1.png",
-            url: ""
-        };
-        this.iconFrameStack[2] = {
-            local: "cdnRes/itemicon/99/2.png",
-            url: ""
-        };
-        this.iconFrameStack[3] = {
-            local: "cdnRes/itemicon/99/3.png",
-            url: ""
-        };
-        this.iconFrameStack[4] = {
-            local: "cdnRes/itemicon/99/4.png",
-            url: ""
-        };
-        this.iconFrameStack[5] = {
-            local: "cdnRes/dailyicon/dailyicon_shop.png",
-            url: ""
-        };
-        this.iconFrameStack[710] = {
-            local: "cdnRes/membericon/710.png",
-            url: ""
-        };
-        this.iconFrameStack[720] = {
-            local: "cdnRes/membericon/720.png",
-            url: ""
-        };
-        this.iconFrameStack[730] = {
-            local: "cdnRes/membericon/730.png",
-            url: ""
-        };
-        this.iconFrameStack[740] = {
-            local: "cdnRes/membericon/740.png",
-            url: ""
-        };
-        this.iconFrameStack[750] = {
-            local: "cdnRes/membericon/750.png",
-            url: ""
-        };
-        this.iconFrameStack[760] = {
-            local: "cdnRes/membericon/760.png",
-            url: ""
-        };
-        this.iconFrameStack[770] = {
-            local: "cdnRes/membericon/770.png",
-            url: ""
-        };
-        this.iconFrameStack[780] = {
-            local: "cdnRes/membericon/780.png",
-            url: ""
-        };
-        this.iconFrameStack[790] = {
-            local: "cdnRes/membericon/790.png",
-            url: ""
-        };
-        this.iconFrameStack[800] = {
-            local: "cdnRes/membericon/800.png",
-            url: ""
-        };
+        
     },
 
     properties: {
@@ -140,21 +76,8 @@ var GetWayObject = cc.Class({
 
     setSpriteIcon: function (icon) {
         let path = "";
-        if (typeof this.iconFrameStack[icon] !== 'undefined') {
-            if (cc.sys.platform === cc.sys.WECHAT_GAME) {
-                path = this.iconFrameStack[icon].url;
-            } else {
-                path = this.iconFrameStack[icon].local;
-            }
-        } else {
-            if (cc.sys.platform === cc.sys.WECHAT_GAME) {
-                path = this.iconFrameStack[0].url;
-            } else {
-                path = this.iconFrameStack[0].local;
-            }
-        }
-        path = this.iconFrameStack[0].local;
-        this.spriteIcon.getComponent("RemoteSprite").loadFrame(path);
+        path = "cdnRes/daily/dailyicon_power.png"
+        this.spriteIcon.getComponent("RemoteSprite").loadFrameFromLocalRes(path);
     },
 
     setLabelName: function (text) {

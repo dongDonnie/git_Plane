@@ -520,7 +520,7 @@ const MonsterSolutions = cc.Class({
             entity.addEnemyIncoming(direction, posPlus, movetime, movespeed, dstpos, 2.3, function (pos) {
                 entity.setPosition(pos);
                 entity.addMotionStreak('huoyan_jin', true, cc.v3(0, -40));
-                entity.setBaseAngle(angle-90);
+                entity.setBaseAngle(angle - 90);
                 entity.setOpacity(255);
                 entity.setCollisionSwitch(true);
                 entity.setSpeed(ai.speedTransfer(speed, angle), true);
@@ -804,7 +804,7 @@ const MonsterSolutions = cc.Class({
                     this.setTimer(18, 1.5, 1, 0);
                 }
                 if (idx == 18) {
-                    ai.playAction(this, 'attack_1',1,null);
+                    ai.playAction(this, 'attack_1', 1, null);
                     ai.useSkill(this, 846);
                     this.setTimer(19, 9, 1, 0);
                 }
@@ -848,7 +848,7 @@ const MonsterSolutions = cc.Class({
             let ai = require('AIInterface');
             let entity = ai.createMonster(info);
             entity.setCollisionSwitch(false);
-            entity.setTimerHandler(function (idx) { 
+            entity.setTimerHandler(function (idx) {
                 if (idx == 0) {
                     this.simpleHarmonic(250, 4, 90, cc.v3(1, 0), cc.v3(0, 0), cc.v3(0, 0), 0)
                     this.setMovementType(5);
@@ -1662,15 +1662,15 @@ const MonsterSolutions = cc.Class({
                     this.setTimer(2, 1, 1, 0);
                 }
                 if (idx == 2) {
-                    this.setTimer(3, 0.5, 3, 1);
-                    this.setTimer(4, 3, 1, 0);
+                    this.setTimer(3, 0.8, 3, 1);
+                    this.setTimer(4, 4, 1, 0);
                 }
                 if (idx == 3) {
                     ai.useSkill(this, 814);
                 }
                 if (idx == 4) {
-                    this.setTimer(5, 0.3, 4, 1);
-                    this.setTimer(6, 3, 4, 1);
+                    this.setTimer(5, 0.5, 4, 1);
+                    this.setTimer(6, 1, 1, 1);
                 }
                 if (idx == 5) {
                     ai.useSkill(this, 815);
@@ -1688,8 +1688,8 @@ const MonsterSolutions = cc.Class({
                     ai.useSkill(this, 817);
                 }
                 if (idx == 9) {
-                    this.setTimer(10, 0.3, 4, 1);
-                    this.setTimer(11, 3, 1, 0);
+                    this.setTimer(10, 0.5, 4, 1);
+                    this.setTimer(11, 4, 1, 0);
                 }
                 if (idx == 10) {
                     ai.useSkill(this, 815);
@@ -1941,7 +1941,7 @@ const MonsterSolutions = cc.Class({
                     this.setTimer(1, 3, 1, 0);
                 }
                 if (idx == 1) {
-                    ai.setMonsterLoopAction(this,'daiji_01');
+                    ai.setMonsterLoopAction(this, 'daiji_01');
                     ai.playAction(this, 'bianxing_1', 1, cb);
                 }
                 if (idx == 2) {
@@ -2051,7 +2051,7 @@ const MonsterSolutions = cc.Class({
                     this.setTimer(18, 1.5, 1, 0);
                 }
                 if (idx == 18) {
-                    ai.setMonsterLoopAction(this,'daiji_02');
+                    ai.setMonsterLoopAction(this, 'daiji_02');
                     ai.playAction(this, 'bianxing_2', 1, cb);
                 }
                 if (idx == 19) {
@@ -2188,7 +2188,7 @@ const MonsterSolutions = cc.Class({
                     this.setTimer(40, 1.5, 1, 0);
                 }
                 if (idx == 40) {
-                    ai.setMonsterLoopAction(this,'daiji_03');
+                    ai.setMonsterLoopAction(this, 'daiji_03');
                     ai.playAction(this, 'bianxing_3', 1, cb);
                 }
                 if (idx == 41) {
@@ -2241,7 +2241,7 @@ const MonsterSolutions = cc.Class({
                         this.setTimer(47, 0.4, 2, 0);
                     }
                     if (num % 2 == 0) {
-                        this.setPosition(ai.posTransfer(cc.v3(1.2, 1.2))); 
+                        this.setPosition(ai.posTransfer(cc.v3(1.2, 1.2)));
                         let destination = ai.posTransfer(cc.v3(-0.2, -0.2));
                         this.shiftToStandby(destination, 3, 0, 1);
                         this.setMovementType(4);
@@ -2255,7 +2255,7 @@ const MonsterSolutions = cc.Class({
                     ai.useSkill(this, 887);
                 }
                 if (idx == 48) {
-                    ai.playAction(this,'gongji_3_end',1);
+                    ai.playAction(this, 'gongji_3_end', 1);
                     this.setBaseAngle(0);
                     this.setPosition(ai.posTransfer(cc.v3(0.5, 1.1)));
                     this.setShow(false);
@@ -2426,7 +2426,7 @@ const MonsterSolutions = cc.Class({
                     this.shiftToStandby(destination, 1, 0, 0);
                     this.setMovementType(4);
                     this.setTimer(20, 2.5, 1, 0);
-                    this.setTimer(31,1,1,0);
+                    this.setTimer(31, 1, 1, 0);
                 }
                 if (idx == 20) {
                     let pos_1 = cc.v3(0.5, -0.3);
@@ -2513,7 +2513,7 @@ const MonsterSolutions = cc.Class({
                     };
                     MonsterSolutions.solution_33(monsterInfo);
                 }
-                if(idx == 31){
+                if (idx == 31) {
                     this.setShow(false);
                 }
             });
@@ -2534,7 +2534,7 @@ const MonsterSolutions = cc.Class({
             entity_1.setTimerHandler(function (idx) {
                 if (idx == 0) {
                     ai.setMonsterLoopAction(this, 'start_1');
-                    let destination = ai.posTransfer(cc.v3(0.2 + Math.random() * 0.6,0.5 + Math.random() * 0.3));
+                    let destination = ai.posTransfer(cc.v3(0.2 + Math.random() * 0.6, 0.5 + Math.random() * 0.3));
                     this.shiftToStandby(destination, 3, 10, 0);
                     this.setMovementType(4);
                     this.setTimer(1, 3, 1, 0);
@@ -2864,19 +2864,19 @@ const MonsterSolutions = cc.Class({
                     let entity37 = MonsterSolutions.solution_37(Info_1);
                     let entity38 = MonsterSolutions.solution_38(Info_2);
 
-                    this.setWatch(function(e){
-                        if(e.isDead == true){
+                    this.setWatch(function (e) {
+                        if (e.isDead == true) {
                             return true;
                         }
                         return false;
                     });
-                    this.setInspector(entity37,function(r,e){
+                    this.setInspector(entity37, function (r, e) {
                         ai.releaseEntity(e);
                     });
-                    this.setInspector(entity38,function(r,e){
+                    this.setInspector(entity38, function (r, e) {
                         ai.releaseEntity(e);
                     });
-                    
+
                     this.setTimer(24, 10, 1, 0);
                 }
                 if (idx == 24) {
@@ -2903,7 +2903,7 @@ const MonsterSolutions = cc.Class({
                 }
                 if (idx == 28) {
                     let destination = ai.posTransfer(cc.v3(0.25, 0.75));
-                    this.shiftToStandby(destination,1, 5, 0);
+                    this.shiftToStandby(destination, 1, 5, 0);
                     this.setMovementType(4);
                     this.setTimer(29, 1, 1, 0);
                 }
@@ -2981,10 +2981,10 @@ const MonsterSolutions = cc.Class({
                     let entity37 = MonsterSolutions.solution_37(Info_1);
                     let entity38 = MonsterSolutions.solution_38(Info_2);
 
-                    this.setInspector(entity37,function(r,e){
+                    this.setInspector(entity37, function (r, e) {
                         ai.releaseEntity(e);
                     });
-                    this.setInspector(entity38,function(r,e){
+                    this.setInspector(entity38, function (r, e) {
                         ai.releaseEntity(e);
                     });
 
@@ -3215,151 +3215,151 @@ const MonsterSolutions = cc.Class({
             let entity = ai.createMonster(info);
             entity.setZ(5);
             entity.opacity = (0);
-            entity.setScale(1, cc.winSize.height/1000);
+            entity.setScale(1, cc.winSize.height / 1000);
             let Info_1 = {
                 mId: 1587,
                 lv: entity.lv,
-                pos: cc.v3(0.5 ,0.5),
+                pos: cc.v3(0.5, 0.5),
             };
             entity.setTimerHandler(function (idx) {
-                if(idx == 0){
+                if (idx == 0) {
                     this.setCollisionSwitch(false);
-                    this.runOpacity(255,2);
+                    this.runOpacity(255, 2);
                 }
-                if(idx == 1){
+                if (idx == 1) {
                     this.setCollisionSwitch(true);
-                    ai.useSkill(this,919);
-                    this.setTimer(2,5,1,0);
+                    ai.useSkill(this, 919);
+                    this.setTimer(2, 5, 1, 0);
                 }
-                if(idx == 2){
-                    ai.useSkill(this,920);
-                    this.setTimer(1,5,1,0);
+                if (idx == 2) {
+                    ai.useSkill(this, 920);
+                    this.setTimer(1, 5, 1, 0);
                 }
-                if(idx == 3){
-                    this.setTimer(4,5,9999,0);
+                if (idx == 3) {
+                    this.setTimer(4, 5, 9999, 0);
                 }
-                if(idx == 4){
-                    this.setTimer(5,0.8,5,0);
-                    this.setTimer(6,1.5,3,0);
+                if (idx == 4) {
+                    this.setTimer(5, 0.8, 5, 0);
+                    this.setTimer(6, 1.5, 3, 0);
                 }
-                if(idx == 5){
+                if (idx == 5) {
                     let Info_2 = {
                         mId: 1588,
                         lv: this.lv,
-                        pos: cc.v3(Math.random()*0.6+0.2 ,1.144),
+                        pos: cc.v3(Math.random() * 0.6 + 0.2, 1.144),
                     };
                     MonsterSolutions.solution_41(Info_2);
                 }
-                if(idx == 6){
-                    ai.useSkill(this,921);
+                if (idx == 6) {
+                    ai.useSkill(this, 921);
                 }
-                if(idx == 7){
-                    for(let i = 1;i<7;++i){
+                if (idx == 7) {
+                    for (let i = 1; i < 7; ++i) {
                         this.delTimer(i);
                     }
-                    this.setTimer(8,2,1,0);
+                    this.setTimer(8, 2, 1, 0);
                 }
-                if(idx == 8){
-                    ai.playAction(this,'attack',0);
-                    ai.useSkill(this,923);
+                if (idx == 8) {
+                    ai.playAction(this, 'attack', 0);
+                    ai.useSkill(this, 923);
                     //ai.useSkill(this,924);
-                    let vec_1 = ai.posTransfer(cc.v3(0.1+Math.random()*0.3,0.2*Math.random()));
-                    let vec_2 = ai.posTransfer(cc.v3(0.1+Math.random()*0.3,0.2+0.2*Math.random()));
-                    let vec_3 = ai.posTransfer(cc.v3(0.1+Math.random()*0.3,0.4+0.2*Math.random()));
-                    let vec_4 = ai.posTransfer(cc.v3(0.1+Math.random()*0.3,0.6+2*Math.random()));
-                    let vec_5 = ai.posTransfer(cc.v3(0.1+Math.random()*0.3,0.8+2*Math.random()));
-                    let pos_1 = ai.posTransfer(cc.v3(0.9-Math.random()*0.3,1-0.2*Math.random()));
-                    let pos_2 = ai.posTransfer(cc.v3(0.9-Math.random()*0.3,0.8-0.2*Math.random()));
-                    let pos_3 = ai.posTransfer(cc.v3(0.9-Math.random()*0.3,0.6-0.2*Math.random()));
-                    let pos_4 = ai.posTransfer(cc.v3(0.9-Math.random()*0.3,0.4-2*Math.random()));
-                    let pos_5 = ai.posTransfer(cc.v3(0.9-Math.random()*0.3,0.2-2*Math.random()));
-                    BattleManager.getInstance().screenBomb(1,[vec_1,vec_2,vec_3,vec_4,vec_5],1);
-                    BattleManager.getInstance().screenBomb(1,[pos_1,pos_2,pos_3,pos_4,pos_5],1);
-                    this.setTimer(9,3,1,0);
-                    this.setTimer(21,1,1,0);
+                    let vec_1 = ai.posTransfer(cc.v3(0.1 + Math.random() * 0.3, 0.2 * Math.random()));
+                    let vec_2 = ai.posTransfer(cc.v3(0.1 + Math.random() * 0.3, 0.2 + 0.2 * Math.random()));
+                    let vec_3 = ai.posTransfer(cc.v3(0.1 + Math.random() * 0.3, 0.4 + 0.2 * Math.random()));
+                    let vec_4 = ai.posTransfer(cc.v3(0.1 + Math.random() * 0.3, 0.6 + 2 * Math.random()));
+                    let vec_5 = ai.posTransfer(cc.v3(0.1 + Math.random() * 0.3, 0.8 + 2 * Math.random()));
+                    let pos_1 = ai.posTransfer(cc.v3(0.9 - Math.random() * 0.3, 1 - 0.2 * Math.random()));
+                    let pos_2 = ai.posTransfer(cc.v3(0.9 - Math.random() * 0.3, 0.8 - 0.2 * Math.random()));
+                    let pos_3 = ai.posTransfer(cc.v3(0.9 - Math.random() * 0.3, 0.6 - 0.2 * Math.random()));
+                    let pos_4 = ai.posTransfer(cc.v3(0.9 - Math.random() * 0.3, 0.4 - 2 * Math.random()));
+                    let pos_5 = ai.posTransfer(cc.v3(0.9 - Math.random() * 0.3, 0.2 - 2 * Math.random()));
+                    BattleManager.getInstance().screenBomb(1, [vec_1, vec_2, vec_3, vec_4, vec_5], 1);
+                    BattleManager.getInstance().screenBomb(1, [pos_1, pos_2, pos_3, pos_4, pos_5], 1);
+                    this.setTimer(9, 3, 1, 0);
+                    this.setTimer(21, 1, 1, 0);
                 }
-                if(idx == 21){
-                    let vec_1 = ai.posTransfer(cc.v3(0.9-Math.random()*0.3,0.2*Math.random()));
-                    let vec_2 = ai.posTransfer(cc.v3(0.9-Math.random()*0.3,0.2+0.2*Math.random()));
-                    let vec_3 = ai.posTransfer(cc.v3(0.9-Math.random()*0.3,0.4+0.2*Math.random()));
-                    let vec_4 = ai.posTransfer(cc.v3(0.9-Math.random()*0.3,0.6+2*Math.random()));
-                    let vec_5 = ai.posTransfer(cc.v3(0.9-Math.random()*0.3,0.8+2*Math.random()));
-                    let pos_1 = ai.posTransfer(cc.v3(0.1+Math.random()*0.3,1-0.2*Math.random()));
-                    let pos_2 = ai.posTransfer(cc.v3(0.1+Math.random()*0.3,0.8-0.2*Math.random()));
-                    let pos_3 = ai.posTransfer(cc.v3(0.1+Math.random()*0.3,0.6-0.2*Math.random()));
-                    let pos_4 = ai.posTransfer(cc.v3(0.1+Math.random()*0.3,0.4-2*Math.random()));
-                    let pos_5 = ai.posTransfer(cc.v3(0.1+Math.random()*0.3,0.2-2*Math.random()));
-                    BattleManager.getInstance().screenBomb(1,[vec_1,vec_2,vec_3,vec_4,vec_5],1);
-                    BattleManager.getInstance().screenBomb(1,[pos_1,pos_2,pos_3,pos_4,pos_5],1);
+                if (idx == 21) {
+                    let vec_1 = ai.posTransfer(cc.v3(0.9 - Math.random() * 0.3, 0.2 * Math.random()));
+                    let vec_2 = ai.posTransfer(cc.v3(0.9 - Math.random() * 0.3, 0.2 + 0.2 * Math.random()));
+                    let vec_3 = ai.posTransfer(cc.v3(0.9 - Math.random() * 0.3, 0.4 + 0.2 * Math.random()));
+                    let vec_4 = ai.posTransfer(cc.v3(0.9 - Math.random() * 0.3, 0.6 + 2 * Math.random()));
+                    let vec_5 = ai.posTransfer(cc.v3(0.9 - Math.random() * 0.3, 0.8 + 2 * Math.random()));
+                    let pos_1 = ai.posTransfer(cc.v3(0.1 + Math.random() * 0.3, 1 - 0.2 * Math.random()));
+                    let pos_2 = ai.posTransfer(cc.v3(0.1 + Math.random() * 0.3, 0.8 - 0.2 * Math.random()));
+                    let pos_3 = ai.posTransfer(cc.v3(0.1 + Math.random() * 0.3, 0.6 - 0.2 * Math.random()));
+                    let pos_4 = ai.posTransfer(cc.v3(0.1 + Math.random() * 0.3, 0.4 - 2 * Math.random()));
+                    let pos_5 = ai.posTransfer(cc.v3(0.1 + Math.random() * 0.3, 0.2 - 2 * Math.random()));
+                    BattleManager.getInstance().screenBomb(1, [vec_1, vec_2, vec_3, vec_4, vec_5], 1);
+                    BattleManager.getInstance().screenBomb(1, [pos_1, pos_2, pos_3, pos_4, pos_5], 1);
                 }
-                if(idx == 9){
-                    ai.useSkill(this,925);
-                    this.setTimer(10,4,1,0);
+                if (idx == 9) {
+                    ai.useSkill(this, 925);
+                    this.setTimer(10, 4, 1, 0);
                 }
-                if(idx == 10){
-                    ai.useSkill(this,925);
-                    this.setTimer(11,5,1,0);
+                if (idx == 10) {
+                    ai.useSkill(this, 925);
+                    this.setTimer(11, 5, 1, 0);
                 }
-                if(idx == 11){
-                    ai.useSkill(this,926);
-                    this.setTimer(12,2,1,0);
+                if (idx == 11) {
+                    ai.useSkill(this, 926);
+                    this.setTimer(12, 2, 1, 0);
                 }
-                if(idx == 12){
-                    ai.useSkill(this,927);
-                    this.setTimer(13,4.5,1,0);
+                if (idx == 12) {
+                    ai.useSkill(this, 927);
+                    this.setTimer(13, 4.5, 1, 0);
                 }
-                if(idx == 13){
+                if (idx == 13) {
                     BattleManager.getInstance().screenShake(1);
-                    this.setTimer(14,5.5,1,0);
+                    this.setTimer(14, 5.5, 1, 0);
                 }
-                if(idx == 14){
+                if (idx == 14) {
                     //ai.useSkill(this,928);
-                    let vec_1 = ai.posTransfer(cc.v3(0.3,0.4));
-                    let vec_2 = ai.posTransfer(cc.v3(0.8,0.5));
-                    BattleManager.getInstance().screenBomb(0,[vec_2,vec_1,vec_2],2);
-                    this.setTimer(15,1,7,1);
-                    this.setTimer(16,2,1,0);
+                    let vec_1 = ai.posTransfer(cc.v3(0.3, 0.4));
+                    let vec_2 = ai.posTransfer(cc.v3(0.8, 0.5));
+                    BattleManager.getInstance().screenBomb(0, [vec_2, vec_1, vec_2], 2);
+                    this.setTimer(15, 1, 7, 1);
+                    this.setTimer(16, 2, 1, 0);
                 }
-                if(idx == 15){
+                if (idx == 15) {
                     BattleManager.getInstance().screenShake(1);
                 }
-                if(idx == 16){
-                    ai.useSkill(this,929);
-                    this.setTimer(17,5,1,0);
+                if (idx == 16) {
+                    ai.useSkill(this, 929);
+                    this.setTimer(17, 5, 1, 0);
                 }
-                if(idx == 17){
-                    ai.playAction(this,'start',0);
-                    this.setTimer(18,1,1,0);
+                if (idx == 17) {
+                    ai.playAction(this, 'start', 0);
+                    this.setTimer(18, 1, 1, 0);
                 }
-                if(idx == 18){
-                    ai.useSkill(this,930);
-                    this.setTimer(19,2,1,0);
+                if (idx == 18) {
+                    ai.useSkill(this, 930);
+                    this.setTimer(19, 2, 1, 0);
                 }
-                if(idx == 19){
-                    ai.useSkill(this,931);
-                    this.setTimer(9,4,1,0);
+                if (idx == 19) {
+                    ai.useSkill(this, 931);
+                    this.setTimer(9, 4, 1, 0);
                 }
-                if(idx == 20){
+                if (idx == 20) {
                     let entity40 = MonsterSolutions.solution_40(Info_1);
-                    this.setWatch(function(e){
+                    this.setWatch(function (e) {
                         let hp = e.getCurHpPer();
-                        if(hp<50){
+                        if (hp < 50) {
                             return 1;
                         }
-                        if(e.isDead == true){
+                        if (e.isDead == true) {
                             return 2;
                         }
                         return false;
-                    },function(result,e){
-                        switch(result){
+                    }, function (result, e) {
+                        switch (result) {
                             case 1:
                                 e.setTimer(7, 0, 1, 1);
                                 break;
                         }
                         return 9;
                     });
-                    this.setInspector(entity40,function(result,e){ 
-                        switch(result){
+                    this.setInspector(entity40, function (result, e) {
+                        switch (result) {
                             case 1:
                                 entity40.setTimer(1, 0, 1, 1);
                                 break;
@@ -3372,15 +3372,15 @@ const MonsterSolutions = cc.Class({
             });
             entity.setTimer(0, 1, 1, 1);
             entity.setTimer(20, 0, 1, 1);
-            entity.setTimer(1,3,1,0);
-            entity.setTimer(3,9,1,0);
+            entity.setTimer(1, 3, 1, 0);
+            entity.setTimer(3, 9, 1, 0);
             return entity;
         },
         solution_40: function (info, skills) {
             //M_C_SB_04_B
             let ai = require('AIInterface');
             let entity = ai.createMonster(info);
-            entity.setScale(1, cc.winSize.height/1000);
+            entity.setScale(1, cc.winSize.height / 1000);
             entity.setIsKill(false);
             entity.setDropCrystal(false);
             entity.setDeathShock(false);
@@ -3390,18 +3390,18 @@ const MonsterSolutions = cc.Class({
             entity.setCollisionSwitch(false);
             entity.opacity = (0);
             entity.setTimerHandler(function (idx) {
-                if(idx == 0){
-                    this.runOpacity(255,2);
+                if (idx == 0) {
+                    this.runOpacity(255, 2);
                 }
-                if(idx == 1){
-                    ai.playAction(this,'attack',0);
-                    this.setTimer(2,4,1,0);
+                if (idx == 1) {
+                    ai.playAction(this, 'attack', 0);
+                    this.setTimer(2, 4, 1, 0);
                 }
-                if(idx == 2){
-                    this.runOpacity(0,1);
-                    this.setTimer(3,1,1,0);
+                if (idx == 2) {
+                    this.runOpacity(0, 1);
+                    this.setTimer(3, 1, 1, 0);
                 }
-                if(idx == 3){
+                if (idx == 3) {
                     ai.releaseEntity(this);
                 }
             });
@@ -3423,20 +3423,20 @@ const MonsterSolutions = cc.Class({
                 }
             }
             entity.setTimerHandler(function (idx) {
-                if(idx == 0){
-                    let destination = ai.posTransfer(info.pos.add(cc.v3(0, -0.644+Math.random()*0.2)));
+                if (idx == 0) {
+                    let destination = ai.posTransfer(info.pos.add(cc.v3(0, -0.644 + Math.random() * 0.2)));
                     this.shiftToStandby(destination, 1, 0, 0);
                     this.setMovementType(4);
                     this.setTimer(1, 2, 1, 0);
                 }
-                if(idx == 1){
-                    ai.playAction(this,'attack_2',1,cb);
+                if (idx == 1) {
+                    ai.playAction(this, 'attack_2', 1, cb);
                 }
-                if(idx == 2){
-                    ai.useSkill(this,922);
+                if (idx == 2) {
+                    ai.useSkill(this, 922);
                 }
-                if(idx == 3){
-                    ai.playAction(this,'start_1',0);
+                if (idx == 3) {
+                    ai.playAction(this, 'start_1', 0);
                     ai.releaseEntity(this);
                 }
             });
@@ -3456,26 +3456,26 @@ const MonsterSolutions = cc.Class({
                 }
             }
             entity.setTimerHandler(function (idx) {
-                if(idx == 0){
+                if (idx == 0) {
                     this.setCollisionSwitch(false);
-                    let destination = ai.posTransfer(cc.v3(0.5,0.7));
+                    let destination = ai.posTransfer(cc.v3(0.5, 0.7));
                     this.shiftToStandby(destination, 2, 30, 0);
                     this.setMovementType(4);
                     this.setTimer(1, 2, 1, 0);
                 }
-                if(idx == 1){
-                    ai.setMonsterLoopAction(this,'daiji_01');
-                    ai.playAction(this,'bianxing_1',1,cb)
+                if (idx == 1) {
+                    ai.setMonsterLoopAction(this, 'daiji_01');
+                    ai.playAction(this, 'bianxing_1', 1, cb)
                 }
-                if(idx == 2){
+                if (idx == 2) {
                     this.setCollisionSwitch(true);
-                    let destination = ai.posTransfer(cc.v3(0.2+0.6*Math.random(),0.5+Math.random()*0.3));
+                    let destination = ai.posTransfer(cc.v3(0.2 + 0.6 * Math.random(), 0.5 + Math.random() * 0.3));
                     this.shiftToStandby(destination, 1.5, 10, 0);
                     this.setMovementType(4);
                     this.setTimer(3, 1.5, 1, 0);
                 }
-                if(idx == 3){
-                    ai.playAction(this,'gongji_1_fire',2,cb);
+                if (idx == 3) {
+                    ai.playAction(this, 'gongji_1_fire', 2, cb);
                 }
             });
             entity.setTimer(0, 0, 1, 0);
@@ -3507,7 +3507,7 @@ const MonsterSolutions = cc.Class({
             entity.setTimer(0, 0, 1, 0);
             return entity;
         },
-        solution_62: function (info, runtime_1, runtime_2, autoskilldelay,cd,count) {
+        solution_62: function (info, runtime_1, runtime_2, autoskilldelay, cd, count) {
             //出现-消失
             let ai = require('AIInterface');
             let entity = ai.createMonster(info);
@@ -3521,22 +3521,22 @@ const MonsterSolutions = cc.Class({
             let arr = entity.getMonsterSkills();
             entity.setTimerHandler(function (idx) {
                 if (idx == 0) {
-                    ai.playAction(this,'start_1',0);
+                    ai.playAction(this, 'start_1', 0);
                     ai.stopAction(this);
                     this.runOpacity(255, runtime_1);
                     this.setTimer(1, runtime_1, 1, 0);
                 }
                 if (idx == 1) {
                     this.runOpacity(0, runtime_2);
-                    this.setTimer(3,runtime_2+1,1,0);
+                    this.setTimer(3, runtime_2 + 1, 1, 0);
                 }
                 if (idx == 2) {
-                    this.setTimer(4,cd,count,0);
+                    this.setTimer(4, cd, count, 0);
                 }
-                if(idx ==3){
+                if (idx == 3) {
                     ai.releaseEntity(this);
                 }
-                if(idx == 4){
+                if (idx == 4) {
                     ai.useSkill(this, arr[0]);
                 }
             });
@@ -3573,7 +3573,7 @@ const MonsterSolutions = cc.Class({
             let ai = require('AIInterface');
             let entity = ai.createMonster(info);
             if (typeof om !== 'undefined') {
-                entity.setEntitySelfCircle(om,0);
+                entity.setEntitySelfCircle(om, 0);
             }
             entity.setDropCrystal(false);
             entity.setDropCount(false);
@@ -3611,7 +3611,7 @@ const MonsterSolutions = cc.Class({
                 if (idx == 1) {
                     this.setCollisionSwitch(true);
                     pos = this.getPosition();
-                    ai.autoUseSkill(this,true);
+                    ai.autoUseSkill(this, true);
                     this.setTimer(2, 1, 1, 0);
                 }
                 if (idx == 2) {
@@ -3633,11 +3633,11 @@ const MonsterSolutions = cc.Class({
         },
         solution_66: function (info, skills) {
             //导弹怪_向右
-            return MonsterSolutions.solution_17(info, 1400, 0, 0, 0, cc.v3(1, 0),cc.v3(0,0));
+            return MonsterSolutions.solution_17(info, 1400, 0, 0, 0, cc.v3(1, 0), cc.v3(0, 0));
         },
         solution_67: function (info, skills) {
             //导弹怪_向左
-            return MonsterSolutions.solution_17(info, 1400, 180, 0, 0, cc.v3(-1, 0),cc.v3(0,0));
+            return MonsterSolutions.solution_17(info, 1400, 180, 0, 0, cc.v3(-1, 0), cc.v3(0, 0));
         },
         solution_68: function (info, skills) {
             //排行怪——向下d
@@ -3653,7 +3653,7 @@ const MonsterSolutions = cc.Class({
         },
         solution_69: function (info, skills) {
             //导弹怪_向下
-            return MonsterSolutions.solution_17(info, 1400, -90, 0, 0, cc.v3(0, -1),cc.v3(0,0));
+            return MonsterSolutions.solution_17(info, 1400, -90, 0, 0, cc.v3(0, -1), cc.v3(0, 0));
         },
         //70-   关卡ai
         solution_70: function (info, skills) {
@@ -3663,7 +3663,7 @@ const MonsterSolutions = cc.Class({
             return MonsterSolutions.solution_1(info, 300, 180, 0, 0, 1);
         },
         solution_72: function (info, skills) {
-            return MonsterSolutions.solution_1(info, 400, -90, 250, -90, 1);
+            return MonsterSolutions.solution_1(info, 300, -90, 0, -90, 1);
         },
         solution_73: function (info, skills) {
             return MonsterSolutions.solution_1(info, 300, 0, 75, 180, 0, 180);
@@ -4168,7 +4168,7 @@ const MonsterSolutions = cc.Class({
             return MonsterSolutions.solution_16(info, 400, 250, 0, 1);
         },
         solution_158: function (info, skills) {
-            return MonsterSolutions.solution_1(info, 400, -90, 100, -90, 0);
+            return MonsterSolutions.solution_1(info, 230, -90, 0, -90, 0);
         },
         solution_159: function (info, skills) {
             return MonsterSolutions.solution_65(info, 1, 80);
@@ -4205,7 +4205,7 @@ const MonsterSolutions = cc.Class({
             return MonsterSolutions.solution_1(info, 300, -180, 0, 0, 0, 90);
         },
         solution_169: function (info, skills) {
-            return MonsterSolutions.solution_64(info, 400, -90, 20, -90, 0, 1);
+            return MonsterSolutions.solution_64(info, 250, -90, 0, -90, 0, 1);
         },
         solution_170: function (info, skills) {
             let pos = info.pos;
@@ -4217,48 +4217,48 @@ const MonsterSolutions = cc.Class({
         },
         solution_172: function (info, skills) {
             //导弹怪_向下追踪
-            return MonsterSolutions.solution_17(info, 1400, -90, 0, 0,cc.v3(0,-1),cc.v3(0,0),1,300);
+            return MonsterSolutions.solution_17(info, 1400, -90, 0, 0, cc.v3(0, -1), cc.v3(0, 0), 1, 300);
         },
         solution_173: function (info, skills) {
             //导弹怪_向上
-            return MonsterSolutions.solution_17(info, 1400, 90, 0, 0, cc.v3(0, 1),cc.v3(0,0));
+            return MonsterSolutions.solution_17(info, 1400, 90, 0, 0, cc.v3(0, 1), cc.v3(0, 0));
         },
         solution_174: function (info, skills) {
             //导弹怪_向上追踪
-            return MonsterSolutions.solution_17(info, 1400, 90, 0, 0, cc.v3(0, 1),cc.v3(0,0),1,150);
+            return MonsterSolutions.solution_17(info, 1400, 90, 0, 0, cc.v3(0, 1), cc.v3(0, 0), 1, 150);
         },
         solution_175: function (info, skills) {
             //导弹怪_左斜向上
-            return MonsterSolutions.solution_17(info, 1400, 60, 0, 0, cc.v3(1, 1.717),cc.v3(0,0));
+            return MonsterSolutions.solution_17(info, 1400, 60, 0, 0, cc.v3(1, 1.717), cc.v3(0, 0));
         },
         solution_176: function (info, skills) {
             //导弹怪_右斜向上
-            return MonsterSolutions.solution_17(info, 1400, 120, 0, 0, cc.v3(-1, 1.717),cc.v3(0,0));
+            return MonsterSolutions.solution_17(info, 1400, 120, 0, 0, cc.v3(-1, 1.717), cc.v3(0, 0));
         },
         solution_177: function (info, skills) {
             //导弹怪_左斜向下
-            return MonsterSolutions.solution_17(info, 1400, -60, 0, 0, cc.v3(1, -1.717),cc.v3(0,0));
+            return MonsterSolutions.solution_17(info, 1400, -60, 0, 0, cc.v3(1, -1.717), cc.v3(0, 0));
         },
         solution_178: function (info, skills) {
             //导弹怪_右斜向下
-            return MonsterSolutions.solution_17(info, 1400, -120, 0, 0, cc.v3(-1, -1.717),cc.v3(0,0));
+            return MonsterSolutions.solution_17(info, 1400, -120, 0, 0, cc.v3(-1, -1.717), cc.v3(0, 0));
         },
         solution_179: function (info, skills) {
             //不转动陨石
-            return MonsterSolutions.solution_64(info, 400, -90, 20, -90,0,1);
+            return MonsterSolutions.solution_64(info, 250, -90, 0, -90, 0, 1);
         },
 
-        solution_200:function(info,skills){
+        solution_200: function (info, skills) {
             //魔灵小怪1
             return MonsterSolutions.solution_63(info, 2, 1);
         },
         solution_201: function (info, skills) {
             //吸血鬼浮现1
-            return MonsterSolutions.solution_62(info, 2, 2,0.5,0.5,2);
+            return MonsterSolutions.solution_62(info, 2, 2, 0.5, 0.5, 2);
         },
         solution_202: function (info, skills) {
             //吸血鬼浮现2
-            return MonsterSolutions.solution_62(info, 2, 2, 1,0,1);
+            return MonsterSolutions.solution_62(info, 2, 2, 1, 0, 1);
         },
         solution_203: function (info, skills) {
             //魔灵小怪2

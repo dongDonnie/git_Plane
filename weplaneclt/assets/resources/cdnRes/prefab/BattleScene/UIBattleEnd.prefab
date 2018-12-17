@@ -30,24 +30,24 @@
         "__id__": 197
       },
       {
-        "__id__": 436
+        "__id__": 437
       }
     ],
     "_active": true,
     "_level": 1,
     "_components": [
       {
-        "__id__": 443
-      },
-      {
         "__id__": 444
       },
       {
         "__id__": 445
+      },
+      {
+        "__id__": 446
       }
     ],
     "_prefab": {
-      "__id__": 446
+      "__id__": 447
     },
     "_opacity": 255,
     "_color": {
@@ -6426,18 +6426,18 @@
         "__id__": 418
       },
       {
-        "__id__": 430
+        "__id__": 431
       }
     ],
     "_active": true,
     "_level": 0,
     "_components": [
       {
-        "__id__": 434
+        "__id__": 435
       }
     ],
     "_prefab": {
-      "__id__": 435
+      "__id__": 436
     },
     "_opacity": 255,
     "_color": {
@@ -10018,7 +10018,7 @@
     "asset": {
       "__uuid__": "fea2f382-1a19-4f18-b112-ba5a3204897b"
     },
-    "fileId": "f92EoD5XBDMqLdUY5rRMtz",
+    "fileId": "f7tMiAzqFPqaFqUun5cy3T",
     "sync": false
   },
   {
@@ -10118,7 +10118,7 @@
     "asset": {
       "__uuid__": "fea2f382-1a19-4f18-b112-ba5a3204897b"
     },
-    "fileId": "d6Ixb0PapKQI0Tya5PWAjA",
+    "fileId": "68peJPULNCkp85HpSTUA+3",
     "sync": false
   },
   {
@@ -11149,7 +11149,7 @@
     "_position": {
       "__type__": "cc.Vec3",
       "x": -1,
-      "y": -262,
+      "y": -238,
       "z": 0
     },
     "_scale": {
@@ -13355,7 +13355,7 @@
     "asset": {
       "__uuid__": "fea2f382-1a19-4f18-b112-ba5a3204897b"
     },
-    "fileId": "c7rJ85EjVOf5jafM3F/yNg",
+    "fileId": "5fzPXrk3JKuoEPwwjj+5TZ",
     "sync": false
   },
   {
@@ -13754,7 +13754,7 @@
     "_right": 0,
     "_top": 0,
     "_bottom": 0,
-    "_verticalCenter": -270,
+    "_verticalCenter": -238,
     "_horizontalCenter": 0,
     "_isAbsLeft": true,
     "_isAbsRight": true,
@@ -13800,10 +13800,13 @@
     "_components": [
       {
         "__id__": 428
+      },
+      {
+        "__id__": 429
       }
     ],
     "_prefab": {
-      "__id__": 429
+      "__id__": 430
     },
     "_opacity": 255,
     "_color": {
@@ -13815,8 +13818,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 324.84000000000003,
-      "height": 200
+      "width": 452.56,
+      "height": 81
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -13826,7 +13829,7 @@
     "_position": {
       "__type__": "cc.Vec3",
       "x": 0,
-      "y": -234,
+      "y": -231,
       "z": 0
     },
     "_scale": {
@@ -13870,15 +13873,15 @@
     "_opacity": 255,
     "_color": {
       "__type__": "cc.Color",
-      "r": 255,
-      "g": 255,
-      "b": 255,
+      "r": 117,
+      "g": 134,
+      "b": 207,
       "a": 255
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 120,
-      "height": 40
+      "width": 90,
+      "height": 30
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -13887,7 +13890,7 @@
     },
     "_position": {
       "__type__": "cc.Vec3",
-      "x": -102.42000000000002,
+      "x": -31.28,
       "y": 0,
       "z": 0
     },
@@ -13924,16 +13927,16 @@
     "_useOriginalSize": true,
     "_string": "已获得",
     "_N$string": "已获得",
-    "_fontSize": 40,
-    "_lineHeight": 40,
+    "_fontSize": 30,
+    "_lineHeight": 30,
     "_enableWrapText": true,
     "_N$file": {
       "__uuid__": "4ad6af19-80c7-4c8f-ad73-b023fe3bc1f0"
     },
     "_isSystemFontUsed": false,
     "_spacingX": 0,
-    "_N$horizontalAlign": 0,
-    "_N$verticalAlign": 0,
+    "_N$horizontalAlign": 1,
+    "_N$verticalAlign": 1,
     "_N$fontFamily": "Arial",
     "_N$overflow": 0,
     "_id": ""
@@ -13987,7 +13990,7 @@
     },
     "_position": {
       "__type__": "cc.Vec3",
-      "x": -22.420000000000016,
+      "x": 33.72,
       "y": 0,
       "z": 0
     },
@@ -14071,15 +14074,15 @@
     "_opacity": 255,
     "_color": {
       "__type__": "cc.Color",
-      "r": 255,
-      "g": 255,
+      "r": 178,
+      "g": 211,
       "b": 255,
       "a": 255
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 164.84,
-      "height": 40
+      "width": 22.56,
+      "height": 30
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -14088,7 +14091,7 @@
     },
     "_position": {
       "__type__": "cc.Vec3",
-      "x": 79.99999999999999,
+      "x": 65,
       "y": 0,
       "z": 0
     },
@@ -14123,18 +14126,18 @@
     "_srcBlendFactor": 1,
     "_dstBlendFactor": 771,
     "_useOriginalSize": true,
-    "_string": "x18000",
-    "_N$string": "x18000",
-    "_fontSize": 40,
-    "_lineHeight": 40,
+    "_string": "0",
+    "_N$string": "0",
+    "_fontSize": 30,
+    "_lineHeight": 30,
     "_enableWrapText": true,
     "_N$file": {
       "__uuid__": "4ad6af19-80c7-4c8f-ad73-b023fe3bc1f0"
     },
     "_isSystemFontUsed": false,
     "_spacingX": 0,
-    "_N$horizontalAlign": 0,
-    "_N$verticalAlign": 0,
+    "_N$horizontalAlign": 1,
+    "_N$verticalAlign": 1,
     "_N$fontFamily": "Arial",
     "_N$overflow": 0,
     "_id": ""
@@ -14160,8 +14163,8 @@
     "_enabled": true,
     "_layoutSize": {
       "__type__": "cc.Size",
-      "width": 324.84000000000003,
-      "height": 200
+      "width": 452.56,
+      "height": 81
     },
     "_resize": 1,
     "_N$layoutType": 1,
@@ -14172,8 +14175,8 @@
       "height": 40
     },
     "_N$startAxis": 0,
-    "_N$paddingLeft": 0,
-    "_N$paddingRight": 0,
+    "_N$paddingLeft": 150,
+    "_N$paddingRight": 150,
     "_N$paddingTop": 0,
     "_N$paddingBottom": 0,
     "_N$spacingX": 0,
@@ -14181,6 +14184,34 @@
     "_N$verticalDirection": 1,
     "_N$horizontalDirection": 0,
     "_N$affectedByScale": false,
+    "_id": ""
+  },
+  {
+    "__type__": "cc.Sprite",
+    "_name": "",
+    "_objFlags": 0,
+    "node": {
+      "__id__": 418
+    },
+    "_enabled": true,
+    "_srcBlendFactor": 770,
+    "_dstBlendFactor": 771,
+    "_spriteFrame": {
+      "__uuid__": "4f1a8821-4ffc-428d-8073-770934542fec"
+    },
+    "_type": 0,
+    "_sizeMode": 0,
+    "_fillType": 0,
+    "_fillCenter": {
+      "__type__": "cc.Vec2",
+      "x": 0,
+      "y": 0
+    },
+    "_fillStart": 0,
+    "_fillRange": 0,
+    "_isTrimmedMode": true,
+    "_state": 0,
+    "_atlas": null,
     "_id": ""
   },
   {
@@ -14206,14 +14237,14 @@
     "_level": 0,
     "_components": [
       {
-        "__id__": 431
+        "__id__": 432
       },
       {
-        "__id__": 432
+        "__id__": 433
       }
     ],
     "_prefab": {
-      "__id__": 433
+      "__id__": 434
     },
     "_opacity": 255,
     "_color": {
@@ -14266,7 +14297,7 @@
     "_name": "",
     "_objFlags": 0,
     "node": {
-      "__id__": 430
+      "__id__": 431
     },
     "_enabled": true,
     "_srcBlendFactor": 770,
@@ -14296,7 +14327,7 @@
     "_name": "",
     "_objFlags": 0,
     "node": {
-      "__id__": 430
+      "__id__": 431
     },
     "_enabled": true,
     "alignMode": 1,
@@ -14379,20 +14410,20 @@
     "_level": 0,
     "_components": [
       {
-        "__id__": 437
-      },
-      {
         "__id__": 438
       },
       {
-        "__id__": 440
+        "__id__": 439
       },
       {
         "__id__": 441
+      },
+      {
+        "__id__": 442
       }
     ],
     "_prefab": {
-      "__id__": 442
+      "__id__": 443
     },
     "_opacity": 255,
     "_color": {
@@ -14445,7 +14476,7 @@
     "_name": "",
     "_objFlags": 0,
     "node": {
-      "__id__": 436
+      "__id__": 437
     },
     "_enabled": true,
     "_srcBlendFactor": 770,
@@ -14471,14 +14502,14 @@
     "_name": "",
     "_objFlags": 0,
     "node": {
-      "__id__": 436
+      "__id__": 437
     },
     "_enabled": true,
     "duration": 0.1,
     "zoomScale": 1.2,
     "clickEvents": [
       {
-        "__id__": 439
+        "__id__": 440
       }
     ],
     "_N$interactable": true,
@@ -14544,7 +14575,7 @@
       "__uuid__": "29158224-f8dd-4661-a796-1ffab537140e"
     },
     "_N$target": {
-      "__id__": 436
+      "__id__": 437
     },
     "_id": ""
   },
@@ -14563,7 +14594,7 @@
     "_name": "",
     "_objFlags": 0,
     "node": {
-      "__id__": 436
+      "__id__": 437
     },
     "_enabled": true,
     "alignMode": 2,
@@ -14590,7 +14621,7 @@
     "_name": "",
     "_objFlags": 0,
     "node": {
-      "__id__": 436
+      "__id__": 437
     },
     "_enabled": true,
     "audioType": 2,

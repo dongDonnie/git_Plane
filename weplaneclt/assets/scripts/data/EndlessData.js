@@ -49,6 +49,9 @@ var EndlessData = cc.Class({
     getEndlesslastPowerTime: function () {
         return self.bagData.LastPowerTime;
     },
+    getEndlessChargeRewardTimes:function () {
+        return self.bagData.TodayChargeReward;
+    },
 
     setStatusCount: function (data) {
         if (data.ErrCode == GameServerProto.PTERR_SUCCESS) {
@@ -125,6 +128,14 @@ var EndlessData = cc.Class({
         }
 
         GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_ENDLESS_RANK_UP_NTF);
+    },
+
+    setEndlessChargeData: function (data) {
+        if (data.ErrCode == GameServerProto.PTERR_SUCCESS) {
+            self.bagData.TodayChargeReward = data.TodayChargeReward;
+        }
+        
+        GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_ENDLESS_GET_CHARGE_DATA, data);
     },
 
     saveGetGoldData: function (data) {

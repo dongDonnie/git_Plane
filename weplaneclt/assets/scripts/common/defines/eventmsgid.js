@@ -135,4 +135,8 @@ module.exports = {
     //share
     EVENT_GET_FREE_GOLD: "event_get_free_gold",
     EVENT_GET_FREE_DIAMOND: "event_get_free_diamond",
+    EVENT_GET_RECOMMAND_DATA: "event_get_recommand_data",
+    EVENT_GET_MEMBERTESTPLAY_DATA: "event_get_member_test_play_data",
+    EVENT_GET_SHARE_DAILY_DATA: "event_get_share_daily_data",
+    EVENT_ENDLESS_GET_CHARGE_DATA: "event_endless_get_charge_data",
 };

@@ -60,8 +60,8 @@ var LoginScene = cc.Class({
 
     replaceSceneToMain(evt) {
         // console.log("登陆消息：", evt);
-        GlobalVar.me().updatePlayerDataByGMDT_PLAYER(evt.data.Player);
         GlobalVar.me().setServerTime(evt.data.ServerTime);
+        GlobalVar.me().updatePlayerDataByGMDT_PLAYER(evt.data.Player);
         
         if (cc.sys.platform === cc.sys.WECHAT_GAME) {
             weChatAPI.requestIosRechageLockState(GlobalVar.me().level, GlobalVar.me().combatPoint, GlobalVar.me().creatTime, function (state) {

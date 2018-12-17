@@ -232,7 +232,7 @@ var ResManager = cc.Class({
             }
         }
     },
-    loadMonster:function (id) {
+    loadMonster: function (id) {
         let monsterData = GlobalVar.tblApi.getDataBySingleKey('TblBattleMonster', id);
         let path = 'cdnRes/battlemodel/prefab/Monster/' + monsterData.strName;
         this.pushDeep(path, ResMapping.ResType.Prefab);
@@ -255,7 +255,7 @@ var ResManager = cc.Class({
         }
         return monsterData;
     },
-    loadLoop :function (groups) {
+    loadLoop: function (groups) {
         for (let ng in groups) {
             let groupData = GlobalVar.tblApi.getDataBySingleKey('TblBattleGroups', groups[ng]);
             for (let m = 0; m < groupData.oVecMonsterIDs.length; m++) {
@@ -298,7 +298,14 @@ var ResManager = cc.Class({
             this.pushDeep('cdnRes/battlemodel/prefab/effect/miBomb', ResMapping.ResType.Prefab);
             this.pushDeep('cdnRes/battlemodel/prefab/effect/FlyDamageMsg', ResMapping.ResType.Prefab);
             this.pushDeep('cdnRes/battlemodel/prefab/effect/FlyDamageMsgCritical', ResMapping.ResType.Prefab);
-            //this.pushDeep('cdnRes/battlemodel/prefab/effect/WeaponUp', ResMapping.ResType.Prefab);
+            this.pushDeep('cdnRes/battlemodel/prefab/effect/WeaponUp', ResMapping.ResType.Prefab);
+            this.pushDeep('cdnRes/battlemodel/prefab/effect/Super', ResMapping.ResType.Prefab);
+            this.pushDeep('cdnRes/battlemodel/prefab/effect/Protect', ResMapping.ResType.Prefab);
+            this.pushDeep('cdnRes/battlemodel/prefab/effect/Hp', ResMapping.ResType.Prefab);
+            this.pushDeep('cdnRes/battlemodel/prefab/effect/Mp', ResMapping.ResType.Prefab);
+            this.pushDeep('cdnRes/battlemodel/prefab/effect/Magnet', ResMapping.ResType.Prefab);
+            this.pushDeep('cdnRes/battlemodel/prefab/effect/Dash', ResMapping.ResType.Prefab);
+            this.pushDeep('cdnRes/battlemodel/prefab/effect/Accel', ResMapping.ResType.Prefab);
 
             this.pushDeep('cdnRes/battlemodel/motionstreak/huoyan_lan', ResMapping.ResType.Texture2D);
             this.pushDeep('cdnRes/battlemodel/motionstreak/huoyan_lv', ResMapping.ResType.Texture2D);
@@ -310,11 +317,6 @@ var ResManager = cc.Class({
             this.pushDeep('cdnRes/battle/stone_01', ResMapping.ResType.SpriteFrame);
             this.pushDeep('cdnRes/battle/stone_02', ResMapping.ResType.SpriteFrame);
             this.pushDeep('cdnRes/battle/stone_03', ResMapping.ResType.SpriteFrame);
-            this.pushDeep('cdnRes/battle/battle_buff_1', ResMapping.ResType.SpriteFrame);
-            this.pushDeep('cdnRes/battle/battle_buff_2', ResMapping.ResType.SpriteFrame);
-            this.pushDeep('cdnRes/battle/battle_buff_3', ResMapping.ResType.SpriteFrame);
-            this.pushDeep('cdnRes/battle/battle_buff_4', ResMapping.ResType.SpriteFrame);
-            this.pushDeep('cdnRes/battle/battle_buff_5', ResMapping.ResType.SpriteFrame);
             this.pushDeep('cdnRes/battle/battle_wall_dark', ResMapping.ResType.SpriteFrame);
             this.pushDeep('cdnRes/battle/battle_wall_nebula', ResMapping.ResType.SpriteFrame);
             this.pushDeep('cdnRes/battle/battle_wall_light', ResMapping.ResType.SpriteFrame);
@@ -377,6 +379,14 @@ var ResManager = cc.Class({
                         type: ResMapping.ResType.SpriteFrame
                     });
                 } else if (campName == 'CampEndless') {
+                    let assistID = GlobalVar.me().memberData.getAssistFighterID();
+                    if(assistID!=0){
+                        let assistArray = this.resSliceArray[assistID];
+                        for (let aindex in assistArray) {
+                            this.pushDeep(assistArray[aindex].url, assistArray[aindex].type);
+                        }
+                    }
+
                     let data = require(campName).data;
                     for (let i = 0; i < data.maps.length; i++) {
                         for (let j = 0; j < data.maps[i].length; j++) {

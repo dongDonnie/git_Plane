@@ -3315,8 +3315,8 @@
     "target": {
       "__id__": 1
     },
-    "component": "NormalPlane",
-    "_componentId": "",
+    "component": "",
+    "_componentId": "73038I/TtVAfKUyCnFTEXJ2",
     "handler": "advanceFighter",
     "customEventData": ""
   },
@@ -8444,8 +8444,8 @@
     "target": {
       "__id__": 1
     },
-    "component": "NormalPlane",
-    "_componentId": "",
+    "component": "",
+    "_componentId": "73038I/TtVAfKUyCnFTEXJ2",
     "handler": "setFighter",
     "customEventData": ""
   },

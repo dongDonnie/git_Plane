@@ -248,7 +248,9 @@ var BagData = cc.Class({
     },
 
     saveItemChange:function(ack){
-        this.updateItemDataByGMDT_ITEM_CHANGE(ack.Items);
+        if (ack.ErrCode == GameServerProto.PTERR_SUCCESS){
+            this.updateItemDataByGMDT_ITEM_CHANGE(ack.Items);
+        }
         GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_BAG_ADDITEM_NTF, ack.Items);
     },
 

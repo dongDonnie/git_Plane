@@ -5,6 +5,7 @@ const GlobalVar = require('globalvar')
 const EventMsgID = require("eventmsgid");
 const GlobalFunc = require('GlobalFunctions')
 const i18n = require('LanguageData');
+const ResMapping = require('resmapping')
 
 
 const MODE_GET_BUY_ITEM = 0;
@@ -22,7 +23,7 @@ cc.Class({
         this._super();
         i18n.init('zh');
         this.typeName = WndTypeDefine.WindowType.E_DT_NORMAL_GET_NEW_ITEM_WND;
-        
+
 
         this.animeStartParam(0, 0);
 
@@ -61,12 +62,16 @@ cc.Class({
     },
 
     addPlane: function (id, showType) {
-        showType = showType ? showType : 3;
-        let PlaneEntity = require('PlaneEntity');
-        let planeEntity = new PlaneEntity();
-        planeEntity.newPart('Fighter/Fighter_' + id, 1, 'PlaneObject', showType, 0, 0);
-        this.spriteNode.addChild(planeEntity);
-        planeEntity.part.transform();
+        var self = this;
+        GlobalVar.resManager().loadRes(ResMapping.ResType.Prefab, 'cdnRes/battlemodel/prefab/Fighter/Fighter_' + id, function (prefab) {
+            if (!!prefab) {
+                let PlaneEntity = require('PlaneEntity');
+                let planeEntity = new PlaneEntity();
+                planeEntity.newPart('Fighter/Fighter_' + id, 1, 'PlaneObject', showType ? showType : 3, 0, 0);
+                self.spriteNode.addChild(planeEntity);
+                planeEntity.part.transform();
+            }
+        });
         let fighterData = GlobalVar.tblApi.getDataBySingleKey('TblMember', id);
         this.labalItemName.string = fighterData.strName;
     },
@@ -81,7 +86,7 @@ cc.Class({
         item.opacity = 255;
         item.parent = this.layoutItemContent;
         let itemData = null;
-        if (data.Count == 1){
+        if (data.Count == 1) {
             data.Count = -1;
         }
         if (data.ItemID) {
@@ -91,31 +96,31 @@ cc.Class({
         }
         if (mode == MODE_GET_DRAW_ITEM) {
             item.getChildByName("labelItemName").getComponent(cc.Label).string = "";
-        }else{
+        } else {
             item.getChildByName("labelItemName").getComponent(cc.Label).string = itemData.strName;
         }
         item.getChildByName("labelItemName").color = GlobalFunc.getCCColorByQuality(itemData.wQuality);
         return item;
     },
 
-    sliceItemData: function(itemDatas){
-        for (let i = 0; i< itemDatas.length; i++){
+    sliceItemData: function (itemDatas) {
+        for (let i = 0; i < itemDatas.length; i++) {
             let data = itemDatas[i];
             let itemID = data.ItemID || data.wItemID;
             let tblData = GlobalVar.tblApi.getDataBySingleKey('TblItem', itemID);
             let itemCount = data.Count || data.nCount;
             let overLap = tblData.wOverlap;
-            if (itemCount > overLap){
-                let sliceCount = Math.floor(itemCount/overLap);
+            if (itemCount > overLap) {
+                let sliceCount = Math.floor(itemCount / overLap);
                 let sliceLeft = (itemCount % overLap);
                 let newArr = [];
-                for (let j = 0; j<sliceCount;j++){
+                for (let j = 0; j < sliceCount; j++) {
                     let newItem = [];
                     newItem.ItemID = itemID;
                     newItem.Count = overLap;
                     newArr.push(newItem);
                 }
-                if (sliceLeft != 0){
+                if (sliceLeft != 0) {
                     let newItem = [];
                     newItem.ItemID = itemID;
                     newItem.Count = overLap;
@@ -125,12 +130,12 @@ cc.Class({
                 itemDatas.splice(i, 1);
                 newArr.unshift(i, 0);
                 Array.prototype.splice.apply(itemDatas, newArr);
-                i += length-1;
+                i += length - 1;
             }
         }
     },
 
-    update: function(){
+    update: function () {
 
     },
 
@@ -139,7 +144,7 @@ cc.Class({
     },
 
     shareFunction: function () {
-        
+
     },
 
     animePlayCallBack(name) {

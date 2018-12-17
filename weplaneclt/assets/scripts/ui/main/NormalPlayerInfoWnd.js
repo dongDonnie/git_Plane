@@ -294,7 +294,6 @@ cc.Class({
                         GlobalVar.me().roleName = userInfo.nickName;
                         GlobalVar.me().loginData.setLoginReqDataAvatar(userInfo.avatarUrl);
                         GlobalVar.handlerManager().mainHandler.sendReNameReq(GlobalVar.me().roleID, userInfo.nickName, userInfo.avatarUrl);
-
                     })
                 }else {
                     // console.log("wxLogin auth fail");

@@ -339,6 +339,7 @@ cc.Class({
             GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_MEMBER_LEVELUP_NTF, this.onLevelUp, this);
             GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_MEMBER_QUALITYUP_NTF, this.onQualityUp, this);
             GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_BAG_ADDITEM_NTF, this.bagAddItem, this);
+            GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_GET_SWEEP_RESULT, this.bagAddItem, this);
             if (!this.planeEntity) {
                 this.planeEntity = new PlaneEntity();
                 this.planeEntity.newPart('Fighter/Fighter_' + this.memberID, Defines.ObjectType.OBJ_HERO, 'PlaneObject', 3, 0, 0);
@@ -636,6 +637,9 @@ cc.Class({
 
     levelUp: function () {
         if (!this.canUseExpItem) {
+            setTimeout(() => {
+                this.canUseExpItem = true;
+            }, 2000);
             return;
         }
         this.canUseExpItem = false;

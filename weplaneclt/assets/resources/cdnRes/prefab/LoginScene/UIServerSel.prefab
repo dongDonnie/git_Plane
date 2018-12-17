@@ -917,7 +917,7 @@
       "__id__": 1
     },
     "_children": [],
-    "_active": true,
+    "_active": false,
     "_level": 0,
     "_components": [
       {
@@ -1619,7 +1619,7 @@
     "_position": {
       "__type__": "cc.Vec3",
       "x": 0,
-      "y": -302,
+      "y": -281,
       "z": 0
     },
     "_scale": {
@@ -2003,7 +2003,7 @@
         "__id__": 62
       }
     ],
-    "_active": true,
+    "_active": false,
     "_level": 0,
     "_components": [
       {
@@ -2350,8 +2350,8 @@
   {
     "__type__": "cc.ClickEvent",
     "target": null,
-    "component": "UIServerSel",
-    "_componentId": "",
+    "component": "",
+    "_componentId": "53ae2EioWZHxLVXohmn/npb",
     "handler": "onBtnServerClick",
     "customEventData": ""
   },

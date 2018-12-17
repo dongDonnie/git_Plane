@@ -11,7 +11,7 @@ CampNormal252.data = {
         {wave:{groups:[371],wait:0,delay:[0]}},
        
         {wave:{groups:[370,47,48],wait:0,delay:[0,0.5,0.5]}}, {wave:{groups:[368,30,33],wait:0,delay:[0,0.5,1.5]}},
-        {wave:{groups:[369,33],wait:0,delay:[0,1]}},
+        {wave:{groups:[369,33],wait:0,delay:[0,1]}},   {wave:{groups:[371],wait:0,delay:[0]}},
         {wave:{groups:[82],wait:0,delay:[0],anime:1,isBOSS:1},maps:{mapIndex:[0,2],mapSpeed:[400,800],mapScale:[1,1],mapLoop:[0,0]}},
     ],
 
@@ -31,7 +31,7 @@ CampNormal252.data = {
             eventKey:0,
             checkTime:1,
             condition:[
-                {wave:{index:4,step:8}},
+                {wave:{index:5,step:8}},
             ],
             effect:[
                 {extra:{open:-1,delay:1.1}},
@@ -41,7 +41,7 @@ CampNormal252.data = {
             eventKey:0,
             checkTime:1,
             condition:[
-                {wave:{index:5,step:4}},
+                {wave:{index:6,step:4}},
             ],
             effect:[
                 {extra:{open:-2}},

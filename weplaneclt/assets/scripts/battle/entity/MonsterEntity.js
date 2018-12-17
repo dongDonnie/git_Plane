@@ -539,6 +539,26 @@ cc.Class({
         })));
     },
 
+    pauseAction() {
+        this.pauseAllActions();
+        if (this.baseObject != null) {
+            this.baseObject.getComponent('CoreObject').pauseAction();
+            if (this.rayAnime != null && cc.isValid(this.rayAnime)) {
+                this.rayAnime.pauseAllActions();
+            }
+        }
+    },
+
+    resumeAction() {
+        this.resumeAllActions();
+        if (this.baseObject != null) {
+            this.baseObject.getComponent('CoreObject').resumeAction();
+            if (this.rayAnime != null && cc.isValid(this.rayAnime)) {
+                this.rayAnime.resumeAllActions();
+            }
+        }
+    },
+
     setMonsterHpBar: function () {
         if (this.monsterHpBar == null || !cc.isValid(this.monsterHpBar)) {
             var self = this;

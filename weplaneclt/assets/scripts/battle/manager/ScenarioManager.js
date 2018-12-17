@@ -32,7 +32,7 @@ var ScenarioManager = cc.Class({
         // }
     },
 
-    update(dt) {
+    update(dt,count) {
         if (this.battleManager.isDemo) {
             return;
         }
@@ -41,7 +41,7 @@ var ScenarioManager = cc.Class({
         this.interval += dt;
 
         if (this.battleManager.isEndlessFlag && !!this.battleEndlessMode) {
-            this.battleEndlessMode.update(dt);
+            this.battleEndlessMode.update(dt,count);
         }
 
         if (this.battleManager.isShowFlag && !!this.battleCampaignMode) {
@@ -50,8 +50,8 @@ var ScenarioManager = cc.Class({
 
         if (this.battleManager.isCampaignFlag && !!this.battleCampaignMode && !this.end) {
             this.battleCampaignMode.update(dt);
-            if(this.battleCampaignMode.step==12){
-                this.end=true;
+            if (this.battleCampaignMode.step == 12) {
+                this.end = true;
             }
         }
 
@@ -64,17 +64,31 @@ var ScenarioManager = cc.Class({
             this.battleManager.comboKill = 0;
         }
 
-        if(this.secondKill>0){
-            this.secondKillTime+=dt;
-            if(this.secondKillTime>=1){
-                this.secondKill=0;
-                this.secondKillTime=0;
+        if (this.secondKill > 0) {
+            this.secondKillTime += dt;
+            if (this.secondKillTime >= 0.24) {
+                this.secondKill = 0;
+                this.secondKillTime = 0;
             }
         }
     },
 
+    mapUpdate(dt){
+        if (this.battleManager.isEndlessFlag && !!this.battleEndlessMode) {
+            this.battleEndlessMode.mapUpdate(dt);
+        }
+
+        if (this.battleManager.isShowFlag && !!this.battleCampaignMode) {
+            this.battleCampaignMode.mapUpdate(dt);
+        }
+
+        if (this.battleManager.isCampaignFlag && !!this.battleCampaignMode && !this.end) {
+            this.battleCampaignMode.mapUpdate(dt);
+        }
+    },
+
     initScenario: function (mapName) {
-        
+
         if (this.battleManager.isEndlessFlag) {
             this.battleEndlessMode = new BattleEndlessMode();
             this.battleEndlessMode.init();
@@ -95,12 +109,12 @@ var ScenarioManager = cc.Class({
         //     this.battleEditorMode.init(mapName);
         // }
 
-        this.comboKillHoldTime=3;
-        this.comboKillCurTime=0;
-        this.secondKill=0;
-        this.secondKillTime=0;
+        this.comboKillHoldTime = 1.6;
+        this.comboKillCurTime = 0;
+        this.secondKill = 0;
+        this.secondKillTime = 0;
 
-        this.end=false;
+        this.end = false;
         return;
     },
 
@@ -109,23 +123,23 @@ var ScenarioManager = cc.Class({
             return;
         }
 
-        if(entity.canDrop){
+        if (entity.canDrop) {
             this.battleManager.comboKill++;
-            if(this.battleManager.comboKill>999){
-                this.battleManager.comboKill=999;
+            if (this.battleManager.comboKill > 999) {
+                this.battleManager.comboKill = 999;
             }
 
             this.secondKill++;
-            if(this.secondKill>=10){
+            if (this.secondKill >= 10) {
                 this.battleManager.unDefeat(1);
-                this.secondKill=0;
-                this.secondKillTime=0;
+                this.secondKill = 0;
+                this.secondKillTime = 0;
             }
-            
-            if(this.battleManager.comboKill%100==0 && this.battleManager.comboKill!=0){
+
+            if (this.battleManager.comboKill % 100 == 0 && this.battleManager.comboKill != 0) {
                 this.battleManager.unDefeat(0);
             }
-            this.comboKillCurTime=0;
+            this.comboKillCurTime = 0;
         }
 
         if (this.battleManager.isEndlessFlag && !!this.battleEndlessMode) {
@@ -139,9 +153,9 @@ var ScenarioManager = cc.Class({
         }
     },
 
-    tryDropItem:function(mode,entity){
+    tryDropItem: function (mode, entity) {
         if (this.battleManager.isEndlessFlag && !!this.battleEndlessMode) {
-            this.battleEndlessMode.tryDropItem(mode,entity);
+            this.battleEndlessMode.tryDropItem(mode, entity);
         }
     }
 });

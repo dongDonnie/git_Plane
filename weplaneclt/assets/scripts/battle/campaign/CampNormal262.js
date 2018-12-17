@@ -2,49 +2,30 @@ var CampNormal262 = module.exports;
 
 CampNormal262.data = {
     maps:[
-        ["bfc-a","bfc-a","bfc-a"],
-        ["bfc-b-01hebing","bfc-b-01hebing","bfc-b-01hebing"],
+        ["cx-a","cx-a","cx-a"],
     ],
     monsterWaves:[
-        {wave:{groups:[594,19,25],wait:0,delay:[0.2,1.3,1.7]},maps:{mapIndex:[0,1],mapSpeed:[300,600],mapScale:[1,1],mapLoop:[1,1]}},
-       
-        {wave:{groups:[603,44,45],wait:0,delay:[0,1.5,1.5]}},
-        {wave:{groups:[598,599,25,19],wait:0,delay:[0.1,0.8,1.8,3]}},
-        {wave:{groups:[600,420,601,414,602],wait:0,delay:[0.1,0.5,2,2.4,3.2]}},     {wave:{groups:[597,50],wait:0,delay:[0,0.8]}},
-        {wave:{groups:[595,34,596,37],wait:0,delay:[0.1,0.5,2.5,3]}},
-        {wave:{groups:[604,587,590,582],wait:0,delay:[0.1,0.7,1.3,1.9]}},
+        {wave:{groups:[43,819],wait:0,delay:[0.8,1.3]},maps:{mapIndex:[0],mapSpeed:[600],mapScale:[1],mapLoop:[1]}},
+        {wave:{groups:[819,836,837],wait:0,delay:[0,0.5,2.5]}}, {wave:{groups:[827,829,44],wait:0,delay:[0,2,3]}},
+         {wave:{groups:[823,824,830],wait:0,delay:[0,0.8,1.7]}},
+        {wave:{groups:[823,824,830],wait:0,delay:[0,0.8,1.7]}},
+        {wave:{groups:[825,826],wait:0,delay:[0,0.5]}},
+        {wave:{groups:[821,822],wait:0,delay:[0,2.5]}},
+        {wave:{groups:[819,836,837],wait:0,delay:[0,0.5,2.5]}}, 
+        {wave:{groups:[821,822,833],wait:0,delay:[0,2,3]}},
     ],
-    monsterExtra:[23,24,25,1313,1314,1315,1316,1317,23,24,25,1313,1314,1315,1316,1317],
+    monsterExtra:[311,312,313,314,315,316,317],
 
     totalHint:[
         {
             checkTime:-1,
             condition:[
-                {interval:18},
+                {interval:15},
             ],
             effect:[
                 {drop:10000},
             ]
         },
-        {
-            eventKey:0,
-            checkTime:1,
-            condition:[
-                {wave:{index:0,step:8}},
-            ],
-            effect:[
-                {extra:{open:-1,delay:1}},
-            ],
-        },
-        {
-            eventKey:0,
-            checkTime:1,
-            condition:[
-                {wave:{index:1,step:6}},
-            ],
-            effect:[
-                {extra:{open:-2}},
-            ],
-        },
+        
     ],
 }

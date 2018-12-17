@@ -23,8 +23,8 @@ var UIBattle = cc.Class({
         this.currentCD = 5;
         this.timeCD = 5;
 
-        this.assistCurrentCD = 5;
-        this.assistTimeCD = 5;
+        this.assistCurrentCD = 120;
+        this.assistTimeCD = 120;
 
         this.curScore = 0;
         this.plusScore = 0;
@@ -48,6 +48,10 @@ var UIBattle = cc.Class({
         this.assistBtnStatusCount = 0;
 
         this.comboKill = 0;
+
+        this.beyoudUpdateTimes = 0;
+        this.isFirtTimeGetBeyoundData = true;
+        this.texture2D = new cc.Texture2D();
     },
 
     properties: {
@@ -71,7 +75,7 @@ var UIBattle = cc.Class({
             default: null,
             type: cc.ProgressBar
         },
-        spriteFriendNode: {
+        nodeBeyoundFriend: {
             default: null,
             type: cc.Node,
         },
@@ -93,7 +97,10 @@ var UIBattle = cc.Class({
         if (config.NEED_GUIDE) {
             Guide.getInstance().update(dt);
         }
-        if (this.battleManager.gameState != Defines.GameResult.RUNNING) {
+        if (this.battleManager.gameState != Defines.GameResult.RUNNING &&
+            this.battleManager.gameState != Defines.GameResult.DASHSTART &&
+            this.battleManager.gameState != Defines.GameResult.DASH &&
+            this.battleManager.gameState != Defines.GameResult.DASHEND) {
             return;
         }
         this.updateSkillCD();
@@ -103,6 +110,8 @@ var UIBattle = cc.Class({
         this.updateBossHpBar();
         this.updateCombo();
         this.updateChestCount();
+
+        // this.updateBeyoundNode();
     },
 
     onDestroy() {
@@ -198,13 +207,6 @@ var UIBattle = cc.Class({
             this.assistBtnShow = false;
             this.barAssistCD.node.runAction(cc.moveBy(0.1, cc.v3(125, 0)));
         }
-    },
-
-    beyoundFrinedIn: function () {
-        this.spriteFriendNode.runAction(cc.moveBy(0.1, 120, 0));
-    },
-    beyoundFriendOut: function () {
-        this.spriteFriendNode.runAction(cc.moveBy(0.1, -120, 0));
     },
 
     setTopScore: function (num) {
@@ -410,7 +412,10 @@ var UIBattle = cc.Class({
     },
 
     onPauseClick: function () {
-        if (this.battleManager.gameState == Defines.GameResult.RUNNING) {
+        if (this.battleManager.gameState == Defines.GameResult.RUNNING ||
+            this.battleManager.gameState == Defines.GameResult.DASH ||
+            this.battleManager.gameState == Defines.GameResult.DASHSTART ||
+            this.battleManager.gameState == Defines.GameResult.DASHEND) {
             this.battleManager.gameState = Defines.GameResult.INTERRUPT;
         }
     },
@@ -445,19 +450,26 @@ var UIBattle = cc.Class({
                     GlobalVar.comMsg.showMsg(i18n.t('label.4000313'));
                     return;
                 }
-                this.battleManager.gameState = Defines.GameResult.PAUSE;
-                let self = this;
-                weChatAPI.shareNormal(111, function () {
-                    self.heroManager.callAssist();
-                    self.assistCurrentCD = 5;
-                    self.assistTimeCD = 5;
-                    self.barAssistCD.progress = 1;
-                    self.battleManager.gameState = Defines.GameResult.PREPARE;
+                if (cc.sys.platform == cc.sys.WECHAT_GAME){
+                    this.battleManager.gameState = Defines.GameResult.PAUSE;
+                    let self = this;
+                    weChatAPI.shareNormal(111, function () {
+                        self.heroManager.callAssist();
+                        self.assistCurrentCD = Defines.ASSISTCD;
+                        self.assistTimeCD = Defines.ASSISTCD;
+                        self.barAssistCD.progress = 1;
+                        self.battleManager.gameState = Defines.GameResult.PREPARE;
+                        StoreageData.setBattleAssitTimes();
+                    }, function () {
+                        self.battleManager.gameState = Defines.GameResult.PREPARE;
+                    });
+                }else{
+                    this.heroManager.callAssist();
+                    this.assistCurrentCD = Defines.ASSISTCD;
+                    this.assistTimeCD = Defines.ASSISTCD;
+                    this.barAssistCD.progress = 1;
                     StoreageData.setBattleAssitTimes();
-                }, function () {
-                    self.battleManager.gameState = Defines.GameResult.PREPARE;
-                });
-
+                }
             }
         }
     },
@@ -475,11 +487,48 @@ var UIBattle = cc.Class({
                 //     numberBg.width = labelcount.node.width + 3;
                 // }, 30);
                 this.heroManager.callAssist();
-                this.assistCurrentCD = 5;
-                this.assistTimeCD = 5;
+                this.assistCurrentCD = Defines.ASSISTCD;
+                this.assistTimeCD = Defines.ASSISTCD;
                 this.barAssistCD.progress = 1;
             }
         }
     },
+    
+    updateBeyoundNode() {
+        if (!this.battleManager.isEndlessFlag){
+            return;
+        }
 
+        if (this.battleManager.gameState != Defines.GameResult.RUNNING){
+            return;
+        }
+
+        if (cc.sys.platform != cc.sys.WECHAT_GAME){
+            return;
+        }
+
+        let openDataContext = wx.getOpenDataContext();
+        let sharedCanvas = openDataContext.canvas;
+        let self = this;
+        if (this.beyoudUpdateTimes == 0){
+            weChatAPI.requestBeyoudRank(this.targetScore, this.isFirtTimeGetBeyoundData);
+            this.isFirtTimeGetBeyoundData = false;
+        }else if (this.beyoudUpdateTimes == 200){
+            this.beyoudUpdateTimes = -1;
+            this.nodeBeyoundFriend.getComponent(cc.Sprite).spriteFrame = "";
+            sharedCanvas.width = 120;
+            sharedCanvas.height = 104;
+        }else if (this.beyoudUpdateTimes <= 50){
+            if (this.beyoudUpdateTimes <= 20){
+                this.texture2D.initWithElement(sharedCanvas);
+                this.texture2D.handleLoadedTexture();
+                let sf = new cc.SpriteFrame(this.texture2D);
+                this.nodeBeyoundFriend.getComponent(cc.Sprite).spriteFrame = sf;
+            }
+            this.nodeBeyoundFriend.x += 2.4;
+        }else if (this.beyoudUpdateTimes >= 150){
+            this.nodeBeyoundFriend.x -= 2.4;
+        }
+        this.beyoudUpdateTimes++;
+    },
 });

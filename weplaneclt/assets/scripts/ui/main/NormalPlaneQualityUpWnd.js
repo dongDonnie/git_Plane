@@ -10,6 +10,7 @@ const GlobalFunc = require('GlobalFunctions');
 const config = require('config');
 const PlaneEntity = require('PlaneEntity');
 
+const AUDIO_QUALITY_UP2 = 'cdnRes/audio/main/effect/shengjie2'
 cc.Class({
     extends: RootBase,
 
@@ -143,7 +144,7 @@ cc.Class({
         this.spriteContinue.node.active = true;
         this.spriteContinue.node.runAction(cc.repeatForever(cc.sequence(cc.fadeIn(0.7), cc.fadeOut(0.7))));
         GlobalFunc.stopDragonBonesAnimation(this.effectBackNode);
-
+        GlobalVar.soundManager().playEffect(AUDIO_QUALITY_UP2);
         let self = this;
         
         this.labelTip.active = true;

@@ -9,6 +9,7 @@ const ShaderUtils = require("ShaderUtils");
 const GlobalFunc = require('GlobalFunctions');
 const config = require('config');
 
+const AUDIO_QUALITY_UP2 = 'cdnRes/audio/main/effect/shengjie2'
 cc.Class({
     extends: RootBase,
 
@@ -205,7 +206,7 @@ cc.Class({
         this.spriteContinue.node.runAction(cc.repeatForever(cc.sequence(cc.fadeIn(0.7), cc.fadeOut(0.7))));
         // this.effectBackNode.stopAnimation();
         this.effectBackNode.getComponent(dragonBones.ArmatureDisplay).armature().animation.stop();
-        
+        GlobalVar.soundManager().playEffect(AUDIO_QUALITY_UP2);
         let self = this;
         
         this.labelTip.active = true;

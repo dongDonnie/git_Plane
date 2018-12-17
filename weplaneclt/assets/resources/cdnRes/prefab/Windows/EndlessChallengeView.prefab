@@ -3604,8 +3604,8 @@
     ],
     "_N$interactable": true,
     "_N$enableAutoGrayEffect": true,
-    "_N$transition": 3,
-    "transition": 3,
+    "_N$transition": 0,
+    "transition": 0,
     "_N$normalColor": {
       "__type__": "cc.Color",
       "r": 214,
@@ -5057,7 +5057,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 92,
+      "width": 46,
       "height": 23
     },
     "_anchorPoint": {
@@ -5067,7 +5067,7 @@
     },
     "_position": {
       "__type__": "cc.Vec3",
-      "x": -190,
+      "x": -215,
       "y": -229,
       "z": 0
     },
@@ -5104,8 +5104,8 @@
     "_srcBlendFactor": 1,
     "_dstBlendFactor": 771,
     "_useOriginalSize": false,
-    "_string": "普通挑战",
-    "_N$string": "普通挑战",
+    "_string": "新手",
+    "_N$string": "新手",
     "_fontSize": 23,
     "_lineHeight": 23,
     "_enableWrapText": true,
@@ -5215,7 +5215,7 @@
     },
     "_position": {
       "__type__": "cc.Vec3",
-      "x": -105,
+      "x": -152,
       "y": -229,
       "z": 0
     },
@@ -7621,7 +7621,7 @@
     "asset": {
       "__uuid__": "b47ce07b-ec18-445c-b432-94afd2f9d004"
     },
-    "fileId": "a47X32GlpN9Yk8D8k5Lqru",
+    "fileId": "111HRGvlBKoaRj1uEFSW06",
     "sync": false
   },
   {
@@ -7721,7 +7721,7 @@
     "asset": {
       "__uuid__": "b47ce07b-ec18-445c-b432-94afd2f9d004"
     },
-    "fileId": "1dTYJ7P2JCkbM5dGa/9WY4",
+    "fileId": "6devDmICRBBYRb+nYy6VBm",
     "sync": false
   },
   {

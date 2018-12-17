@@ -1,5 +1,6 @@
 const SceneBase = require("scenebase");
 const GlobalVar = require("globalvar");
+const config = require("config");
 
 var MainScene = cc.Class({
     extends: SceneBase,
@@ -24,7 +25,9 @@ var MainScene = cc.Class({
     },
 
     start(){
-        GlobalVar.windowManager().resumeView();
+        if (!GlobalVar.me().levelUpFlag || config.NEED_GUIDE){
+            GlobalVar.windowManager().resumeView();
+        }
         // this.loadPrefab("UIMain",function(){
         //     GlobalVar.windowManager().resumeView();
         // });

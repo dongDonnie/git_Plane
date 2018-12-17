@@ -28,19 +28,23 @@ var UIServerSel = cc.Class({
         GlobalVar.cleanAllMgr();
         let self = this;
         this.canSelect = false;
-        this.createAuthorizeBtn(this.node.getChildByName("toggleAgreement"));
+        // this.createAuthorizeBtn(this.node.getChildByName("toggleAgreement"));
         if (cc.sys.platform === cc.sys.WECHAT_GAME) {
             weChatAPI.login(function (user_id, ticket, avatar) {
                 GlobalVar.me().loginData.setLoginReqDataAccount(user_id);
                 GlobalVar.me().loginData.setLoginReqDataSdkTicket(ticket);
                 GlobalVar.me().loginData.setLoginReqDataAvatar(avatar);
                 // console.log("get data for login, userID:" + user_id + " ticket:" + ticket + " avatar:" + avatar);
-                weChatAPI.getServerList("1.0.0", GlobalVar.me().loginData.getLoginReqDataAccount(), function (data) {
+                weChatAPI.getServerList(GlobalVar.tblApi.getData('TblVersion')[1].strVersion, GlobalVar.me().loginData.getLoginReqDataAccount(), function (data) {
                     self.serverList = data.serverList;
                     self.userData = data.userData;
                     self.setInitServer();
                 });
             })
+
+            weChatAPI.getLaunchNotice(function (data) {
+                console.log("launchNotice:", data);
+            });
         }
         GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_NEED_CREATE_ROLE, this.createRoll, this);
         GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_LOGIN_DATA_NTF, this.getLoginData, this);
@@ -59,10 +63,10 @@ var UIServerSel = cc.Class({
     },
 
     onDestroy: function () {
-        if (!!this.btnAuthorize) {
-            this.btnAuthorize.destroy();
+        // if (!!this.btnAuthorize) {
+            // this.btnAuthorize.destroy();
             //this.btnAuthorize = null;
-        }
+        // }
         GlobalVar.eventManager().removeListenerWithTarget(this);
     },
 
@@ -155,27 +159,13 @@ var UIServerSel = cc.Class({
             // console.log("无服务器可以选择");
             return;
         }
-        // this.nodeSelectServerWnd.scale = 0;
-        // this.canSelect=false;
         this.canSelect=true;
-        // var self=this;
         this.nodeSelectServerWnd.active = true;
-        // this.nodeSelectServerWnd.runAction(
-        //     cc.sequence(
-        //         cc.scaleTo(1 / 12, 1.1),
-        //         cc.scaleTo(1 / 12, 1.0),
-        //         cc.callFunc(function(){
-        //         })
-        //     )
-        // );
+
         // if (!!this.btnAuthorize) {
-        //     this.btnAuthorize.destroy();
-        //     //this.btnAuthorize = null;
-        // }
-        if (!!this.btnAuthorize) {
-            this.btnAuthorize.destroy();
+            // this.btnAuthorize.destroy();
             //self.btnAuthorize = null;
-        }
+        // }
         this.initSelServerWnd();
     },
 
@@ -216,33 +206,13 @@ var UIServerSel = cc.Class({
             this.setServer(server.data.server_id);
             var self = this;
             this.nodeSelectServerWnd.active = false;
-            // this.nodeSelectServerWnd.runAction(
-            //     cc.sequence(cc.scaleTo(1 / 12, 1.1),
-            //         cc.scaleTo(1 / 12, 0),
-            //         cc.callFunc(function () {
-            //             self.clickServerWnd = false;
-            //         })
-            //     )
-            // );
             // this.createAuthorizeBtn(this.node.getChildByName("toggleAgreement"));
         // }
     },
 
     onBtnClose: function () {
         this.nodeSelectServerWnd.active = false;
-        // if (!this.clickServerWnd) {
-            // this.clickServerWnd = true;
-            // var self = this;
-            // this.nodeSelectServerWnd.runAction(
-            //     cc.sequence(cc.scaleTo(1 / 12, 1.1),
-            //         cc.scaleTo(1 / 12, 0),
-            //         cc.callFunc(function () {
-            //             self.clickServerWnd = false;
-            //         })
-            //     )
-            // );
-            this.createAuthorizeBtn(this.node.getChildByName("toggleAgreement"));
-        // }
+        // this.createAuthorizeBtn(this.node.getChildByName("toggleAgreement"));
     },
 
     createAuthorizeBtn(btnNode) {
@@ -250,15 +220,10 @@ var UIServerSel = cc.Class({
         let createBtn = function () {
             let btnSize = cc.size(btnNode.width + 20, btnNode.height + 20);
             let frameSize = cc.view.getFrameSize();
-            // console.log("winSize: ",winSize);
-            // console.log("frameSize: ",frameSize);
-            //适配不同机型来创建微信授权按钮
             let left = (cc.winSize.width * 0.5 + btnNode.x - btnSize.width * 0.5) / cc.winSize.width * frameSize.width;
             let top = (cc.winSize.height * 0.5 - btnNode.y - btnSize.height * 0.5) / cc.winSize.height * frameSize.height;
             let width = btnSize.width / cc.winSize.width * frameSize.width;
             let height = btnSize.height / cc.winSize.height * frameSize.height;
-            // console.log("button pos: ",cc.v3(left,top));
-            // console.log("button size: ",cc.size(width,height));
 
 
             self.btnAuthorize = wx.createUserInfoButton({

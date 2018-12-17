@@ -6,15 +6,15 @@ CampNormal5.data = {
         ["tk-b","tk-b","tk-b"],
     ],
     monsterWaves:[
-        {wave:{groups:[697,27],wait:0,delay:[0.5,0.5]},maps:{mapIndex:[0,1],mapSpeed:[200,400],mapScale:[1,1],mapLoop:[1,1]}},
-        {wave:{groups:[698,52],wait:0,delay:[0.2,0.5]}},
-        {wave:{groups:[699,51],wait:0,delay:[0.2,0.5]}},
-        {wave:{groups:[700,303],wait:0,delay:[0.2,0.5]}},
-        {wave:{groups:[701,573],wait:0,delay:[0.2,0.5]}},
-        {wave:{groups:[702,694],wait:0,delay:[0.2,0.5]}},
-        {wave:{groups:[703,693],wait:0,delay:[0.2,0.5]}},
+        {wave:{groups:[697,27],wait:0,delay:[0.5,0.5]},maps:{mapIndex:[0,1],mapSpeed:[300,500],mapScale:[1,1],mapLoop:[1,1]}},
+        {wave:{groups:[698,52],wait:0,delay:[0,0.5]}},
+        {wave:{groups:[699,51],wait:0,delay:[0,0.5]}},
+        {wave:{groups:[700,303],wait:0,delay:[0,0.5]}},
+        {wave:{groups:[701,573],wait:0,delay:[0,0.5]}},
+        {wave:{groups:[702,694],wait:0,delay:[0,0.5]}},
+        {wave:{groups:[703,693],wait:0,delay:[0,0.5]}},
     ],
-    monsterExtra:[311,312,313,314,315,316,317],
+    monsterExtra:[311,312,313,314,315,316,317,311,312,313,314,315,316,317],
 
     totalHint:[
         {
@@ -40,7 +40,7 @@ CampNormal5.data = {
             eventKey:0,
             checkTime:1,
             condition:[
-                {wave:{index:2,step:6}},
+                {wave:{index:6,step:6}},
             ],
             effect:[
                 {extra:{open:-2}},

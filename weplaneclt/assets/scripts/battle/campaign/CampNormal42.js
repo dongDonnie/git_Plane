@@ -11,7 +11,7 @@ CampNormal42.data = {
         {wave:{groups:[1282,40],wait:0,delay:[0,1,4,5]}},
         {wave:{groups:[1283,17,24],wait:0,delay:[0,0,1]}},
         {wave:{groups:[1406,554,555],wait:0,delay:[0,1,2,5]}},
-        {wave:{groups:[1407,1073,1074],wait:0,delay:[0,1,2,5]}},
+        {wave:{groups:[1407,1073,1074],wait:0,delay:[0,1,2,5]}},{wave:{groups:[1282,40],wait:0,delay:[0,1,4,5]}},
         {wave:{groups:[1284],wait:0,delay:[0]}},
     ],
 
@@ -41,7 +41,7 @@ CampNormal42.data = {
             eventKey:0,
             checkTime:1,
             condition:[
-                {wave:{index:6,step:8}},
+                {wave:{index:7,step:8}},
             ],
             effect:[
                 {extra:{open:-2}},

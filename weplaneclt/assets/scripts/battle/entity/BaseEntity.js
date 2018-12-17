@@ -132,7 +132,25 @@ cc.Class({
             let monsterData = GlobalVar.tblApi.getDataBySingleKey('TblBattleMonster', id);
             this.objectName = monsterData.strName;
         } else if (this.objectType == Defines.ObjectType.OBJ_BUFF) {
-
+            if (this.objectID == Defines.Assist.WEAPON_UP) {
+                this.objectName = "WeaponUp";
+            } else if (this.objectID == Defines.Assist.SUPER) {
+                this.objectName = "Super";
+            } else if (this.objectID == Defines.Assist.PROTECT) {
+                this.objectName = "Protect";
+            } else if (this.objectID == Defines.Assist.HP) {
+                this.objectName = "Hp";
+            } else if (this.objectID == Defines.Assist.MP) {
+                this.objectName = "Mp";
+            } else if (this.objectID == Defines.Assist.MAGNET) {
+                this.objectName = "Magnet";
+            } else if (this.objectID == Defines.Assist.DASH) {
+                this.objectName = "Dash";
+            } else {
+                this.objectName = "SpriteBuff";
+            }
+        } else if (this.objectType == Defines.ObjectType.OBJ_GOLD) {
+            this.objectName = "SpriteBuff";
         } else if (this.objectType == Defines.ObjectType.OBJ_EXECUTE) {
             let bulletData = GlobalVar.tblApi.getDataBySingleKey('TblBattleBullet', id);
             this.objectName = bulletData.strName;
@@ -161,7 +179,7 @@ cc.Class({
         } else if (this.objectType == Defines.ObjectType.OBJ_MONSTER) {
             this.poolManager.getInstance().putObject(Defines.PoolType.MONSTER, this.baseObject, this.objectName);
         } else if (this.objectType == Defines.ObjectType.OBJ_BUFF) {
-            this.poolManager.getInstance().putObject(Defines.PoolType.BUFF, this.baseObject);
+            this.poolManager.getInstance().putObject(Defines.PoolType.BUFF, this.baseObject, this.objectName);
         } else if (this.objectType == Defines.ObjectType.OBJ_GOLD) {
             this.poolManager.getInstance().putObject(Defines.PoolType.BUFF, this.baseObject);
         } else if (this.objectType == Defines.ObjectType.OBJ_EXECUTE) {
@@ -664,11 +682,11 @@ cc.Class({
         if (chase.target == null) {
             return;
         } else {
-            if(!cc.isValid(chase.target)){
+            if (!cc.isValid(chase.target)) {
                 return;
-            }else{
-                if(typeof chase.target.isDead!=='undefined'){
-                    if (chase.target.isDead){
+            } else {
+                if (typeof chase.target.isDead !== 'undefined') {
+                    if (chase.target.isDead) {
                         return;
                     }
                 }
@@ -755,7 +773,7 @@ cc.Class({
 
                 shiftStandby.origin = this.getPosition();
                 shiftStandby.path = shiftStandby.dst.sub(this.getPosition());
-                shiftStandby.length = Math.floor(shiftStandby.path.mag())*0.5;
+                shiftStandby.length = Math.floor(shiftStandby.path.mag()) * 0.5;
                 shiftStandby.curLength = 0;
                 shiftStandby.curTime = 0;
 
@@ -1439,21 +1457,11 @@ cc.Class({
     },
 
     pauseAction() {
-        if (this.baseObject != null) {
-            this.baseObject.getComponent('CoreObject').pauseAction();
-            if (this.rayAnime != null && cc.isValid(this.rayAnime)) {
-                this.rayAnime.pauseAllActions();
-            }
-        }
+        
     },
 
     resumeAction() {
-        if (this.baseObject != null) {
-            this.baseObject.getComponent('CoreObject').resumeAction();
-            if (this.rayAnime != null && cc.isValid(this.rayAnime)) {
-                this.rayAnime.resumeAllActions();
-            }
-        }
+        
     },
 
     //Timer

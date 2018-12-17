@@ -41,7 +41,7 @@ const PoolManager = cc.Class({
         this.monsterObjectPool = {};
         this.productlinePool = new cc.NodePool();
         this.buffEntityPool = new cc.NodePool();
-        this.buffObjectPool = new cc.NodePool();
+        this.buffObjectPool = {};
         this.sundriesEntityPool = new cc.NodePool();
         this.sundriesObjectPool = new cc.NodePool();
         this.executeEntityPool = new cc.NodePool();
@@ -123,7 +123,11 @@ const PoolManager = cc.Class({
                 }
                 break;
             case Defines.PoolType.BUFF:
-                rlt = this.buffObjectPool.get();
+                if (typeof name !== 'undefined' && name != '') {
+                    if (this.executeObjectPool[name] != null && typeof this.executeObjectPool[name] !== 'undefined') {
+                        rlt = this.buffObjectPool[name].get();
+                    }
+                }
                 break;
             case Defines.PoolType.EXECUTE:
                 if (typeof name !== 'undefined' && name != '') {
@@ -153,7 +157,12 @@ const PoolManager = cc.Class({
                 }
                 break;
             case Defines.PoolType.BUFF:
-                this.buffObjectPool.put(object);
+                if (typeof name !== 'undefined' && name != '') {
+                    if (typeof this.buffObjectPool[name] === 'undefined' || this.buffObjectPool[name] == null) {
+                        this.buffObjectPool[name] = new cc.NodePool();
+                    }
+                    this.buffObjectPool[name].put(object);
+                }
                 break;
             case Defines.PoolType.EXECUTE:
                 if (typeof name !== 'undefined' && name != '') {

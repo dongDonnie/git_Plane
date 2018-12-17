@@ -78,6 +78,7 @@ cc.Class({
     animePlayCallBack(name) {
         if (name == "Escape") {
             this._super("Escape");
+            this.setRankingType(TYPE_RANKING_ENDLESS);
         } else if (name == "Enter") {
             this._super("Enter")
             this.showRanking();
@@ -118,7 +119,7 @@ cc.Class({
             return;
         }
     },
-
+    
     setRankingType: function (rankingType) {
         this.rankingType = rankingType;
         if (typeof rankingType == "undefined") {
@@ -139,7 +140,8 @@ cc.Class({
             this.spriteRankTypeList[FRIENDS_RANKING].node.active = true;
             this.spriteRankTypeList[WORLD_RANKING].node.active = true;
 
-            this.curRankingType = FRIENDS_RANKING;
+            this.curRankingType = null;
+            this.onBtnRaningType(null, FRIENDS_RANKING);
         }
     },
 
@@ -149,20 +151,12 @@ cc.Class({
     },
 
     addRankingDataBg: function () {
+        this.rankingDataContent.getComponent(cc.Widget).updateAlignment();
         let contentHeight = this.rankingDataContent.height;
         let modelHeight = this.rankingDataBgModel.height;
         let top = 20, space = 20;
-        // console.log("contentHeight = ", contentHeight, "  modelHeight = ", modelHeight, "  top = ", top, "  space = ", space);
         let dataCount = Math.floor((contentHeight - top + space) / (modelHeight + space));
         this.setPageCount(dataCount);
-        // console.log("dataCount = ", dataCount);
-        // for (let i = 0; i < dataCount; i++) {
-        //     let node = cc.instantiate(this.rankingDataBgModel)
-        //     node.active = true;
-        //     node.x=(-1000);
-        //     this.rankingDataContent.addChild(node);
-        //     node.runAction(cc.sequence(cc.delayTime(0.05*i), cc.moveBy(0.15,1100,0),cc.moveBy(0.05,-100,0)));
-        // }
     },
 
     onBtnRaningType: function (event, type) {
@@ -213,7 +207,7 @@ cc.Class({
 
                 // 传递openid给子域
                 let openDataContext = wx.getOpenDataContext();
-                let ON_MSG_SET_MY_OPENID = 6;
+                let ON_MSG_SET_MY_OPENID = 5;
                 openDataContext.postMessage({
                     id: ON_MSG_SET_MY_OPENID,
                     openID: GlobalVar.me().loginData.getLoginReqDataAccount(),
@@ -390,6 +384,12 @@ cc.Class({
         }
 
         // console.log("send changePage req success");
+    },
+
+    close: function () {
+        this.spriteRankingContent.spriteFrame = "";
+        this.rankingDataContent.removeAllChildren();
+        this._super();
     },
 
 });

@@ -54,16 +54,16 @@ const BulletSolutions = cc.Class({
                     BattleManager.getInstance().showShadow(true);
                 }
                 if (idx == 1) {
-                    BulletSolutions.solution_100000_1(entity, ai.posTransfer(cc.v3(100/640, 0)), bulletIds[0]);
+                    BulletSolutions.solution_100000_1(entity, ai.posTransfer(cc.v3(100 / 640, 0)), bulletIds[0]);
                 }
                 if (idx == 2) {
-                    BulletSolutions.solution_100000_1(entity, ai.posTransfer(cc.v3(220/640, 0)), bulletIds[0]);
+                    BulletSolutions.solution_100000_1(entity, ai.posTransfer(cc.v3(220 / 640, 0)), bulletIds[0]);
                 }
                 if (idx == 3) {
-                    BulletSolutions.solution_100000_1(entity, ai.posTransfer(cc.v3(540/640, 0)), bulletIds[0]);
+                    BulletSolutions.solution_100000_1(entity, ai.posTransfer(cc.v3(540 / 640, 0)), bulletIds[0]);
                 }
                 if (idx == 4) {
-                    BulletSolutions.solution_100000_1(entity, ai.posTransfer(cc.v3(420/640, 0)), bulletIds[0]);
+                    BulletSolutions.solution_100000_1(entity, ai.posTransfer(cc.v3(420 / 640, 0)), bulletIds[0]);
                     BattleManager.getInstance().showShadow(false);
                     ai.releaseEntity(this);
                 }
@@ -74,7 +74,7 @@ const BulletSolutions = cc.Class({
             fake.setTimer(3, 0.6, 1, 0);
             fake.setTimer(4, 0.8, 1, 0);
         },
-        solution_100000_1: function (entity, pos, bulletId,damageInterval,allScreenDamage) {
+        solution_100000_1: function (entity, pos, bulletId, damageInterval, allScreenDamage) {
             let ai = require('AIInterface');
             let execute = ai.createExecute(bulletId, pos);
             execute.setDamageInterval(damageInterval);
@@ -90,20 +90,20 @@ const BulletSolutions = cc.Class({
                     BattleManager.getInstance().showShadow(true);
                 }
                 if (idx == 1) {
-                    BulletSolutions.solution_100000_1(entity, ai.posTransfer(cc.v3(100/640, 0)), bulletIds[0]);
+                    BulletSolutions.solution_100000_1(entity, ai.posTransfer(cc.v3(100 / 640, 0)), bulletIds[0]);
                 }
                 if (idx == 2) {
-                    BulletSolutions.solution_100000_1(entity, ai.posTransfer(cc.v3(220/640, 0)), bulletIds[0]);
+                    BulletSolutions.solution_100000_1(entity, ai.posTransfer(cc.v3(220 / 640, 0)), bulletIds[0]);
                 }
                 if (idx == 3) {
-                    BulletSolutions.solution_100000_1(entity, ai.posTransfer(cc.v3(540/640, 0)), bulletIds[0]);
+                    BulletSolutions.solution_100000_1(entity, ai.posTransfer(cc.v3(540 / 640, 0)), bulletIds[0]);
                 }
                 if (idx == 4) {
-                    BulletSolutions.solution_100000_1(entity, ai.posTransfer(cc.v3(420/640, 0)), bulletIds[0]);
+                    BulletSolutions.solution_100000_1(entity, ai.posTransfer(cc.v3(420 / 640, 0)), bulletIds[0]);
                 }
                 if (idx == 5) {
-                    BulletSolutions.solution_100000_1(entity, ai.posTransfer(cc.v3(150/640, 0)), bulletIds[0]);
-                    BulletSolutions.solution_100000_1(entity, ai.posTransfer(cc.v3(490/640, 0)), bulletIds[0]);
+                    BulletSolutions.solution_100000_1(entity, ai.posTransfer(cc.v3(150 / 640, 0)), bulletIds[0]);
+                    BulletSolutions.solution_100000_1(entity, ai.posTransfer(cc.v3(490 / 640, 0)), bulletIds[0]);
                     BattleManager.getInstance().showShadow(false);
                     ai.releaseEntity(this);
                 }
@@ -124,22 +124,22 @@ const BulletSolutions = cc.Class({
                     BattleManager.getInstance().showShadow(true);
                 }
                 if (idx == 1) {
-                    BulletSolutions.solution_100000_1(entity, ai.posTransfer(cc.v3(220/640, 0)), bulletIds[0]);
+                    BulletSolutions.solution_100000_1(entity, ai.posTransfer(cc.v3(220 / 640, 0)), bulletIds[0]);
                 }
                 if (idx == 2) {
-                    BulletSolutions.solution_100000_1(entity, ai.posTransfer(cc.v3(420/640, 0)), bulletIds[0]);
+                    BulletSolutions.solution_100000_1(entity, ai.posTransfer(cc.v3(420 / 640, 0)), bulletIds[0]);
                 }
                 if (idx == 3) {
-                    BulletSolutions.solution_100002_1(entity, ai.posTransfer(cc.v3(640/640, 800/1136)), bulletIds[0], -95);
-                    BulletSolutions.solution_100002_1(entity, ai.posTransfer(cc.v3(0, 800/1136)), bulletIds[0], 85);
+                    BulletSolutions.solution_100002_1(entity, ai.posTransfer(cc.v3(640 / 640, 800 / 1136)), bulletIds[0], -95);
+                    BulletSolutions.solution_100002_1(entity, ai.posTransfer(cc.v3(0, 800 / 1136)), bulletIds[0], 85);
                 }
                 if (idx == 4) {
-                    BulletSolutions.solution_100002_1(entity, ai.posTransfer(cc.v3(0, 650/1136)), bulletIds[0], 90);
-                    BulletSolutions.solution_100002_1(entity, ai.posTransfer(cc.v3(640, 650/1136)), bulletIds[0], -90);
+                    BulletSolutions.solution_100002_1(entity, ai.posTransfer(cc.v3(0, 650 / 1136)), bulletIds[0], 90);
+                    BulletSolutions.solution_100002_1(entity, ai.posTransfer(cc.v3(640, 650 / 1136)), bulletIds[0], -90);
                 }
                 if (idx == 5) {
-                    BulletSolutions.solution_100002_1(entity, ai.posTransfer(cc.v3(0, 650/1136)), bulletIds[0], 140);
-                    BulletSolutions.solution_100002_1(entity, ai.posTransfer(cc.v3(640/640, 650/1136)), bulletIds[0], -40);
+                    BulletSolutions.solution_100002_1(entity, ai.posTransfer(cc.v3(0, 650 / 1136)), bulletIds[0], 140);
+                    BulletSolutions.solution_100002_1(entity, ai.posTransfer(cc.v3(640 / 640, 650 / 1136)), bulletIds[0], -40);
                     BattleManager.getInstance().showShadow(false);
                     ai.releaseEntity(this);
                 }
@@ -171,15 +171,15 @@ const BulletSolutions = cc.Class({
                     BattleManager.getInstance().showShadow(true);
                 }
                 if (idx == 1) {
-                    BulletSolutions.solution_100000_1(entity, ai.posTransfer(cc.v3((65 + this.ctrlValue[0] * 170)/640, 0)), bulletIds[0]);
+                    BulletSolutions.solution_100000_1(entity, ai.posTransfer(cc.v3((65 + this.ctrlValue[0] * 170) / 640, 0)), bulletIds[0]);
                     this.ctrlValue[0] += 1;
                 }
                 if (idx == 2) {
-                    BulletSolutions.solution_100000_1(entity, ai.posTransfer((cc.v3(640 - 65 - this.ctrlValue[1] * 170)/640, 0)), bulletIds[0]);
+                    BulletSolutions.solution_100000_1(entity, ai.posTransfer((cc.v3(640 - 65 - this.ctrlValue[1] * 170) / 640, 0)), bulletIds[0]);
                     this.ctrlValue[1] += 1;
                 }
                 if (idx == 3) {
-                    BulletSolutions.solution_100000_1(entity, ai.posTransfer((cc.v3(65 + this.ctrlValue[2] * 170)/640, 0)), bulletIds[0]);
+                    BulletSolutions.solution_100000_1(entity, ai.posTransfer((cc.v3(65 + this.ctrlValue[2] * 170) / 640, 0)), bulletIds[0]);
                     this.ctrlValue[2] += 1;
                 }
                 if (idx == 4) {
@@ -209,12 +209,12 @@ const BulletSolutions = cc.Class({
                     BattleManager.getInstance().showShadow(true);
                 }
                 if (idx == 1) {
-                    BulletSolutions.solution_100000_1(entity, ai.posTransfer(cc.v3((70 + this.ctrlValue[0] * 100)/640, 0)), bulletIds[0]);
-                    BulletSolutions.solution_100000_1(entity, ai.posTransfer(cc.v3((570 - this.ctrlValue[0] * 100)/640, 0)), bulletIds[0]);
-                    BulletSolutions.solution_100000_1(entity, ai.posTransfer(cc.v3((70 + this.ctrlValue[0] * 100)/640, 0)), bulletIds[0]);
-                    BulletSolutions.solution_100000_1(entity, ai.posTransfer(cc.v3((570 - this.ctrlValue[0] * 100)/640, 0)), bulletIds[0]);
-                    BulletSolutions.solution_100000_1(entity, ai.posTransfer((cc.v3(70 + this.ctrlValue[0] * 100)/640, 0)), bulletIds[0]);
-                    BulletSolutions.solution_100000_1(entity, ai.posTransfer((cc.v3(570 - this.ctrlValue[0] * 100)/640, 0)), bulletIds[0]);
+                    BulletSolutions.solution_100000_1(entity, ai.posTransfer(cc.v3((70 + this.ctrlValue[0] * 100) / 640, 0)), bulletIds[0]);
+                    BulletSolutions.solution_100000_1(entity, ai.posTransfer(cc.v3((570 - this.ctrlValue[0] * 100) / 640, 0)), bulletIds[0]);
+                    BulletSolutions.solution_100000_1(entity, ai.posTransfer(cc.v3((70 + this.ctrlValue[0] * 100) / 640, 0)), bulletIds[0]);
+                    BulletSolutions.solution_100000_1(entity, ai.posTransfer(cc.v3((570 - this.ctrlValue[0] * 100) / 640, 0)), bulletIds[0]);
+                    BulletSolutions.solution_100000_1(entity, ai.posTransfer((cc.v3(70 + this.ctrlValue[0] * 100) / 640, 0)), bulletIds[0]);
+                    BulletSolutions.solution_100000_1(entity, ai.posTransfer((cc.v3(570 - this.ctrlValue[0] * 100) / 640, 0)), bulletIds[0]);
                     this.ctrlValue[0] += 1;
                 }
                 if (idx == 2) {
@@ -235,7 +235,7 @@ const BulletSolutions = cc.Class({
                     BattleManager.getInstance().showShadow(true);
                 }
                 if (idx == 1) {
-                    BulletSolutions.solution_100000_1(entity, ai.posTransfer((cc.v3(70 + Math.random() * 500)/640, (350 + Math.random() * 500)/1136)), bulletIds[0]);
+                    BulletSolutions.solution_100000_1(entity, ai.posTransfer((cc.v3(70 + Math.random() * 500) / 640, (350 + Math.random() * 500) / 1136)), bulletIds[0]);
                 }
                 if (idx == 2) {
                     BattleManager.getInstance().showShadow(false);
@@ -257,7 +257,7 @@ const BulletSolutions = cc.Class({
                     BattleManager.getInstance().showShadow(true);
                 }
                 if (idx == 1) {
-                    this.ctrlValue[n] = ai.posTransfer(cc.v3((70 + Math.random() * 500)/640, (350 + Math.random() * 500)/1136));
+                    this.ctrlValue[n] = ai.posTransfer(cc.v3((70 + Math.random() * 500) / 640, (350 + Math.random() * 500) / 1136));
                     BulletSolutions.solution_100000_1(entity, this.ctrlValue[n], bulletIds[0]);
                     n += 1;
                 }
@@ -287,7 +287,7 @@ const BulletSolutions = cc.Class({
                     BattleManager.getInstance().showShadow(true);
                 }
                 if (idx == 1) {
-                    BulletSolutions.solution_100000_1(entity, ai.posTransfer(cc.v3((70 + Math.random() * 500)/640, (250 + Math.random() * 650)/1136), bulletIds[0]));
+                    BulletSolutions.solution_100000_1(entity, ai.posTransfer(cc.v3((70 + Math.random() * 500) / 640, (250 + Math.random() * 650) / 1136), bulletIds[0]));
                 }
                 if (idx == 2) {
                     BattleManager.getInstance().showShadow(false);
@@ -303,18 +303,18 @@ const BulletSolutions = cc.Class({
             let ai = require('AIInterface');
             let fake = ai.createFake(entity, Defines.ObjectType.OBJ_EXECUTE);
             let n = 0;
-            fake.ctrlValue[0] = ai.posTransfer(cc.v3(70/640, 880/1136));
-            fake.ctrlValue[1] = ai.posTransfer(cc.v3(320/640, 880/1136));
-            fake.ctrlValue[2] = ai.posTransfer(cc.v3(570/640, 880/1136));
-            fake.ctrlValue[3] = ai.posTransfer(cc.v3(570/640, 670/1136));
-            fake.ctrlValue[4] = ai.posTransfer(cc.v3(570/640, 460/1136));
-            fake.ctrlValue[5] = ai.posTransfer(cc.v3(570/640, 250/1136));
-            fake.ctrlValue[6] = ai.posTransfer(cc.v3(320/640, 250/1136));
-            fake.ctrlValue[7] = ai.posTransfer(cc.v3(70/640, 250/1136));
-            fake.ctrlValue[8] = ai.posTransfer(cc.v3(70/640, 460/1136));
-            fake.ctrlValue[9] = ai.posTransfer(cc.v3(70/640, 670/1136));
-            fake.ctrlValue[10] = ai.posTransfer(cc.v3(320/640, 670/1136));
-            fake.ctrlValue[11] = ai.posTransfer(cc.v3(320/640, 460/1136));
+            fake.ctrlValue[0] = ai.posTransfer(cc.v3(70 / 640, 880 / 1136));
+            fake.ctrlValue[1] = ai.posTransfer(cc.v3(320 / 640, 880 / 1136));
+            fake.ctrlValue[2] = ai.posTransfer(cc.v3(570 / 640, 880 / 1136));
+            fake.ctrlValue[3] = ai.posTransfer(cc.v3(570 / 640, 670 / 1136));
+            fake.ctrlValue[4] = ai.posTransfer(cc.v3(570 / 640, 460 / 1136));
+            fake.ctrlValue[5] = ai.posTransfer(cc.v3(570 / 640, 250 / 1136));
+            fake.ctrlValue[6] = ai.posTransfer(cc.v3(320 / 640, 250 / 1136));
+            fake.ctrlValue[7] = ai.posTransfer(cc.v3(70 / 640, 250 / 1136));
+            fake.ctrlValue[8] = ai.posTransfer(cc.v3(70 / 640, 460 / 1136));
+            fake.ctrlValue[9] = ai.posTransfer(cc.v3(70 / 640, 670 / 1136));
+            fake.ctrlValue[10] = ai.posTransfer(cc.v3(320 / 640, 670 / 1136));
+            fake.ctrlValue[11] = ai.posTransfer(cc.v3(320 / 640, 460 / 1136));
             fake.setTimerHandler(function (idx) {
                 if (idx == 0) {
                     BattleManager.getInstance().showShadow(true);
@@ -341,8 +341,8 @@ const BulletSolutions = cc.Class({
                     BattleManager.getInstance().showShadow(true);
                 }
                 if (idx == 1) {
-                    BulletSolutions.solution_100000_1(entity, ai.posTransfer((cc.v3(70 + Math.random() * 500)/640, (250 + Math.random() * 325)/1136)), bulletIds[0]);
-                    BulletSolutions.solution_100000_1(entity, ai.posTransfer((cc.v3(70 + Math.random() * 500)/640, (575 + Math.random() * 325))/1136), bulletIds[0]);
+                    BulletSolutions.solution_100000_1(entity, ai.posTransfer((cc.v3(70 + Math.random() * 500) / 640, (250 + Math.random() * 325) / 1136)), bulletIds[0]);
+                    BulletSolutions.solution_100000_1(entity, ai.posTransfer((cc.v3(70 + Math.random() * 500) / 640, (575 + Math.random() * 325)) / 1136), bulletIds[0]);
                 }
                 if (idx == 2) {
                     BattleManager.getInstance().showShadow(false);
@@ -358,10 +358,10 @@ const BulletSolutions = cc.Class({
             let ai = require('AIInterface');
             let fake = ai.createFake(entity, Defines.ObjectType.OBJ_EXECUTE);
             let n = 0;
-            fake.ctrlValue[0] = ai.posTransfer(cc.v3(70/640, 880/1136));
-            fake.ctrlValue[1] = ai.posTransfer(cc.v3(500/640, 880/1136));
-            fake.ctrlValue[2] = ai.posTransfer(cc.v3(140/640, 670/1136));
-            fake.ctrlValue[3] = ai.posTransfer(cc.v3(570/640, 670/1136));
+            fake.ctrlValue[0] = ai.posTransfer(cc.v3(70 / 640, 880 / 1136));
+            fake.ctrlValue[1] = ai.posTransfer(cc.v3(500 / 640, 880 / 1136));
+            fake.ctrlValue[2] = ai.posTransfer(cc.v3(140 / 640, 670 / 1136));
+            fake.ctrlValue[3] = ai.posTransfer(cc.v3(570 / 640, 670 / 1136));
             fake.setTimerHandler(function (idx) {
                 if (idx == 0) {
                     BattleManager.getInstance().showShadow(true);
@@ -384,12 +384,12 @@ const BulletSolutions = cc.Class({
             let ai = require('AIInterface');
             let fake = ai.createFake(entity, Defines.ObjectType.OBJ_EXECUTE);
             let n = 0;
-            fake.ctrlValue[0] = ai.posTransfer(cc.v3(70/640, 830/1136));
-            fake.ctrlValue[1] = ai.posTransfer(cc.v3(320/640, 880/1136));
-            fake.ctrlValue[2] = ai.posTransfer(cc.v3(570/640, 830/1136));
-            fake.ctrlValue[3] = ai.posTransfer(cc.v3(90/640, 730/1136));
-            fake.ctrlValue[4] = ai.posTransfer(cc.v3(340/640, 730/1136));
-            fake.ctrlValue[5] = ai.posTransfer(cc.v3(590/640, 730/1136));
+            fake.ctrlValue[0] = ai.posTransfer(cc.v3(70 / 640, 830 / 1136));
+            fake.ctrlValue[1] = ai.posTransfer(cc.v3(320 / 640, 880 / 1136));
+            fake.ctrlValue[2] = ai.posTransfer(cc.v3(570 / 640, 830 / 1136));
+            fake.ctrlValue[3] = ai.posTransfer(cc.v3(90 / 640, 730 / 1136));
+            fake.ctrlValue[4] = ai.posTransfer(cc.v3(340 / 640, 730 / 1136));
+            fake.ctrlValue[5] = ai.posTransfer(cc.v3(590 / 640, 730 / 1136));
             fake.setTimerHandler(function (idx) {
                 if (idx == 0) {
                     BattleManager.getInstance().showShadow(true);
@@ -418,7 +418,7 @@ const BulletSolutions = cc.Class({
                 }
                 if (idx == 1) {
                     for (let n = 0; n < 3; ++n) {
-                        BulletSolutions.solution_100000_1(entity, ai.posTransfer(cc.v3((70 + n * 250)/640, (850 - 300 * this.ctrlValue[0])/1136)), bulletIds[0]);
+                        BulletSolutions.solution_100000_1(entity, ai.posTransfer(cc.v3((70 + n * 250) / 640, (850 - 300 * this.ctrlValue[0]) / 1136)), bulletIds[0]);
                     }
                     this.ctrlValue[0] += 1;
                 }
@@ -442,7 +442,7 @@ const BulletSolutions = cc.Class({
                 }
                 if (idx == 1) {
                     for (let n = 0; n < 3; ++n) {
-                        BulletSolutions.solution_100000_1(entity, ai.posTransfer(cc.v3((70 + n * 250)/640, (900 - 250 * this.ctrlValue[0])/1136)), bulletIds[0]);
+                        BulletSolutions.solution_100000_1(entity, ai.posTransfer(cc.v3((70 + n * 250) / 640, (900 - 250 * this.ctrlValue[0]) / 1136)), bulletIds[0]);
                     }
                     this.ctrlValue[0] += 1;
                 }
@@ -464,8 +464,8 @@ const BulletSolutions = cc.Class({
                     BattleManager.getInstance().showShadow(true);
                 }
                 if (idx == 1) {
-                    BulletSolutions.solution_100000_1(entity, ai.posTransfer(cc.v3((70 + Math.random() * 500)/640, (250 + Math.random() * 325)/1136)), bulletIds[0]);
-                    BulletSolutions.solution_100000_1(entity, ai.posTransfer(cc.v3((70 + Math.random() * 500)/640, (575 + Math.random() * 325)/1136)), bulletIds[0]);
+                    BulletSolutions.solution_100000_1(entity, ai.posTransfer(cc.v3((70 + Math.random() * 500) / 640, (250 + Math.random() * 325) / 1136)), bulletIds[0]);
+                    BulletSolutions.solution_100000_1(entity, ai.posTransfer(cc.v3((70 + Math.random() * 500) / 640, (575 + Math.random() * 325) / 1136)), bulletIds[0]);
                 }
                 if (idx == 2) {
                     BattleManager.getInstance().showShadow(false);
@@ -479,11 +479,11 @@ const BulletSolutions = cc.Class({
         solution_100015(entity, bulletIds, y) {
             //地毯式轰炸
             let ai = require('AIInterface');
-            BulletSolutions.solution_100000_1(entity, ai.posTransfer(cc.v3(50/640, y/1136)), bulletIds[0],0.032,false);
-            BulletSolutions.solution_100000_1(entity, ai.posTransfer(cc.v3((50 + 135 * 4)/640, y/1136)), bulletIds[0],0.032,false);
-            BulletSolutions.solution_100000_1(entity, ai.posTransfer(cc.v3((50 + 135)/640, y/1136)), bulletIds[0],0.032,false);
-            BulletSolutions.solution_100000_1(entity, ai.posTransfer(cc.v3((50 + 135 * 3)/640, y/1136)), bulletIds[0],0.032,false);
-            BulletSolutions.solution_100000_1(entity, ai.posTransfer(cc.v3((50 + 135 * 2)/640, y/1136)), bulletIds[0],0.032,false);
+            BulletSolutions.solution_100000_1(entity, ai.posTransfer(cc.v3(50 / 640, y / 1136)), bulletIds[0], 0.032, false);
+            BulletSolutions.solution_100000_1(entity, ai.posTransfer(cc.v3((50 + 135 * 4) / 640, y / 1136)), bulletIds[0], 0.032, false);
+            BulletSolutions.solution_100000_1(entity, ai.posTransfer(cc.v3((50 + 135) / 640, y / 1136)), bulletIds[0], 0.032, false);
+            BulletSolutions.solution_100000_1(entity, ai.posTransfer(cc.v3((50 + 135 * 3) / 640, y / 1136)), bulletIds[0], 0.032, false);
+            BulletSolutions.solution_100000_1(entity, ai.posTransfer(cc.v3((50 + 135 * 2) / 640, y / 1136)), bulletIds[0], 0.032, false);
         },
         //掉落AI
         solution_buff(buffId, pos, angle) {
@@ -491,25 +491,25 @@ const BulletSolutions = cc.Class({
             let buff = ai.createBuff(buffId, pos);
             angle = typeof angle !== 'undefined' ? angle : Math.random() * 60 - 120;
             buff.setSpeed(ai.speedTransfer(200, angle));
-            buff.setTimer(0, Defines.BATTLE_FRAME_SECOND, Defines.MAX_COUNT);
-            buff.setTimerHandler(function (idx) {
-                let hero = ai.getHero();
-                if (hero != null && cc.isValid(hero)) {
-                    if (hero.hp > 0) {
-                        let hPos = hero.getPosition();
-                        let v = this.getPosition().sub(hPos);
-                        let length = v.mag();
-                        if (idx == 0) {
-                            if (length < 35) {
-                                this.chaseHero(this.getSpeed().mul(2), this.getSpeed().mul(2), 360, 0, 1);
-                                this.setMovementType(3);
-                                this.delTimer(0);
-                                //this.setTimer(1, 0, 1, 0);
-                            }
-                        }
-                    }
-                }
-            });
+            // buff.setTimer(0, Defines.BATTLE_FRAME_SECOND, Defines.MAX_COUNT);
+            // buff.setTimerHandler(function (idx) {
+            //     if (idx == 0) {
+            //         let hero = ai.getHero();
+            //         if (hero != null && cc.isValid(hero)) {
+            //             if (hero.hp > 0) {
+            //                 let hPos = hero.getPosition();
+            //                 let v = hPos.sub(this.getPosition());
+            //                 let length = v.mag();
+            //                 if (length < 50) {
+            //                     this.chaseHero(v.mul(2), cc.v3(0, 0), 360, 0, 1);
+            //                     this.setMovementType(3);
+            //                     this.delTimer(0);
+            //                     //this.setTimer(1, 0, 1, 0);
+            //                 }
+            //             }
+            //         }
+            //     }
+            // });
         },
         solution_map_buff(id, pos, speed) {
             var ai = require('AIInterface');
@@ -733,14 +733,14 @@ const BulletSolutions = cc.Class({
             bullet.setTimer(1, 0.2, 25, 0);
         },
         // 从不同位置打出
-        solution_7: function (entity, speed, angle, v, bulletId,om) {
+        solution_7: function (entity, speed, angle, v, bulletId, om) {
             let ai = require('AIInterface');
             let bullet = ai.createBullet(bulletId, entity);
             bullet.setPosition(v);
             let sp = ai.speedTransfer(speed, angle);
             bullet.setSpeed(sp, true);
             if (typeof om !== 'undefined') {
-                bullet.setEntitySelfCircle(om,0);
+                bullet.setEntitySelfCircle(om, 0);
             }
         },
         //solution 8 to solution 107 第一版本弹幕方案
@@ -2117,7 +2117,7 @@ const BulletSolutions = cc.Class({
             bullet.setTimerHandler(function (idx) {
                 if (idx == 1) {
                     this.setSpeed(ai.speedTransfer(200, angle), true);
-                    this.runScale(3, 4);
+                    this.runScale(1, 4);
                 }
             });
             bullet.setTimer(1, 0.4, 1, 0);
@@ -2796,9 +2796,7 @@ const BulletSolutions = cc.Class({
                     let vec = entity.getPosition();
                     let vec_1 = vec.add(ai.speedTransfer(150, 120 + this.ctrlValue[0] * 20 - 90));
                     let hero = ai.getHero();
-                    if(hero == null){
-                    }
-                    else{
+                    if (hero == null) {} else {
                         BulletSolutions.solution_65_1(entity, 2, ai.getAngle(vec, hero.getPosition()), vec_1, bulletIds[0]);
                     }
                     this.ctrlValue[0] += 1;
@@ -2808,9 +2806,7 @@ const BulletSolutions = cc.Class({
                     let vec = entity.getPosition();
                     let vec_2 = vec.add(ai.speedTransfer(250, 120 + this.ctrlValue[1] * 20 - 90));
                     let hero = ai.getHero();
-                    if(hero == null){
-                    }
-                    else{
+                    if (hero == null) {} else {
                         BulletSolutions.solution_65_1(entity, 2, ai.getAngle(vec, hero.getPosition()), vec_2, bulletIds[0]);
                     }
                     this.ctrlValue[1] += 1;
@@ -4056,8 +4052,8 @@ const BulletSolutions = cc.Class({
         solution_93: function (entity, bulletIds, scale) {
             let ai = require('AIInterface');
             let bullet = ai.createFake(entity);
-            let vec_1 = ai.posTransfer(cc.v3(10/640, 568/1136));
-            let vec_2 = ai.posTransfer(cc.v3(630/640, 568/1136));
+            let vec_1 = ai.posTransfer(cc.v3(10 / 640, 568 / 1136));
+            let vec_2 = ai.posTransfer(cc.v3(630 / 640, 568 / 1136));
             bullet.ctrlValue[0] = 0;
             bullet.setTimerHandler(function (idx) {
                 this.ctrlValue[0] += 1;
@@ -4387,12 +4383,12 @@ const BulletSolutions = cc.Class({
         solution_101: function (entity, bulletIds, scale) {
             let ai = require('AIInterface');
             let bullet = ai.createFake(entity);
-            let vec_1 = ai.posTransfer(cc.v3(220/640, 800/1136));
-            let vec_2 = ai.posTransfer(cc.v3(420/640, 800/1136));
-            let vec_3 = ai.posTransfer(cc.v3(280/640, 568/1136));
-            let vec_4 = ai.posTransfer(cc.v3(360/640, 568/1136));
-            let vec_5 = ai.posTransfer(cc.v3(50/640, 300/1136));
-            let vec_6 = ai.posTransfer(cc.v3(590/640, 300/1136));
+            let vec_1 = ai.posTransfer(cc.v3(220 / 640, 800 / 1136));
+            let vec_2 = ai.posTransfer(cc.v3(420 / 640, 800 / 1136));
+            let vec_3 = ai.posTransfer(cc.v3(280 / 640, 568 / 1136));
+            let vec_4 = ai.posTransfer(cc.v3(360 / 640, 568 / 1136));
+            let vec_5 = ai.posTransfer(cc.v3(50 / 640, 300 / 1136));
+            let vec_6 = ai.posTransfer(cc.v3(590 / 640, 300 / 1136));
             bullet.setTimerHandler(function (idx) {
                 if (idx == 1) {
                     for (let n = 0; n < 8; ++n) {
@@ -4589,8 +4585,8 @@ const BulletSolutions = cc.Class({
                     let vec_1 = entity.getPosition()
                     this.ctrlValue[0] += 1;
                     for (let n = 0; n < 8; ++n) {
-                        BulletSolutions.solution_105_1(entity, vec_1,vec_1.add(ai.speedTransfer(5,n * (360 / 8))), 60, bulletIds[0]);
-                        BulletSolutions.solution_105_1(entity, vec_1,vec_1.add(ai.speedTransfer(5,n * (360 / 8))),-60, bulletIds[1]);
+                        BulletSolutions.solution_105_1(entity, vec_1, vec_1.add(ai.speedTransfer(5, n * (360 / 8))), 60, bulletIds[0]);
+                        BulletSolutions.solution_105_1(entity, vec_1, vec_1.add(ai.speedTransfer(5, n * (360 / 8))), -60, bulletIds[1]);
                     }
                     if (this.ctrlValue[0] > 4) {
                         ai.releaseEntity(this);
@@ -4603,8 +4599,8 @@ const BulletSolutions = cc.Class({
             let ai = require('AIInterface');
             let bullet = ai.createBullet(bulletId, entity);
             bullet.setPosition(ct);
-            bullet.setEntitySelfCircle(8,0);
-            bullet.setEntityAutoCircle(ct,v.sub(ct),om,0,150,0,0);
+            bullet.setEntitySelfCircle(8, 0);
+            bullet.setEntityAutoCircle(ct, v.sub(ct), om, 0, 150, 0, 0);
             bullet.setMovementType(1);
         },
         solution_106: function (entity, bulletIds, scale) {
@@ -6470,7 +6466,7 @@ const BulletSolutions = cc.Class({
             bullet.setTimerHandler(function (idx) {
                 if (idx == 1) {
                     let vec = entity.getPosition();
-                    BulletSolutions.solution_7(entity, 1500, 180 - 90, vec, bulletIds[0],6);
+                    BulletSolutions.solution_7(entity, 1500, 180 - 90, vec, bulletIds[0], 6);
                 }
                 if (idx == 2) {
                     ai.releaseEntity(this);
@@ -6646,9 +6642,9 @@ const BulletSolutions = cc.Class({
                 }
                 if (idx == 3) {
                     let pos_1 = this.getPosition();
-                    BulletSolutions.solution_7(entity, speed, 160 - 90, pos_1, bulletId_2,  om);
-                    BulletSolutions.solution_7(entity, speed, 180 - 90, pos_1, bulletId_2,  om);
-                    BulletSolutions.solution_7(entity, speed, 200 - 90, pos_1, bulletId_2,  om);
+                    BulletSolutions.solution_7(entity, speed, 160 - 90, pos_1, bulletId_2, om);
+                    BulletSolutions.solution_7(entity, speed, 180 - 90, pos_1, bulletId_2, om);
+                    BulletSolutions.solution_7(entity, speed, 200 - 90, pos_1, bulletId_2, om);
                     ai.releaseEntity(this);
                 }
             });
@@ -6677,7 +6673,7 @@ const BulletSolutions = cc.Class({
             bullet.setTimer(1, 0.1, 1, 0);
             bullet.setTimer(2, 0.4, 1, 0);
         },
-        solution_163_1: function (entity, speed, angle, pos, bulletId_1, bulletId_2,  om) {
+        solution_163_1: function (entity, speed, angle, pos, bulletId_1, bulletId_2, om) {
             let ai = require('AIInterface');
             let bullet = ai.createBullet(bulletId_1, entity);
             bullet.setPosition(pos);
@@ -6693,8 +6689,8 @@ const BulletSolutions = cc.Class({
                 }
                 if (idx == 3) {
                     let pos_1 = this.getPosition();
-                    BulletSolutions.solution_7(entity, speed, 170 - 90, pos_1, bulletId_2,  om);
-                    BulletSolutions.solution_7(entity, speed, 190 - 90, pos_1, bulletId_2,  om);
+                    BulletSolutions.solution_7(entity, speed, 170 - 90, pos_1, bulletId_2, om);
+                    BulletSolutions.solution_7(entity, speed, 190 - 90, pos_1, bulletId_2, om);
                     ai.releaseEntity(this);
                 }
             });
@@ -9222,7 +9218,7 @@ const BulletSolutions = cc.Class({
             let bullet = ai.createBullet(bulletId, entity);
             bullet.setZ(Defines.Z.MISSILE);
             if (typeof om !== 'undefined') {
-                bullet.setEntitySelfCircle(om,0);
+                bullet.setEntitySelfCircle(om, 0);
             }
             bullet.setPosition(v);
             bullet.setTimerHandler(function (idx) {
@@ -9311,16 +9307,16 @@ const BulletSolutions = cc.Class({
             bullet.setTimer(1, 0.08, n, 0);
             bullet.setTimer(2, 0.08 * (n + 1), 1, 0);
         },
-        solution_300:function(entity,bulletIds){
+        solution_300: function (entity, bulletIds) {
             //法阵
             let ai = require('AIInterface');
             let bullet = ai.createFake(entity);
             bullet.setTimerHandler(function (idx) {
                 if (idx == 1) {
                     let vec = entity.getPosition();
-                    BulletSolutions.solution_300_1(entity, vec,bulletIds[0]);
-                    BulletSolutions.solution_300_2(entity, vec,bulletIds[0]);
-                    this.setTimer(2,3,1,0);
+                    BulletSolutions.solution_300_1(entity, vec, bulletIds[0]);
+                    BulletSolutions.solution_300_2(entity, vec, bulletIds[0]);
+                    this.setTimer(2, 3, 1, 0);
                 }
                 if (idx == 2) {
                     ai.releaseEntity(this);
@@ -9328,29 +9324,29 @@ const BulletSolutions = cc.Class({
             });
             bullet.setTimer(1, 0, 1, 0);
         },
-        solution_300_1: function (entity,vec,bulletId) {
+        solution_300_1: function (entity, vec, bulletId) {
             let ai = require('AIInterface');
             let bullet = ai.createBullet(bulletId, entity);
             bullet.setPosition(vec);
-            bullet.setEntitySelfCircle(6,0);
+            bullet.setEntitySelfCircle(6, 0);
             bullet.setTimerHandler(function (idx) {
-                if(idx == 0){
+                if (idx == 0) {
                     ai.releaseEntity(this);
                 }
             });
-            bullet.setTimer(0,2.5,1,0);
+            bullet.setTimer(0, 2.5, 1, 0);
         },
-        solution_300_2: function (entity,vec,bulletId) {
+        solution_300_2: function (entity, vec, bulletId) {
             let ai = require('AIInterface');
             let bullet = ai.createBullet(bulletId, entity);
             bullet.setPosition(vec);
-            bullet.setEntitySelfCircle(-6,0);
+            bullet.setEntitySelfCircle(-6, 0);
             bullet.setTimerHandler(function (idx) {
-                if(idx == 0){
+                if (idx == 0) {
                     ai.releaseEntity(this);
                 }
             });
-            bullet.setTimer(0,2.5,1,0);
+            bullet.setTimer(0, 2.5, 1, 0);
         },
         solution_301: function (entity, bulletIds, scale) {
             let ai = require('AIInterface');
@@ -9359,7 +9355,7 @@ const BulletSolutions = cc.Class({
             bullet.setTimerHandler(function (idx) {
                 if (idx == 1) {
                     for (let n = 0; n < 12; ++n) {
-                        BulletSolutions.solution_301_1(entity, 300, 30 * n - 90, vec, bulletIds[0],6);
+                        BulletSolutions.solution_301_1(entity, 300, 30 * n - 90, vec, bulletIds[0], 6);
                     }
                     ai.releaseEntity(this);
                 }
@@ -9373,7 +9369,7 @@ const BulletSolutions = cc.Class({
             let sp = ai.speedTransfer(speed, angle);
             bullet.setSpeed(sp, true);
             if (typeof om !== 'undefined') {
-                bullet.setEntitySelfCircle(om,0);
+                bullet.setEntitySelfCircle(om, 0);
             }
         },
         solution_302: function (entity, bulletIds, scale) {
@@ -9385,12 +9381,12 @@ const BulletSolutions = cc.Class({
                 if (idx == 1) {
                     let vec_1 = entity.getPosition();
                     this.ctrlValue[0] += 1;
-                    BulletSolutions.solution_302_1(entity, vec_1.add(cc.v3(-50, 0)), -45 + 16 * this.ctrlValue[0] - 16 - 90, bulletIds[0],6);
+                    BulletSolutions.solution_302_1(entity, vec_1.add(cc.v3(-50, 0)), -45 + 16 * this.ctrlValue[0] - 16 - 90, bulletIds[0], 6);
                 }
                 if (idx == 2) {
                     let vec_1 = entity.getPosition();
                     this.ctrlValue[1] += 1;
-                    BulletSolutions.solution_302_1(entity, vec_1.add(cc.v3(50, 0)), 45 - 16 * this.ctrlValue[1] + 16 - 90, bulletIds[1],-6);
+                    BulletSolutions.solution_302_1(entity, vec_1.add(cc.v3(50, 0)), 45 - 16 * this.ctrlValue[1] + 16 - 90, bulletIds[1], -6);
                     if (this.ctrlValue[1] > 5) {
                         ai.releaseEntity(this);
                     }
@@ -9402,14 +9398,14 @@ const BulletSolutions = cc.Class({
             bullet.setTimer(1, 0.2, 6, 1);
             bullet.setTimer(3, 0.6, 1, 0);
         },
-        solution_302_1: function (entity, v, angle, bulletId,om) {
+        solution_302_1: function (entity, v, angle, bulletId, om) {
             let ai = require('AIInterface');
             let bullet = ai.createBullet(bulletId, entity);
             bullet.setPosition(v);
             bullet.setMovementType(0);
             bullet.setSpeed(ai.speedTransfer(400, angle), true);
             if (typeof om !== 'undefined') {
-                bullet.setEntitySelfCircle(om,0);
+                bullet.setEntitySelfCircle(om, 0);
             }
         },
         solution_303: function (entity, bulletIds, scale) {
@@ -9418,7 +9414,7 @@ const BulletSolutions = cc.Class({
             bullet.setTimerHandler(function (idx) {
                 if (idx == 1) {
                     let vec_1 = entity.getPosition();
-                    for(let n = 0;n < 3; ++n){
+                    for (let n = 0; n < 3; ++n) {
                         BulletSolutions.solution_303_1(entity, vec_1, n * (360 / 3), -135, bulletIds[0]);
                         BulletSolutions.solution_303_1(entity, vec_1, n * (360 / 3), -45, bulletIds[0]);
                     }
@@ -9445,12 +9441,12 @@ const BulletSolutions = cc.Class({
                         BulletSolutions.solution_7(entity, 300, 30 * n - 90, vec, bulletIds[0]);
                     }
                 }
-                if(idx == 2){
+                if (idx == 2) {
                     ai.releaseEntity(this);
                 }
             });
             bullet.setTimer(1, 0.7, 3, 1);
-            bullet.setTimer(2,2.5,1,0);
+            bullet.setTimer(2, 2.5, 1, 0);
         },
         solution_305: function (entity, bulletIds, scale) {
             let ai = require('AIInterface');
@@ -9458,47 +9454,45 @@ const BulletSolutions = cc.Class({
             let vec = entity.getPosition();
             bullet.setTimerHandler(function (idx) {
                 if (idx == 1) {
-                    let vec_1 = entity.getPosition().add(cc.v3(-30,0));
-                    let vec_2 = entity.getPosition().add(cc.v3(30,0));
+                    let vec_1 = entity.getPosition().add(cc.v3(-30, 0));
+                    let vec_2 = entity.getPosition().add(cc.v3(30, 0));
                     let hero = ai.getHero();
-                    if(hero == null){
-                    }
-                    else{
-                        BulletSolutions.solution_305_1(entity,400, vec_1,ai.getAngle(vec, hero.getPosition()), bulletIds[0],6);
-                        BulletSolutions.solution_305_1(entity,400, vec_2,ai.getAngle(vec, hero.getPosition()), bulletIds[0],6);
+                    if (hero == null) {} else {
+                        BulletSolutions.solution_305_1(entity, 400, vec_1, ai.getAngle(vec, hero.getPosition()), bulletIds[0], 6);
+                        BulletSolutions.solution_305_1(entity, 400, vec_2, ai.getAngle(vec, hero.getPosition()), bulletIds[0], 6);
                     }
                 }
-                if(idx == 2){
+                if (idx == 2) {
                     ai.releaseEntity(this);
                 }
             });
             bullet.setTimer(1, 0.1, 3, 0);
-            bullet.setTimer(5, 0.5, 1, 0);
+            bullet.setTimer(2, 0.5, 1, 0);
         },
-        solution_305_1: function (entity, speed, v,angle, bulletId,om) {
+        solution_305_1: function (entity, speed, v, angle, bulletId, om) {
             let ai = require('AIInterface');
             let bullet = ai.createBullet(bulletId, entity);
             bullet.setPosition(v);
             let sp = ai.speedTransfer(speed, angle);
             bullet.setSpeed(sp, true);
             if (typeof om !== 'undefined') {
-                bullet.setEntitySelfCircle(om,0);
+                bullet.setEntitySelfCircle(om, 0);
             }
         },
         solution_306: function (entity, bulletIds, scale) {
             let ai = require('AIInterface');
             let bullet = ai.createFake(entity);
-            let vec_1 = ai.posTransfer(cc.v3(0.3,0.4));
-            let vec_2 = ai.posTransfer(cc.v3(0.8,0.5));
+            let vec_1 = ai.posTransfer(cc.v3(0.3, 0.4));
+            let vec_2 = ai.posTransfer(cc.v3(0.8, 0.5));
             bullet.setTimerHandler(function (idx) {
                 if (idx == 1) {
                     for (let n = 0; n < 5; ++n) {
-                        BulletSolutions.solution_7(entity, 300, 360/5*n, vec_1, bulletIds[0]);
+                        BulletSolutions.solution_7(entity, 300, 360 / 5 * n, vec_1, bulletIds[0]);
                     }
                 }
-                if(idx == 2){
+                if (idx == 2) {
                     for (let n = 0; n < 5; ++n) {
-                        BulletSolutions.solution_7(entity, 300, 360/5*n, vec_2, bulletIds[0]);
+                        BulletSolutions.solution_7(entity, 300, 360 / 5 * n, vec_2, bulletIds[0]);
                     }
                     ai.releaseEntity(this);
                 }
@@ -9554,26 +9548,26 @@ const BulletSolutions = cc.Class({
                         BulletSolutions.solution_308_1(entity, vec_1, n * 90 - 1 * this.ctrlValue[0] + 1, bulletIds[0]);
                     }
                 }
-                if(idx == 2){
+                if (idx == 2) {
                     let vec_1 = entity.getPosition();
                     for (let n = 0; n < 4; ++n) {
                         BulletSolutions.solution_308_1(entity, vec_1, n * 90 + 45, bulletIds[1]);
                     }
                 }
-                if(idx == 3){
+                if (idx == 3) {
                     let vec_1 = entity.getPosition();
                     for (let n = 0; n < 4; ++n) {
                         BulletSolutions.solution_308_1(entity, vec_1, n * 90, bulletIds[1]);
                     }
                 }
-                if(idx == 4){
+                if (idx == 4) {
                     ai.releaseEntity(this);
                 }
             });
             bullet.setTimer(1, 0.1, 91, 1);
             bullet.setTimer(2, 0, 1, 0);
             bullet.setTimer(3, 4.5, 1, 0);
-            bullet.setTimer(4,5,1,0);
+            bullet.setTimer(4, 5, 1, 0);
         },
         solution_308_1: function (entity, v, angle, bulletId) {
             let ai = require('AIInterface');
@@ -9610,22 +9604,22 @@ const BulletSolutions = cc.Class({
         solution_310: function (entity, bulletIds, scale) {
             let ai = require('AIInterface');
             let bullet = ai.createFake(entity);
-            let vec_1 = ai.posTransfer(cc.v3(0.3,0.4));
-            let vec_2 = ai.posTransfer(cc.v3(0.8,0.5));
+            let vec_1 = ai.posTransfer(cc.v3(0.3, 0.4));
+            let vec_2 = ai.posTransfer(cc.v3(0.8, 0.5));
             bullet.setTimerHandler(function (idx) {
                 if (idx == 1) {
                     for (let n = 0; n < 5; ++n) {
-                        BulletSolutions.solution_7(entity, 300, 360/5*n, vec_2, bulletIds[0]);
+                        BulletSolutions.solution_7(entity, 300, 360 / 5 * n, vec_2, bulletIds[0]);
                     }
                 }
-                if(idx == 2){
+                if (idx == 2) {
                     for (let n = 0; n < 5; ++n) {
-                        BulletSolutions.solution_7(entity, 300, 360/5*n, vec_1, bulletIds[0]);
+                        BulletSolutions.solution_7(entity, 300, 360 / 5 * n, vec_1, bulletIds[0]);
                     }
                 }
-                if(idx == 3){
+                if (idx == 3) {
                     for (let n = 0; n < 5; ++n) {
-                        BulletSolutions.solution_7(entity, 300, 360/5*n, vec_2, bulletIds[0]);
+                        BulletSolutions.solution_7(entity, 300, 360 / 5 * n, vec_2, bulletIds[0]);
                     }
                     ai.releaseEntity(this);
                 }
@@ -9639,19 +9633,19 @@ const BulletSolutions = cc.Class({
             let bullet = ai.createFake(entity);
             bullet.setTimerHandler(function (idx) {
                 if (idx == 1) {
-                    let vec_1 = ai.posTransfer(cc.v3(0.4,0.8));
-                    let vec_2 = ai.posTransfer(cc.v3(0.6,0.8));
+                    let vec_1 = ai.posTransfer(cc.v3(0.4, 0.8));
+                    let vec_2 = ai.posTransfer(cc.v3(0.6, 0.8));
                     for (let n = 0; n < 5; ++n) {
-                        BulletSolutions.solution_7(entity, 300, 360/5*n, vec_1, bulletIds[0]);
-                        BulletSolutions.solution_7(entity, 300, 360/5*n, vec_2, bulletIds[0]);
+                        BulletSolutions.solution_7(entity, 300, 360 / 5 * n, vec_1, bulletIds[0]);
+                        BulletSolutions.solution_7(entity, 300, 360 / 5 * n, vec_2, bulletIds[0]);
                     }
                 }
-                if(idx == 2){
-                    let vec_1 = ai.posTransfer(cc.v3(0.4,0.6));
-                    let vec_2 = ai.posTransfer(cc.v3(0.6,0.6));
+                if (idx == 2) {
+                    let vec_1 = ai.posTransfer(cc.v3(0.4, 0.6));
+                    let vec_2 = ai.posTransfer(cc.v3(0.6, 0.6));
                     for (let n = 0; n < 5; ++n) {
-                        BulletSolutions.solution_7(entity, 300, 360/5*n, vec_1, bulletIds[0]);
-                        BulletSolutions.solution_7(entity, 300, 360/5*n, vec_2, bulletIds[0]);
+                        BulletSolutions.solution_7(entity, 300, 360 / 5 * n, vec_1, bulletIds[0]);
+                        BulletSolutions.solution_7(entity, 300, 360 / 5 * n, vec_2, bulletIds[0]);
                     }
                     ai.releaseEntity(this);
                 }
@@ -9698,6 +9692,618 @@ const BulletSolutions = cc.Class({
             bullet.setPosition(v);
             bullet.setMovementType(0);
             bullet.setSpeed(ai.speedTransfer(250, angle), true);
+        },
+        solution_313: function (entity, bulletIds, scale) {
+            let ai = require('AIInterface');
+            let bullet = ai.createFake(entity);
+            bullet.setTimerHandler(function (idx) {
+                if (idx == 1) {
+                    let vec = entity.getPosition();
+                 
+                
+                    BulletSolutions.solution_7(entity, 400, -90, vec.add(cc.v3(0, 0)), bulletIds[0]);
+                    BulletSolutions.solution_7(entity, 400, -90, vec.add(cc.v3(25, -40)), bulletIds[0]);
+                    BulletSolutions.solution_7(entity, 400, -90, vec.add(cc.v3(-25, -40)), bulletIds[0]);
+                    BulletSolutions.solution_7(entity, 400, -90, vec.add(cc.v3(0, -80)), bulletIds[0]);
+                    ai.releaseEntity(this);
+                }
+            });
+            bullet.setTimer(1, 0, 1, 0);
+        },
+        solution_314: function (entity, bulletIds, scale) {
+            let ai = require('AIInterface');
+            let bullet = ai.createFake(entity);
+            bullet.setTimerHandler(function (idx) {
+                if (idx == 1) {
+                    BulletSolutions.solution_20_1(entity, 500, -80, bulletIds[0]);
+                    BulletSolutions.solution_20_1(entity, 500, -90, bulletIds[0]);
+                    BulletSolutions.solution_20_1(entity, 500, -100, bulletIds[0]);
+                }
+            });
+            bullet.setTimer(1, 0.4, 2, 0);
+        },
+        solution_315: function (entity, bulletIds, scale) {
+            let ai = require('AIInterface');
+            let bullet = ai.createFake(entity);
+            bullet.setTimerHandler(function (idx) {
+                if (idx == 1) {
+                    BulletSolutions.solution_5(entity, 380, -90, bulletIds[0]);
+                    BulletSolutions.solution_5(entity, 380, -105, bulletIds[0]);
+                    BulletSolutions.solution_5(entity, 380, -75, bulletIds[0]);
+                    ai.releaseEntity(this);
+                }
+            });
+            bullet.setTimer(1, 0, 1, 0);
+        },
+        solution_316: function (entity, bulletIds, scale) {
+            let ai = require('AIInterface');
+            let bullet = ai.createFake(entity);
+            bullet.ctrlValue[0] = 0;
+            bullet.setTimerHandler(function (idx) {
+                if (idx == 1) {
+                    this.ctrlValue[0] = this.ctrlValue[0] + 1;
+                    let vec = entity.getPosition();
+                    let hero = ai.getHero();
+                    if (hero == null) {
+                        if (this.ctrlValue[0] == 1) {
+                            BulletSolutions.solution_7(entity, 300, -90, vec, bulletIds[0]);
+                        }
+                        if (this.ctrlValue[0] == 2) {
+                            BulletSolutions.solution_7(entity, 300, -90 + 2, vec, bulletIds[0]);
+                            BulletSolutions.solution_7(entity, 300, -90 - 2, vec, bulletIds[0]);
+                        }
+                        if (this.ctrlValue[0] == 3) {
+                            BulletSolutions.solution_7(entity, 300, -90 + 4, vec, bulletIds[0]);
+                            BulletSolutions.solution_7(entity, 300, -90 - 4, vec, bulletIds[0]);
+                        }
+                        if (this.ctrlValue[0] > 2) {
+                            ai.releaseEntity(this);
+                        }
+                    } else {
+                        let pos = hero.getPosition();
+                        let angle = ai.getAngle(vec, pos);
+                        if (this.ctrlValue[0] == 1) {
+                            BulletSolutions.solution_21_1(entity, 300, angle, vec.add(ai.speedTransfer(0, angle - 90)), bulletIds[0]);
+                        }
+                        if (this.ctrlValue[0] == 2) {
+                            BulletSolutions.solution_21_1(entity, 300, angle + 2, vec.add(ai.speedTransfer(0, angle - 90)), bulletIds[0]);
+                            BulletSolutions.solution_21_1(entity, 300, angle - 2, vec.add(ai.speedTransfer(0, angle + 90)), bulletIds[0]);
+                        }
+                        if (this.ctrlValue[0] == 3) {
+                            BulletSolutions.solution_21_1(entity, 300, angle + 4, vec.add(ai.speedTransfer(0, angle - 90)), bulletIds[0]);
+                            BulletSolutions.solution_21_1(entity, 300, angle - 4, vec.add(ai.speedTransfer(0, angle + 90)), bulletIds[0]);
+                        }
+                        if (this.ctrlValue[0] > 2) {
+                            ai.releaseEntity(this);
+                        }
+                    }
+                }
+            });
+            bullet.setTimer(1, 0.08, 3, 0);
+        },
+        solution_317: function (entity, bulletIds, scale) {
+            let ai = require('AIInterface');
+            let bullet = ai.createFake(entity);
+            bullet.setTimerHandler(function (idx) {
+                if (idx == 1) {
+                    BulletSolutions.solution_12_1(entity, 250, -180, -60, bulletIds[0]);
+                    BulletSolutions.solution_12_1(entity, 250, -180, 60, bulletIds[0]);
+                    BulletSolutions.solution_12_1(entity, 250, -180, 180, bulletIds[0]);
+                    ai.releaseEntity(this);
+                }
+            });
+            bullet.setTimer(1, 0, 1, 0);
+        },
+        solution_318: function (entity, bulletIds, scale) {
+            let ai = require('AIInterface');
+            let bullet = ai.createFake(entity);
+            bullet.setTimerHandler(function (idx) {
+                if (idx == 1) {
+                    BulletSolutions.solution_15_1(entity, 400, -90, bulletIds[0]);
+                }
+                if (idx == 2) {
+                    BulletSolutions.solution_15_1(entity, 400, -84, bulletIds[0]);
+                    BulletSolutions.solution_15_1(entity, 400, -96, bulletIds[0]);
+                }
+                if (idx == 3) {
+                    BulletSolutions.solution_15_1(entity, 400, -90, bulletIds[0]);
+                    ai.releaseEntity(this);
+                }
+            });
+            bullet.setTimer(1, 0, 1, 0);
+            bullet.setTimer(2, 0.1, 1, 0);
+            bullet.setTimer(3, 0.2, 1, 0);
+        },
+        solution_319: function (entity, bulletIds, scale) {
+            let ai = require('AIInterface');
+            let bullet = ai.createFake(entity);
+            bullet.setTimerHandler(function (idx) {
+                let vec = entity.getPosition();
+                if (idx == 1) {
+                    BulletSolutions.solution_19_1(entity, 290, -73, vec.add(cc.v3(30, 0)), bulletIds[0]);
+                    BulletSolutions.solution_19_1(entity, 290, -107, vec.add(cc.v3(-30, 0)), bulletIds[0]);
+                }
+                if (idx == 2) {
+                    BulletSolutions.solution_19_1(entity, 340, -75, vec.add(cc.v3(30, 0)), bulletIds[0]);
+                    BulletSolutions.solution_19_1(entity, 340, -105, vec.add(cc.v3(-30, 0)), bulletIds[0]);
+                }
+                if (idx == 3) {
+                    
+                    ai.releaseEntity(this);
+                }
+            });
+            bullet.setTimer(1, 0, 1, 0);
+            bullet.setTimer(2, 0.1, 1, 0);
+            bullet.setTimer(3, 0.2, 1, 0);
+        },
+        solution_320: function (entity, bulletIds, scale) {
+            let ai = require('AIInterface');
+            let bullet = ai.createFake(entity);
+            bullet.setTimerHandler(function (idx) {
+                if (idx == 1) {
+                    let vec = entity.getPosition();
+                    BulletSolutions.solution_7(entity, 400, -90, vec.add(cc.v3(-30, 0)), bulletIds[0]);
+                    BulletSolutions.solution_7(entity, 400, -90, vec.add(cc.v3(30, 0)), bulletIds[0]);
+                    BulletSolutions.solution_7(entity, 400, -90, vec.add(cc.v3(-30, -60)), bulletIds[0]);
+                    BulletSolutions.solution_7(entity, 400, -90, vec.add(cc.v3(30, -60)), bulletIds[0]);
+                    ai.releaseEntity(this);
+                }
+            });
+            bullet.setTimer(1, 0, 1, 0);
+        },
+        solution_321: function (entity, bulletIds, scale) {
+            let ai = require('AIInterface');
+            let bullet = ai.createFake(entity);
+            bullet.setTimerHandler(function (idx) {
+                if (idx == 1) {
+                    BulletSolutions.solution_321_1(entity, 270, -90, bulletIds[0], bulletIds[1]);
+                    ai.releaseEntity(this);
+                }
+            });
+            bullet.setTimer(1, 0, 1, 0);
+        },
+        solution_321_1: function (entity, speed, angle, bulletId, bulletId1) {
+            let ai = require('AIInterface');
+            let bullet = ai.createBullet(bulletId, entity);
+            let sp = ai.speedTransfer(speed, angle);
+            bullet.setSpeed(sp, true);
+            bullet.setTimerHandler(function (idx) {
+                if (idx == 1) {
+                    let v = this.getPosition();
+                    ai.releaseEntity(this);
+                    BulletSolutions.solution_7(entity, 350, 45, v, bulletId1);
+                    BulletSolutions.solution_7(entity, 350, -45, v, bulletId1);
+                    BulletSolutions.solution_7(entity, 350, 135, v, bulletId1);
+                    BulletSolutions.solution_7(entity, 350, -135, v, bulletId1);
+                }
+            });
+            bullet.setTimer(1, 1.5, 1, 0);
+        },
+        solution_322: function (entity, bulletIds, scale) {
+            let ai = require('AIInterface');
+            let bullet = ai.createFake(entity);
+            bullet.setTimerHandler(function (idx) {
+                if (idx == 1) {
+                    BulletSolutions.solution_5(entity, 400, -90, bulletIds[0]);
+                    ai.releaseEntity(this);
+                }
+            });
+            bullet.setTimer(1, 0, 1, 0);
+        },
+        solution_323: function (entity, bulletIds, scale) {
+            let ai = require('AIInterface');
+            let bullet = ai.createFake(entity);
+            bullet.setTimerHandler(function (idx) {
+                if (idx == 1) {
+                    BulletSolutions.solution_5(entity, 400, -90, bulletIds[0]);
+                    BulletSolutions.solution_5(entity, 400, -105, bulletIds[0]);
+                    BulletSolutions.solution_5(entity, 400, -75, bulletIds[0]);
+                    ai.releaseEntity(this);
+                }
+            });
+            bullet.setTimer(1, 0, 1, 0);
+        },
+        solution_324: function (entity, bulletIds, scale) {
+            let ai = require('AIInterface');
+            let bullet = ai.createFake(entity);
+            let vec = entity.getPosition();
+            bullet.setTimerHandler(function (idx) {
+                if (idx == 1) {
+                    let vec_1 = entity.getPosition().add(cc.v3(-30, 0));
+                    let vec_2 = entity.getPosition().add(cc.v3(30, 0));
+                    let hero = ai.getHero();
+                    if (hero == null) {} else {
+                        BulletSolutions.solution_305_1(entity, 330, vec_1, ai.getAngle(vec, hero.getPosition()), bulletIds[0], 6);
+                        BulletSolutions.solution_305_1(entity, 330, vec_2, ai.getAngle(vec, hero.getPosition()), bulletIds[0], 6);
+                    }
+                }
+                if (idx == 2) {
+                    ai.releaseEntity(this);
+                }
+            });
+            bullet.setTimer(1, 0.1, 2, 0);
+            bullet.setTimer(2, 0.5, 1, 0);
+        },
+        solution_325: function (entity, bulletIds, scale, num) {
+            let ai = require('AIInterface');
+            let bullet = ai.createFake(entity);
+            if (num == undefined) {
+                num = 6;
+            }
+            bullet.setTimerHandler(function (idx) {
+                let vec = entity.getPosition();
+                if (idx == 1) {
+                    for (let n = 0; n < num; ++n) {
+                        let angle = 360 / num;
+                        BulletSolutions.solution_325_1(entity, 200, 30 + n * angle, vec, bulletIds[0]);
+                    }
+                    ai.releaseEntity(this);
+                }
+            });
+            bullet.setTimer(1, 0, 1, 0);
+        },
+        solution_325_1: function (entity, speed, angle, pos, bulletId) {
+            let ai = require('AIInterface');
+            let bullet = ai.createBullet(bulletId, entity);
+            bullet.setPosition(pos);
+            bullet.setTimerHandler(function (idx) {
+                if (idx == 1) {
+                    this.setSpeed(ai.speedTransfer(speed, angle), true);
+                }
+                if (idx == 2) {
+                    this.setEntityAutoCircle(entity.getPosition(), this.getPosition().sub(entity.getPosition()), 360, 0, 0, 0, 1);
+                    this.setMovementType(1);
+                }
+                if (idx == 3) {
+                    let a = ai.getAngle(pos, this.getPosition()) + 90;
+                    this.setSpeed(ai.speedTransfer(380, a), true);
+                    this.setMovementType(0);
+                }
+            });
+            bullet.setTimer(1, 0, 1, 0);
+            bullet.setTimer(2, 0.4, 1, 0);
+            bullet.setTimer(3, 0.8, 1, 0);
+        },
+        solution_326: function (entity, bulletIds, scale) {
+            let ai = require('AIInterface');
+            let bullet = ai.createFake(entity);
+            bullet.ctrlValue[0] = 0;
+            bullet.setTimerHandler(function (idx) {
+                if (idx == 1) {
+                    let vec = entity.getPosition();
+                    this.ctrlValue[0] += 1;
+                    for (let n = 0; n < 8; ++n) {
+                        BulletSolutions.solution_326_1(entity, vec, n * (360 / 8), bulletIds[0]);
+                    }
+                    if (this.ctrlValue[0] > 3) {
+                        ai.releaseEntity(this);
+                    }
+                }
+            });
+            bullet.setTimer(1, 0.05, 4, 0);
+        },
+        solution_326_1: function (entity, ct, v, bulletId) {
+            let ai = require('AIInterface');
+            let bullet = ai.createBullet(bulletId, entity);
+            bullet.setPosition(ct);
+            bullet.setObjectAutoCircle(30, v, 0, 0, 360, 0, 1);
+            let hero = ai.getHero();
+            if (hero == null) {
+                bullet.setSpeed(ai.speedTransfer(450, -90));
+            } else {
+                let pos = hero.getPosition();
+                let angle = ai.getAngle(ct, pos);
+                bullet.setSpeed(ai.speedTransfer(450, angle));
+            }
+        },
+        solution_327: function (entity, bulletIds, scale) {
+            let ai = require('AIInterface');
+            let bullet = ai.createFake(entity);
+            let vec = entity.getPosition();
+            bullet.setTimerHandler(function (idx) {
+                if (idx == 1) {
+                    BulletSolutions.solution_23_1(entity, 450, -98, vec.add(cc.v3(40, 0)), bulletIds[0]);
+                    BulletSolutions.solution_23_1(entity, 450, -94, vec.add(cc.v3(40, 0)), bulletIds[0]);
+                    BulletSolutions.solution_23_1(entity, 450, -90, vec.add(cc.v3(40, 0)), bulletIds[0]);
+                    BulletSolutions.solution_23_1(entity, 450, -86, vec.add(cc.v3(40, 0)), bulletIds[0]);
+                    BulletSolutions.solution_23_1(entity, 450, -82, vec.add(cc.v3(40, 0)), bulletIds[0]);
+                }
+                if (idx == 2) {
+                    BulletSolutions.solution_23_1(entity, 450, -98, vec.add(cc.v3(-40, 0)), bulletIds[1]);
+                    BulletSolutions.solution_23_1(entity, 450, -94, vec.add(cc.v3(-40, 0)), bulletIds[1]);
+                    BulletSolutions.solution_23_1(entity, 450, -90, vec.add(cc.v3(-40, 0)), bulletIds[1]);
+                    BulletSolutions.solution_23_1(entity, 450, -86, vec.add(cc.v3(-40, 0)), bulletIds[1]);
+                    BulletSolutions.solution_23_1(entity, 450, -82, vec.add(cc.v3(-40, 0)), bulletIds[1]);
+                    ai.releaseEntity(this);
+                }
+            });
+            bullet.setTimer(1, 0, 1, 0);
+            bullet.setTimer(2, 0.2, 1, 0);
+        },
+        solution_328: function (entity, bulletIds, scale) {
+            let ai = require('AIInterface');
+            let bullet = ai.createFake(entity);
+            let vec_1 = entity.getPosition().add(cc.v3(-120, 0));
+            let vec_2 = entity.getPosition().add(cc.v3(120, 0));
+            let vec_3 = entity.getPosition().add(cc.v3(0, -60));
+            let angle = 60;
+            let speed = 200;
+            bullet.ctrlValue[0] = 0;
+            bullet.setTimerHandler(function (idx) {
+                if (idx == 1) {
+                    BulletSolutions.solution_52_1(entity, vec_2, -angle - 90, bulletIds[0]);
+                    BulletSolutions.solution_52_1(entity, vec_1, angle - 90, bulletIds[0]);
+                } else if (idx == 2) {
+                    BulletSolutions.solution_52_2(entity, vec_3, bulletIds[1]);
+                } else if (idx == 3) {
+                    this.setTimer(4, 0.3, 5, 0);
+                } else if (idx == 4) {
+                    this.ctrlValue[0] += 1;
+                    for (let n = 0; n < 6; ++n) {
+                        BulletSolutions.solution_328_3(entity, vec_3, -30 + n * 12 - 90, this.ctrlValue[0], bulletIds[2]);
+                    }
+                    if (this.ctrlValue[0] >= 5) {
+                        ai.releaseEntity(this);
+                    }
+                }
+            });
+            bullet.setTimer(1, 0.2, 10, 0);
+            bullet.setTimer(2, 0.7, 1, 0);
+            bullet.setTimer(3, 2.2, 1, 0);
+        },
+       
+        solution_328_3: function (entity, v, angle, n, bulletId) {
+            let ai = require('AIInterface');
+            let bullet = ai.createBullet(bulletId, entity);
+            bullet.setPosition(v);
+            bullet.setObjectSelfCircle(1);
+            bullet.setSpeed(ai.speedTransfer(440, angle), true);
+            bullet.setSpeedAcc(ai.speedTransfer(-200, angle));
+            bullet.setTimerHandler(function (idx) {
+                if (idx == 1) {
+                    this.setSpeed(ai.speedTransfer(0, angle), true);
+                    this.setSpeedAcc(ai.speedTransfer(0, angle));
+                    this.setObjectSelfCircle(4);
+                    this.runScale(1.2, 0.5);
+                    this.setTimer(2, 0.5, 1, 0);
+                }
+                if (idx == 2) {
+                    this.runOpacity(0, 1.6);
+                    this.setTimer(3, 1.6, 1, 0);
+                }
+                if (idx == 3) {
+                    ai.releaseEntity(this);
+                }
+            });
+            bullet.setTimer(1, 2.1 - 0.2 * n, 1, 0);
+        },
+        solution_329: function (entity, bulletIds, scale) {
+            let ai = require('AIInterface');
+            let bullet = ai.createFake(entity);
+            let vec_1 = entity.getPosition().add(cc.v3(35, 0));
+            let vec_2 = entity.getPosition().add(cc.v3(-35, 0));
+            bullet.ctrlValue[0] = 0;
+            bullet.ctrlValue[1] = 0;
+            bullet.setTimerHandler(function (idx) {
+                if (idx == 1) {
+                    let vec = entity.getPosition();
+                    BulletSolutions.solution_329_1(entity, vec_1, 30 - this.ctrlValue[0] * 15 - 90, bulletIds[0]);
+                    BulletSolutions.solution_329_1(entity, vec_2, -30 + this.ctrlValue[0] * 15 - 90, bulletIds[0]);
+                    BulletSolutions.solution_329_1(entity, vec, -90, bulletIds[1]);
+                    this.ctrlValue[0] += 1;
+                    this.ctrlValue[1] += 1;
+                    if (this.ctrlValue[1] >= 6) {
+                        ai.releaseEntity(this);
+                    }
+                } else if (idx == 2) {
+                    this.setTimer(1, 0.05, 3, 0);
+                    this.ctrlValue[0] = 1;
+                }
+            });
+            bullet.setTimer(1, 0.05, 3, 0);
+            bullet.setTimer(2, 0.25, 1, 0)
+        },
+        solution_329_1: function (entity, v, angle, bulletId) {
+            let ai = require('AIInterface');
+            let bullet = ai.createBullet(bulletId, entity);
+            bullet.setPosition(v);
+            bullet.setSpeed(ai.speedTransfer(400, angle), true);
+            bullet.setSpeedAcc(ai.speedTransfer(300, angle));
+            bullet.setTimerHandler(function (idx) {
+                if (idx == 1) {
+                    this.setSpeedAcc(cc.v3(0, 0));
+                }
+            });
+            bullet.setTimer(1, 0.5, 1, 0);
+        },
+        solution_330: function (entity, bulletIds, scale) {
+            let ai = require('AIInterface');
+            let bullet = ai.createFake(entity);
+            let angle = 15;
+            let speed = 400;
+            bullet.ctrlValue[0] = 0;
+            bullet.ctrlValue[1] = 8;
+            bullet.setTimerHandler(function (idx) {
+                if (idx == 1) {
+                    let vec_1 = entity.getPosition().add(cc.v3(-70, -80));
+                    let vec_2 = entity.getPosition().add(cc.v3(70, -80));
+                    BulletSolutions.solution_7(entity, speed, angle * (this.ctrlValue[0] - 3) - 90, vec_1, bulletIds[0]);
+                    BulletSolutions.solution_7(entity, speed, angle * (3 - this.ctrlValue[0]) - 90, vec_2, bulletIds[0]);
+                    this.ctrlValue[0] += 1;
+                    if (this.ctrlValue[0] == this.ctrlValue[1]) {
+                        ai.releaseEntity(this);
+                    }
+                }
+            });
+            bullet.setTimer(1, 0.2, bullet.ctrlValue[1], 0);
+        },
+        solution_331: function (entity, bulletIds, scale) {
+            let ai = require('AIInterface');
+            let bullet = ai.createFake(entity);
+            bullet.ctrlValue[0] = 0;
+            bullet.ctrlValue[1] = 0;
+            bullet.setTimerHandler(function (idx) {
+                if (idx == 1) {
+                    let vec = entity.getPosition();
+                    BulletSolutions.solution_7(entity, 330, -85 + 10 * this.ctrlValue[0], vec, bulletIds[0]);
+                    BulletSolutions.solution_7(entity, 330, -95 - 10 * this.ctrlValue[0], vec, bulletIds[0]);
+                    this.ctrlValue[0] += 1;
+                    if (this.ctrlValue[0] >= 3) {
+                        this.setTimer(2, 0.1, 1, 0);
+                    }
+                }
+                if (idx == 2) {
+                    let vec = entity.getPosition();
+                    BulletSolutions.solution_7(entity, 330, -75, vec, bulletIds[0]);
+                    BulletSolutions.solution_7(entity, 330, -105, vec, bulletIds[0]);
+                    this.setTimer(3, 0.05, 1, 0);
+                }
+                if (idx == 3) {
+                    this.setTimer(4, 0.05, 3, 0);
+                }
+                if (idx == 4) {
+                    let vec = entity.getPosition();
+                    BulletSolutions.solution_7(entity, 330, -85 + 10 * this.ctrlValue[1], vec, bulletIds[0]);
+                    BulletSolutions.solution_7(entity, 330, -95 - 10 * this.ctrlValue[1], vec, bulletIds[0]);
+                    this.ctrlValue[1] += 1;
+                    if (this.ctrlValue[1] >= 3) {
+                        ai.releaseEntity(this);
+                    }
+                }
+            });
+            bullet.setTimer(1, 0.05, 3, 0);
+        },
+        solution_332: function (entity, bulletIds, scale) {
+            let ai = require('AIInterface');
+            let bullet = ai.createFake(entity);
+            let vec_1 = entity.getPosition();
+            bullet.setTimerHandler(function (idx) {
+                if (idx == 1) {
+                    for (let n = 0; n < 4; ++n) {
+                        BulletSolutions.solution_80_1(entity, vec_1, 250, n * 40 - 60 - 90, bulletIds[0]);
+                    }
+                }
+                if (idx == 2) {
+                    for (let n = 0; n < 3; ++n) {
+                        BulletSolutions.solution_80_1(entity, vec_1, 320, n * 40 + -40 - 90, bulletIds[1]);
+                    }
+                    ai.releaseEntity(this);
+                }
+            });
+            bullet.setTimer(1, 0, 1, 0);
+            bullet.setTimer(2, 0, 1, 0);
+        },
+        solution_333: function (entity, bulletIds, scale) {
+            let ai = require('AIInterface');
+            let bullet = ai.createFake(entity);
+            let vec = entity.getPosition();
+            bullet.setTimerHandler(function (idx) {
+                if (idx == 1) {
+                    BulletSolutions.solution_31_1(entity, 300, -88, vec.add(cc.v3(-50, -50)), bulletIds[0]);
+                    BulletSolutions.solution_31_1(entity, 300, -92, vec.add(cc.v3(50, -50)), bulletIds[0]);
+                } else if (idx == 2) {
+                    BulletSolutions.solution_31_1(entity, 300, -90, vec.add(cc.v3(-50, -50)), bulletIds[0]);
+                    BulletSolutions.solution_31_1(entity, 300, -90, vec.add(cc.v3(50, -50)), bulletIds[0]);
+                    ai.releaseEntity(this);
+                }
+            });
+            bullet.setTimer(1, 0, 1, 0);
+            bullet.setTimer(2, 0.1, 1, 0);
+        },
+        solution_334: function (entity, bulletIds, scale) {
+            let ai = require('AIInterface');
+            let bullet = ai.createFake(entity);
+            let vec_1 = entity.getPosition().add(cc.v3(30, 0));
+            let vec_2 = entity.getPosition().add(cc.v3(-30, 0));
+            bullet.ctrlValue[0] = 0;
+            bullet.setTimerHandler(function (idx) {
+                if (idx == 1) {
+                    this.ctrlValue[0] += 1;
+                    let angle = 5;
+                    for (let n = 0; n < 8; ++n) {
+                        BulletSolutions.solution_334_1(entity, vec_1, n * (360 / 8), -angle - 90, bulletIds[0]);
+                        BulletSolutions.solution_334_1(entity, vec_2, n * (360 / 8), angle - 90, bulletIds[0]);
+                    }
+                    if (this.ctrlValue[0] > 3) {
+                        ai.releaseEntity(this);
+                    }
+                }
+            });
+            bullet.setTimer(1, 0, 1, 0);
+        },
+        solution_334_1: function (entity, ct, v, angle, bulletId) {
+            let ai = require('AIInterface');
+            let bullet = ai.createBullet(bulletId, entity);
+            bullet.setPosition(ct);
+            bullet.setObjectAutoCircle(15, v, 15, 0, 240, 0, 1);
+            bullet.setSpeed(ai.speedTransfer(300, angle));
+        },
+        solution_335: function (entity, bulletIds, scale) {
+            let ai = require('AIInterface');
+            let bullet = ai.createFake(entity);
+            bullet.ctrlValue[0] = 0;
+            let vec = entity.getPosition();
+            bullet.setTimerHandler(function (idx) {
+                if (idx == 1) {
+                    BulletSolutions.solution_335_1(entity, vec.add(cc.v3(0, -200)), bulletIds[0]);
+                }
+                if (idx == 2) {
+                    this.ctrlValue[0] += 1;
+                    let angle_1 = ai.getAngle(vec.add(cc.v3(0, -200)), vec.add(cc.v3(30, 0)));
+                    let angle_2 = ai.getAngle(vec.add(cc.v3(0, -200)), vec.add(cc.v3(-30, 0)));
+                    //aFV(目标，发射点) 方向向量是目标-发射点
+                    BulletSolutions.solution_335_2(entity, vec.add(cc.v3(30, 0)), -angle_2, bulletIds[0]);
+                    BulletSolutions.solution_335_2(entity, vec.add(cc.v3(-30, 0)), -angle_1, bulletIds[0]);
+                    if (this.ctrlValue[0] > 8) {
+                        ai.releaseEntity(this);
+                    }
+                }
+            });
+            bullet.setTimer(1, 0, 1, 0);
+            bullet.setTimer(2, 0.2, 9, 0);
+        },
+        solution_335_1: function (entity, v, bulletId) {
+            let ai = require('AIInterface');
+            let bullet = ai.createBullet(bulletId, entity);
+            bullet.setPosition(v);
+            bullet.setObjectSelfCircle(4);
+            bullet.runScale(3.6, 1.5);
+            bullet.setSpeed(ai.speedTransfer(0, 0));
+            bullet.setTimerHandler(function (idx) {
+                if (idx == 1) {
+                    let hero = ai.getHero();
+                    if (hero == null) {
+                        this.setSpeed(ai.speedTransfer(320, -90));
+                    } else {
+                        this.setSpeed(ai.speedTransfer(320, -90));
+                        //this.chaseHero(0.02, 35, 0);
+                        this.chaseTo(hero, this.getSpeed(), cc.v3(0, 0), 100, 10, 2, 0, 0.2);
+                        this.setMovementType(3);
+                        this.setTimer(2, 0.7, 1, 0);
+                    }
+                }
+                if (idx == 2) {
+                    let vec = this.getPosition();
+                    ai.releaseEntity(this);
+                    for (let n = 0; n < 6; ++n) {
+                        BulletSolutions.solution_7(entity, 360, n * 60 + 30, vec, bulletId);
+                    }
+                }
+            });
+            bullet.setTimer(1, 2, 1, 0);
+        },
+        solution_335_2: function (entity, v, angle, bulletId) {
+            let ai = require('AIInterface');
+            let bullet = ai.createBullet(bulletId, entity);
+            bullet.setPosition(v);
+            bullet.setObjectSelfCircle(4);
+            bullet.setSpeed(ai.speedTransfer(700, angle));
+            bullet.setTimerHandler(function (idx) {
+                if (idx == 1) {
+                    ai.releaseEntity(this);
+                }
+            });
+            bullet.setTimer(1, 0.25, 1, 0);
         },
         solution_10001() {
             let ai = require('AIInterface');

@@ -7,6 +7,7 @@ const EventMsgID = require("eventmsgid");
 const GameServerProto = require("GameServerProto");
 const CommonWnd = require("CommonWnd");
 const weChatAPI = require("weChatAPI");
+const StoreageData = require("storagedata");
 
 
 cc.Class({
@@ -58,25 +59,25 @@ cc.Class({
 
             let self = this;
             if (cc.sys.platform === cc.sys.WECHAT_GAME){
-                weChatAPI.getInviteUserList("invite", function(data){
-                    self.curInviteCount = data.total;
-                    self.inviteTicket = data.ticket;
-                    self.maxInviteCount = GlobalVar.tblApi.getDataBySingleKey('TblParam', GameServerProto.PTPARAM_FULI_CZ_INVITE_USER).dValue;
-                    self.labelInviteCount.string = "（%d/%d）".replace("%d", data.total).replace("%d", self.maxInviteCount);
-                    for (let i = 0; i< data.total; i++){
-                        let url = data.list[i].avatar + "?a=a.png";
-                        let index = i;
-                        if (!self.nodeInvitedPeople.children[index]) return;
-                        cc.loader.load(url, function (err, tex) {
-                            if (err) {
-                                cc.error("LoadURLSpriteFrame err." + url);
-                                return;
-                            }
-                            let spriteFrame = new cc.SpriteFrame(tex);
-                            self.nodeInvitedPeople.children[index].getComponent(cc.Sprite).spriteFrame = spriteFrame;
-                        })
-                    }
-                });
+                // weChatAPI.getInviteUserList("invite", function(data){
+                //     self.curInviteCount = data.total;
+                //     self.inviteTicket = data.ticket;
+                //     self.maxInviteCount = GlobalVar.tblApi.getDataBySingleKey('TblParam', GameServerProto.PTPARAM_FULI_CZ_INVITE_USER).dValue;
+                //     self.labelInviteCount.string = "（%d/%d）".replace("%d", data.total).replace("%d", self.maxInviteCount);
+                //     for (let i = 0; i< data.total; i++){
+                //         let url = data.list[i].avatar + "?a=a.png";
+                //         let index = i;
+                //         if (!self.nodeInvitedPeople.children[index]) return;
+                //         cc.loader.load(url, function (err, tex) {
+                //             if (err) {
+                //                 cc.error("LoadURLSpriteFrame err." + url);
+                //                 return;
+                //             }
+                //             let spriteFrame = new cc.SpriteFrame(tex);
+                //             self.nodeInvitedPeople.children[index].getComponent(cc.Sprite).spriteFrame = spriteFrame;
+                //         })
+                //     }
+                // });
             }
         }
     },
@@ -168,12 +169,18 @@ cc.Class({
 
     onRecvSCFuliBtnClick: function(event) {
         let isFree = 0, ticket = ""
-        // if (this.curInviteCount >= this.maxInviteCount){
-        //     isFree = 1;
-        //     ticket = this.inviteTicket;
-        // }
+        let curPlayTime = StoreageData.getShareTimesWithKey("ScInvite", 0);
+        if (GlobalVar.me().rechargeData.data.Bag.DiamondCZ > 0){
+
+        }else if (curPlayTime > 6){
+            isFree = 1;
+            // ticket = this.inviteTicket;
+        }else{
+
+        }
         // console.log("isFree:", isFree);
         // console.log("ticket:", ticket);
+        // GlobalVar.handlerManager().feedbackHandler.sendGetFuliSCReq(isFree, ticket);
         GlobalVar.handlerManager().feedbackHandler.sendGetFuliSCReq(isFree, ticket);
     },
 
@@ -232,16 +239,17 @@ cc.Class({
         }
 
         this.feedbackScroll.loopScroll.refreshViewItem();
-        let chest = event.Item[0];
+        CommonWnd.showTreasureExploit(event.Item);
+        // let chest = event.Item[0];
 
-        let confirm = function(){
-            let itemData = GlobalVar.me().bagData.getItemById(chest.ItemID);
-            GlobalVar.handlerManager().bagHandler.sendItemUseReq(itemData.Slot, itemData.Count, itemData.Type);
-        };
+        // let confirm = function(){
+        //     let itemData = GlobalVar.me().bagData.getItemById(chest.ItemID);
+        //     GlobalVar.handlerManager().bagHandler.sendItemUseReq(itemData.Slot, itemData.Count, itemData.Type);
+        // };
         
-        let scData = GlobalVar.tblApi.getDataBySingleKey('TblChest', chest.ItemID);
-        let ovecItems = scData.oVecItems;
-        CommonWnd.showRewardBoxWnd(null, "回馈宝箱", true, ovecItems, null, confirm, null, "领取");
+        // let scData = GlobalVar.tblApi.getDataBySingleKey('TblChest', chest.ItemID);
+        // let ovecItems = scData.oVecItems;
+        // CommonWnd.showRewardBoxWnd(null, "回馈宝箱", true, ovecItems, null, confirm, null, "领取");
     },
 
     getItemResult: function(event){

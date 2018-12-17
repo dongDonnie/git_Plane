@@ -39,6 +39,8 @@ cc.Class({
         this.barrier = null;
         this.barrierFade = false;
 
+        this.accel = null;
+
         this.showReady = 0;
 
         this.heroManager = require('HeroManager').getInstance();
@@ -56,6 +58,9 @@ cc.Class({
 
         if (this.barrier != null && cc.isValid(this.barrier)) {
             this.barrier.destroy();
+        }
+        if (this.accel != null && cc.isValid(this.accel)) {
+            this.accel.destroy();
         }
 
         this.showReady = 0;
@@ -119,6 +124,7 @@ cc.Class({
 
         var member = GlobalVar.me().memberData.getMemberByID(id);
         if (member == null) {
+            this.prop[Defines.PropName.Attack]*=3;
             member = GlobalVar.me().memberData.getMemberByID(GlobalVar.me().memberData.getStandingByFighterConf().ChuZhanMemberID);
         }
         this.lv = member.Level;
@@ -141,6 +147,10 @@ cc.Class({
     },
 
     update: function (dt) {
+        if (this.hp <= 0) {
+            return;
+        }
+
         this._super(dt);
         this.updateMissle(dt);
 
@@ -150,6 +160,10 @@ cc.Class({
         } else if (this.protectTime >= 0 && this.protectTime <= Defines.PROTECT_TIME * 0.25 && this.barrier != null && cc.isValid(this.barrier) && !this.barrierFade) {
             this.barrier.runAction(cc.sequence(cc.fadeOut(Defines.PROTECT_TIME * 0.25 * 0.4), cc.fadeIn(Defines.PROTECT_TIME * 0.25 * 0.4), cc.fadeOut(Defines.PROTECT_TIME * 0.25 * 0.2)));
             this.barrierFade = true;
+        }
+
+        if (this.dashTime <= 0 && this.accel != null && cc.isValid(this.accel)) {
+            this.accel.destroy();
         }
 
         if (this.showType == 1) {
@@ -238,12 +252,34 @@ cc.Class({
         BattleManager.getInstance().runHurtEffect();
     },
 
+    pauseAction() {
+        this._super();
+        if (this.accel != null && cc.isValid(this.accel)){
+            this.accel.getComponent(cc.Animation).stop();
+        }
+        if (this.barrier != null && cc.isValid(this.barrier)){
+            this.barrier.getComponent(cc.Animation).stop();
+        }
+    },
+
+    resumeAction() {
+        this._super();
+        if (this.accel != null && cc.isValid(this.accel)){
+            this.accel.getComponent(cc.Animation).play();
+        }
+        if (this.barrier != null && cc.isValid(this.barrier)){
+            this.barrier.getComponent(cc.Animation).play();
+        }
+    },
+
     addHP(plus) {
+        GlobalVar.soundManager().playEffect('cdnRes/audio/battle/effect/blood_cure');
         this._super(plus);
         this.showGetBuffEffect(Defines.Assist.HP);
     },
 
     addProtectTime(time) {
+        GlobalVar.soundManager().playEffect('cdnRes/audio/battle/effect/blood_cure');
         this._super(time);
         if (this.protectTime > 0) {
             this.showGetBuffEffect(Defines.Assist.PROTECT);
@@ -262,6 +298,65 @@ cc.Class({
         }
     },
 
+    addMagnetTime(time) {
+        this._super(time);
+    },
+
+    addDashTime(time) {
+        if (BattleManager.getInstance().isOpenDash || BattleManager.getInstance().forceDash) {
+            if (time == -1) {
+                if (this.accel == null || !cc.isValid(this.accel)) {
+                    var self = this;
+                    GlobalVar.resManager().loadRes(ResMapping.ResType.Prefab, 'cdnRes/battlemodel/prefab/effect/Accel', function (prefab) {
+                        self.accel = cc.instantiate(prefab);
+                        self.addChild(self.accel, Defines.Z.FIGHTER);
+                    });
+                }
+            } else if (time == -2) {
+                if (this.accel != null && cc.isValid(this.accel)) {
+                    this.accel.destroy();
+                }
+            }
+        } else {
+            this._super(time);
+            if (this.dashTime > 0) {
+                if (this.accel == null || !cc.isValid(this.accel)) {
+                    var self = this;
+                    GlobalVar.resManager().loadRes(ResMapping.ResType.Prefab, 'cdnRes/battlemodel/prefab/effect/Accel', function (prefab) {
+                        self.accel = cc.instantiate(prefab);
+                        self.addChild(self.accel, Defines.Z.FIGHTER);
+                    });
+                }
+                if (!BattleManager.getInstance().forceDash) {
+                    BattleManager.getInstance().dashMode = 1;
+                    BattleManager.getInstance().gameState = Defines.GameResult.DASHSTART;
+                }
+            } else {
+                if (this.accel != null && cc.isValid(this.accel)) {
+                    this.accel.destroy();
+                }
+            }
+        }
+    },
+
+    updateDashTime(dt) {
+        if (this.showType == 0 && this.dashTime > 0 && !BattleManager.getInstance().forceDash) {
+            this.dashTime -= dt;
+            if (this.dashTime < 0) {
+                this.dashTime = 0;
+            }
+            if (this.dashTime == 0) {
+                BattleManager.getInstance().dashMode = 3;
+            }
+        }
+        if (this.showType == 0 && this.magnetTime > 0) {
+            this.magnetTime -= dt;
+            if (this.magnetTime < 0) {
+                this.magnetTime = 0;
+            }
+        }
+    },
+
     addChest(type) {
         this.showGetBuffEffect(type);
         BattleManager.getInstance().endlessGetChsetCount++;
@@ -270,7 +365,14 @@ cc.Class({
 
     addGold() {
         BattleManager.getInstance().endlessGoldCount++;
-        //GlobalVar.soundManager().playEffect('cdnRes/audio/battle/effect/gold_bing');
+        GlobalVar.soundManager().playEffect('cdnRes/audio/battle/effect/gold_bing');
+    },
+
+    addCrystal(score) {
+        GlobalVar.soundManager().playEffect('cdnRes/audio/battle/effect/gold_bing');
+        if (BattleManager.getInstance().isEndlessFlag) {
+            BattleManager.getInstance().endlessScore += typeof score !== 'undefined' ? score : 1;
+        }
     },
 
     hitWithDamage(dmg, immediately) {

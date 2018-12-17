@@ -144,6 +144,26 @@ cc.Class({
                 });
             }
         }
+        this.zIndex = 0;
     },
 
+    pauseAction() {
+        if (this.baseObject != null) {
+            if (this.baseObject.getComponent(cc.Animation) != null) {
+                let anime = this.baseObject.getComponent(cc.Animation);
+                anime.stop();
+            }
+        }
+    },
+
+    resumeAction() {
+        if (this.baseObject != null) {
+            if (this.baseObject.getComponent(cc.Animation) != null) {
+                let anime = this.baseObject.getComponent(cc.Animation);
+                let item = GlobalVar.tblApi.getDataBySingleKey('TblBattleBullet', this.objectID);
+                let animState = anime.play(item.strName);
+                animState.speed = 3;
+            }
+        }
+    },
 });

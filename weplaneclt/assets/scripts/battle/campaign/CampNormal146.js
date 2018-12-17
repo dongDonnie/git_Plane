@@ -12,7 +12,7 @@ CampNormal146.data = {
         {wave:{groups:[1343],wait:0,delay:[0]}},
         {wave:{groups:[1339,31,33],wait:0,delay:[0,1,3]}},
         {wave:{groups:[1340],wait:0,delay:[0,1,2]}},
-     
+        {wave:{groups:[1338,17,18,21],wait:0,delay:[0,1,2,4]}},
         {wave:{groups:[1344],wait:0,delay:[0]}},
         {wave:{groups:[1345],wait:0,delay:[0]}},
         {wave:{groups:[1346,1342],wait:0,delay:[0,4]}},
@@ -44,7 +44,7 @@ CampNormal146.data = {
             eventKey:0,
             checkTime:1,
             condition:[
-                {wave:{index:8,step:8}},
+                {wave:{index:9,step:6}},
             ],
             effect:[
                 {extra:{open:-2}},

@@ -668,6 +668,7 @@ var P = {
     PTPARAM_ENDLESS_GOLD_DAYMAX : 307,
     PTPARAM_ENDLESS_CHARGE_DAYMAX : 308,
     PTPARAM_ENDLESS_CHARGE_ITEMID : 309,
+    PTPARAM_MEMBER_TESTPLAY_DAYMAX : 310,
     PT_MAX_ACCOUNT_LEN : 101,
     PT_MAX_PASSWORD_LEN : 33,
     PT_MAX_DEVICEID_LEN : 200,
@@ -972,6 +973,7 @@ var P = {
     PT_RCG_HUIKUI_BUY_MONTHCARD : 2,
     PT_RCG_HUIKUI_RECHARGE : 3,
     PT_RCG_HUIKUI_COUNT : 99,
+    PT_RCG_VIP_MAX : 16,
     PT_MAX_MAIL_SUBJECT : 50,
     PT_MAX_MAIL_CONTENT : 600,
     PT_MAX_MAIL_ATTACHMENT : 5,
@@ -13901,8 +13903,15 @@ var Decode_GMDT_RCG_BAG = function(byteBuffer, m){
         return false;
     }
 
-    m.VipPackage = NetData.NetReadUint32(byteBuffer, ret);
+    let sizeOfVipPackage = NetData.NetReadInt32(byteBuffer, ret);
     if(ret.err){return false;}
+    if(sizeOfVipPackage > P.PT_RCG_VIP_MAX){return false;}
+    m.VipPackage = [];
+    for(let i = 0; i < sizeOfVipPackage; i++){
+        let v = NetData.NetReadUint8(byteBuffer, ret);
+        if(ret.err){return false;}
+        m.VipPackage.push(v);
+    }
 
     let sizeOfRcgRecord = NetData.NetReadInt32(byteBuffer, ret);
     if(ret.err){return false;}
@@ -13943,7 +13952,15 @@ var Encode_GMDT_RCG_BAG = function(m, byteBuffer){
     if(Encode_GMDT_RCG_HUIKUI_BAG(m.HuiKuiBag, byteBuffer) == false){
         return false;
     }
-    NetData.NetWriteUint32(m.VipPackage, byteBuffer);
+    if(!m.VipPackage){
+        NetData.NetWriteInt32(0, byteBuffer);
+    }else{
+        if(m.VipPackage.length > P.PT_RCG_VIP_MAX){return false;}
+        NetData.NetWriteInt32(m.VipPackage.length, byteBuffer);
+        for(let v of m.VipPackage){
+            NetData.NetWriteUint8(v, byteBuffer);
+        }
+    }
     if(!m.RcgRecord){
         NetData.NetWriteInt32(0, byteBuffer);
     }else{
@@ -14318,8 +14335,15 @@ var Encode_GMPKG_VIP_PACKAGE_GET_REQ = function(m, byteBuffer){
 
 var Decode_GMDT_VIP_PACKAGE_GET_OK = function(byteBuffer, m){
     var ret = {err : false};
-    m.VipPackage = NetData.NetReadUint32(byteBuffer, ret);
+    let sizeOfVipPackage = NetData.NetReadInt32(byteBuffer, ret);
     if(ret.err){return false;}
+    if(sizeOfVipPackage > P.PT_RCG_VIP_MAX){return false;}
+    m.VipPackage = [];
+    for(let i = 0; i < sizeOfVipPackage; i++){
+        let v = NetData.NetReadUint8(byteBuffer, ret);
+        if(ret.err){return false;}
+        m.VipPackage.push(v);
+    }
 
     let sizeOfItem = NetData.NetReadInt32(byteBuffer, ret);
     if(ret.err){return false;}
@@ -14343,7 +14367,15 @@ var Decode_GMDT_VIP_PACKAGE_GET_OK = function(byteBuffer, m){
 
 var Encode_GMDT_VIP_PACKAGE_GET_OK = function(m, byteBuffer){
     if(!m){return false;}
-    NetData.NetWriteUint32(m.VipPackage, byteBuffer);
+    if(!m.VipPackage){
+        NetData.NetWriteInt32(0, byteBuffer);
+    }else{
+        if(m.VipPackage.length > P.PT_RCG_VIP_MAX){return false;}
+        NetData.NetWriteInt32(m.VipPackage.length, byteBuffer);
+        for(let v of m.VipPackage){
+            NetData.NetWriteUint8(v, byteBuffer);
+        }
+    }
     if(!m.Item){
         NetData.NetWriteInt32(0, byteBuffer);
     }else{

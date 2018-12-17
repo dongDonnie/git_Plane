@@ -37,6 +37,7 @@ cc.Class({
         GlobalVar.messageDispatcher.bindMsg(GameServerProto.GMID_ENDLESS_RANKUP_ACK, self._recvEndlessRankUpAck, self);
         GlobalVar.messageDispatcher.bindMsg(GameServerProto.GMID_ENDLESS_GETGOLD_ACK, self._recvEndlessGetGoldAck, self);
         GlobalVar.messageDispatcher.bindMsg(GameServerProto.GMID_ENDLESS_POWERPOINT_NTF, self._recvEndlessPowerPointNtf, self);
+        GlobalVar.messageDispatcher.bindMsg(GameServerProto.GMID_ENDLESS_CHARGE_REWARD_ACK, self._recvEndlessChargeRewardAck, self);
     },
 
     checkMsg(msg) {
@@ -99,9 +100,9 @@ cc.Class({
         GlobalVar.me().endlessData.setStatusCount(msg.data);
     },
 
-    _recvEndlessUseStatusAck:function(msgId,msg){
+    _recvEndlessUseStatusAck: function (msgId, msg) {
         if (!self.checkMsg(msg)) return;
-        
+
         GlobalVar.me().endlessData.setUseStatus(msg.data);
     },
 
@@ -113,10 +114,16 @@ cc.Class({
 
     //     GlobalVar.me().endlessData.setEndlessQHData(msg.data);
     // },
-    _recvEndlessRankUpAck: function(msgId, msg){
+    _recvEndlessRankUpAck: function (msgId, msg) {
         if (!self.checkMsg(msg)) return;
 
         GlobalVar.me().endlessData.setEndlessRankData(msg.data);
+    },
+
+    _recvEndlessChargeRewardAck: function (msgId, msg) {
+        if (!self.checkMsg(msg)) return;
+        
+        GlobalVar.me().endlessData.setEndlessChargeData(msg.data);
     },
 
 
@@ -175,7 +182,7 @@ cc.Class({
 
     sendEndlessBuyBlessReq: function (free) {
         let msg = {
-            Free: free||0,
+            Free: free || 0,
         };
 
         self.sendMsg(GameServerProto.GMID_ENDLESS_BUYBLESS_REQ, msg);
@@ -185,7 +192,7 @@ cc.Class({
 
         let msg = {
             StatusID: statusID,
-            Free: free||0,
+            Free: free || 0,
         };
 
         self.sendMsg(GameServerProto.GMID_ENDLESS_BUYSTATUS_REQ, msg);
@@ -255,6 +262,15 @@ cc.Class({
         };
 
         self.sendMsg(GameServerProto.GMID_ENDLESS_GETGOLD_REQ, msg);
+    },
+
+    sendEndlessChargeRewardReq: function (reserved) {
+
+        let msg = {
+            Reserved: reserved || 0,
+        };
+
+        self.sendMsg(GameServerProto.GMID_ENDLESS_CHARGE_REWARD_REQ, msg);
     },
 
 });

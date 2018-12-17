@@ -23,10 +23,11 @@ const Mode = cc.Class({
 
     },
 
-    update(dt) {
-        this.curTime += dt;
+    update(dt, count) {
+        let frame = typeof count !== 'undefined' ? (count != 0 ? dt * count : dt) : dt;
+        this.curTime += frame;
         for (let i in this.interval) {
-            this.interval[i] += dt;
+            this.interval[i] += frame;
         }
         this.tryDropItem(0);
         switch (this.step) {
@@ -37,11 +38,7 @@ const Mode = cc.Class({
                 this.config = this.configList[this.curWave - 1];
                 this.selectMode();
                 if (this.nextWaveStartStep != endlessStep.WAVESTART) {
-                    // if (this.config.wRandomType == 3 || this.config.wRandomType == 4) {
-                    //     this.step = endlessStep.CREATEMAP;
-                    // } else {
                     this.step = this.nextWaveStartStep;
-                    //}
                 } else {
                     this.step = endlessStep.CREATEMAP;
                 }
@@ -51,7 +48,7 @@ const Mode = cc.Class({
                 this.step = endlessStep.ENTERMAP;
                 break;
             case endlessStep.ENTERMAP:
-                if (this.mapTransfer(dt)) {
+                if (this.mapTransfer(frame)) {
                     if (this.config.wRandomType == 3 || this.config.wRandomType == 4) {
                         this.step = endlessStep.WARNING;
                     } else {
@@ -60,12 +57,12 @@ const Mode = cc.Class({
                 }
                 break;
             case endlessStep.SHIFTMAP:
-                if (this.mapShift(dt)) {
+                if (this.mapShift(frame)) {
                     this.step = endlessStep.WARNING;
                 }
                 break;
             case endlessStep.WARNING:
-                this.mapUpdate(dt);
+                this.mapUpdate(frame);
                 if (this.config.wWarning > 0) {
                     this.showAnime(this.config.wWarning);
                 } else {
@@ -81,8 +78,19 @@ const Mode = cc.Class({
                 this.step = endlessStep.GOLDUPDATE;
                 break;
             case endlessStep.GOLDUPDATE:
-                this.mapUpdate(dt);
+                this.updateGold(frame);
                 if (this.checkGold()) {
+                    if (this.config.wRandomType == 3 && !this.battleManager.isOpenDash) {
+                        if (this.battleManager.managers[Defines.MgrType.HERO].planeEntity.dashTime > 0) {
+                            this.battleManager.dashMode = 1;
+                            this.battleManager.gameState = Defines.GameResult.DASHSTART;
+                        } else {
+                            this.battleManager.dashMode = 0;
+                            this.battleManager.managers[Defines.MgrType.HERO].openDash(-2);
+                            this.battleManager.gameState = Defines.GameResult.RUNNING;
+                        }
+                        this.battleManager.forceDash = false;
+                    }
                     this.battleManager.endlessScore += (this.endlessScore + (this.curWave - 1) * 500);
                     if (this.curWave % 5 == 0) {
                         let score = this.endlessScore;
@@ -98,7 +106,7 @@ const Mode = cc.Class({
                 }
                 break;
             case endlessStep.GROUPSTART:
-                this.mapUpdate(dt);
+                this.mapUpdate(frame);
                 if (this.config.wRandomType == 1 ||
                     this.config.wRandomType == 2 ||
                     this.config.wRandomType == 5 ||
@@ -106,29 +114,13 @@ const Mode = cc.Class({
                     this.config.wRandomType == 7 ||
                     this.config.wRandomType == 8 ||
                     this.config.wRandomType == 9) {
-                    if (this.updateWave(dt)) {
+                    if (this.updateWave(frame)) {
                         this.step = endlessStep.GROUPEND;
                     }
                 }
-                // if (this.config.wRandomType == 3 || this.config.wRandomType == 4) {
-                //     if (this.checkGold()) {
-                //         this.battleManager.endlessScore += (this.endlessScore + (this.curWave - 1) * 500);
-                //         if (this.curWave % 5 == 0) {
-                //             let score = this.endlessScore;
-                //             for (let i = 1; i < this.totalWave / 5; i++) {
-                //                 if (this.curWave == 5 * i) {
-                //                     score = (this.endlessScore * 2 + (5 * (i - 1) + (5 * i - 1)) * 500) * 5 / 2;
-                //                     break;
-                //                 }
-                //             }
-                //             this.battleManager.endlessScore += score;
-                //         }
-                //         this.step = endlessStep.WAVEEND;
-                //     }
-                // }
                 break;
             case endlessStep.GROUPEND:
-                this.mapUpdate(dt);
+                this.mapUpdate(frame);
                 if (this.checkWave()) {
                     let killPercent = this.killRecord / this.waveControlList[this.waveControlList.length - 1].monsterKillList.length;
                     this.battleManager.endlessScore += (this.endlessScore + Math.floor((this.curWave - 1) * 500 * killPercent + Math.random() * 10));
@@ -142,7 +134,7 @@ const Mode = cc.Class({
                         }
                         this.battleManager.endlessScore += score;
                     }
-                    this.killRecord=0;
+                    this.killRecord = 0;
                     this.step = endlessStep.WAVEEND;
                     this.waveControlList.splice(0, this.waveControlList.length);
                 }
@@ -152,18 +144,70 @@ const Mode = cc.Class({
                 // if (this.config.wRandomType == 3 || this.config.wRandomType == 4) {
                 //     forcechange = true;
                 // }
+
+                if (this.config.wIsBOSS == 1) {
+                    if (this.battleManager.getMusic() != null) {
+                        GlobalVar.soundManager().playBGM("cdnRes/" + this.battleManager.getMusic());
+                    }
+                }
+
                 if (this.config.wRandomType == 2 || this.config.wRandomType == 7 || this.config.wRandomType == 8) {
-                    this.defaultLv += 2;
+                    if (this.battleManager.isOpenDash) {
+                        this.defaultLv += (this.rushRank - 2) / 2;
+                    } else {
+                        this.defaultLv += 2;
+                    }
                 }
                 this.curWave++;
                 if (typeof this.configList[this.curWave - 1] === 'undefined') {
                     this.curWave = 1;
-                    this.defaultLv += 2;
+                    if (this.battleManager.isOpenDash) {
+                        this.defaultLv += (this.rushRank - 2) / 2;
+                    } else {
+                        this.defaultLv += 2;
+                    }
                     this.endlessScore += this.totalWave * 500;
+                }
+
+                if (this.battleManager.isOpenDash && this.battleManager.dashMode > 0 && this.battleManager.dashMode < 3 && this.defaultLv >= this.rushRank) {
+                    this.battleManager.dashMode = 3;
+
+                    let bossCount = 0;
+                    for (let c of this.configList) {
+                        if (!!c.wIsBOSS) {
+                            bossCount++;
+                        }
+                    }
+                    let totalScore = 0;
+                    let baseScore = this.endlessScore;
+                    let leftTurn = (this.rushRank - 2) / (bossCount != 0 ? bossCount : 1) - 2;
+                    for (let turn = 0; turn < leftTurn; turn++) {
+                        for (let w = 0; w < this.totalWave; w++) {
+                            totalScore += (baseScore + (w - 1) * 500);
+                            if (w % 5 == 0) {
+                                let score = baseScore;
+                                for (let i = 1; i < this.totalWave / 5; i++) {
+                                    if (w == 5 * i) {
+                                        score = (baseScore * 2 + (5 * (i - 1) + (5 * i - 1)) * 500) * 5 / 2;
+                                        break;
+                                    }
+                                }
+                                totalScore += score;
+                            }
+                        }
+                        baseScore += this.totalWave * 500;
+                    }
+                    this.battleManager.endlessScore += totalScore;
                 }
                 // if (this.configList[this.curWave - 1].wRandomType == 3 || this.configList[this.curWave - 1].wRandomType == 4) {
                 //     forcechange = true;
                 // }
+                if (this.configList[this.curWave - 1].wRandomType == 3 && !this.battleManager.isOpenDash) {
+                    this.battleManager.forceDash = true;
+                    this.battleManager.dashMode = 2;
+                    this.battleManager.gameState = Defines.GameResult.DASH;
+                    this.battleManager.managers[Defines.MgrType.HERO].openDash(-1);
+                }
                 this.nextWaveStartStep = this.mapChange(forcechange);
                 this.step = endlessStep.WAVESTART;
                 break;
@@ -171,11 +215,9 @@ const Mode = cc.Class({
                 //this.step = endlessStep.NONE;
                 break;
             case endlessStep.NONE:
-                this.mapUpdate(dt);
+                this.mapUpdate(frame);
                 break;
         }
-
-        //this.mapActive();
     },
 
     init: function () {
@@ -183,6 +225,10 @@ const Mode = cc.Class({
         this.solution = require('BulletSolutions');
         this.data = require('CampEndless').data;
 
+        this.actuallyChest = 0;
+        if (GlobalVar.me().endlessData.getHistoryMaxScore() == 0) {
+            this.actuallyChest = 3;
+        }
         this.killCount = 0;
         this.curTime = 0;
         this.interval = []
@@ -192,8 +238,9 @@ const Mode = cc.Class({
         this.animeIndex = 0;
         let endlessModeNum = GlobalVar.me().endlessData.getEndlessMode();
         this.endlessMode = GlobalVar.tblApi.getDataBySingleKey('TblEndlessRank', endlessModeNum + 1);
-        this.defaultLv = this.endlessMode.nMonsterBasisGrade != 0 ? this.endlessMode.nMonsterBasisGrade : 2;
-        this.endlessScore = 0;
+        this.defaultLv = typeof this.endlessMode.nMonsterBasisGrade !== 'undefined' ? (this.endlessMode.nMonsterBasisGrade != 0 ? this.endlessMode.nMonsterBasisGrade : 2) : 2;
+        this.endlessScore = typeof this.endlessMode.nMonsterBasisFraction !== 'undefined' ? (this.endlessMode.nMonsterBasisFraction != 0 ? this.endlessMode.nMonsterBasisFraction : 1000) : 1000;
+        this.rushRank = typeof this.endlessMode.nRushRank !== 'undefined' ? this.endlessMode.nRushRank : 0;
         this.killRecord = 0;
         this.totalWave = 0;
         for (let key in this.data) {
@@ -233,43 +280,6 @@ const Mode = cc.Class({
         this.waveControlList = [];
     },
 
-    mapActive: function () {
-        return;
-        for (let controlIndex = this.mapControlList.length - 1; controlIndex >= 0; controlIndex--) {
-            let control = this.mapControlList[controlIndex];
-            if (control.mapList.length == 0) {
-                continue;
-            }
-            for (let i = 0; i < control.mapList.length; i++) {
-
-                let posY = control.mapList[i].y;
-                if (posY + 0.5 * control.mapList[i].getContentSize().height * control.mapList[i].scale <= 0 ||
-                    posY - 0.5 * control.mapList[i].getContentSize().height * control.mapList[i].scale > cc.winSize.height) {
-                    if (control.mapList[i].active) {
-                        control.mapList[i].active = false;
-                    }
-                } else {
-                    if (!control.mapList[i].active) {
-                        control.mapList[i].active = true;
-                    }
-                }
-            }
-
-            for (let i = control.mapTransList.length - 1; i >= 0; i--){
-                let posY = control.mapTransList[i].y;
-                if (posY + 0.5 * control.mapTransList[i].getContentSize().height * control.mapTransList[i].scale <= 0 ||
-                    posY - 0.5 * control.mapTransList[i].getContentSize().height * control.mapTransList[i].scale > cc.winSize.height) {
-                    if (control.mapTransList[i].active) {
-                        control.mapTransList[i].active = false;
-                    }
-                } else {
-                    if (!control.mapTransList[i].active) {
-                        control.mapTransList[i].active = true;
-                    }
-                }
-            }
-        }
-    },
     mapCreate: function () {
         for (let controlIndex = 0; controlIndex < this.config.oVecMapID.length; controlIndex++) {
             let index = this.config.oVecMapID[controlIndex];
@@ -308,6 +318,7 @@ const Mode = cc.Class({
                 nodeBkg.name = mapData[mapIndex];
                 nodeBkg.setScale(control.mapScale);
                 nodeBkg.opacity = control.mapOpacity;
+                nodeBkg.goldCreated = true;
                 nodeBkg.x = (cc.winSize.width / 2);
                 if (control.mapList.length > 0) {
                     let last = control.mapList[control.mapList.length - 1];
@@ -343,8 +354,6 @@ const Mode = cc.Class({
                         0.5 * control.mapList[index].getContentSize().height * control.mapList[index].scale +
                         0.5 * control.mapList[i].getContentSize().height * control.mapList[i].scale;
                     control.mapList[i].y = (posY);
-
-                    this.updateGold(control, i);
                 }
             }
             for (let i = 0; i < control.mapList.length; i++) {
@@ -370,8 +379,28 @@ const Mode = cc.Class({
             if (control.mapTransList.length > 0) {
                 clear = false;
             }
+            for (let i = 0; i < control.mapList.length; i++) {
+                let posY = control.mapList[i].y;
+                if (posY + 0.5 * control.mapList[i].getContentSize().height * control.mapList[i].scale <= 0) {
+                    let highest = 0;
+                    let index = 0;
+                    for (let j = 0; j < control.mapList.length; j++) {
+                        if (control.mapList[j].y >= highest) {
+                            highest = control.mapList[j].y;
+                            index = j;
+                        }
+                    }
+                    posY = control.mapList[index].y +
+                        0.5 * control.mapList[index].getContentSize().height * control.mapList[index].scale +
+                        0.5 * control.mapList[i].getContentSize().height * control.mapList[i].scale;
+                    control.mapList[i].y = posY;
+                }
+            }
+            for (let i = 0; i < control.mapList.length; i++) {
+                control.mapList[i].y = control.mapList[i].y - control.mapSpeed * dt;
+            }
         }
-        this.mapUpdate(dt);
+        //this.mapUpdate(dt);
         return clear;
     },
     mapChange: function (force) {
@@ -671,63 +700,86 @@ const Mode = cc.Class({
         }
         return over;
     },
-    updateGold: function (control, mapIndex) {
-        if (control.goldData.length > 0) {
-            if (control.goldDataIndex[mapIndex] < control.goldData[mapIndex].length) {
-                let gold = control.goldData[mapIndex];
-                let index = control.goldDataIndex[mapIndex];
-                let map = control.mapList[mapIndex];
-                for (let key in gold[index]) {
-                    if (this.config.wRandomType == 3) {
-                        let size = map.getContentSize();
-                        let curPos = cc.v3(map.x + size.width * (gold[index][key].posX - 0.5), map.y + size.height * (gold[index][key].posY - 0.5));
-                        this.solution.solution_map_buff(gold[index][key].id, curPos, cc.v3(0, -control.mapSpeed));
-                    } else if (this.config.wRandomType == 4) {
-                        let size = map.getContentSize();
-                        let curPos = cc.v3(size.width * (gold[index][key].posX - 0.5), size.height * (gold[index][key].posY - 0.5));
-                        this.solution.solution_map_sundries(gold[index][key].id, curPos, map, gold[index][key].hp);
+    updateGold: function (dt) {
+        for (let controlIndex = 0; controlIndex < this.mapControlList.length; controlIndex++) {
+            let control = this.mapControlList[controlIndex];
+            for (let i = 0; i < control.mapList.length; i++) {
+                let posY = control.mapList[i].y;
+                if (posY + 0.5 * control.mapList[i].getContentSize().height * control.mapList[i].scale <= 0) {
+                    let highest = 0;
+                    let index = 0;
+                    for (let j = 0; j < control.mapList.length; j++) {
+                        if (control.mapList[j].y >= highest) {
+                            highest = control.mapList[j].y;
+                            index = j;
+                        }
+                    }
+                    posY = control.mapList[index].y +
+                        0.5 * control.mapList[index].getContentSize().height * control.mapList[index].scale +
+                        0.5 * control.mapList[i].getContentSize().height * control.mapList[i].scale;
+                    control.mapList[i].y = posY;
+
+                    if (control.goldData.length > 0) {
+                        if (control.goldDataIndex[i] < control.goldData[i].length) {
+                            control.mapList[i].goldCreated = false;
+                        }
                     }
                 }
-                control.goldDataIndex[mapIndex]++;
+            }
+            for (let i = 0; i < control.mapList.length; i++) {
+                control.mapList[i].y = (control.mapList[i].y - control.mapSpeed * dt);
+            }
+
+            if (control.goldData.length > 0) {
+                for (let i = 0; i < control.mapList.length; i++) {
+                    if (control.goldDataIndex[i] < control.goldData[i].length &&
+                        control.mapList[i].y - 0.5 * control.mapList[i].getContentSize().height * control.mapList[i].scale <= cc.winSize.height &&
+                        !control.mapList[i].goldCreated) {
+                        let gold = control.goldData[i];
+                        let index = control.goldDataIndex[i];
+                        let map = control.mapList[i];
+                        for (let key in gold[index]) {
+                            if (this.config.wRandomType == 3) {
+                                let size = map.getContentSize();
+                                let curPos = cc.v3(map.x + size.width * (gold[index][key].posX - 0.5), map.y + size.height * (gold[index][key].posY - 0.5));
+                                this.solution.solution_map_buff(gold[index][key].id, curPos, cc.v3(0, -control.mapSpeed));
+                            } else if (this.config.wRandomType == 4) {
+                                let size = map.getContentSize();
+                                let curPos = cc.v3(size.width * (gold[index][key].posX - 0.5), size.height * (gold[index][key].posY - 0.5));
+                                this.solution.solution_map_sundries(gold[index][key].id, curPos, map, gold[index][key].hp);
+                            }
+                        }
+                        map.goldCreated = true;
+                        control.goldDataIndex[i]++;
+                    }
+                }
             }
         }
     },
     createGold: function () {
         for (let mapControlIndex = 0; mapControlIndex < this.mapControlList.length; mapControlIndex++) {
             let control = this.mapControlList[mapControlIndex];
-            for (let i = 0; i < control.mapList.length; i++) {
-                for (let j = i + 1; j < control.mapList.length; j++) {
-                    if (control.mapList[i].y > control.mapList[j].y) {
-                        let temp = control.mapList[i];
-                        control.mapList[i] = control.mapList[j];
-                        control.mapList[j] = temp;
-                    }
+            if (control.goldData.length > 0) {
+                control.mapList.sort(function (a, b) {
+                    return a.y - b.y;
+                });
+                for (let i = 0; i < control.mapList.length; i++) {
+                    control.mapList[i].goldCreated = true;
                 }
+                // let first = control.mapList.pop();
+                // control.mapList.unshift(first);
+                // control.mapList[0].goldCreated = false;
             }
+            // for (let i = 0; i < control.mapList.length; i++) {
+            //     for (let j = i + 1; j < control.mapList.length; j++) {
+            //         if (control.mapList[i].y > control.mapList[j].y) {
+            //             let temp = control.mapList[i];
+            //             control.mapList[i] = control.mapList[j];
+            //             control.mapList[j] = temp;
+            //         }
+            //     } 
+            // }
         }
-
-        // for (let i = 0; i < this.mapControlList.length; i++) {
-        //     if (this.mapControlList[i].goldData.length > 0) {
-        //         let control = this.mapControlList[i];
-        //         for (let mapIndex in control.goldData) {
-        //             let map = control.mapList[mapIndex];
-        //             let gold = control.goldData[mapIndex];
-        //             let index = control.goldDataIndex[mapIndex];
-
-        //             for (let key in gold[index]) {
-        //                 let size = map.getContentSize();
-        //                 let curPos = cc.v3(map.x + size.width * (gold[index][key].posX - 0.5), map.y + size.height * (gold[index][key].posY - 0.5));
-        //                 if (this.config.wRandomType == 3) {
-        //                     this.solution.solution_map_buff(gold[index][key].id, curPos, cc.v3(0, -control.mapSpeed));
-        //                 } else if (this.config.wRandomType == 4) {
-        //                     this.solution.solution_map_sundries(gold[index][key].id, curPos, cc.v3(0, -control.mapSpeed), gold[index][key].hp);
-        //                 }
-        //             }
-        //             control.goldDataIndex[mapIndex]++;
-        //         }
-        //         break;
-        //     }
-        // }
     },
 
     createWave: function (data) {
@@ -858,7 +910,7 @@ const Mode = cc.Class({
                     }
                 }
                 for (let id of buffIds) {
-                    let pos = cc.v3(cc.winSize.width * Math.random(), cc.winSize.height - 20);
+                    let pos = cc.v3((Math.random() * (cc.winSize.width - 200)) + 100, cc.winSize.height - 20);
                     if (id <= Defines.Assist.GHOST) {
                         this.solution.solution_buff(id, pos);
                     } else {
@@ -881,10 +933,14 @@ const Mode = cc.Class({
                 }
                 break;
             case 2:
-                let chestPer=0;
+                let chestPer = 0;
                 for (let key in this.config.oVecDropBuff) {
-                    if(this.config.oVecDropBuff[key]==Defines.Assist.GOLD){
-                        chestPer=this.config.oVecDropBuffProb[key];
+                    if (this.config.oVecDropBuff[key] == Defines.Assist.GOLD) {
+                        chestPer = this.config.oVecDropBuffProb[key];
+                        if (this.actuallyChest > 0) {
+                            chestPer = 10000;
+                            this.actuallyChest--;
+                        }
                         continue;
                     }
                     if (Math.floor(Math.random() * 10000) <= this.config.oVecDropBuffProb[key]) {
@@ -914,12 +970,18 @@ const Mode = cc.Class({
         this.animeIndex = animeIndex;
         var self = this;
         if (animeIndex == 1) {
+            if (this.config.wIsBOSS == 1 && self.config.wRandomType != 3 && self.config.wRandomType != 4) {
+                GlobalVar.soundManager().stopBGM();
+            }
             this.battleManager.warning(function () {
                 self.animeIndex = -1;
                 if (self.config.wRandomType == 3 || self.config.wRandomType == 4) {
                     self.step = endlessStep.GOLDSTART;
                 } else {
                     self.step = endlessStep.GROUPSTART;
+                    if (self.config.wIsBOSS == 1) {
+                        GlobalVar.soundManager().playBGM("cdnRes/audio/battle/music/Boss_Room");
+                    }
                 }
                 //self.step = endlessStep.GROUPSTART;
             });

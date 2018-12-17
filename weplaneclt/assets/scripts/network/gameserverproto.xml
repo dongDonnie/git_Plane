@@ -751,6 +751,7 @@
         <define name="PTPARAM_ENDLESS_GOLD_DAYMAX" value="307" />
         <define name="PTPARAM_ENDLESS_CHARGE_DAYMAX" value="308" />
         <define name="PTPARAM_ENDLESS_CHARGE_ITEMID" value="309" />
+        <define name="PTPARAM_MEMBER_TESTPLAY_DAYMAX" value="310" />
 
         <!-- param info -->
         <!-- ###########################################################################################################################-->
@@ -1127,6 +1128,8 @@
         <define name="PT_RCG_HUIKUI_BUY_MONTHCARD" value="2" />
         <define name="PT_RCG_HUIKUI_RECHARGE" value="3" />
         <define name="PT_RCG_HUIKUI_COUNT" value="99" />
+        
+        <define name="PT_RCG_VIP_MAX" value="16" />
 
         <!--Mail-->
         <define name="PT_MAX_MAIL_SUBJECT"  value="50" />
@@ -3927,7 +3930,7 @@
             <item name="VipExp" type="UINT32"/>
             <item name="TimeCard" type="vector" member_type="GMDT_RCG_TIMECARD" max_count="PT_RCG_TIMECARD_COUNT"/>
             <item name="HuiKuiBag" type="GMDT_RCG_HUIKUI_BAG" />
-            <item name="VipPackage" type="UINT32" />
+            <item name="VipPackage" type="vector" member_type="UINT8" max_count="PT_RCG_VIP_MAX" />
             <item name="RcgRecord" type="vector" member_type="GMDT_RCG_RECORD" max_count="PT_RCG_RECORD_MAX"/>
             <item name="RcgVoucher" type="INT32"/>
             <item name="FreeDiamondCount" type="INT32"/>
@@ -4005,7 +4008,7 @@
         </type>
 
         <type name="GMDT_VIP_PACKAGE_GET_OK">
-            <item name="VipPackage" type="UINT32"/>
+            <item name="VipPackage" type="vector" member_type="UINT8" max_count="PT_RCG_VIP_MAX" />
             <item name="Item" type="vector" member_type="GMDT_ITEM_COUNT" max_count="PT_BAG_MAX_SIZE"/>
             <item name="ItemChange" type="GMDT_ITEM_CHANGE" />
         </type>

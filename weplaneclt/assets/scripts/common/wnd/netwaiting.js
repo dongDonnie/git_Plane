@@ -37,8 +37,8 @@ var NetWaiting = cc.Class({
     },
 
     release: function () {
-        this.reconnecting.destroy();
-        this.waiting.destroy();
+        this.reconnecting && this.reconnecting.destroy();
+        this.waiting && this.waiting.destroy();
     },
 
     showWaiting: function (show) {
@@ -72,6 +72,8 @@ var NetWaiting = cc.Class({
                         parentNode.addChild(this.reconnecting);
                         this.reconnect = true;
                     }
+                }else{
+                    GlobalVar.sceneManager().resetOpen();
                 }
             }
         } else {

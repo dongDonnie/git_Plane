@@ -312,7 +312,7 @@ var PropData = cc.Class({
     },
 
     getShowCombatLate: function () {
-        GlobalVar.me().setCombatPoint(self.combatPointData);
+        self.combatPointData && GlobalVar.me().setCombatPoint(self.combatPointData);
     },
 
 });
