@@ -56,6 +56,7 @@ cc.Class({
     },
 
     onLoad: function () {
+        this._super();
         i18n.init('zh');
         this.animeStartParam(0);
         if (!GlobalFunc.isAllScreen() && !this.fixViewComplete) {
@@ -224,7 +225,8 @@ cc.Class({
     },
 
     onBtnBuyDiamond: function(){
-        CommonWnd.showRechargeWnd();
+        // CommonWnd.showRechargeWnd();
+        CommonWnd.showNormalFreeGetWnd(GameServerProto.PTERR_DIAMOND_LACK, null, null, null, null, true);
     },
 
     onBtnReturn: function(){

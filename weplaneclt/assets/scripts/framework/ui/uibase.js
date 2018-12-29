@@ -6,10 +6,22 @@ var UIBase = cc.Class({
     ctor:function() {
         //this.node = null;
         this.fixViewComplete = false;
+        
     },
 
     onCtor:function(subClass,node) {
         //this.node =  node;
+
+    },
+
+    onLoad: function () {
+        let node = new cc.Node("nodeBlock");
+        node.addComponent(cc.BlockInputEvents);
+        node.width = cc.winSize.width;
+        node.height = cc.winSize.height;
+        this.node.addChild(node);
+        this.nodeBlock = node.getComponent(cc.BlockInputEvents);
+        this.nodeBlock.enabled = false;
     },
     
     properties: {
@@ -17,6 +29,14 @@ var UIBase = cc.Class({
             default: false,
             visible: false,
         },
+    },
+
+    unRegisterEvents:function(){
+        GlobalVar.eventManager().removeListenerWithTarget(this);
+    },
+
+    onDestroy: function () {
+        GlobalVar.eventManager().removeListenerWithTarget(this);
     },
 
     // 创建一个node

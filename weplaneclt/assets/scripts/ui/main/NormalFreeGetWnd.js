@@ -54,9 +54,11 @@ cc.Class({
         this.animeStartParam(0, 0);
         this._shareType = 0; // 1为获取金币，2为获取钻石;
         this._purchaseMode = false;
+        this._shareMode = false;
         this.shareCallBack = null;
         this.purchaseCallBack = null;
         this.closeCallBack = null;
+        this.shareGetItem = {};
     },
 
     animeStartParam(paramScale, paramOpacity) {
@@ -67,15 +69,29 @@ cc.Class({
 
     animePlayCallBack(name) {
         if (name == "Escape") {
-            this._super("Escape");
+            this._super("Escape");            
+            if (GlobalVar.getBannerSwitch()){
+                weChatAPI.hideBannerAd();
+            }
             GlobalVar.eventManager().removeListenerWithTarget(this);
             let shareType = this._shareType;
             let purchaseMode = this._purchaseMode;
+            let shareMode = this._shareMode;
             this._shareType = 0;
             this._purchaseMode = false;
+            this._shareMode = false;
             this.shareCallBack = null;
             this.purchaseCallBack = null;
             this.closeCallBack = null;
+            this.completeCallback && this.completeCallback();
+            this.completeCallback = null;
+            let shareGetItem = [
+                {
+                    wItemID: this.shareGetItem.wItemID,
+                    nCount: this.shareGetItem.nCount,
+                }
+            ]
+            this.shareGetItem = {};
             GlobalVar.eventManager().removeListenerWithTarget(this);
             WindowManager.getInstance().popView(false, function () {
                 if (purchaseMode){
@@ -85,16 +101,21 @@ cc.Class({
                     } else if (shareType == SHARE_TYPE_DIAMOND) {
                         CommonWnd.showRechargeWnd();
                     }
+                }else if (shareMode){
+                    CommonWnd.showTreasureExploit(shareGetItem);
                 }
             }, false, false);
         } else if (name == "Enter") {
             this._super("Enter");
+            if (GlobalVar.getBannerSwitch() && !GlobalVar.getNeedGuide()){
+                weChatAPI.showBannerAd();
+            }
             GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_GET_FREE_GOLD, this.getFreeGold, this);
             GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_GET_FREE_DIAMOND, this.getFreeDiamond, this);
         }
     },
 
-    initWndByData: function (mode, title, text, leftTimeStr, leftShareTime, shareCallBack, purchaseCallBack, closeCallBack, shareName, purchaseName) {
+    initWndByData: function (mode, title, text, leftTimeStr, leftShareTime, completeCallback, shareCallBack, purchaseCallBack, closeCallBack, shareName, purchaseName) {
         // this.viewName = name;
         // this.viewType = type;
         this.setBtnMode(mode);
@@ -102,7 +123,7 @@ cc.Class({
         this.setDialog(text);
         this.setLeftTime(leftTimeStr);
         this.setShareSwitch(leftShareTime);
-        this.setBtnEvent(shareCallBack, purchaseCallBack, closeCallBack);
+        this.setBtnEvent(completeCallback, shareCallBack, purchaseCallBack, closeCallBack);
         this.setShareText(shareName);
         this.setPurchaseText(purchaseName);
 
@@ -124,7 +145,7 @@ cc.Class({
         // }
     },
 
-    initFreeGetWnd: function (errCode, shareCallBack, purchaseCallBack, closeCallBack) {
+    initFreeGetWnd: function (errCode, completeCallback, shareCallBack, purchaseCallBack, closeCallBack, isActive) {
         let btnType = BUTTON_TYPE_SHARE_PURCHASE;
         let title = i18n.t("label.4000216");
         let text = "";
@@ -140,9 +161,12 @@ cc.Class({
             let canGetGold = GlobalFunc.getShareCanGetGold(GlobalVar.me().level);
             text = i18n.t("label.4000301");
             if (GlobalVar.getShareSwitch()){
-                text = text + i18n.t("label.4000302").replace("%d", canGetGold);
+                text = text + "\n" + i18n.t("label.4000302").replace("%d", canGetGold);
             }
-
+            this.shareGetItem = {
+                wItemID: 1,
+                nCount: canGetGold,
+            };
             // 剩余次数状态
             curTime = GlobalVar.me().shareData.getFreeGoldCount();
             maxTime = GlobalVar.tblApi.getDataBySingleKey('TblParam', GameServerProto.PTPARAM_TREASURE_GOLD_FREE_MAX).dValue;
@@ -154,14 +178,21 @@ cc.Class({
             }
 
         } else if (errCode == GameServerProto.PTERR_DIAMOND_LACK) {
+            return;
             // 可获得钻石
             this._shareType = SHARE_TYPE_DIAMOND;
             let canGetDiamond = GlobalVar.tblApi.getDataBySingleKey('TblParam', GameServerProto.PTPARAM_RCG_FREE_DIAMOND).dValue;
             text = i18n.t("label.4000303").replace("%d", canGetDiamond);
-
+            if (!isActive){
+                text = i18n.t('label.4000221') + "\n" + text;
+            }
+            this.shareGetItem = {
+                wItemID: 3,
+                nCount: canGetDiamond,
+            };
             // 剩余次数状态
             curTime = GlobalVar.me().shareData.getFreeDiamondCount();
-            maxTime = GlobalVar.tblApi.getDataBySingleKey('TblParam', GameServerProto.PTPARAM_RCG_FREE_DIAMOND_MAX).dValue;
+            maxTime = GlobalVar.tblApi.getDataBySingleKey('TblParam', GameServerProto.PTPARAM_RCG_FREE_DIAMOND_COUNT_MAX).dValue;
             leftTimeStr = leftTimeStr.replace("%left", maxTime - curTime).replace("%max", maxTime);
 
             // 隐藏购买按钮
@@ -175,17 +206,10 @@ cc.Class({
         }
 
         leftShareTime = maxTime - curTime;
-        this.initWndByData(btnType, title, text, leftTimeStr, leftShareTime, shareCallBack, purchaseCallBack, closeCallBack, shareName, purchaseName);
+        this.initWndByData(btnType, title, text, leftTimeStr, leftShareTime, completeCallback, shareCallBack, purchaseCallBack, closeCallBack, shareName, purchaseName);
     },
 
     onBtnShareClick: function (event) {
-        if (cc.sys.platform !== cc.sys.WECHAT_GAME){
-            if (!!this.shareCallBack){
-                this.shareCallBack();
-            }
-            this.close();
-            return;
-        }
 
         let materialID = 0;
         if (this._shareType == SHARE_TYPE_GOLD) {
@@ -195,13 +219,23 @@ cc.Class({
         }
 
         let self = this;
-        weChatAPI.shareNormal(materialID, function () {
+        if (cc.sys.platform == cc.sys.WECHAT_GAME){
+            weChatAPI.shareNormal(materialID, function () {
+                if (self._shareType == SHARE_TYPE_GOLD) {
+                    GlobalVar.handlerManager().shareHandler.sendGetFreeGoldReq();
+                } else if (self._shareType == SHARE_TYPE_DIAMOND) {
+                    GlobalVar.handlerManager().shareHandler.sendGetFreeDiamondReq();
+                }
+            }); 
+        } else if (window && window["wywGameId"]=="5469"){
+
+        } else{
             if (self._shareType == SHARE_TYPE_GOLD) {
                 GlobalVar.handlerManager().shareHandler.sendGetFreeGoldReq();
             } else if (self._shareType == SHARE_TYPE_DIAMOND) {
                 GlobalVar.handlerManager().shareHandler.sendGetFreeDiamondReq();
             }
-        });
+        }
     },
 
     onBtnPurchaseClick: function (event) {
@@ -223,6 +257,7 @@ cc.Class({
         if (!!this.shareCallBack){
             this.shareCallBack();
         }
+        this._shareMode = true;
         this.close();
     },
 
@@ -230,6 +265,7 @@ cc.Class({
         if (!!this.shareCallBack){
             this.shareCallBack();
         }
+        this._shareMode = true;
         this.close();
     },
 
@@ -251,7 +287,7 @@ cc.Class({
         }
     },
 
-    setBtnEvent: function (closeCallBack, shareCallBack, purchaseCallBack) {
+    setBtnEvent: function (completeCallback, closeCallBack, shareCallBack, purchaseCallBack) {
         if (typeof closeCallBack !== 'undefined' && closeCallBack != null) {
             this.closeCallBack = closeCallBack;
         } else {
@@ -268,6 +304,12 @@ cc.Class({
             this.purchaseCallBack = purchaseCallBack;
         } else {
             this.purchaseCallBack = null;
+        }
+
+        if (typeof completeCallback !== 'undefined' && completeCallback != null) {
+            this.completeCallback = completeCallback;
+        } else {
+            this.completeCallback = null;
         }
     },
 

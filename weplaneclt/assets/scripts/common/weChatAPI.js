@@ -3,6 +3,7 @@ const GlobalVar = require('globalvar')
 const md5 = require("md5");
 const StoreageData = require("storagedata");
 const i18n = require('LanguageData');
+const GlobalFunc = require('GlobalFunctions');
 
 const GAME_ID = 7002;
 const APP_ID = "wxa60dbd8655a13c00";
@@ -17,7 +18,8 @@ const GET_HEADER = {
     'content-type': 'application/x-www-form-urlencoded'
 };
 const OPENLOG = false;
-const ADUNIT_ID = "adunit-ba7f540156b29839";
+const VIDEOUNIT_ID = "adunit-ba7f540156b29839";
+const BANNERUNIT_ID = "adunit-038a09ed24b46354";
 
 const URL_LOGIN = "https://mwxsdk.phonecoolgame.com/login.php";
 const URL_SHARE = "https://mwxsdk.phonecoolgame.com/share.php";
@@ -30,9 +32,6 @@ const URL_GET_PAYINFO = "https://cpgc.phonecoolgame.com/appPay/getAppPayInfo?pay
 const URL_GET_MATERIALS = "https://cpgc.phonecoolgame.com/material/getMaterials?appid=%d";
 const URL_REPORT_SHARE = "https://cpgc.phonecoolgame.com/material/reportShare?appid=%d&materialID=%d";
 const URL_REPORT_CLICK = "https://cpgc.phonecoolgame.com/material/reportClick?appid=%d&materialID=%d";
-const URL_GET_AD_FRAME = "https://cpgc.phonecoolgame.com/adc/getAdFrame?appid=%d&sex=%d";
-const URL_GET_BANNER_AD_INFO = "https://cpgc.phonecoolgame.com/adc/getBannerAdInfo?appid=%d";
-const URL_GET_LIKE_INFO = "https://cpgc.phonecoolgame.com/adc/getLikeInfo?appid=%d&sex=%d";
 const URL_GET_MORE_INFO = "https://cpgc.phonecoolgame.com/adc/getMoreInfo?appid=%d&ptform=%d";
 const URL_SERVER_LIST = "https://wepup.phonecoolgame.com/json.php?_c=server&_f=plist&opid=" + OP_ID + "&gameopid=" + GAME_OP_ID + "&ver=%d&userid=%d";
 const URL_REPROT_SERVER_LOGIN = "https://wepup.phonecoolgame.com/json.php?_c=server&_f=in&userid=%d&server_id=%d&time=%d&sign=%sign";
@@ -46,7 +45,7 @@ const URL_GET_LAUNCH_NOTICE = "https://wepup.phonecoolgame.com/json.php?_c=start
 const URL_GET_MY_SERVER = "https://wepup.phonecoolgame.com/json.php?_c=server&_f=my&opid=" + OP_ID + "&gameopid=" + GAME_OP_ID + "&ver=%d&userid=%d";
 
 module.exports = {
-
+    
     //hide,show 时的时间记录
     shareVersion: "2.3.0",
     shareSetting: {
@@ -66,6 +65,7 @@ module.exports = {
     shareMessageFlag: false,
 
     _Materials: null,
+    _defaultMaterial: null,
 
     _onHideTime: 0,
     _onShowTime: 0,
@@ -74,6 +74,10 @@ module.exports = {
     _rewardedVideoAd: null,
     _videoAdSuccessCallback: null,
     _videoAdCancelCallback: null,
+    // _videoAdFailCallback: null,
+
+    _bannerAd: null,
+    _bannerCount: 0,
 
     getShareSuccess: function () {
         let shareSuccess = false;
@@ -112,10 +116,11 @@ module.exports = {
         }
 
         if (shareSuccess) {
-            setting.shareTimes++;
+            // setting.shareTimes++;
             StoreageData.setTotalShareTimes();
             setting.shareLowestGap = setting.shareDefaultGap;
         }
+        setting.shareTimes++;
 
         return shareSuccess;
     },
@@ -176,7 +181,14 @@ module.exports = {
                         // console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@")
                         self.request(URL_LOGIN, loginData, function (data) {
                             // 向服务器请求登陆，保存服务器传过来的openid和ticket;
-                            if (data.ret !== 0) return;
+                            if (data.ret !== 0) {
+                                self.showToast("网络链接异常, 是否重试", true, true, "确认", null, function () {
+                                    self.login(successCallback);
+                                }, function () {
+                                    cc.game.restart();
+                                })
+                                return;
+                            }
                             // console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
                             // wx.setStorageSync('openid', data.data.user_id);
                             // wx.setStorageSync('ticket', data.data.ticket);
@@ -196,13 +208,29 @@ module.exports = {
                                     successCallback(user_id, ticket, "");
                                 }
                             });
+                        }, function (data) {
+                            self.showToast("网络链接异常, 是否重试", true, true, "确认", null, function () {
+                                self.login(successCallback);
+                            }, function () {
+                                cc.game.restart();
+                            })
                         });
                     } else {
                         self.showLog('get login code failed！');
+                        self.showToast("网络链接异常, 是否重试", true, true, "确认", null, function () {
+                            self.login(successCallback);
+                        }, function () {
+                            cc.game.restart();
+                        })
                     }
                 },
                 fail: function () {
                     self.showLog('login error!');
+                    self.showToast("网络链接异常, 是否重试", true, true, "确认", null, function () {
+                        self.login(successCallback);
+                    }, function () {
+                        cc.game.restart();
+                    })
                 }
             });
         }
@@ -276,11 +304,30 @@ module.exports = {
         }
     },
 
-    showToast: function (tips) {
+    showToast: function (tips, useWXToast = false, showCancel = false,  confirmText, cancelText, confirmCallback, cancelCallback) {
         // wx.showToast({  
         //     title: tips
-        // })
-        tips && GlobalVar.comMsg.showMsg(tips);
+        // }) true, true, "分享", "取消", shareNeedClick(index, successCallback, failCallback, strTips, successTips, failTips, notShareInGropTips)
+        if (!useWXToast){
+            tips && GlobalVar.comMsg.showMsg(tips);
+        }else{
+            if (tips){
+                wx.showModal({
+                    title: '提示',
+                    content: tips,
+                    showCancel: showCancel,
+                    confirmText: confirmText || "确定",
+                    cancelText: cancelText || "取消",
+                    success: function (res) {
+                        if (res.confirm){
+                            confirmCallback && confirmCallback();
+                        }else if (res.cancel){
+                            cancelCallback && cancelCallback();
+                        }
+                    },
+                })
+            }
+        }
     },
 
     getUserInfo: function (successCallback, failCallback) {
@@ -357,7 +404,7 @@ module.exports = {
         });
     },
 
-    shareNeedClick: function (index, successCallback, failCallback, strTips, successTips, failTips) {
+    shareNeedClick: function (index, successCallback, failCallback, strTips, successTips, failTips, notShareInGropTips) {
         // 需要玩家自己点进来的分享
         if (cc.sys.platform !== cc.sys.WECHAT_GAME) {
             return;
@@ -373,6 +420,8 @@ module.exports = {
         }
         this.reportShareMaterial(material.materialID);
 
+        
+
         let str = "materialID=" + material.materialID;
         let self = this;
         if (this.getShareNeedClickTime() != 0 && this.curShowFunc) {
@@ -384,7 +433,12 @@ module.exports = {
             let time = self.getShareNeedClickTime();
             if (res.query['share_time'] == time) {
                 if (!res.shareTicket) {
-                    console.log("非点击群内小卡片进入");
+                    console.log("沒有分享到群");
+                    self.showToast(notShareInGropTips || i18n.t('label.4000316'), true, true, "分享", "取消", function () {
+                        self.shareNeedClick(index, successCallback, failCallback, strTips, successTips, failTips, notShareInGropTips)
+                    });
+                    self.setOffShowListener(onShowFunc);
+                    return;
                 }
                 self.getShareInfo(res.shareTicket, function (groupInfo) {
                     let shareData = {
@@ -399,7 +453,7 @@ module.exports = {
                             self.setOffShowListener(onShowFunc);
                             self.curShowFunc = null;
                             failCallback && failCallback();
-                            self.showToast(failTips || i18n.t('label.4000310'));
+                            self.showToast(failTips || i18n.t('label.4000310'), true, false, "知道了");
                         }
                         if (!needDiffGroup || (data.ret == 0 && !!parseInt(data.data.diffGId))) {
                             if (!!successCallback) {
@@ -415,7 +469,7 @@ module.exports = {
                     })
                 })
             } else if (!alreadShowTips && strTips) {
-                self.showToast(strTips);
+                self.showToast(strTips || i18n.t('label.4000311'));
                 alreadShowTips = true;
             }
         };
@@ -771,6 +825,13 @@ module.exports = {
         }
         let self = this;
         let url = URL_GET_MATERIALS.replace("%d", APP_ID);
+        this._defaultMaterial = [
+            {
+                cdnurl: "https://cdn.phonecoolgame.com/wxgame/hezi/back/wpjz-003.jpg",
+                content: "超经典飞行射击游戏，王牌出击等你来战！",
+                materialID: "138",
+            },
+        ],
         self.request(url, null, function (data) {
             if (data.ecode !== 0) {
                 self.showLog("getMaterials error, ecode = ", data.ecode);
@@ -783,9 +844,9 @@ module.exports = {
         }, null, GET_METHOD, GET_HEADER);
     },
     getRandomMaterial: function (index) {
-        let materials = this._Materials[index];
+        let materials = this._Materials[index] || this._defaultMaterial;
         let ranNum = Math.floor(Math.random() * materials.length);
-        return materials[ranNum];
+        return materials[ranNum] || materials[0];
     },
 
     reportShareMaterial: function (materialID, successCallback) {
@@ -845,20 +906,24 @@ module.exports = {
                 if (localData) {
                     !!successCallback && successCallback(localData);
                 } else {
+                    GlobalVar.comMsg.showMsg("拉取服务器失败，请检查网络");
                     self.getServerList(version, userID, successCallback, true);
                 }
             } else {
+                GlobalVar.comMsg.showMsg("拉取服务器失败，请检查网络");
                 self.getServerList(version, userID, successCallback, true);
             }
         }, GET_METHOD, GET_HEADER);
     },
 
-    getMyServer: function (version, userID, successCallback) {
+    getMyServer: function (version, userID, successCallback, failCallback) {
         let url = URL_GET_MY_SERVER.replace("%d", version).replace("%d", userID);
         let self = this;
         this.request(url, null, function (data) {
             successCallback && successCallback(data);
-        }, null, GET_METHOD, GET_HEADER);
+        }, function (data) {
+            failCallback && failCallback(data);
+        }, GET_METHOD, GET_HEADER);
     },
 
     getLaunchNotice: function (successCallback) {
@@ -932,6 +997,13 @@ module.exports = {
             isFirst: isFirst,
         });
     },
+    resetRankingData: function (){
+        let openDataContext = wx.getOpenDataContext();
+        let ON_MSG_RESET_RANK_GET_DATA = 7;
+        openDataContext.postMessage({
+            id: ON_MSG_RESET_RANK_GET_DATA
+        });
+    },
 
     requestIosRechageLockState: function (level, combatPoint, createTime, successCallback) {
         let self = this;
@@ -971,37 +1043,179 @@ module.exports = {
     },
 
     createRewardedVideoAd: function () {
+        if (this.wxBversionLess("2.0.4")){
+            StoreageData.setShareTimesWithKey("rewardedVideoLimit", 1);
+            return;
+        }
+        if (this._rewardedVideoAd){
+            console.log("视频组件已存在，无需重新创建");
+            return;
+        }
         this._rewardedVideoAd = wx.createRewardedVideoAd({
-            adUnitId: ADUNIT_ID
+            adUnitId: VIDEOUNIT_ID
         });
         let self = this;
         this._rewardedVideoAd.onClose(res => {
             // 用户点击了【关闭广告】按钮
             // 小于 2.1.0 的基础库版本，res 是一个 undefined
+            GlobalVar.soundManager().resumeBGM();
             if (res && res.isEnded || res === undefined) {
                 console.log("看广告成功，获得奖励");
                 self._videoAdSuccessCallback && self._videoAdSuccessCallback();
             } else {
                 // 播放中途退出
                 console.log("退出广告播放，无奖励");
+                self.showToast("完整看完视频才能获得奖励" || i18n.t('label.4000310'), true, false, "知道了");
                 self._videoAdCancelCallback && self._videoAdCancelCallback();
             }
             self._videoAdSuccessCallback = null
             self._videoAdCancelCallback = null;
         })
+        this._rewardedVideoAd.onError(res => {
+            StoreageData.setShareTimesWithKey("rewardedVideoLimit", 1);
+            console.log("广告组件拉取广告异常, errCode:", res.errCode, "  errMsg:", res.errMsg);
+        })
     },
 
     showRewardedVideoAd: function (successCallback, failCallback, cancelCallback) {
+        if (cc.sys.platform != cc.sys.WECHAT_GAME){
+            return;
+        }
+        if (this.wxBversionLess("2.0.4")){
+            console.log("版本库低于2.0.4，没有创建视频组件");
+            failCallback && failCallback();
+            return;
+        }
+        if (!this._rewardedVideoAd){
+            StoreageData.getShareTimesWithKey("rewardedVideoLimit", 1)
+            console.log("视频组件未创建成功");
+            failCallback && failCallback();
+            return;
+        }
+        if (!!StoreageData.getShareTimesWithKey("rewardedVideoLimit", 1)){
+            console.log("因为拉取视频失败而认为今日视频已达到上限");
+            failCallback && failCallback();
+            return;
+        }
         let videoAd = this._rewardedVideoAd;
         this._videoAdSuccessCallback = successCallback;
         this._videoAdCancelCallback = cancelCallback;
+        // this._videoAdFailCallback = failCallback;
         videoAd.load()
-            .then(() => videoAd.show())
+            .then(() => {
+                GlobalVar.soundManager().pauseBGM();
+                videoAd.show()
+            })
             .catch(err => {
                 console.log("拉取广告失败：", err.errMsg);
+                StoreageData.setShareTimesWithKey("rewardedVideoLimit", 1);
                 failCallback && failCallback();
             });
     },
+
+    _createBannerAd: function (onResizeCallback) {
+        let screenHeight = wx.getSystemInfoSync().screenHeight;
+        let screenWidth = wx.getSystemInfoSync().screenWidth;
+        let self = this;
+        let pBanner = wx.createBannerAd({
+            adUnitId: BANNERUNIT_ID,
+            style: {
+                left: 0,
+                top: screenHeight,
+                width: screenWidth,
+            }
+        });
+        StoreageData.setLastBannerCreateTime();
+        pBanner.onResize(function () {
+            pBanner.style.top = screenHeight - pBanner.style.realHeight - ((GlobalVar.isIOS && GlobalFunc.isAllScreen())?30:0);
+            console.log("bannerTop:", pBanner.style.top);
+            if (self._bannerCount > 0){
+                pBanner.show().catch(err => {
+                    self._bannerCount--;
+                    console.log("banner展示出现异常:",err)
+                })
+            }
+            onResizeCallback && onResizeCallback(pBanner.style.realHeight + ((GlobalVar.isIOS && GlobalFunc.isAllScreen())?30:0));
+            onResizeCallback = null;
+        });
+        pBanner.onError(res =>{
+            console.log("Banner广告组件拉取广告异常:", res);
+        })
+        return pBanner;
+    },
+
+    showBannerAd: function (onResizeCallback) {
+        if (cc.sys.platform != cc.sys.WECHAT_GAME){
+            return;
+        }
+        this._bannerCount++;
+        let self = this;
+        if (this.wxBversionLess("2.0.4")){
+            console.log("版本库低于2.0.4，不能创建Banner组件");
+            GlobalVar.bannerOpen = false;
+            return;
+        }
+        if (!this._bannerAd){
+            this._bannerAd = this._createBannerAd(onResizeCallback);
+        }else if (StoreageData.needRefreshBanner()) {
+            this._bannerAd.destroy();
+            this._bannerAd = this._createBannerAd(onResizeCallback);
+        }else{
+            this._bannerAd.show().catch(err => {
+                self._bannerCount--;
+                console.log("banner展示出现异常:",err)
+            })
+            onResizeCallback && onResizeCallback(this._bannerAd.style.realHeight + ((GlobalVar.isIOS && GlobalFunc.isAllScreen())?30:0));
+            onResizeCallback = null;
+        }
+    },
+    hideBannerAd:function () {
+        if (cc.sys.platform != cc.sys.WECHAT_GAME){
+            return;
+        }
+        if (this.wxBversionLess("2.0.4")){
+            console.log("版本库低于2.0.4，没有创建Banner组件");
+            return;
+        }
+        if (!this._bannerAd){
+            console.log("当前不存在banner组件");
+            return;
+        }
+        this._bannerCount--;
+        if (this._bannerCount <= 0){
+            this._bannerCount = 0;
+            this._bannerAd.hide();
+        }
+    },
+    cleanBannerCount: function () {
+        if (cc.sys.platform != cc.sys.WECHAT_GAME){
+            return;
+        }
+        this._bannerCount = 0;
+    },
+    justHideBanner: function () {
+        if (cc.sys.platform != cc.sys.WECHAT_GAME){
+            return;
+        }
+        if (!this._bannerAd){
+            console.log("当前不存在banner组件");
+            return;
+        }
+        this._bannerAd.hide();
+    },
+    justShowBanner: function () {
+        if (cc.sys.platform != cc.sys.WECHAT_GAME){
+            return;
+        }
+        if (!this._bannerAd){
+            console.log("当前不存在banner组件");
+            return;
+        }
+        if (this._bannerCount > 0){
+            this._bannerAd.show();
+        }
+    },
+
 
     //download
     //urlStack: [],

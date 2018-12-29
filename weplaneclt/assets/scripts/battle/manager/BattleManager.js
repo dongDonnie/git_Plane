@@ -3,6 +3,7 @@ const GlobalVar = require('globalvar')
 const ResMapping = require('resmapping')
 const GlobalFunc = require('GlobalFunctions')
 const GameServerProto = require("GameServerProto")
+const base64 = require("base64")
 
 const BattleManager = cc.Class({
     extends: cc.Component,
@@ -64,11 +65,7 @@ const BattleManager = cc.Class({
         isOpenDash: false,
         forceDash: false,
 
-        sBombEffectType: 0,
-        sBombBurstArray: [],
-        sBombBurstInterval: 0,
-        sBombCallback: null,
-        sBombIntervalID: -1,
+        sBombPlayArray: [],
     },
 
     ctor() {
@@ -104,7 +101,7 @@ const BattleManager = cc.Class({
         if (!this.isDemo) {
             if (this.isEndlessFlag) {
                 this.campName = 'CampEndless';
-                this.endlessScore = 0;
+                this.endlessScore = base64.encode('0');
             } else if (this.isCampaignFlag) {
                 this.campName = this.campName;
             } else if (this.isEditorFlag) {
@@ -131,7 +128,7 @@ const BattleManager = cc.Class({
         this.managers[Defines.MgrType.HERO].openShader(open);
     },
 
-    startOutside(dc, id, full) {
+    startOutside(dc, id, full,callback) {
         dc.removeAllChildren(false);
         var self = this;
         this.isDemo = true;
@@ -142,6 +139,7 @@ const BattleManager = cc.Class({
         this.showFull = typeof full !== 'undefined' ? full : false;
 
         this.timerId = setInterval(this.updateOutSide.bind(this), Defines.BATTLE_FRAME_SECOND * 1000);
+        this.delayId = -1;
 
         this.showDC.active = false;
 
@@ -169,13 +167,16 @@ const BattleManager = cc.Class({
                 planeEntity.newPart('Fighter/Fighter_' + self.showID, Defines.ObjectType.OBJ_HERO, 'PlaneObject', 3, 0, 0);
                 planeEntity.setPosition(cc.v3(0.5 * sz.width, 0.29 * sz.height));
                 self.showDC.addChild(planeEntity, 7, 'plane');
-                setTimeout(function () {
+                self.delayId = setTimeout(function () {
                     self.showDC.active = true;
                 }, 300);
                 //planeEntity.openShader(true);
                 self.show = 1;
             } else if (complete) {
                 self.show = 2;
+            }
+            if(!!callback){
+                callback(); 
             }
         });
     },
@@ -225,6 +226,9 @@ const BattleManager = cc.Class({
         }
 
         clearInterval(this.timerId);
+        if (this.delayId != -1) {
+            clearTimeout(this.delayId);
+        }
         this.release();
         BattleManager.destroyInstance();
     },
@@ -248,7 +252,8 @@ const BattleManager = cc.Class({
             bmgr.managers[Defines.MgrType.HERO].update(Defines.BATTLE_FRAME_SECOND);
 
             if (bmgr.isEndlessFlag) {
-                if (GlobalVar.getShareSwitch() && GlobalVar.me().endlessData.getEndlessChargeRewardTimes() < GlobalVar.tblApi.getDataBySingleKey('TblParam', GameServerProto.PTPARAM_ENDLESS_CHARGE_DAYMAX).dValue) {
+                if (GlobalVar.getShareSwitch() && GlobalVar.me().endlessData.getRankID() > 1 &&
+                    GlobalVar.me().endlessData.getEndlessChargeRewardTimes() < GlobalVar.tblApi.getDataBySingleKey('TblParam', GameServerProto.PTPARAM_ENDLESS_CHARGE_DAYMAX).dValue) {
                     bmgr.gameState = Defines.GameResult.DASHOPEN;
                 } else {
                     bmgr.gameState = Defines.GameResult.RUNNING;
@@ -256,18 +261,6 @@ const BattleManager = cc.Class({
             } else {
                 bmgr.gameState = Defines.GameResult.RUNNING;
             }
-
-            // if (!!bmgr.dashMode) {
-            //     if (bmgr.dashMode == 1) {
-            //         bmgr.gameState = Defines.GameResult.DASHSTART;
-            //         bmgr.isOpenDash = true;
-            //         bmgr.managers[Defines.MgrType.HERO].openDash(bmgr.isOpenDash);
-            //     } else {
-            //         bmgr.gameState = Defines.GameResult.RUNNING;
-            //     }
-            // } else {
-
-            // }
         } else if (bmgr.gameState == Defines.GameResult.RUNNING) {
             bmgr.currentTime += Defines.BATTLE_FRAME_SECOND;
             if (bmgr.isEditorFlag == false) {
@@ -277,6 +270,10 @@ const BattleManager = cc.Class({
                 bmgr.managers[mgr].update(Defines.BATTLE_FRAME_SECOND);
             }
         } else if (bmgr.gameState == Defines.GameResult.INTERRUPT) {
+            bmgr.managers[Defines.MgrType.ENTITY].pauseEntity();
+            bmgr.managers[Defines.MgrType.HERO].pauseEntity();
+            bmgr.pauseEffect();
+        } else if (bmgr.gameState == Defines.GameResult.GETASSIST) {
             bmgr.managers[Defines.MgrType.ENTITY].pauseEntity();
             bmgr.managers[Defines.MgrType.HERO].pauseEntity();
             bmgr.pauseEffect();
@@ -290,11 +287,12 @@ const BattleManager = cc.Class({
             }
             if (bmgr.managers[Defines.MgrType.FACTORY].isAllFakeHeroClear()) {
                 bmgr.gameState = Defines.GameResult.WAITREVIVE;
+                bmgr.managers[Defines.MgrType.ENTITY].pauseEntity();
+                bmgr.managers[Defines.MgrType.HERO].pauseEntity();
+                bmgr.pauseEffect();
             }
         } else if (bmgr.gameState == Defines.GameResult.WAITREVIVE) {
-            bmgr.managers[Defines.MgrType.ENTITY].pauseEntity();
-            bmgr.managers[Defines.MgrType.HERO].pauseEntity();
-            bmgr.pauseEffect();
+
         } else if (bmgr.gameState == Defines.GameResult.PAUSE) {
 
         } else if (bmgr.gameState == Defines.GameResult.PREPARE) {
@@ -390,7 +388,7 @@ const BattleManager = cc.Class({
                 if (bmgr.dashStep <= 0) {
                     bmgr.dashStep++;
                 } else if (bmgr.dashStep > 0 && bmgr.dashStep < 4) {
-                    if (bmgr.dashPlusTime >= 0.4) {
+                    if (bmgr.dashPlusTime >= 0.16) {
                         bmgr.dashStep += 0.5;
                         if (bmgr.dashStep >= 4) {
                             bmgr.dashStep = 4;
@@ -405,7 +403,7 @@ const BattleManager = cc.Class({
             } else if (bmgr.gameState == Defines.GameResult.DASHEND) {
                 bmgr.dashPlusTime += Defines.BATTLE_FRAME_SECOND;
                 if (bmgr.dashStep > 1) {
-                    if (bmgr.dashPlusTime >= 0.4) {
+                    if (bmgr.dashPlusTime >= 0.16) {
                         bmgr.dashStep -= 0.5;
                         if (bmgr.dashStep <= 1) {
                             bmgr.dashStep = 1;
@@ -418,13 +416,13 @@ const BattleManager = cc.Class({
                     bmgr.dashStep = 0;
                     bmgr.dashMode = 0;
                     bmgr.dashPlusTime = 0;
+                    bmgr.gameState = Defines.GameResult.RUNNING;
                     if (bmgr.isOpenDash) {
                         bmgr.managers[Defines.MgrType.HERO].openDash(-2);
                         bmgr.isOpenDash = false;
                     } else {
                         bmgr.managers[Defines.MgrType.HERO].openDash();
                     }
-                    bmgr.gameState = Defines.GameResult.RUNNING;
                 }
             } else {
                 if (bmgr.dashMode == 3) {
@@ -595,7 +593,7 @@ const BattleManager = cc.Class({
                 let node = new cc.Node();
                 let nodeSize = msgNode.getContentSize();
                 let sp = node.addComponent(cc.Sprite);
-                sp.spriteFrame = GlobalVar.resManager().loadRes(ResMapping.ResType.SpriteFrame, 'cdnRes/battleui/heroHit');
+                sp.spriteFrame = GlobalVar.resManager().loadRes(ResMapping.ResType.SpriteFrame, 'cdnRes/battlemodel/hit/heroHit');
                 sp.type = cc.Sprite.Type.SIMPLE;
                 sp.sizeMode = cc.Sprite.SizeMode.CUSTOM;
                 node.setContentSize(nodeSize);
@@ -658,56 +656,83 @@ const BattleManager = cc.Class({
     },
 
     screenBomb: function (effectType, burstArray, burstTime, callback) {
-        this.sBombEffectType = typeof effectType !== 'undefined' ? effectType : 0;
-        if (typeof burstArray !== 'undefined') {
-            this.sBombBurstArray = burstArray;
-        }
-        if(this.sBombBurstInterval==0){
-            this.sBombBurstInterval = (typeof burstTime !== 'undefined' ? burstTime : 1000) / (this.sBombBurstArray.length > 0 ? this.sBombBurstArray.length : 1) * 1000;
-        }
-        if (!!callback) {
-            this.sBombCallback = callback;
-        }
-        switch (this.sBombEffectType) {
+        switch (effectType) {
             case 0:
-                this.sBombEffectType = 'cdnRes/battlemodel/prefab/effect/bBomb';
+                effectType = 'cdnRes/battlemodel/prefab/effect/bBomb';
                 break;
             case 1:
-                this.sBombEffectType = 'cdnRes/battlemodel/prefab/effect/bugBomb';
+                effectType = 'cdnRes/battlemodel/prefab/effect/bugBomb';
                 break;
             case 2:
-                this.sBombEffectType = 'cdnRes/battlemodel/prefab/effect/lBomb';
+                effectType = 'cdnRes/battlemodel/prefab/effect/lBomb';
                 break;
             case 3:
-                this.sBombEffectType = 'cdnRes/battlemodel/prefab/effect/miBomb';
+                effectType = 'cdnRes/battlemodel/prefab/effect/miBomb';
                 break;
             default:
-                this.sBombEffectType = 'cdnRes/battlemodel/prefab/effect/bBomb';
+                effectType = '';
                 break;
         }
-        if (this.sBombEffectType != '' && typeof burstArray !== 'undefined') {
-            burstTime = typeof burstTime !== 'undefined' ? burstTime : 1;
-            var self = this;
-            GlobalVar.resManager().loadRes(ResMapping.ResType.Prefab, this.sBombEffectType, function (prefab) {
-                if (prefab != null) {
-                    self.sBombIntervalID = setInterval(function () {
-                        let bomb = cc.instantiate(prefab);
-                        let pos = burstArray.shift();
-                        bomb.setPosition(pos);
-                        self.displayContainer.addChild(bomb, Defines.Z.MONSTERBULLETCLEAR);
-                        GlobalVar.soundManager().playEffect('cdnRes/audio/battle/effect/explode_boss');
-                        bomb.runAction(cc.sequence(cc.delayTime(0.4), cc.removeSelf(true)));
-                        if (burstArray.length == 0) {
-                            clearInterval(self.sBombIntervalID);
-                            self.sBombIntervalID = -1;
-                            self.sBombBurstInterval=0;
-                            if (!!self.sBombCallback) {
-                                self.sBombCallback();
-                            }
-                        }
-                    }, self.sBombBurstInterval);
+        if (effectType != '' && typeof burstArray !== 'undefined') {
+            let prefab = GlobalVar.resManager().loadRes(ResMapping.ResType.Prefab, effectType);
+            if (prefab != null) {
+                var self = this;
+                let sBombEffect = {};
+                sBombEffect.effectType = effectType;
+                sBombEffect.burstArray = burstArray;
+                sBombEffect.interval = (typeof burstTime !== 'undefined' ? burstTime : 1000) / (burstArray.length > 0 ? burstArray.length : 1) * 1000;
+                if (!!callback) {
+                    sBombEffect.callback = callback;
+                } else {
+                    sBombEffect.callback = null;
                 }
-            });
+                sBombEffect.ID = setInterval(function () {
+                    let bomb = cc.instantiate(prefab);
+                    let pos = sBombEffect.burstArray.shift();
+                    bomb.setPosition(pos);
+                    self.displayContainer.addChild(bomb, Defines.Z.MONSTERBULLETCLEAR);
+                    GlobalVar.soundManager().playEffect('cdnRes/audio/battle/effect/explode_boss');
+                    bomb.runAction(cc.sequence(cc.delayTime(0.4), cc.removeSelf(true)));
+                    if (sBombEffect.burstArray.length == 0) {
+                        clearInterval(sBombEffect.ID);
+                        self.sBombPlayArray.splice(sBombEffect.index, 1);
+                        if (!!sBombEffect.callback) {
+                            sBombEffect.callback();
+                        }
+                    }
+                }, sBombEffect.interval);
+                sBombEffect.index = this.sBombPlayArray.length;
+                this.sBombPlayArray.push(sBombEffect);
+            }
+        }
+    },
+
+    pauseScreenBomb: function () {
+        for (let param of this.sBombPlayArray) {
+            clearInterval(param.ID);
+        }
+    },
+
+    resumeScreenBomb: function () {
+        for (let param of this.sBombPlayArray) {
+            let prefab = GlobalVar.resManager().loadRes(ResMapping.ResType.Prefab, param.effectType);
+            var self = this;
+            param.ID = setInterval(function () {
+                let bomb = cc.instantiate(prefab);
+                if (param.burstArray.length != 0) {
+                    let pos = param.burstArray.shift();
+                    bomb.setPosition(pos);
+                    self.displayContainer.addChild(bomb, Defines.Z.MONSTERBULLETCLEAR);
+                    GlobalVar.soundManager().playEffect('cdnRes/audio/battle/effect/explode_boss');
+                    bomb.runAction(cc.sequence(cc.delayTime(0.4), cc.removeSelf(true)));
+                } else {
+                    clearInterval(param.ID);
+                    self.sBombPlayArray.splice(param.index, 1);
+                    if (!!param.callback) {
+                        param.callback();
+                    }
+                }
+            }, param.interval);
         }
     },
 
@@ -965,10 +990,7 @@ const BattleManager = cc.Class({
                 }
             }
         }
-        if(this.sBombIntervalID!=-1){
-            clearInterval(this.sBombIntervalID);
-            this.sBombIntervalID=-2;
-        }
+        this.pauseScreenBomb();
     },
 
     resumeEffect: function () {
@@ -1000,17 +1022,7 @@ const BattleManager = cc.Class({
                 }
             }
         }
-        if(this.sBombIntervalID==-2){
-            if(this.sBombBurstArray.length==0){
-                this.sBombIntervalID=-1;
-                this.sBombBurstInterval=0;
-                if(!!this.sBombCallback){
-                    this.sBombCallback();
-                }
-            }else{
-                this.screenBomb(this.sBombEffectType,this.sBombBurstArray,0,this.sBombCallback)
-            }
-        }
+        this.resumeScreenBomb();
     },
 
 });

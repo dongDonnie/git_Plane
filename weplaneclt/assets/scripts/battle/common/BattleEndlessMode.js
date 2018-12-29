@@ -1,6 +1,7 @@
 const Defines = require('BattleDefines')
 const GlobalVar = require('globalvar')
 const ResMapping = require('resmapping')
+const base64 = require("base64")
 const GameServerProto = require("GameServerProto")
 
 let endlessStep = cc.Enum({
@@ -86,22 +87,15 @@ const Mode = cc.Class({
                             this.battleManager.gameState = Defines.GameResult.DASHSTART;
                         } else {
                             this.battleManager.dashMode = 0;
-                            this.battleManager.managers[Defines.MgrType.HERO].openDash(-2);
+                            this.battleManager.dashStep = 0;
                             this.battleManager.gameState = Defines.GameResult.RUNNING;
+                            this.battleManager.managers[Defines.MgrType.HERO].openDash(-2);
                         }
                         this.battleManager.forceDash = false;
                     }
-                    this.battleManager.endlessScore += (this.endlessScore + (this.curWave - 1) * 500);
-                    if (this.curWave % 5 == 0) {
-                        let score = this.endlessScore;
-                        for (let i = 1; i < this.totalWave / 5; i++) {
-                            if (this.curWave == 5 * i) {
-                                score = (this.endlessScore * 2 + (5 * (i - 1) + (5 * i - 1)) * 500) * 5 / 2;
-                                break;
-                            }
-                        }
-                        this.battleManager.endlessScore += score;
-                    }
+                    //this.battleManager.endlessScore += (this.endlessScore + (this.curWave - 1) * 500);
+                    let num = Number(base64.decode(this.battleManager.endlessScore)) + (Number(base64.decode(this.endlessScore)) + (this.curWave - 1) * 500);
+                    this.battleManager.endlessScore = base64.encode(num.toString());
                     this.step = endlessStep.WAVEEND;
                 }
                 break;
@@ -123,16 +117,17 @@ const Mode = cc.Class({
                 this.mapUpdate(frame);
                 if (this.checkWave()) {
                     let killPercent = this.killRecord / this.waveControlList[this.waveControlList.length - 1].monsterKillList.length;
-                    this.battleManager.endlessScore += (this.endlessScore + Math.floor((this.curWave - 1) * 500 * killPercent + Math.random() * 10));
+                    //this.battleManager.endlessScore += (this.endlessScore + Math.floor((this.curWave - 1) * 500 * killPercent + Math.random() * 10));
+                    let num1 = Number(base64.decode(this.battleManager.endlessScore)) + (Number(base64.decode(this.endlessScore)) + Math.floor((this.curWave - 1) * 500 * killPercent + Math.random() * 10));
+                    this.battleManager.endlessScore = base64.encode(num1.toString());
                     if (this.curWave % 5 == 0) {
-                        let score = this.endlessScore;
                         for (let i = 1; i < this.totalWave / 5; i++) {
                             if (this.curWave == 5 * i) {
-                                score = (this.endlessScore * 2 + (5 * (i - 1) + (5 * i - 1)) * 500) * 5 / 2;
+                                let num2 = Number(base64.decode(this.battleManager.endlessScore)) + (Number(base64.decode(this.endlessScore)) * 2 + (5 * (i - 1) + (5 * i - 1)) * 500) * 5 / 2
+                                this.battleManager.endlessScore = base64.encode(num2.toString());
                                 break;
                             }
                         }
-                        this.battleManager.endlessScore += score;
                     }
                     this.killRecord = 0;
                     this.step = endlessStep.WAVEEND;
@@ -140,10 +135,8 @@ const Mode = cc.Class({
                 }
                 break;
             case endlessStep.WAVEEND:
+                this.waveCount++;
                 let forcechange = false;
-                // if (this.config.wRandomType == 3 || this.config.wRandomType == 4) {
-                //     forcechange = true;
-                // }
 
                 if (this.config.wIsBOSS == 1) {
                     if (this.battleManager.getMusic() != null) {
@@ -152,59 +145,67 @@ const Mode = cc.Class({
                 }
 
                 if (this.config.wRandomType == 2 || this.config.wRandomType == 7 || this.config.wRandomType == 8) {
-                    if (this.battleManager.isOpenDash) {
-                        this.defaultLv += (this.rushRank - 2) / 2;
-                    } else {
-                        this.defaultLv += 2;
-                    }
+                    this.defaultLv += 2;
                 }
                 this.curWave++;
                 if (typeof this.configList[this.curWave - 1] === 'undefined') {
                     this.curWave = 1;
-                    if (this.battleManager.isOpenDash) {
-                        this.defaultLv += (this.rushRank - 2) / 2;
-                    } else {
-                        this.defaultLv += 2;
-                    }
-                    this.endlessScore += this.totalWave * 500;
+                    this.defaultLv += 2;
+                    let numplus = Number(base64.decode(this.endlessScore)) + this.totalWave * 500;
+                    this.endlessScore = base64.encode(numplus.toString());
                 }
 
-                if (this.battleManager.isOpenDash && this.battleManager.dashMode > 0 && this.battleManager.dashMode < 3 && this.defaultLv >= this.rushRank) {
-                    this.battleManager.dashMode = 3;
+                if (this.battleManager.isOpenDash && this.battleManager.dashMode > 0 && this.battleManager.dashMode < 3 && this.defaultLv > this.rushRank) {
+                    if (this.configList[this.curWave - 1].wRandomType == 3) {
+                        this.battleManager.isOpenDash = false;
+                    } else {
+                        this.battleManager.dashMode = 3;
+                    }
 
-                    let bossCount = 0;
-                    for (let c of this.configList) {
-                        if (!!c.wIsBOSS) {
-                            bossCount++;
+                    let minusScore = 0;
+                    let totalScore = 0;
+                    let baseScore = Number(base64.decode(this.endlessScore));
+                    for (let m = 1; m <= 5; m++) {
+                        minusScore += (baseScore + (m - 1) * 500);
+                        if (m % 5 == 0) {
+                            for (let i = 1; i < this.totalWave / 5; i++) {
+                                if (m == 5 * i) {
+                                    minusScore += (baseScore * 2 + (5 * (i - 1) + (5 * i - 1)) * 500) * 5 / 2;
+                                    break;
+                                }
+                            }
                         }
                     }
-                    let totalScore = 0;
-                    let baseScore = this.endlessScore;
-                    let leftTurn = (this.rushRank - 2) / (bossCount != 0 ? bossCount : 1) - 2;
-                    for (let turn = 0; turn < leftTurn; turn++) {
-                        for (let w = 0; w < this.totalWave; w++) {
+                    for (let lv = 2; lv <= this.rushRank; lv += 2) {
+                        for (let w = 1; w <= this.totalWave; w++) {
                             totalScore += (baseScore + (w - 1) * 500);
                             if (w % 5 == 0) {
-                                let score = baseScore;
                                 for (let i = 1; i < this.totalWave / 5; i++) {
                                     if (w == 5 * i) {
-                                        score = (baseScore * 2 + (5 * (i - 1) + (5 * i - 1)) * 500) * 5 / 2;
+                                        totalScore += (baseScore * 2 + (5 * (i - 1) + (5 * i - 1)) * 500) * 5 / 2;
                                         break;
                                     }
                                 }
-                                totalScore += score;
+                                lv += 2;
+                                if (lv >= this.rushRank) {
+                                    break;
+                                }
                             }
                         }
                         baseScore += this.totalWave * 500;
                     }
-                    this.battleManager.endlessScore += totalScore;
+
+                    totalScore -= minusScore;
+                    this.endlessScore = base64.encode(baseScore.toString());
+                    let numtotal = Number(base64.decode(this.battleManager.endlessScore)) + totalScore;
+                    this.battleManager.endlessScore = base64.encode(numtotal.toString());
+
                 }
-                // if (this.configList[this.curWave - 1].wRandomType == 3 || this.configList[this.curWave - 1].wRandomType == 4) {
-                //     forcechange = true;
-                // }
+
                 if (this.configList[this.curWave - 1].wRandomType == 3 && !this.battleManager.isOpenDash) {
                     this.battleManager.forceDash = true;
                     this.battleManager.dashMode = 2;
+                    this.battleManager.dashStep = 2;
                     this.battleManager.gameState = Defines.GameResult.DASH;
                     this.battleManager.managers[Defines.MgrType.HERO].openDash(-1);
                 }
@@ -212,7 +213,6 @@ const Mode = cc.Class({
                 this.step = endlessStep.WAVESTART;
                 break;
             case endlessStep.GAMEEND:
-                //this.step = endlessStep.NONE;
                 break;
             case endlessStep.NONE:
                 this.mapUpdate(frame);
@@ -236,16 +236,14 @@ const Mode = cc.Class({
             this.interval.push(0);
         }
         this.animeIndex = 0;
-        let endlessModeNum = GlobalVar.me().endlessData.getEndlessMode();
-        this.endlessMode = GlobalVar.tblApi.getDataBySingleKey('TblEndlessRank', endlessModeNum + 1);
+        let endlessModeNum = GlobalVar.me().endlessData.getRankID();
+        this.endlessMode = GlobalVar.tblApi.getDataBySingleKey('TblEndlessRank', endlessModeNum);
         this.defaultLv = typeof this.endlessMode.nMonsterBasisGrade !== 'undefined' ? (this.endlessMode.nMonsterBasisGrade != 0 ? this.endlessMode.nMonsterBasisGrade : 2) : 2;
-        this.endlessScore = typeof this.endlessMode.nMonsterBasisFraction !== 'undefined' ? (this.endlessMode.nMonsterBasisFraction != 0 ? this.endlessMode.nMonsterBasisFraction : 1000) : 1000;
+        let origin = typeof this.endlessMode.nMonsterBasisFraction !== 'undefined' ? (this.endlessMode.nMonsterBasisFraction != 0 ? this.endlessMode.nMonsterBasisFraction : 1000) : 1000;
+        this.endlessScore = base64.encode(origin.toString());
         this.rushRank = typeof this.endlessMode.nRushRank !== 'undefined' ? this.endlessMode.nRushRank : 0;
         this.killRecord = 0;
-        this.totalWave = 0;
-        for (let key in this.data) {
-            this.totalWave++;
-        }
+
         this.waveCount = 0;
         this.curWave = 1;
         this.step = endlessStep.GAMESTART;
@@ -253,9 +251,11 @@ const Mode = cc.Class({
         this.config = null;
         this.configList = [];
 
+        this.totalWave = 0;
         let tbl = GlobalVar.tblApi.getData('TblEndlessCampaign');
         for (let key in tbl) {
             this.configList.push(tbl[key]);
+            this.totalWave++;
         }
 
         this.mapControlList = [];
@@ -278,6 +278,14 @@ const Mode = cc.Class({
         }
 
         this.waveControlList = [];
+    },
+
+    setRushRank: function (yes) {
+        if (!!yes) {
+            this.defaultLv = this.rushRank;
+        } else {
+            this.defaultLv = 2;
+        }
     },
 
     mapCreate: function () {
@@ -365,42 +373,40 @@ const Mode = cc.Class({
         let clear = true;
         for (let controlIndex = 0; controlIndex < this.mapControlList.length; controlIndex++) {
             let control = this.mapControlList[controlIndex];
-            let index = -1;
-            for (let i = control.mapTransList.length - 1; i >= 0; i--) {
+            if (control.mapList.length == 0 && control.mapTransList.length == 0) {
+                continue;
+            }
+            for (let i = 0; i < control.mapTransList.length; i++) {
                 control.mapTransList[i].y = (control.mapTransList[i].y - control.mapSpeed * dt);
                 if (control.mapTransList[i].y + 0.5 * control.mapTransList[i].getContentSize().height * control.mapTransList[i].scale <= 0) {
-                    index = i;
+                    control.mapTransList[i].destroy();
+                    control.mapTransList.splice(i, 1);
+                    i = 0;
                 }
-            }
-            if (index != -1) {
-                control.mapTransList[index].destroy();
-                control.mapTransList.splice(index, 1);
             }
             if (control.mapTransList.length > 0) {
                 clear = false;
             }
-            for (let i = 0; i < control.mapList.length; i++) {
-                let posY = control.mapList[i].y;
-                if (posY + 0.5 * control.mapList[i].getContentSize().height * control.mapList[i].scale <= 0) {
-                    let highest = 0;
-                    let index = 0;
-                    for (let j = 0; j < control.mapList.length; j++) {
-                        if (control.mapList[j].y >= highest) {
-                            highest = control.mapList[j].y;
-                            index = j;
-                        }
+
+            if (!!control.stop) {
+                continue;
+            }
+
+            if (control.loop) {
+                for (let i = 0; i < control.mapList.length; i++) {
+                    control.mapList[i].y -= control.mapSpeed * dt;
+                }
+            } else {
+                let highest = control.mapList[control.mapList.length - 1];
+                if (highest.y + 0.5 * highest.getContentSize().height * highest.scale - control.mapSpeed * dt <= this.battleManager.displayContainer.height) {
+                    control.stop = true;
+                } else {
+                    for (let i = 0; i < control.mapList.length; i++) {
+                        control.mapList[i].y -= control.mapSpeed * dt;
                     }
-                    posY = control.mapList[index].y +
-                        0.5 * control.mapList[index].getContentSize().height * control.mapList[index].scale +
-                        0.5 * control.mapList[i].getContentSize().height * control.mapList[i].scale;
-                    control.mapList[i].y = posY;
                 }
             }
-            for (let i = 0; i < control.mapList.length; i++) {
-                control.mapList[i].y = control.mapList[i].y - control.mapSpeed * dt;
-            }
         }
-        //this.mapUpdate(dt);
         return clear;
     },
     mapChange: function (force) {
@@ -454,15 +460,18 @@ const Mode = cc.Class({
         if (needchange) {
             for (let controlIndex = 0; controlIndex < this.mapControlList.length; controlIndex++) {
                 let control = this.mapControlList[controlIndex];
-                for (let i = 0; i < control.mapList.length; i++) {
-                    for (let j = i + 1; j < control.mapList.length; j++) {
-                        if (control.mapList[i].y > control.mapList[j].y) {
-                            let temp = control.mapList[i];
-                            control.mapList[i] = control.mapList[j];
-                            control.mapList[j] = temp;
-                        }
-                    }
-                }
+                // for (let i = 0; i < control.mapList.length; i++) {
+                //     for (let j = i + 1; j < control.mapList.length; j++) {
+                //         if (control.mapList[i].y > control.mapList[j].y) {
+                //             let temp = control.mapList[i];
+                //             control.mapList[i] = control.mapList[j];
+                //             control.mapList[j] = temp;
+                //         }
+                //     }
+                // }
+                control.mapList.sort(function (a, b) {
+                    return a.y - b.y;
+                });
                 for (let i = 0; i < control.mapList.length; i++) {
                     control.mapTransList.push(control.mapList[i])
                 }
@@ -512,15 +521,18 @@ const Mode = cc.Class({
                 sum--;
                 continue;
             }
-            for (let i = 0; i < control.mapList.length; i++) {
-                for (let j = i + 1; j < control.mapList.length; j++) {
-                    if (control.mapList[i].y > control.mapList[j].y) {
-                        let temp = control.mapList[i];
-                        control.mapList[i] = control.mapList[j];
-                        control.mapList[j] = temp;
-                    }
-                }
-            }
+            // for (let i = 0; i < control.mapList.length; i++) {
+            //     for (let j = i + 1; j < control.mapList.length; j++) {
+            //         if (control.mapList[i].y > control.mapList[j].y) {
+            //             let temp = control.mapList[i];
+            //             control.mapList[i] = control.mapList[j];
+            //             control.mapList[j] = temp;
+            //         }
+            //     }
+            // }
+            control.mapList.sort(function (a, b) {
+                return a.y - b.y;
+            });
 
             if (control.mapList[0].y + 0.5 * control.mapList[0].getContentSize().height * control.mapList[0].scale <= 0) {
                 let newPosY = control.mapList[control.mapList.length - 1].y +
@@ -745,8 +757,8 @@ const Mode = cc.Class({
                                 this.solution.solution_map_buff(gold[index][key].id, curPos, cc.v3(0, -control.mapSpeed));
                             } else if (this.config.wRandomType == 4) {
                                 let size = map.getContentSize();
-                                let curPos = cc.v3(size.width * (gold[index][key].posX - 0.5), size.height * (gold[index][key].posY - 0.5));
-                                this.solution.solution_map_sundries(gold[index][key].id, curPos, map, gold[index][key].hp);
+                                let curPos = cc.v3(map.x + size.width * (gold[index][key].posX - 0.5), map.y + size.height * (gold[index][key].posY - 0.5));
+                                this.solution.solution_map_sundries(gold[index][key].id, curPos, cc.v3(0, -control.mapSpeed), gold[index][key].hp);
                             }
                         }
                         map.goldCreated = true;
@@ -766,19 +778,7 @@ const Mode = cc.Class({
                 for (let i = 0; i < control.mapList.length; i++) {
                     control.mapList[i].goldCreated = true;
                 }
-                // let first = control.mapList.pop();
-                // control.mapList.unshift(first);
-                // control.mapList[0].goldCreated = false;
             }
-            // for (let i = 0; i < control.mapList.length; i++) {
-            //     for (let j = i + 1; j < control.mapList.length; j++) {
-            //         if (control.mapList[i].y > control.mapList[j].y) {
-            //             let temp = control.mapList[i];
-            //             control.mapList[i] = control.mapList[j];
-            //             control.mapList[j] = temp;
-            //         }
-            //     } 
-            // }
         }
     },
 
@@ -901,11 +901,14 @@ const Mode = cc.Class({
             return;
         }
         let buffIds = [];
+        let mapBuffCounts = this.battleManager.managers[Defines.MgrType.ENTITY].entityBuffList.length;
         switch (mode) {
             case 0:
                 for (let key in this.config.oVecBuff) {
                     if (this.interval[key] >= this.config.oVecDropDuation[key]) {
-                        buffIds.push(this.config.oVecBuff[key]);
+                        if (this.config.oVecBuff[key] <= Defines.Assist.GHOST && mapBuffCounts < 5) {
+                            buffIds.push(this.config.oVecBuff[key]);
+                        }
                         this.interval[key] = 0;
                     }
                 }
@@ -921,7 +924,13 @@ const Mode = cc.Class({
             case 1:
                 for (let key in this.config.oVecDropBuff) {
                     if (Math.floor(Math.random() * 10000) <= this.config.oVecHitProb[key]) {
-                        buffIds.push(this.config.oVecDropBuff[key]);
+                        if (this.config.oVecDropBuff[key] <= Defines.Assist.GHOST) {
+                            if (mapBuffCounts < 5) {
+                                buffIds.push(this.config.oVecDropBuff[key]);
+                            }
+                        } else {
+                            buffIds.push(this.config.oVecDropBuff[key]);
+                        }
                     }
                 }
                 for (let id of buffIds) {
@@ -940,11 +949,19 @@ const Mode = cc.Class({
                         if (this.actuallyChest > 0) {
                             chestPer = 10000;
                             this.actuallyChest--;
+                        } else if (this.waveCount <= this.totalWave) {
+                            chestPer = 7500;
                         }
                         continue;
                     }
                     if (Math.floor(Math.random() * 10000) <= this.config.oVecDropBuffProb[key]) {
-                        buffIds.push(this.config.oVecDropBuff[key]);
+                        if (this.config.oVecDropBuff[key] <= Defines.Assist.GHOST) {
+                            if (mapBuffCounts < 5) {
+                                buffIds.push(this.config.oVecDropBuff[key]);
+                            }
+                        } else {
+                            buffIds.push(this.config.oVecDropBuff[key]);
+                        }
                     }
                 }
                 let leftChest = Math.min(GlobalVar.me().endlessData.getEndlessRewardCount(), GlobalVar.tblApi.getDataBySingleKey('TblParam', GameServerProto.PTPARAM_ENDLESS_PACKAGE_DROP_MAX).dValue);

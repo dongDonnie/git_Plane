@@ -4,6 +4,7 @@ const ResMapping = require("resmapping");
 const PartEntity = require('PartEntity');
 const BattleManager = require('BattleManager');
 const HeroManager = require('HeroManager');
+const base64 = require("base64");
 
 cc.Class({
     extends: PartEntity,
@@ -124,7 +125,7 @@ cc.Class({
 
         var member = GlobalVar.me().memberData.getMemberByID(id);
         if (member == null) {
-            this.prop[Defines.PropName.Attack]*=3;
+            this.prop[Defines.PropName.Attack] *= 3;
             member = GlobalVar.me().memberData.getMemberByID(GlobalVar.me().memberData.getStandingByFighterConf().ChuZhanMemberID);
         }
         this.lv = member.Level;
@@ -254,20 +255,20 @@ cc.Class({
 
     pauseAction() {
         this._super();
-        if (this.accel != null && cc.isValid(this.accel)){
+        if (this.accel != null && cc.isValid(this.accel)) {
             this.accel.getComponent(cc.Animation).stop();
         }
-        if (this.barrier != null && cc.isValid(this.barrier)){
+        if (this.barrier != null && cc.isValid(this.barrier)) {
             this.barrier.getComponent(cc.Animation).stop();
         }
     },
 
     resumeAction() {
         this._super();
-        if (this.accel != null && cc.isValid(this.accel)){
+        if (this.accel != null && cc.isValid(this.accel)) {
             this.accel.getComponent(cc.Animation).play();
         }
-        if (this.barrier != null && cc.isValid(this.barrier)){
+        if (this.barrier != null && cc.isValid(this.barrier)) {
             this.barrier.getComponent(cc.Animation).play();
         }
     },
@@ -286,8 +287,17 @@ cc.Class({
             if (this.barrier == null || !cc.isValid(this.barrier)) {
                 var self = this;
                 GlobalVar.resManager().loadRes(ResMapping.ResType.Prefab, 'cdnRes/battlemodel/prefab/effect/Shield', function (prefab) {
-                    self.barrier = cc.instantiate(prefab);
-                    self.addChild(self.barrier, Defines.Z.BARRIER);
+                    if (prefab != null) {
+                        self.barrier = cc.instantiate(prefab);
+
+                        if (!!self.partObject) {
+                            let box = self.barrier.getComponent(cc.BoxCollider);
+                            let s = Math.max(self.partObject.width / box.size.width, self.partObject.height / box.size.height);
+                            self.barrier.setScale(s);
+                        }
+
+                        self.addChild(self.barrier, Defines.Z.BARRIER);
+                    }
                 });
             }
             if (this.barrier != null && cc.isValid(this.barrier)) {
@@ -308,8 +318,10 @@ cc.Class({
                 if (this.accel == null || !cc.isValid(this.accel)) {
                     var self = this;
                     GlobalVar.resManager().loadRes(ResMapping.ResType.Prefab, 'cdnRes/battlemodel/prefab/effect/Accel', function (prefab) {
-                        self.accel = cc.instantiate(prefab);
-                        self.addChild(self.accel, Defines.Z.FIGHTER);
+                        if (prefab != null) {
+                            self.accel = cc.instantiate(prefab);
+                            self.addChild(self.accel, Defines.Z.FIGHTER);
+                        }
                     });
                 }
             } else if (time == -2) {
@@ -323,8 +335,10 @@ cc.Class({
                 if (this.accel == null || !cc.isValid(this.accel)) {
                     var self = this;
                     GlobalVar.resManager().loadRes(ResMapping.ResType.Prefab, 'cdnRes/battlemodel/prefab/effect/Accel', function (prefab) {
-                        self.accel = cc.instantiate(prefab);
-                        self.addChild(self.accel, Defines.Z.FIGHTER);
+                        if (prefab != null) {
+                            self.accel = cc.instantiate(prefab);
+                            self.addChild(self.accel, Defines.Z.FIGHTER);
+                        }
                     });
                 }
                 if (!BattleManager.getInstance().forceDash) {
@@ -365,13 +379,18 @@ cc.Class({
 
     addGold() {
         BattleManager.getInstance().endlessGoldCount++;
-        GlobalVar.soundManager().playEffect('cdnRes/audio/battle/effect/gold_bing');
+        let num = Number(base64.decode(BattleManager.getInstance().endlessScore));
+        num += 1;
+        BattleManager.getInstance().endlessScore = base64.encode(num.toString());
+        //GlobalVar.soundManager().playEffect('cdnRes/audio/battle/effect/gold_bing');
     },
 
     addCrystal(score) {
         GlobalVar.soundManager().playEffect('cdnRes/audio/battle/effect/gold_bing');
         if (BattleManager.getInstance().isEndlessFlag) {
-            BattleManager.getInstance().endlessScore += typeof score !== 'undefined' ? score : 1;
+            let num = Number(base64.decode(BattleManager.getInstance().endlessScore));
+            num += typeof score !== 'undefined' ? score : 1;
+            BattleManager.getInstance().endlessScore = base64.encode(num.toString());
         }
     },
 
@@ -393,6 +412,7 @@ cc.Class({
                 let getBuff = cc.instantiate(prefab);
                 this.addChild(getBuff, 20, '8000');
                 let pos = this.partObject.getPosition();
+                pos.y -= 50;
                 getBuff.setPosition(0, -pos.y);
                 //let pos = this.partObject.getPosition().add(this.partObject.getChildByName("point").getPosition())
                 //getBuff.setPosition(pos);

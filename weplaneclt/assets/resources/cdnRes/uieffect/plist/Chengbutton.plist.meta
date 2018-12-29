@@ -8,9 +8,9 @@
   },
   "type": "Texture Packer",
   "subMetas": {
-    "橙按钮_00000.png": {
+    "orangebtn_00000.png": {
       "ver": "1.0.3",
-      "uuid": "6170ba88-28e9-46f9-83c0-3c8d45b6f5f8",
+      "uuid": "9b2ee2b1-8ec6-4457-8d79-8c8cc556265b",
       "rawTextureUuid": "34e16252-e2dc-4199-855e-c43fee330fef",
       "trimType": "auto",
       "trimThreshold": 1,
@@ -30,9 +30,9 @@
       "spriteType": "normal",
       "subMetas": {}
     },
-    "橙按钮_00001.png": {
+    "orangebtn_00001.png": {
       "ver": "1.0.3",
-      "uuid": "4812bfdb-c093-484e-ad96-b019ea7f1a2f",
+      "uuid": "5fe36752-5e73-4b14-bb3f-0de2fba837db",
       "rawTextureUuid": "34e16252-e2dc-4199-855e-c43fee330fef",
       "trimType": "auto",
       "trimThreshold": 1,
@@ -52,9 +52,9 @@
       "spriteType": "normal",
       "subMetas": {}
     },
-    "橙按钮_00002.png": {
+    "orangebtn_00002.png": {
       "ver": "1.0.3",
-      "uuid": "dcb25190-dd77-4e86-9ce7-29640222e5da",
+      "uuid": "23e67c86-1da3-40c1-946b-08f55df39da6",
       "rawTextureUuid": "34e16252-e2dc-4199-855e-c43fee330fef",
       "trimType": "auto",
       "trimThreshold": 1,
@@ -74,9 +74,9 @@
       "spriteType": "normal",
       "subMetas": {}
     },
-    "橙按钮_00003.png": {
+    "orangebtn_00003.png": {
       "ver": "1.0.3",
-      "uuid": "ddbfe188-9b80-45c0-9cf2-6184de483f18",
+      "uuid": "ce709504-5369-43fb-96fe-7b5cb5cc40d8",
       "rawTextureUuid": "34e16252-e2dc-4199-855e-c43fee330fef",
       "trimType": "auto",
       "trimThreshold": 1,
@@ -96,9 +96,9 @@
       "spriteType": "normal",
       "subMetas": {}
     },
-    "橙按钮_00004.png": {
+    "orangebtn_00004.png": {
       "ver": "1.0.3",
-      "uuid": "bf330997-9e46-4b3e-93c0-465db94d921a",
+      "uuid": "a75cd721-4621-4843-b15b-b30d066bbd8e",
       "rawTextureUuid": "34e16252-e2dc-4199-855e-c43fee330fef",
       "trimType": "auto",
       "trimThreshold": 1,
@@ -118,9 +118,9 @@
       "spriteType": "normal",
       "subMetas": {}
     },
-    "橙按钮_00005.png": {
+    "orangebtn_00005.png": {
       "ver": "1.0.3",
-      "uuid": "4146ec0a-9c66-4230-9087-6daa19416e41",
+      "uuid": "dc4f4608-485e-4919-8a73-0d96d496b303",
       "rawTextureUuid": "34e16252-e2dc-4199-855e-c43fee330fef",
       "trimType": "auto",
       "trimThreshold": 1,
@@ -140,9 +140,9 @@
       "spriteType": "normal",
       "subMetas": {}
     },
-    "橙按钮_00006.png": {
+    "orangebtn_00006.png": {
       "ver": "1.0.3",
-      "uuid": "3ab61d15-e32d-4db6-977c-de4d4114a884",
+      "uuid": "44b4b2de-959e-41af-b2da-2f73b85655b8",
       "rawTextureUuid": "34e16252-e2dc-4199-855e-c43fee330fef",
       "trimType": "auto",
       "trimThreshold": 1,
@@ -162,9 +162,9 @@
       "spriteType": "normal",
       "subMetas": {}
     },
-    "橙按钮_00007.png": {
+    "orangebtn_00007.png": {
       "ver": "1.0.3",
-      "uuid": "47b9afd2-5292-48f5-a3eb-6587c5991653",
+      "uuid": "4aba87d1-426d-40e8-a7f5-ca508be0d4fc",
       "rawTextureUuid": "34e16252-e2dc-4199-855e-c43fee330fef",
       "trimType": "auto",
       "trimThreshold": 1,
@@ -184,9 +184,9 @@
       "spriteType": "normal",
       "subMetas": {}
     },
-    "橙按钮_00008.png": {
+    "orangebtn_00008.png": {
       "ver": "1.0.3",
-      "uuid": "ef198545-ddcd-4d70-a6b8-5f67cf3ba885",
+      "uuid": "28940ff4-4ec3-4420-bee1-111582d14b14",
       "rawTextureUuid": "34e16252-e2dc-4199-855e-c43fee330fef",
       "trimType": "auto",
       "trimThreshold": 1,
@@ -206,9 +206,9 @@
       "spriteType": "normal",
       "subMetas": {}
     },
-    "橙按钮_00009.png": {
+    "orangebtn_00009.png": {
       "ver": "1.0.3",
-      "uuid": "81248000-3ad1-43d2-a968-0be71370dcc4",
+      "uuid": "a2d6d094-7257-4102-91dc-ed08c0ce0589",
       "rawTextureUuid": "34e16252-e2dc-4199-855e-c43fee330fef",
       "trimType": "auto",
       "trimThreshold": 1,
@@ -228,9 +228,9 @@
       "spriteType": "normal",
       "subMetas": {}
     },
-    "橙按钮_00010.png": {
+    "orangebtn_00010.png": {
       "ver": "1.0.3",
-      "uuid": "99297e8b-5761-4f28-afc4-fe1f7835df51",
+      "uuid": "42a1c284-1654-4d22-948e-732166ee690c",
       "rawTextureUuid": "34e16252-e2dc-4199-855e-c43fee330fef",
       "trimType": "auto",
       "trimThreshold": 1,
@@ -250,9 +250,9 @@
       "spriteType": "normal",
       "subMetas": {}
     },
-    "橙按钮_00011.png": {
+    "orangebtn_00011.png": {
       "ver": "1.0.3",
-      "uuid": "aa987955-baff-49fb-92b8-6d53da5a3f5e",
+      "uuid": "4fcf507a-b7bb-4d15-9641-9590c67806a4",
       "rawTextureUuid": "34e16252-e2dc-4199-855e-c43fee330fef",
       "trimType": "auto",
       "trimThreshold": 1,
@@ -272,9 +272,9 @@
       "spriteType": "normal",
       "subMetas": {}
     },
-    "橙按钮_00012.png": {
+    "orangebtn_00012.png": {
       "ver": "1.0.3",
-      "uuid": "c068c068-3d51-49fe-9448-8d67879477f5",
+      "uuid": "9a932290-274e-462b-aeae-57ec18c2b933",
       "rawTextureUuid": "34e16252-e2dc-4199-855e-c43fee330fef",
       "trimType": "auto",
       "trimThreshold": 1,
@@ -294,9 +294,9 @@
       "spriteType": "normal",
       "subMetas": {}
     },
-    "橙按钮_00013.png": {
+    "orangebtn_00013.png": {
       "ver": "1.0.3",
-      "uuid": "40013576-184c-4bd3-88c1-8d91d54f3dd6",
+      "uuid": "866cfe23-8393-46ae-b50a-4b37cfb41cd2",
       "rawTextureUuid": "34e16252-e2dc-4199-855e-c43fee330fef",
       "trimType": "auto",
       "trimThreshold": 1,
@@ -316,9 +316,9 @@
       "spriteType": "normal",
       "subMetas": {}
     },
-    "橙按钮_00014.png": {
+    "orangebtn_00014.png": {
       "ver": "1.0.3",
-      "uuid": "5c674d63-b713-41df-b876-0264e5cedbe6",
+      "uuid": "069e5e76-1d8a-4c46-98ab-7e5371a31c41",
       "rawTextureUuid": "34e16252-e2dc-4199-855e-c43fee330fef",
       "trimType": "auto",
       "trimThreshold": 1,
@@ -338,9 +338,9 @@
       "spriteType": "normal",
       "subMetas": {}
     },
-    "橙按钮_00015.png": {
+    "orangebtn_00015.png": {
       "ver": "1.0.3",
-      "uuid": "396223c7-feb9-4270-a494-578886392093",
+      "uuid": "9595b7d0-434c-4e7d-aaee-cfaf121eb873",
       "rawTextureUuid": "34e16252-e2dc-4199-855e-c43fee330fef",
       "trimType": "auto",
       "trimThreshold": 1,
@@ -360,9 +360,9 @@
       "spriteType": "normal",
       "subMetas": {}
     },
-    "橙按钮_00016.png": {
+    "orangebtn_00016.png": {
       "ver": "1.0.3",
-      "uuid": "8e180d42-e359-493c-b386-3e37867da8f9",
+      "uuid": "68e84da0-15ed-410d-81ea-cebaec53082e",
       "rawTextureUuid": "34e16252-e2dc-4199-855e-c43fee330fef",
       "trimType": "auto",
       "trimThreshold": 1,
@@ -382,9 +382,9 @@
       "spriteType": "normal",
       "subMetas": {}
     },
-    "橙按钮_00017.png": {
+    "orangebtn_00017.png": {
       "ver": "1.0.3",
-      "uuid": "d113d967-d30c-4594-b6a4-adcf0efbcfad",
+      "uuid": "83cd0c02-183d-4147-8db9-af91b4cf02f9",
       "rawTextureUuid": "34e16252-e2dc-4199-855e-c43fee330fef",
       "trimType": "auto",
       "trimThreshold": 1,
@@ -404,9 +404,9 @@
       "spriteType": "normal",
       "subMetas": {}
     },
-    "橙按钮_00018.png": {
+    "orangebtn_00018.png": {
       "ver": "1.0.3",
-      "uuid": "bc434b56-9807-4c1b-b28a-c1cc2973eeb2",
+      "uuid": "38c5461e-1289-4090-86c2-13e8b1dcffea",
       "rawTextureUuid": "34e16252-e2dc-4199-855e-c43fee330fef",
       "trimType": "auto",
       "trimThreshold": 1,
@@ -426,9 +426,9 @@
       "spriteType": "normal",
       "subMetas": {}
     },
-    "橙按钮_00019.png": {
+    "orangebtn_00019.png": {
       "ver": "1.0.3",
-      "uuid": "04046090-0f30-48fe-beb7-f0457a2b7371",
+      "uuid": "84a45d21-b575-4e13-b47d-e9821a63df81",
       "rawTextureUuid": "34e16252-e2dc-4199-855e-c43fee330fef",
       "trimType": "auto",
       "trimThreshold": 1,

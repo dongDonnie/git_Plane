@@ -86,7 +86,7 @@ var mailData = cc.Class({
                 let mailID = data.MailID[i];
                 let index = self.getMailIndexByID(mailID);
                 if (index != -1){
-                    self.mailList.splice(i, 1);
+                    self.mailList.splice(index, 1);
                 }
             }
             self.checkNotReadMailCount();

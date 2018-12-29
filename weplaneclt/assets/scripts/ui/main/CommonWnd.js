@@ -39,14 +39,20 @@ module.exports = {
         });
     },
 
-    showDrawBoxPreview: function (callback, title, itemMustIDVec, itemProbIDVec, pFunCloseCallback, pFunConfirmCallback, pFunCancelCallback){
-        WindowManager.getInstance().pushView(WndTypeDefine.WindowType.E_DT_COMMON_WND, function (wnd, name, type) {
-            wnd.getComponent(type).setDrawBoxPreviewContent(name, type, title, pFunCloseCallback, pFunConfirmCallback, pFunCancelCallback);
+    showDrawBoxPreview: function (itemMustIDVec, itemProbIDVec, callback){
+        // WindowManager.getInstance().pushView(WndTypeDefine.WindowType.E_DT_COMMON_WND, function (wnd, name, type) {
+        //     wnd.getComponent(type).setDrawBoxPreviewContent(name, type, title, pFunCloseCallback, pFunConfirmCallback, pFunCancelCallback);
+        //     wnd.getComponent(type).setItemShowVec(itemMustIDVec, itemProbIDVec);
+        //     if (callback) {
+        //         callback(wnd, name, type);
+        //     }
+        // });
+        WindowManager.getInstance().pushView(WndTypeDefine.WindowType.E_DT_NORMALDRAW_PREVIEW_WND, function (wnd, name, type) {
             wnd.getComponent(type).setItemShowVec(itemMustIDVec, itemProbIDVec);
             if (callback) {
                 callback(wnd, name, type);
             }
-        });
+        })
     },
 
     showRewardBoxWnd: function (callback, title, condition, vecItems, pFunCloseCallback, pFunConfirmCallback, pFunCancelCallback, confirmName, cancelName) {
@@ -58,12 +64,9 @@ module.exports = {
         });
     },
 
-    showResetQuestTimesWnd: function(callback, title, resetDesc, diamondCost, pFunCloseCallback, pFunConfirmCallback, pFunCancelCallback, confirmName, cancelName){
-        WindowManager.getInstance().pushView(WndTypeDefine.WindowType.E_DT_COMMON_WND, function (wnd, name, type) {
-            wnd.getComponent(WndTypeDefine.WindowType.E_DT_COMMON_WND).setResetQuestContent(name, type, title, resetDesc, diamondCost, pFunCloseCallback, pFunConfirmCallback, pFunCancelCallback, confirmName, cancelName);
-            if (callback) {
-                callback(wnd, name, type);
-            }
+    showResetQuestTimesWnd: function(campData, tblData){
+        WindowManager.getInstance().pushView(WndTypeDefine.WindowType.E_DT_NORMAL_QUEST_RESET_WND, function (wnd, name, type) {
+            wnd.getComponent(type).initQuestResetWnd(campData, tblData);
         });
     },
 
@@ -344,27 +347,56 @@ module.exports = {
         WindowManager.getInstance().pushView(WndTypeDefine.WindowType.E_DT_NORMAL_EXDIAMOND_WND);
     },
 
-    showNormalFreeGetWnd: function (errCode, shareCallback, purchaseCallback, closeCallback) {
-        if (GlobalVar.srcSwitch() && !GlobalVar.getShareSwitch() && errCode == GameServerProto.PTERR_DIAMOND_LACK){
-            GlobalVar.comMsg.errorWarning(errCode);
-            closeCallback && closeCallback();
-            return;
-        }
-        if (!GlobalVar.getShareSwitch()){
-            if (errCode == GameServerProto.PTERR_GOLD_LACK){
-                this.showRichTreasureWnd();
-                closeCallback && closeCallback();
+    showNormalFreeGetWnd: function (errCode, completeCallback, shareCallback, purchaseCallback, closeCallback, isActive) {
+        if (errCode == GameServerProto.PTERR_DIAMOND_LACK){
+            let curTime = GlobalVar.me().shareData.getFreeDiamondCount();
+            let maxTime = GlobalVar.tblApi.getDataBySingleKey('TblParam', GameServerProto.PTPARAM_RCG_FREE_DIAMOND_COUNT_MAX).dValue;
+            if (GlobalVar.getShareSwitch() && curTime < maxTime){
+                this.showNormalDiamondTreasureWnd();
+                completeCallback && completeCallback();
                 return;
-            }
-            if (errCode == GameServerProto.PTERR_DIAMOND_LACK && !GlobalVar.srcSwitch()){
+            }else if (!GlobalVar.srcSwitch()){
                 this.showRechargeWnd();
-                closeCallback && closeCallback();
+                completeCallback && completeCallback();
                 return;
+            }else if (!isActive){
+                GlobalVar.comMsg.errorWarning(errCode);
+            }else if (isActive) {
+                GlobalVar.comMsg.errorWarning(GameServerProto.PTERR_RCG_FREE_DIAMOND_LACK);
+            }
+            completeCallback && completeCallback();
+        }else if (errCode == GameServerProto.PTERR_GOLD_LACK){
+            if (GlobalVar.getShareSwitch()){
+                WindowManager.getInstance().pushView(WndTypeDefine.WindowType.E_DT_NORMAL_FREE_GET_WND, function(wnd, name, type) {
+                    wnd.getComponent(type).initFreeGetWnd(errCode, completeCallback, shareCallback, purchaseCallback, closeCallback, isActive);
+                });
+            }else{
+                this.showRichTreasureWnd();
+                completeCallback && completeCallback();
             }
         }
 
-        WindowManager.getInstance().pushView(WndTypeDefine.WindowType.E_DT_NORMAL_FREE_GET_WND, function(wnd, name, type) {
-            wnd.getComponent(type).initFreeGetWnd(errCode, shareCallback, purchaseCallback, closeCallback);
+        // if (!GlobalVar.getShareSwitch()){
+        //     if (errCode == GameServerProto.PTERR_GOLD_LACK){
+        //         this.showRichTreasureWnd();
+        //         completeCallback && completeCallback();
+        //         return;
+        //     }
+        //     if (errCode == GameServerProto.PTERR_DIAMOND_LACK && !GlobalVar.srcSwitch()){
+        //         this.showRechargeWnd();
+        //         completeCallback && completeCallback();
+        //         return;
+        //     }
+        // }
+
+        // WindowManager.getInstance().pushView(WndTypeDefine.WindowType.E_DT_NORMAL_FREE_GET_WND, function(wnd, name, type) {
+        //     wnd.getComponent(type).initFreeGetWnd(errCode, completeCallback, shareCallback, purchaseCallback, closeCallback, isActive);
+        // });
+    },
+
+    showNormalDiamondTreasureWnd: function () {
+        WindowManager.getInstance().pushView(WndTypeDefine.WindowType.E_DT_NORMAL_DIAMOND_TREASURE_WND, function (wnd, name, type) {
+            
         });
     },
 
@@ -374,8 +406,9 @@ module.exports = {
     showShareDailyWnd: function () {
         WindowManager.getInstance().pushView(WndTypeDefine.WindowType.E_DT_NORMAL_SHAREDIALY_WND);
     },
-    showShareMemberTestPlayWnd: function (callback) {
+    showShareMemberTestPlayWnd: function (testPlayMemberID, callback) {
         WindowManager.getInstance().pushView(WndTypeDefine.WindowType.E_DT_NORMAL_SHARETESTPLAY_WND, function(wnd, name, type){
+            wnd.getComponent(type).setTestPlayMemberID(testPlayMemberID);
             wnd.getComponent(type).setCallback(callback);
         });
     },

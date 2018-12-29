@@ -17,6 +17,10 @@ var UIServerSel = cc.Class({
             default: null,
             type: cc.Node,
         },
+        nodeLaunchNoticeWnd: {
+            default: null,
+            type: cc.Node,
+        },
         clickServerWnd: {
             default: false,
             visible: false,
@@ -27,7 +31,9 @@ var UIServerSel = cc.Class({
         console.log("UIServerSel onLoad!!!!!!");
         GlobalVar.cleanAllMgr();
         let self = this;
+        self.noticeData = null;
         this.canSelect = false;
+        GlobalVar.isFirstTimesLoading = false;
         // this.createAuthorizeBtn(this.node.getChildByName("toggleAgreement"));
         if (cc.sys.platform === cc.sys.WECHAT_GAME) {
             weChatAPI.login(function (user_id, ticket, avatar) {
@@ -43,15 +49,18 @@ var UIServerSel = cc.Class({
             })
 
             weChatAPI.getLaunchNotice(function (data) {
-                console.log("launchNotice:", data);
+                self.noticeData = data;
+                self.initLaunchNoticeWnd(data);
             });
+        } else if (window && window["wywGameId"]=="5469"){
+
         }
         GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_NEED_CREATE_ROLE, this.createRoll, this);
         GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_LOGIN_DATA_NTF, this.getLoginData, this);
     },
 
     getLoginData: function (event) {
-        if (event.data.ErrCode !== 0){
+        if (event.data.ErrCode !== 0) {
             GlobalVar.networkManager().needReConnected = false;
             this.canSelect = true;
         }
@@ -64,8 +73,8 @@ var UIServerSel = cc.Class({
 
     onDestroy: function () {
         // if (!!this.btnAuthorize) {
-            // this.btnAuthorize.destroy();
-            //this.btnAuthorize = null;
+        // this.btnAuthorize.destroy();
+        //this.btnAuthorize = null;
         // }
         GlobalVar.eventManager().removeListenerWithTarget(this);
     },
@@ -122,6 +131,9 @@ var UIServerSel = cc.Class({
 
     onSendBigLogin: function () {
         // console.log("canSelect:", !!this.canSelect);
+        if (GlobalVar.networkManager().connectError) {
+            this.canSelect = true;
+        }
         if (!this.canSelect) return;
         if (cc.sys.platform === cc.sys.WECHAT_GAME) {
             this.canSelect = false;
@@ -129,6 +141,7 @@ var UIServerSel = cc.Class({
             let serverData = this.serverList[this.selServerIndex];
             // console.log("serverData :", serverData);
             GlobalVar.me().loginData.setLoginReqDataServerID(serverData.server_id);
+            GlobalVar.me().loginData.setLoginReqDataServerName(serverData.name);
             // console.log("连接的服务器地址为：", serverData.socket_domain, "  连接的端口为：", serverData.socket_port);
             GlobalVar.networkManager().connectToServer(serverData.socket_domain, serverData.socket_port, function () {
                 GlobalVar.handlerManager().loginHandler.sendLoginReq(
@@ -137,6 +150,8 @@ var UIServerSel = cc.Class({
                     GlobalVar.me().loginData.getLoginReqDataServerID(),
                     GlobalVar.me().loginData.getLoginReqDataAvatar());
             });
+        } else if (window && window["wywGameId"]=="5469"){
+
         }
     },
 
@@ -147,6 +162,8 @@ var UIServerSel = cc.Class({
                 GlobalVar.handlerManager().loginHandler.sendCreateRollReq(nickName || "", avatar || "");
                 GlobalVar.me().loginData.setLoginReqDataAvatar(avatar);
             })
+        } else if (window && window["wywGameId"]=="5469"){
+
         }
     },
 
@@ -154,17 +171,17 @@ var UIServerSel = cc.Class({
         // console.log("canSelect:", !!this.canSelect);
         if (!this.canSelect) return;
         // console.log("打开选服界面")
-        if ((this.serverList && this.serverList.length == 0) || cc.sys.platform !== cc.sys.WECHAT_GAME) {
+        if ((this.serverList && this.serverList.length == 0) || (cc.sys.platform !== cc.sys.WECHAT_GAME && !(window && window["wywGameId"] == "5496"))) {
             // GlobalVar.comMsg.showMsg("无服务器可以选择");
             // console.log("无服务器可以选择");
             return;
         }
-        this.canSelect=true;
+        this.canSelect = true;
         this.nodeSelectServerWnd.active = true;
 
         // if (!!this.btnAuthorize) {
-            // this.btnAuthorize.destroy();
-            //self.btnAuthorize = null;
+        // this.btnAuthorize.destroy();
+        //self.btnAuthorize = null;
         // }
         this.initSelServerWnd();
     },
@@ -201,17 +218,55 @@ var UIServerSel = cc.Class({
 
     onBtnServerClick: function (event) {
         // if (!this.clickServerWnd) {
-            // this.clickServerWnd = true;
-            let server = event.target;
-            this.setServer(server.data.server_id);
-            var self = this;
-            this.nodeSelectServerWnd.active = false;
-            // this.createAuthorizeBtn(this.node.getChildByName("toggleAgreement"));
+        // this.clickServerWnd = true;
+        let server = event.target;
+        this.setServer(server.data.server_id);
+        var self = this;
+        this.nodeSelectServerWnd.active = false;
+        // this.createAuthorizeBtn(this.node.getChildByName("toggleAgreement"));
         // }
+    },
+
+    initLaunchNoticeWnd: function (noticeData) {
+        console.log("启动公告：", noticeData);
+        if (noticeData.ret != 0 || noticeData.data.length == 0) {
+            return;
+        } else {
+            let content = this.nodeLaunchNoticeWnd.getChildByName("scrollview").getComponent(cc.ScrollView).content;
+            let updateModel = function (model, data) {
+                model.getChildByName("spriteTitleBg").getChildByName("labelTitle").getComponent(cc.Label).string = data.title;
+                model.getChildByName("richText").getComponent(cc.RichText).string = data.content;
+                model.opacity = 255;
+            };
+            for (let i = 0; i < noticeData.data.length; i++) {
+                let model = null;
+                if (i == 0) {
+                    model = content.children[0];
+                } else {
+                    model = cc.instantiate(content.children[0]);
+                    content.addChild(model);
+                }
+                updateModel(model, noticeData.data[i]);
+            }
+            console.log("content:", content);
+            // this.nodeLaunchNoticeWnd.scale = 0
+            this.nodeLaunchNoticeWnd.active = true;
+            // this.nodeLaunchNoticeWnd.runAction(cc.scaleTo(0.3, 1));
+        }
+    },
+
+    onBtnNotice: function () {
+        if (this.noticeData.ret != 0 || this.noticeData.data.length == 0) {
+            GlobalVar.comMsg.showMsg("暂无公告");
+            return;
+        }
+        this.nodeLaunchNoticeWnd.active = true;
     },
 
     onBtnClose: function () {
         this.nodeSelectServerWnd.active = false;
+        this.nodeLaunchNoticeWnd.active = false;
+
         // this.createAuthorizeBtn(this.node.getChildByName("toggleAgreement"));
     },
 

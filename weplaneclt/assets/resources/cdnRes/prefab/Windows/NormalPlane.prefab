@@ -1321,7 +1321,7 @@
       "__id__": 28
     },
     "_enabled": true,
-    "audioType": 0,
+    "audioType": 7,
     "_fontSize": 30,
     "_showShadow": false,
     "btnState": true,
@@ -9096,7 +9096,7 @@
       "__id__": 276
     },
     "_enabled": true,
-    "audioType": 0,
+    "audioType": 7,
     "_fontSize": 30,
     "_showShadow": false,
     "btnState": true,

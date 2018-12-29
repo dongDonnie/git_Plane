@@ -104,7 +104,7 @@
         "__id__": 7
       }
     ],
-    "_active": false,
+    "_active": true,
     "_level": 0,
     "_components": [
       {
@@ -191,8 +191,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 575,
-      "height": 70
+      "width": 640,
+      "height": 90
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -202,7 +202,7 @@
     "_position": {
       "__type__": "cc.Vec3",
       "x": 0,
-      "y": 0,
+      "y": 2,
       "z": 0
     },
     "_scale": {
@@ -242,7 +242,7 @@
     "_right": 0,
     "_top": 0,
     "_bottom": 0,
-    "_verticalCenter": 0,
+    "_verticalCenter": 2,
     "_horizontalCenter": 0,
     "_isAbsLeft": true,
     "_isAbsRight": true,
@@ -326,8 +326,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 120,
-      "height": 30
+      "width": 128,
+      "height": 32
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -370,14 +370,14 @@
       "__id__": 7
     },
     "_enabled": true,
-    "_srcBlendFactor": 770,
+    "_srcBlendFactor": 1,
     "_dstBlendFactor": 771,
     "_useOriginalSize": false,
     "_string": "升级成功",
     "_N$string": "升级成功",
-    "_fontSize": 30,
-    "_lineHeight": 30,
-    "_enableWrapText": true,
+    "_fontSize": 32,
+    "_lineHeight": 32,
+    "_enableWrapText": false,
     "_N$file": {
       "__uuid__": "4ad6af19-80c7-4c8f-ad73-b023fe3bc1f0"
     },
@@ -838,7 +838,7 @@
     "asset": {
       "__uuid__": "f9fb0daf-25cb-4364-8ae5-cd15c5e18db9"
     },
-    "fileId": "44I4hIN6BP4Ygm1OJTjXKi",
+    "fileId": "59ZHKhQ3pDBZO8t5y5j2NM",
     "sync": false
   },
   {
@@ -938,7 +938,7 @@
     "asset": {
       "__uuid__": "f9fb0daf-25cb-4364-8ae5-cd15c5e18db9"
     },
-    "fileId": "68UQuVBwZDbZqPj251jGN6",
+    "fileId": "9bGYqhMJRCFZzDDWqMRrfb",
     "sync": false
   },
   {

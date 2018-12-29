@@ -13,6 +13,7 @@ const i18n = require('LanguageData');
 const weChatAPI = require("weChatAPI");
 const GlobalFunc = require('GlobalFunctions');
 const config = require("config");
+const StoreageData = require("storagedata");
 
 var UIMain = cc.Class({
     extends: UIBase,
@@ -25,6 +26,7 @@ var UIMain = cc.Class({
     },
 
     onLoad: function () {
+        this._super();
         i18n.init('zh');
         this.initUIMain();
         this.registerEvent();
@@ -67,7 +69,7 @@ var UIMain = cc.Class({
                     }
                 })
             });
-            //weChatAPI.createRewardedVideoAd();
+            weChatAPI.createRewardedVideoAd();
             
             if (GlobalVar.me().loginData.getLoginReqDataServerID()) {
                 weChatAPI.reportServerLogin(GlobalVar.me().loginData.getLoginReqDataAccount(), GlobalVar.me().loginData.getLoginReqDataServerID(), GlobalVar.me().serverTime * 100);
@@ -80,6 +82,8 @@ var UIMain = cc.Class({
                     GlobalVar.handlerManager().mainHandler.sendReNameReq(GlobalVar.me().roleID, userInfo.nickName, userInfo.avatarUrl);
                 })
             }
+        } else if (window && window["wywGameId"]=="5469"){
+
         }
 
         if (!GlobalVar.srcSwitch()){
@@ -87,6 +91,10 @@ var UIMain = cc.Class({
             nodeFeed.active = true;
             let nodefirst = this.getNodeByName("btnoFirstCharge");
             nodefirst.active = true;
+        }
+        if (!GlobalVar.getShareSwitch()){
+            this.getNodeByName('btnoFreeDiamond').active = false;
+            this.getNodeByName('btnoShareDaily').active = false;
         }
     },
 
@@ -107,17 +115,73 @@ var UIMain = cc.Class({
     },
 
     start: function () {
+        StoreageData.setShareTimesWithKey("shareDailyLimit", 1)
+        this.nodeBlock.enabled = true;//防止出意外
+        let self = this;
         BattleManager.getInstance().quitOutSide();
-        BattleManager.getInstance().startOutside(this.getNodeByName("planeNode"),GlobalVar.me().memberData.getStandingByFighterID(),true);
+        BattleManager.getInstance().startOutside(this.getNodeByName("planeNode"),GlobalVar.me().memberData.getStandingByFighterID(),true, function () {
+            self.nodeBlock.enabled = false; //防止出意外
+        });
         require('Guide').getInstance().enter();
-        this.showNotice();
-
         
         GlobalVar.handlerManager().campHandler.sendGetCampBagReq(GameServerProto.PT_CAMPTYPE_MAIN);
 
-        if (!config.NEED_GUIDE && !GlobalVar.me().shareData.getShareDailyState() && GlobalVar.getShareSwitch()){
-            GlobalVar.me().shareData.data.FuliDaily = 1;
-            CommonWnd.showShareDailyWnd();
+
+
+        if (!config.NEED_GUIDE && !GlobalVar.me().shareData.getShareDailyState() && GlobalVar.getShareSwitch() && GlobalVar.me().level >= 7){
+            let btnoShareDaily = this.getNodeByName("btnoShareDaily");
+            btnoShareDaily && (btnoShareDaily.active = true);
+        } else {
+            let btnoShareDaily = this.getNodeByName("btnoShareDaily");
+            btnoShareDaily && (btnoShareDaily.active = false);
+        }
+
+        this.showLaunchWindow();
+    },
+
+    showLaunchWindow: function () {
+        if(config.NEED_GUIDE){
+            return;
+        }
+        let self = this;
+        this.showNotice = false;
+        this.showShareDaily = false;
+
+        if (!GlobalVar.me().alreadedShowNotice){
+            let noticeCount = GlobalVar.me().noticeData.getNoticeCount();
+            
+            GlobalVar.me().alreadedShowNotice = true;
+            if (noticeCount > 0){
+                this.showNotice = true;
+                if (this.showShareDaily){
+                    setTimeout(() => {
+                        CommonWnd.showNoticeWnd();
+                    }, 250);
+                }else{
+                    CommonWnd.showNoticeWnd();
+                }
+            }
+        }
+
+        if (!GlobalVar.me().shareData.getShareDailyState() && GlobalVar.getShareSwitch() && GlobalVar.me().level >= 7 && 
+        StoreageData.getShareTimesWithKey("shareDailyLimit", 1) == 1 && GlobalVar.firstTimeLaunch){
+            GlobalVar.firstTimeLaunch = false;
+            this.showShareDaily = true;
+            if (this.showNotice){
+                setTimeout(() => {
+                    CommonWnd.showShareDailyWnd();
+                }, 250);
+            }else{
+                CommonWnd.showShareDailyWnd();
+            }
+        }
+
+        if (!this.showNotice && !this.showShareDaily){
+            this.nodeBlock.enabled = false;
+        }else{
+            setTimeout(() => {
+                self.nodeBlock.enabled = false;
+            }, 500);
         }
     },
 
@@ -139,6 +203,8 @@ var UIMain = cc.Class({
         GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_RETURNTO_LOGINSCENE, this.quitBattlePlane, this);
         GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_GET_RCGBAG_RESULT, this.rcgbagRecv, this);
         GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_EXPCHANGE_NTF, this.updateExpBar, this);
+        GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_NEWTASK_NTF, this.updateNewTask, this);
+        GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_GET_SHARE_DAILY_DATA, this.getShareDailyData, this);
 
         //RENAME
         GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_GET_RENAME_ACK, this.getReNameData, this);
@@ -153,7 +219,11 @@ var UIMain = cc.Class({
         GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_MEMBER_FLAG_CHANGE, this.setMemberFlag, this);
         GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_THEBAG_FLAG_CHANGE, this.setBagFlag, this);
         GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_FULICZ_FLAG_CHANGE, this.setFuliFlag, this);
-        GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_CAMP_FLAG_CHANGE,this.setCampFlag,this);
+        GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_CAMP_FLAG_CHANGE, this.setCampFlag, this);
+        GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_VIP_REWARD_FLAG_CHANGE, this.setRechargeFlag, this);
+
+        //gm
+        GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_GM_SWITCH_CHANGE, this.setMode, this);
     },
 
     checkFlagSetHotPoint: function(){
@@ -167,6 +237,7 @@ var UIMain = cc.Class({
         this.setMemberFlag();
         this.setBagFlag();
         this.setFuliFlag();
+        this.setRechargeFlag();
 
 
         // 邮件要先获取邮件信息才可以判断是否有红点
@@ -189,25 +260,25 @@ var UIMain = cc.Class({
         this.getNodeByName('ExpProgress').getComponent(cc.Sprite).fillRange = percent;
     },
 
-    showNotice: function () {
-        if(config.NEED_GUIDE){
-            return;
-        }
+    // showNotice: function () {
+    //     if(config.NEED_GUIDE){
+    //         return;
+    //     }
 
-        if (!GlobalVar.me().alreadedShowNotice){
-            let noticeCount = GlobalVar.me().noticeData.getNoticeCount();
-            if(noticeCount == -1){
-                //先去拉取公告
-                GlobalVar.handlerManager().noticeHandler.sendGetNoticeReq();
-                return;
-            }
+    //     if (!GlobalVar.me().alreadedShowNotice){
+    //         let noticeCount = GlobalVar.me().noticeData.getNoticeCount();
+    //         if(noticeCount == -1){
+    //             //先去拉取公告
+    //             GlobalVar.handlerManager().noticeHandler.sendGetNoticeReq();
+    //             return;
+    //         }
             
-            GlobalVar.me().alreadedShowNotice = true;
-            if (noticeCount > 0){
-                CommonWnd.showNoticeWnd();
-            }
-        }
-    },
+    //         GlobalVar.me().alreadedShowNotice = true;
+    //         if (noticeCount > 0){
+    //             CommonWnd.showNoticeWnd();
+    //         }
+    //     }
+    // },
 
     getVoucher: function () {
         GlobalVar.handlerManager().rechargeHandler.sendRcgBagReq();
@@ -223,7 +294,7 @@ var UIMain = cc.Class({
         this.setFlagByNodeName("btnoEquipment", flag);
     },
     setMemberFlag: function(event){
-        let flag = GlobalVar.me().memberData.getHotPointData();
+        let flag = GlobalVar.me().memberData.getStandingByFighterHotPointData();
         this.setFlagByNodeName("btnoPlane", flag);
     },
     setBagFlag: function(event) {
@@ -262,7 +333,12 @@ var UIMain = cc.Class({
         this.setFlagByNodeName("btnoCharpter", data.length > 0);
     },
 
-    setFlagByNodeName(nodeName, flag){
+    setRechargeFlag:function (event) {
+        let flag = GlobalVar.me().rechargeData.getCanGetRewardHotFlag();
+        this.setFlagByNodeName("btnoRecharge", flag);
+    },
+
+    setFlagByNodeName: function(nodeName, flag){
         let node = this.getNodeByName(nodeName);
         if (!!node){
             let spriteHot = node.getChildByName("spriteHot");
@@ -435,7 +511,7 @@ var UIMain = cc.Class({
     },
 
     setPlayerAvatar: function (url) {
-        if (cc.sys.platform !== cc.sys.WECHAT_GAME) {
+        if (cc.sys.platform !== cc.sys.WECHAT_GAME && !(window && window["wywGameId"]=="5496")) {
             return;
         }
         if (url == ""){
@@ -462,11 +538,27 @@ var UIMain = cc.Class({
         }
         if (newTask) {
             let taskData = GlobalVar.tblApi.getDataBySingleKey('TblNewTask', newTask.TaskID);
+            console.log("newTaskData:", taskData);
             if (taskData) {
                 let btnoTask = this.node.getChildByName("nodeBottom").getChildByName("btnoTask")
                 btnoTask.getChildByName("labelTaskName").getComponent(cc.Label).string = taskData.strName;
                 let maxRate = taskData.nVar;
                 let curRate = newTask.Var;
+                if (taskData.byType == 9) {
+                    maxRate -= 1;
+                    curRate -= 1;
+                }
+                if (taskData.byType == 7 || taskData.byType == 9 || taskData.byType == 11) {
+                    if (Math.floor(maxRate / 100) < Math.floor(curRate / 100)) {
+                        curRate = maxRate = 1;
+                    } else if (Math.floor(maxRate / 100) == Math.floor(curRate / 100)) {
+                        maxRate = maxRate % 100;
+                        curRate = curRate % 100;
+                    } else {
+                        maxRate = maxRate % 100;
+                        curRate = 0;
+                    }
+                }
                 if (curRate > maxRate){
                     curRate = maxRate;
                 }
@@ -475,6 +567,20 @@ var UIMain = cc.Class({
                 this.setFlagByNodeName("btnoTask", curRate == maxRate);
             }
         }
+    },
+
+    updateNewTask: function (data) {
+        this.setNewTaskDesc(data, GameServerProto.PT_NEW_TASK_TYPE_CAMP);
+    },
+
+    getShareDailyData: function (event) {
+        if (event.ErrCode != GameServerProto.PTERR_SUCCESS){
+            GlobalVar.comMsg.errorWarning(event.ErrCode);
+            return;
+        }
+
+        let btnoShareDaily = this.getNodeByName("btnoShareDaily");
+        btnoShareDaily && (btnoShareDaily.active = false);
     },
 
     onDestroy: function () {
@@ -600,11 +706,6 @@ var UIMain = cc.Class({
         CommonWnd.showBuySpWnd();
     },
 
-    onRechargeBtnClick: function (event) {
-        // GlobalVar.handlerManager().rechargeHandler.sendRcgBagReq();
-        CommonWnd.showRechargeWnd();
-    },
-
     onRichTreasureBtnClick: function (event) {
         // CommonWnd.showRichTreasureWnd();
         GlobalVar.handlerManager().drawHandler.sendTreasureData();
@@ -614,8 +715,13 @@ var UIMain = cc.Class({
         CommonWnd.showFeedbackWnd();
     },
 
+    onRechargeDiamondClick: function (event) {
+        CommonWnd.showNormalFreeGetWnd(GameServerProto.PTERR_DIAMOND_LACK, null, null, null, null, true);
+    },
+
     onRechargeBtnClick: function (event) {
         CommonWnd.showRechargeWnd();
+        // CommonWnd.showNormalFreeGetWnd(GameServerProto.PTERR_DIAMOND_LACK, null, null, null, null, true);
     },
 
     onQuestListBtnClick: function (event) {
@@ -625,6 +731,9 @@ var UIMain = cc.Class({
         // GlobalVar.comMsg.showMsg("未完成");
         // return;
         GlobalVar.handlerManager().activeHandler.sendGetActiveListReq(GameServerProto.PT_AMS_ACT_TYPE_NORMAL, 0);
+    },
+    onShareDailyBtnClick: function (event) {
+        CommonWnd.showShareDailyWnd();
     },
     activeMsgRecv: function (errCode){
         if (errCode != GameServerProto.PTERR_SUCCESS){
@@ -722,16 +831,16 @@ var UIMain = cc.Class({
 
     skipGuide: function () {
         config.NEED_GUIDE = false;
-        cc.find('Canvas/guideNode').active = false;
+        cc.find('Canvas/GuideNode').active = false;
     },
 
     setMode: function () {
-        if (!config.GM_SWITCH) {
-            this.edbxGMCMD.node.active = false;
-            this.getNodeByName('btnSendGM').active = false;
-            this.getNodeByName('btnoBattleDemo').active = false;
-            this.getNodeByName('btnoBattleEditor').active = false;
-            cc.find('Canvas/guideNode/skip').active = false;
-        }
+        // if (config.GM_SWITCH) {
+            this.edbxGMCMD.node.active = config.GM_SWITCH;
+            this.getNodeByName('btnSendGM').active = config.GM_SWITCH;
+            // this.getNodeByName('btnoBattleDemo').active = true;
+            this.getNodeByName('btnoBattleEditor').active = config.GM_SWITCH;
+            cc.find('Canvas/GuideNode/skip').active = config.GM_SWITCH;
+        // }
     },
 });

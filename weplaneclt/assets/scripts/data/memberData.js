@@ -114,6 +114,17 @@ var memberData = cc.Class({
         return flag;
     },
 
+    getStandingByFighterHotPointData: function () {
+        let flag = false;
+        for (let i in this.unLockHotFlag){
+            flag = flag || this.unLockHotFlag[i];
+        }
+        let standingByFighterID = this.getStandingByFighterID();
+        flag = flag || this.qualityUpHotFlag[standingByFighterID];
+        flag = flag || this.levelUpHotFlag[standingByFighterID];
+        return flag;
+    },
+
     setStandingByData: function (data) {
         this.standingbyData = data;
     },
@@ -198,6 +209,7 @@ var memberData = cc.Class({
         this.standingbyData.ChuZhanConf.MixMember3ID = msg.data.Conf.MixMember3ID;
         this.standingbyData.ChuZhanConf.MixMember4ID = msg.data.Conf.MixMember4ID;
         this.standingbyData.ChuZhanConf.MysteryID = msg.data.Conf.MysteryID;
+        this.updateHotPoint();
         GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_MEMBER_STANDINGBY_NTF, msg);
     },
 
@@ -221,7 +233,9 @@ var memberData = cc.Class({
             this.memberQuality = this.getMemberByID(data.MemberID).Quality;
             if (this.memberQuality < data.Quality) {
                 this.isQualityUp = true;
-                this.showCombatLate = true;
+                if (this.getStandingByFighterID() == data.MemberID) {
+                    this.showCombatLate = true;
+                }
             }
             this.changeMemberData(data);
             GlobalVar.me().bagData.updateItemDataByGMDT_ITEM_CHANGE(msg.data.OK.ItemChange);

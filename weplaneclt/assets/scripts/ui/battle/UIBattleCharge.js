@@ -4,8 +4,8 @@ const Defines = require('BattleDefines');
 const BattleManager = require('BattleManager');
 const EventMsgID = require("eventmsgid")
 const GameServerProto = require("GameServerProto");
-const md5 = require("md5");
 const weChatAPI = require("weChatAPI");
+const i18n = require('LanguageData');
 
 cc.Class({
     extends: UIBase,
@@ -29,20 +29,23 @@ cc.Class({
         if (cc.sys.platform == cc.sys.WECHAT_GAME) {
             weChatAPI.shareNormal(116, function () {
                 GlobalVar.handlerManager().endlessHandler.sendEndlessChargeRewardReq();
-            });
-        }else{
+            }, null, i18n.t('label.4000314'));
+        } else if (window && window["wywGameId"]=="5469"){
+
+        } else {
             GlobalVar.handlerManager().endlessHandler.sendEndlessChargeRewardReq();
         }
     },
 
     getEndlessChargeData: function (event) {
-        if (event.ErrCode != GameServerProto.PTERR_SUCCESS){
+        if (event.ErrCode != GameServerProto.PTERR_SUCCESS) {
             GlobalVar.comMsg.errorWarning(event.ErrCode);
             return;
         }
         BattleManager.getInstance().dashMode = 1;
         BattleManager.getInstance().isOpenDash = true;
         BattleManager.getInstance().managers[Defines.MgrType.HERO].openDash(-1);
+        BattleManager.getInstance().managers[Defines.MgrType.SCENARIO].battleEndlessMode.setRushRank(true);
         BattleManager.getInstance().gameState = Defines.GameResult.RESUME;
         this.node.destroy();
     },
@@ -51,6 +54,20 @@ cc.Class({
         BattleManager.getInstance().gameState = Defines.GameResult.RESUME;
         this.node.destroy();
     },
+
+    // onEnable: function(){
+    //     if (GlobalVar.getBannerSwitch() && !GlobalVar.getNeedGuide()){
+    //         weChatAPI.showBannerAd();
+    //     }
+    // },
+
+    // onDisable: function () {
+    //     if (GlobalVar.getBannerSwitch()){
+    //         weChatAPI.hideBannerAd();
+    //     }
+    // },
+
+    
 
     onDestroy: function () {
         GlobalVar.eventManager().removeListenerWithTarget(this);

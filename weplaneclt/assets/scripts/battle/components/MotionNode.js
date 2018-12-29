@@ -22,7 +22,9 @@ cc.Class({
             //     //GlobalVar.resManager().addCache(ResMapping.ResType.Texture2D,'cdnRes/battle/'+res,tex);
             // });
             GlobalVar.resManager().loadRes(ResMapping.ResType.Texture2D, 'cdnRes/battlemodel/motionstreak/' + res, function (tex) {
-                motion.texture = tex;
+                if (tex != null) {
+                    motion.texture = tex;
+                }
             });
         } else {
             motion = this.getComponent(cc.MotionStreak);

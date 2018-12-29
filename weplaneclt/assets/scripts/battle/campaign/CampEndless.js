@@ -46,7 +46,7 @@ CampEndless.data = {
         {groups:[332],wait:0,delay:[0]},
     ],
     goldMode:[0,1,2,3],
-    dodgeMode:[0,1,2],
+    dodgeMode:[0,1,2,3],
     monstersBoss:[
      
         {groups:[78],wait:0,delay:[0]},

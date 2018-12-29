@@ -28,13 +28,7 @@ cc.Class({
     },
 
     onLoad: function () {
-        let node = new cc.Node("nodeBlock");
-        node.addComponent(cc.BlockInputEvents);
-        node.width = 640;
-        node.height = 1400;
-        this.node.addChild(node);
-        this.nodeBlock = node.getComponent(cc.BlockInputEvents);
-        this.nodeBlock.enabled = false;
+        this._super();
     },
 
     initRoot: function () {

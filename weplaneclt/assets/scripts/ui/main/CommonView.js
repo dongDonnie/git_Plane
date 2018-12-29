@@ -7,6 +7,7 @@ const GlobalFunc = require('GlobalFunctions');
 const i18n = require('LanguageData');
 const CommonWnd = require("CommonWnd");
 const GameServerProto = require("GameServerProto");
+const weChatAPI = require("weChatAPI");
 
 cc.Class({
     extends: RootBase,
@@ -70,6 +71,9 @@ cc.Class({
     animePlayCallBack(name) {
         if (name == "Escape") {
             this._super("Escape");
+            if (GlobalVar.getBannerSwitch()){
+                weChatAPI.hideBannerAd();
+            }
             let confirm = this.node.getChildByName("btnConfirm");
             let cancel = this.node.getChildByName("btnCancel");
             cancel.getComponent("RemoteSprite").setFrame(1);
@@ -132,34 +136,11 @@ cc.Class({
             this.clickIndex = -1;
         } else if (name == "Enter") {
             this._super("Enter");
-            this.initCommomView();
-        }
-    },
 
-    setItemShowVec: function (itemMustIDVec, itemProbIDVec) {
-        this.itemShowVec = {};
-        this.itemShowVec.itemMustIDVec = itemMustIDVec;
-        this.itemShowVec.itemProbIDVec = itemProbIDVec;
-    },
-
-    initCommomView() {
-        if (this.itemShowVec!=null){
-            let itemMustIDVec = [];
-            let itemProbIDVec = [];
-            function compare() {
-                return function (a, b) {
-                    // 按照是否完成排序
-                    let qualityA = GlobalVar.tblApi.getDataBySingleKey("TblItem", a).wQuality;
-                    let qualityB = GlobalVar.tblApi.getDataBySingleKey("TblItem", b).wQuality;
-                    if (qualityA != qualityB){
-                        return -(qualityA - qualityB);
-                    }
-                }
+            if (GlobalVar.getBannerSwitch() && !GlobalVar.getNeedGuide()){
+                let self = this;
+                weChatAPI.showBannerAd();
             }
-    
-            itemMustIDVec = this.itemShowVec.itemMustIDVec.sort(compare());
-            itemProbIDVec = this.itemShowVec.itemProbIDVec.sort(compare());
-            this.setDrawBoxPreviewItem(itemMustIDVec, itemProbIDVec);
         }
     },
 
@@ -191,15 +172,8 @@ cc.Class({
         }
     },
 
-    btnCLick: function (event, index) {
+    btnClick: function (event, index) {
         this.clickIndex = typeof index !== 'undefined' ? index : -1;
-        if (this.clickIndex == 2){
-            let nodeDrawBoxView = this.node.getChildByName("nodeContents").getChildByName("nodeDrawBoxView");
-            let itemMustContent = nodeDrawBoxView.getChildByName("scrollviewItemMust").getComponent(cc.ScrollView).content;
-            let itemProbContent = nodeDrawBoxView.getChildByName("scrollviewItemProb").getComponent(cc.ScrollView).content;
-            itemMustContent.removeAllChildren();
-            itemProbContent.removeAllChildren();
-        }
         if (this.clickIndex != -1) {
             this.animePlay(0);
         }
@@ -240,16 +214,6 @@ cc.Class({
         this.setContent(3, name, type, title, "", pFunCloseCallback, pFunConfirmCallback, pFunCancelCallback, "", confirmName, cancelName);
     },
 
-    setResetQuestContent: function (name, type, title, resetDesc, diamondCost, closeCallBack, confirmCallBack, cancelCallBack, confirmName, cancelName) {
-        let CONTENT_QUESTRESET = 3;
-        let contentMode = CONTENT_QUESTRESET;
-        this.selectContent(contentMode);
-
-        this.setResetQuestTip(resetDesc, diamondCost);
-        this.setContent(4, name, type, title, "", closeCallBack, confirmCallBack, cancelCallBack, "", confirmName, cancelName);
-        this.node.height = 450;
-    },
-
     setItemBoxContent: function (name, type, title, condition, vecItems, closeCallBack, confirmCallBack, cancelCallBack, confirmName, cancelName) {
         let CONTENT_BOXPREVIEW = 2;
         let contentMode = CONTENT_BOXPREVIEW;
@@ -258,15 +222,6 @@ cc.Class({
         this.setTreasureBoxItem(condition, vecItems);
         this.setContent(5, name, type, title, "", closeCallBack, confirmCallBack, cancelCallBack, "", confirmName, cancelName);
         this.node.height = 400;
-    },
-
-    setDrawBoxPreviewContent: function (name, type, title, closeCallBack, confirmCallBack, cancelCallBack) {
-        let CONTENT_DRAWBOXVIEW = 4;
-        let contentMode = CONTENT_DRAWBOXVIEW;
-        this.selectContent(contentMode);
-
-        this.setContent(0, name, type, title, "", closeCallBack, confirmCallBack, cancelCallBack, "", "", "");
-        this.node.height = 820;
     },
 
     setDrawTip: function (drawMode, text, ticketsEnough, diamondEnough) {
@@ -330,20 +285,6 @@ cc.Class({
         return confirmCallBack;
     },
 
-    setResetQuestTip: function (resetDesc, diamondCost) {
-        this.node.getComponent("RemoteSprite").setFrame(1);
-        this.node.getChildByName("labelTitle").active = false;
-
-        let confirm = this.node.getChildByName("btnConfirm");
-        let cancel = this.node.getChildByName("btnCancel");
-        confirm.y=(confirm.y + 20);
-        cancel.y=(cancel.y + 20);
-
-        let nodeReset = this.node.getChildByName("nodeContents").getChildByName("nodeQuestReset");
-        nodeReset.getChildByName("labelResetDesc").getComponent(cc.Label).string = resetDesc;
-        nodeReset.getChildByName("labelDiamondCost").getComponent(cc.Label).string = diamondCost;
-    },
-
     setTreasureBoxItem: function (condition, vecItems) {
         let nodePreview = this.node.getChildByName("nodeContents").getChildByName("nodeBoxPreview");
         let nodeLayout = nodePreview.getChildByName("nodeLayout");
@@ -363,46 +304,6 @@ cc.Class({
         }
         nodeLayout.getComponent(cc.Layout).updateLayout();
         this.node.getChildByName("btnConfirm").getComponent(cc.Button).interactable = condition;
-    },
-
-    setDrawBoxPreviewItem(itemMustIDVec, itemProbIDVec) {
-        let nodeDrawBoxView = this.node.getChildByName("nodeContents").getChildByName("nodeDrawBoxView");
-        let itemMustContent = nodeDrawBoxView.getChildByName("scrollviewItemMust").getComponent(cc.ScrollView).content;
-        let itemProbContent = nodeDrawBoxView.getChildByName("scrollviewItemProb").getComponent(cc.ScrollView).content;
-        let itemModel = nodeDrawBoxView.getChildByName("itemObjectModel");
-        for (let i = 0; i<itemMustContent.children.length; i++){
-            itemMustContent.children[i].destroy();
-        }
-        itemMustContent.removeAllChildren();
-        for (let i = 0; i < itemMustIDVec.length; i++) {
-            let nodeItem = cc.instantiate(itemModel);
-            // nodeItem.opacity = 255;
-            nodeItem.y = -itemMustContent.height/2
-            let itemObj = nodeItem.getChildByName("ItemObject").getComponent("ItemObject");
-            let itemData = itemObj.updateItem(itemMustIDVec[i]);
-            let labelName = nodeItem.getChildByName("labelName").getComponent(cc.Label)
-            labelName.string = itemData.strName;
-            labelName.node.color = GlobalFunc.getCCColorByQuality(itemData.wQuality);
-            itemObj.setClick(true, 2);
-            itemMustContent.addChild(nodeItem);
-        }
-        for (let i = 0; i<itemProbContent.children.length; i++){
-            itemProbContent.children[i].destroy();
-        }
-        itemProbContent.removeAllChildren();
-        for (let i = 0; i < itemProbIDVec.length; i++) {
-            let nodeItem = cc.instantiate(itemModel);
-            let itemObj = nodeItem.getChildByName("ItemObject").getComponent("ItemObject");
-            let itemData = itemObj.updateItem(itemProbIDVec[i]);
-            let labelName = nodeItem.getChildByName("labelName").getComponent(cc.Label)
-            labelName.string = itemData.strName;
-            labelName.node.color = GlobalFunc.getCCColorByQuality(itemData.wQuality);
-            itemObj.setClick(true, 2);
-            itemProbContent.addChild(nodeItem);
-        }
-        itemMustContent.getComponent(cc.Layout).updateLayout();
-        itemProbContent.getComponent(cc.Layout).updateLayout();
-        itemProbContent.y = 150;
     },
 
     showDiamondNotEnoughMsg() {

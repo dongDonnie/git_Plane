@@ -33,8 +33,8 @@ var AIInterface = cc.Class({
             return buff;
         },
 
-        createSundries: function (id, pos,target,hp) {
-            let sundries = Factory.getInstance().produceSundries(id, pos,target,hp);
+        createSundries: function (id, pos,hp) {
+            let sundries = Factory.getInstance().produceSundries(id, pos,hp);
             sundries.entityId = EntityManager.getInstance().getEntityId();
             EntityManager.getInstance().newEntity(sundries);
             //EntityManager.getInstance().entityNewList.push(sundries);

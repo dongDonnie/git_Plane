@@ -22,6 +22,7 @@ cc.Class({
         GlobalVar.messageDispatcher.bindMsg(GameServerProto.GMID_CREATE_ROLE_NTF, self._needCreateRoleNTF, self);
         GlobalVar.messageDispatcher.bindMsg(GameServerProto.GMID_CREATE_ROLE_ACK, self._recvCreateRoleAck, self);
         GlobalVar.messageDispatcher.bindMsg(GameServerProto.GMID_ENTERGAME_NTF, self._enterGame, self);
+        GlobalVar.messageDispatcher.bindMsg(GameServerProto.GMID_LOGOUT_ACK, self._recvLogOutAck, self);
     },
 
     _recvLoginAck: function (msgId, msg) {
@@ -44,6 +45,13 @@ cc.Class({
         } else {
             // console.log("创建角色ACK错误码为零");
         }
+    },
+
+    _recvLogOutAck: function (msgId, msg) {
+        if (typeof msg != "object") {
+            return;
+        }
+        console.log("登出消息：", msg);
     },
 
     _needCreateRoleNTF: function (msgId, msg) {
@@ -139,5 +147,13 @@ cc.Class({
             this.sendMsg(GameServerProto.GMID_CREATE_ROLE_REQ, msg);
         }
 
+    },
+
+    sendLogOutReq: function () {
+        let msg = {
+            Reserved: 0,
+        };
+
+        this.sendMsg(GameServerProto.GMID_LOGOUT_REQ, msg);
     },
 });

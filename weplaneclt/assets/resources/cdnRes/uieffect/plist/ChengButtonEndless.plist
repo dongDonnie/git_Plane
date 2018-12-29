@@ -4,7 +4,7 @@
     <dict>
         <key>frames</key>
         <dict>
-            <key>橙按钮新形状_00000.png</key>
+            <key>orangenewbtn_00000.png</key>
             <dict>
                 <key>frame</key>
                 <string>{{2,1693},{232,87}}</string>
@@ -17,7 +17,7 @@
                 <key>sourceSize</key>
                 <string>{240,97}</string>
             </dict>
-            <key>橙按钮新形状_00001.png</key>
+            <key>orangenewbtn_00001.png</key>
             <dict>
                 <key>frame</key>
                 <string>{{2,1604},{232,87}}</string>
@@ -30,7 +30,7 @@
                 <key>sourceSize</key>
                 <string>{240,97}</string>
             </dict>
-            <key>橙按钮新形状_00002.png</key>
+            <key>orangenewbtn_00002.png</key>
             <dict>
                 <key>frame</key>
                 <string>{{2,1515},{232,87}}</string>
@@ -43,7 +43,7 @@
                 <key>sourceSize</key>
                 <string>{240,97}</string>
             </dict>
-            <key>橙按钮新形状_00003.png</key>
+            <key>orangenewbtn_00003.png</key>
             <dict>
                 <key>frame</key>
                 <string>{{2,1426},{232,87}}</string>
@@ -56,7 +56,7 @@
                 <key>sourceSize</key>
                 <string>{240,97}</string>
             </dict>
-            <key>橙按钮新形状_00004.png</key>
+            <key>orangenewbtn_00004.png</key>
             <dict>
                 <key>frame</key>
                 <string>{{2,1337},{232,87}}</string>
@@ -69,7 +69,7 @@
                 <key>sourceSize</key>
                 <string>{240,97}</string>
             </dict>
-            <key>橙按钮新形状_00005.png</key>
+            <key>orangenewbtn_00005.png</key>
             <dict>
                 <key>frame</key>
                 <string>{{2,1248},{232,87}}</string>
@@ -82,7 +82,7 @@
                 <key>sourceSize</key>
                 <string>{240,97}</string>
             </dict>
-            <key>橙按钮新形状_00006.png</key>
+            <key>orangenewbtn_00006.png</key>
             <dict>
                 <key>frame</key>
                 <string>{{2,625},{234,87}}</string>
@@ -95,7 +95,7 @@
                 <key>sourceSize</key>
                 <string>{240,97}</string>
             </dict>
-            <key>橙按钮新形状_00007.png</key>
+            <key>orangenewbtn_00007.png</key>
             <dict>
                 <key>frame</key>
                 <string>{{2,536},{234,87}}</string>
@@ -108,7 +108,7 @@
                 <key>sourceSize</key>
                 <string>{240,97}</string>
             </dict>
-            <key>橙按钮新形状_00008.png</key>
+            <key>orangenewbtn_00008.png</key>
             <dict>
                 <key>frame</key>
                 <string>{{2,447},{234,87}}</string>
@@ -121,7 +121,7 @@
                 <key>sourceSize</key>
                 <string>{240,97}</string>
             </dict>
-            <key>橙按钮新形状_00009.png</key>
+            <key>orangenewbtn_00009.png</key>
             <dict>
                 <key>frame</key>
                 <string>{{2,358},{234,87}}</string>
@@ -134,7 +134,7 @@
                 <key>sourceSize</key>
                 <string>{240,97}</string>
             </dict>
-            <key>橙按钮新形状_00010.png</key>
+            <key>orangenewbtn_00010.png</key>
             <dict>
                 <key>frame</key>
                 <string>{{2,269},{234,87}}</string>
@@ -147,7 +147,7 @@
                 <key>sourceSize</key>
                 <string>{240,97}</string>
             </dict>
-            <key>橙按钮新形状_00011.png</key>
+            <key>orangenewbtn_00011.png</key>
             <dict>
                 <key>frame</key>
                 <string>{{2,180},{234,87}}</string>
@@ -160,7 +160,7 @@
                 <key>sourceSize</key>
                 <string>{240,97}</string>
             </dict>
-            <key>橙按钮新形状_00012.png</key>
+            <key>orangenewbtn_00012.png</key>
             <dict>
                 <key>frame</key>
                 <string>{{2,91},{234,87}}</string>
@@ -173,7 +173,7 @@
                 <key>sourceSize</key>
                 <string>{240,97}</string>
             </dict>
-            <key>橙按钮新形状_00013.png</key>
+            <key>orangenewbtn_00013.png</key>
             <dict>
                 <key>frame</key>
                 <string>{{2,2},{234,87}}</string>
@@ -186,7 +186,7 @@
                 <key>sourceSize</key>
                 <string>{240,97}</string>
             </dict>
-            <key>橙按钮新形状_00014.png</key>
+            <key>orangenewbtn_00014.png</key>
             <dict>
                 <key>frame</key>
                 <string>{{2,1159},{232,87}}</string>
@@ -199,7 +199,7 @@
                 <key>sourceSize</key>
                 <string>{240,97}</string>
             </dict>
-            <key>橙按钮新形状_00015.png</key>
+            <key>orangenewbtn_00015.png</key>
             <dict>
                 <key>frame</key>
                 <string>{{2,1070},{232,87}}</string>
@@ -212,7 +212,7 @@
                 <key>sourceSize</key>
                 <string>{240,97}</string>
             </dict>
-            <key>橙按钮新形状_00016.png</key>
+            <key>orangenewbtn_00016.png</key>
             <dict>
                 <key>frame</key>
                 <string>{{2,981},{232,87}}</string>
@@ -225,7 +225,7 @@
                 <key>sourceSize</key>
                 <string>{240,97}</string>
             </dict>
-            <key>橙按钮新形状_00017.png</key>
+            <key>orangenewbtn_00017.png</key>
             <dict>
                 <key>frame</key>
                 <string>{{2,892},{232,87}}</string>
@@ -238,7 +238,7 @@
                 <key>sourceSize</key>
                 <string>{240,97}</string>
             </dict>
-            <key>橙按钮新形状_00018.png</key>
+            <key>orangenewbtn_00018.png</key>
             <dict>
                 <key>frame</key>
                 <string>{{2,803},{232,87}}</string>
@@ -251,7 +251,7 @@
                 <key>sourceSize</key>
                 <string>{240,97}</string>
             </dict>
-            <key>橙按钮新形状_00019.png</key>
+            <key>orangenewbtn_00019.png</key>
             <dict>
                 <key>frame</key>
                 <string>{{2,714},{232,87}}</string>

@@ -10,10 +10,11 @@ const GameServerProto = require("GameServerProto");
 const BattleManager = require("BattleManager");
 const ResMapping = require("resmapping");
 const ShaderUtils = require("ShaderUtils");
+const config = require('config');
 
 const AUDIO_LEVEL_UP = 'cdnRes/audio/main/effect/shengji';
 const AUDIO_QUALITY_UP = 'cdnRes/audio/main/effect/wujinchongfeng'
-
+const AUDIO_QUALITY_UP2 = 'cdnRes/audio/main/effect/shengjie2'
 
 cc.Class({
     extends: RootBase,
@@ -67,6 +68,10 @@ cc.Class({
             default: null,
             type: cc.Node,
         },
+        effectUI: {
+            default: null,
+            type: cc.Node,
+        }
     },
 
     onLoad: function () {
@@ -297,6 +302,9 @@ cc.Class({
                 BattleManager.getInstance().quitOutSide();
             }
 
+            if (GlobalVar.srcSwitch()) {
+                this.getNodeByName('vipTip').active = false;
+            }
             
             this.node.getChildByName("spriteTop").active = true;
             this.node.getChildByName("nodeCenter").active = true;
@@ -751,17 +759,87 @@ cc.Class({
         itemObj.setLabelQualityNumberData(leaderEquipData.strName);
         let afterItemIcon = leaderEquipData.wIcon;
 
-
         this.spriteEquip[0].node.active = false;
         let self = this;
 
         CommonWnd.showEquipQualityUpWnd(beforeItemIcon, afterItemIcon, leaderEquipDataBefore.strName, leaderEquipData.strName, leaderEquipDataBefore.byColor, leaderEquipData.byColor, function () {
             self.spriteEquip[0].node.active = true;
         });
+        // let addValue = self.effectUI.getChildByName('addValuebg');
+        // addValue.getChildByName('labelAddValuebefore').getComponent(cc.Label).string = leaderEquipDataBefore.strName;
+        // addValue.getChildByName('labelAddValue').getComponent(cc.Label).string = leaderEquipData.strName;
+        // addValue.getChildByName('labelAddValuebefore').color = GlobalFunc.getSystemColor(leaderEquipDataBefore.byColor);
+        // addValue.getChildByName('labelAddValue').color = GlobalFunc.getSystemColor(leaderEquipData.byColor);
+        // let equipSprite = self.effectUI.getChildByName('nodeEquip');
+        // let index = beforeItemIcon / 10 % 10 + 1;
+        // GlobalVar.resManager().loadRes(ResMapping.ResType.SpriteFrame, 'cdnRes/itemiconBig/' + index + '/' + beforeItemIcon, function (frame) {
+        //     equipSprite.getComponent(cc.Sprite).spriteFrame = frame;
+        //     self.playEffect(afterItemIcon);
+        // });
 
         this.updateHotPoint();
 
         this.initParam();
+    },
+
+    playEffect: function (afterItemIcon) {
+        let self = this;
+        self.effectUI.active = true;
+        let effect0 = self.effectUI.getChildByName('effectNode').getComponent(sp.Skeleton);
+        let effect1 = self.effectUI.getChildByName('nodeEffectFront').getComponent(dragonBones.ArmatureDisplay);
+        let effect2 = self.effectUI.getChildByName('nodeEffectBack').getComponent(dragonBones.ArmatureDisplay);
+        let equipSprite = self.effectUI.getChildByName('nodeEquip');
+        let labelTip = self.effectUI.getChildByName('labelTip');
+        let spriteContinue = self.effectUI.getChildByName('spriteContinue');
+        let addValue = self.effectUI.getChildByName('addValuebg');
+        let showTextAnime =  function () {
+            spriteContinue.active = true;
+            spriteContinue.runAction(cc.repeatForever(cc.sequence(cc.fadeIn(0.7), cc.fadeOut(0.7))));
+            effect2.armature().animation.stop();
+            GlobalVar.soundManager().playEffect(AUDIO_QUALITY_UP2);
+
+            labelTip.active = true;
+            labelTip.scale = 0;
+            labelTip.runAction(cc.spawn(cc.scaleTo(0.2, 1), cc.moveBy(0.2, 0, 250)));
+            addValue.active = true;
+            addValue.scale = 0;
+            addValue.runAction(cc.sequence(cc.spawn(cc.scaleTo(0.2, 1), cc.moveBy(0.2, 0, -95)), cc.callFunc(() => {
+                self.canClose = true;
+            })));
+        }
+        let effect1Finish = function () {
+            effect1.node.active = false;
+        };
+        let effectFinish = function () {
+            effect0.node.active = false;
+            GlobalFunc.playDragonBonesAnimation(effect1.node, effect1Finish);
+            let callfunc = cc.callFunc(() => {
+                let index = afterItemIcon / 10 % 10 + 1;
+                GlobalVar.resManager().loadRes(ResMapping.ResType.SpriteFrame, 'cdnRes/itemiconBig/' + index + '/' + afterItemIcon, function (frame) {
+                    equipSprite.getComponent(cc.Sprite).spriteFrame = frame;
+                    GlobalFunc.playDragonBonesAnimation(effect2.node, null);
+
+                    self.scheduleOnce(() => {
+                        showTextAnime();
+                    }, 1.8);
+                });
+            })
+            let seq = cc.sequence(cc.scaleTo(0.7, 0.5), callfunc, cc.scaleTo(0.25, 2), cc.scaleTo(0.2, 1))
+            equipSprite.runAction(seq);
+        }
+        effect0.node.active = true;
+        effect0.setAnimation(0, "animation", false);
+        GlobalFunc.playSpineAnimation(effect0.node, effectFinish, false);
+    },
+
+    clickMaskClose: function () {
+        if (this.canClose) {
+            this.effectUI.active = false;
+            GlobalVar.me().propData.getShowCombatLate();
+            if (config.NEED_GUIDE) {
+                require('Guide').getInstance().doNextStep();
+            }
+        }
     },
 
     bagAddItem: function (data) {

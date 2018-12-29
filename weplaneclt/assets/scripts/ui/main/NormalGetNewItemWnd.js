@@ -103,38 +103,6 @@ cc.Class({
         return item;
     },
 
-    sliceItemData: function (itemDatas) {
-        for (let i = 0; i < itemDatas.length; i++) {
-            let data = itemDatas[i];
-            let itemID = data.ItemID || data.wItemID;
-            let tblData = GlobalVar.tblApi.getDataBySingleKey('TblItem', itemID);
-            let itemCount = data.Count || data.nCount;
-            let overLap = tblData.wOverlap;
-            if (itemCount > overLap) {
-                let sliceCount = Math.floor(itemCount / overLap);
-                let sliceLeft = (itemCount % overLap);
-                let newArr = [];
-                for (let j = 0; j < sliceCount; j++) {
-                    let newItem = [];
-                    newItem.ItemID = itemID;
-                    newItem.Count = overLap;
-                    newArr.push(newItem);
-                }
-                if (sliceLeft != 0) {
-                    let newItem = [];
-                    newItem.ItemID = itemID;
-                    newItem.Count = overLap;
-                    newArr.push(newItem);
-                }
-                let length = newArr.length;
-                itemDatas.splice(i, 1);
-                newArr.unshift(i, 0);
-                Array.prototype.splice.apply(itemDatas, newArr);
-                i += length - 1;
-            }
-        }
-    },
-
     update: function () {
 
     },

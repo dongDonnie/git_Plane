@@ -7,6 +7,7 @@ const GlobalFunc = require('GlobalFunctions')
 const CommonWnd = require("CommonWnd");
 const i18n = require('LanguageData');
 const GameServerProto = require("GameServerProto");
+const weChatAPI = require("weChatAPI");
 ////###
 
 const ITEM_SELL_TYPE_NORMAL = 1;
@@ -108,6 +109,9 @@ cc.Class({
     animePlayCallBack(name) {
         if (name == "Escape") {
             this._super("Escape");
+            if (GlobalVar.getBannerSwitch()){
+                weChatAPI.hideBannerAd();
+            }
             GlobalVar.eventManager().removeListenerWithTarget(this);
             if (this.sellMode) {
                 this.sellMode = false;
@@ -123,6 +127,9 @@ cc.Class({
             }
         } else if (name == "Enter") {
             this._super("Enter");
+            if (GlobalVar.getBannerSwitch() && !GlobalVar.getNeedGuide()){
+                weChatAPI.showBannerAd();
+            }
             GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_ITEM_USE_RESULT, this.getUseItemResult, this);
         }
     },
@@ -232,8 +239,8 @@ cc.Class({
                 batch = true;
             }
         }
-        if (batch) {
-            let backUseWndNode = WindowManager.getInstance().findViewInWndNode(WndTypeDefine.WindowType.E_DT_NORMAL_BATCH_USE_WND)
+        let backUseWndNode = WindowManager.getInstance().findViewInWndNode(WndTypeDefine.WindowType.E_DT_NORMAL_BATCH_USE_WND)
+        if (batch || backUseWndNode) {
             if (backUseWndNode) {
                 backUseWndNode.getComponent(WndTypeDefine.WindowType.E_DT_NORMAL_BATCH_USE_WND).resetWnd();
                 backUseWndNode.getComponent(WndTypeDefine.WindowType.E_DT_NORMAL_BATCH_USE_WND).setResultData(this.itemID, event.GetItem);

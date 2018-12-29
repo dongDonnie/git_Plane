@@ -132,7 +132,7 @@ const Mode = cc.Class({
 
         this.curTime = 0;
 
-        this.killdata = null
+        this.killdata = null;
 
         this.killCount = 0;
 
@@ -160,6 +160,7 @@ const Mode = cc.Class({
             mapControl.mapOpacity = 255;
             mapControl.opacityTime = 0;
             mapControl.loop = true;
+            mapControl.stop = false;
             this.mapControlList.push(mapControl);
         }
 
@@ -283,6 +284,8 @@ const Mode = cc.Class({
                     control.loop = true;
                 }
 
+                control.stop = false;
+
                 for (let mapIndex = 0; mapIndex < mapData.length; mapIndex++) {
                     let nodeBkg = new cc.Node();
                     let sprite = nodeBkg.addComponent(cc.Sprite);
@@ -397,7 +400,7 @@ const Mode = cc.Class({
                     }
                 }
                 for (let i = 0; i < control.mapList.length; i++) {
-                    control.mapList[i].y = control.mapList[i].y - control.mapSpeed * dt;
+                    control.mapList[i].y -= control.mapSpeed * dt;
                 }
             } else {
                 if (highestControl == null) {
@@ -409,15 +412,12 @@ const Mode = cc.Class({
                     }
                 }
                 let highest = control.mapList[control.mapList.length - 1];
-                if (highest.y + 0.5 * highest.getContentSize().height * highest.scale > cc.winSize.height) {
-                    for (let i = 0; i < control.mapList.length; i++) {
-                        control.mapList[i].y = (control.mapList[i].y - control.mapSpeed * dt);
-                    }
-                    // if (control.mapSpeed >= 300) {
-                    //     control.mapSpeed-=1;
-                    // }
-                } else {
+                if (highest.y + 0.5 * highest.getContentSize().height * highest.scale - control.mapSpeed * dt <= this.battleManager.displayContainer.height) {
                     control.stop = true;
+                } else {
+                    for (let i = 0; i < control.mapList.length; i++) {
+                        control.mapList[i].y -= control.mapSpeed * dt;
+                    }
                 }
             }
         }
@@ -426,42 +426,57 @@ const Mode = cc.Class({
         let clear = true;
         for (let controlIndex = 0; controlIndex < this.mapControlList.length; controlIndex++) {
             let control = this.mapControlList[controlIndex];
-            let index = -1;
-            for (let i = control.mapTransList.length - 1; i >= 0; i--) {
-                control.mapTransList[i].y = (control.mapTransList[i].y - control.mapSpeed * dt);
-                if (control.mapTransList[i].y + 0.5 * control.mapTransList[i].getContentSize().height * control.mapTransList[i].scale <= 0) {
-                    index = i;
-                }
+            if (control.mapList.length == 0 && control.mapTransList.length == 0) {
+                continue;
             }
-            if (index != -1) {
-                control.mapTransList[index].destroy();
-                control.mapTransList.splice(index, 1);
+            for (let i = 0; i < control.mapTransList.length; i++) {
+                control.mapTransList[i].y -= control.mapSpeed * dt;
+                if (control.mapTransList[i].y + 0.5 * control.mapTransList[i].getContentSize().height * control.mapTransList[i].scale <= 0) {
+                    control.mapTransList[i].destroy();
+                    control.mapTransList.splice(i, 1);
+                    i = 0;
+                }
             }
             if (control.mapTransList.length > 0) {
                 clear = false;
             }
-            for (let i = 0; i < control.mapList.length; i++) {
-                let posY = control.mapList[i].y;
-                if (posY + 0.5 * control.mapList[i].getContentSize().height * control.mapList[i].scale <= 0) {
-                    let highest = 0;
-                    let index = 0;
-                    for (let j = 0; j < control.mapList.length; j++) {
-                        if (control.mapList[j].y >= highest) {
-                            highest = control.mapList[j].y;
-                            index = j;
+
+            if (!!control.stop) {
+                continue;
+            }
+
+            if (control.loop) {
+                for (let i = 0; i < control.mapList.length; i++) {
+                    let posY = control.mapList[i].y;
+                    if (posY + 0.5 * control.mapList[i].getContentSize().height * control.mapList[i].scale <= 0) {
+                        let highest = 0;
+                        let index = 0;
+                        for (let j = 0; j < control.mapList.length; j++) {
+                            if (control.mapList[j].y >= highest) {
+                                highest = control.mapList[j].y;
+                                index = j;
+                            }
                         }
+                        posY = control.mapList[index].y +
+                            0.5 * control.mapList[index].getContentSize().height * control.mapList[index].scale +
+                            0.5 * control.mapList[i].getContentSize().height * control.mapList[i].scale;
+                        control.mapList[i].y = posY;
                     }
-                    posY = control.mapList[index].y +
-                        0.5 * control.mapList[index].getContentSize().height * control.mapList[index].scale +
-                        0.5 * control.mapList[i].getContentSize().height * control.mapList[i].scale;
-                    control.mapList[i].y = posY;
+                }
+                for (let i = 0; i < control.mapList.length; i++) {
+                    control.mapList[i].y -= control.mapSpeed * dt;
+                }
+            } else {
+                let highest = control.mapList[control.mapList.length - 1];
+                if (highest.y + 0.5 * highest.getContentSize().height * highest.scale - control.mapSpeed * dt <= this.battleManager.displayContainer.height) {
+                    control.stop = true;
+                } else {
+                    for (let i = 0; i < control.mapList.length; i++) {
+                        control.mapList[i].y -= control.mapSpeed * dt;
+                    }
                 }
             }
-            for (let i = 0; i < control.mapList.length; i++) {
-                control.mapList[i].y = control.mapList[i].y - control.mapSpeed * dt;
-            }
         }
-        //this.mapUpdate(dt);
         return clear;
     },
     mapChange: function () {
@@ -470,21 +485,25 @@ const Mode = cc.Class({
             if (waveControl.maps != null) {
                 for (let controlIndex = 0; controlIndex < this.mapControlList.length; controlIndex++) {
                     let control = this.mapControlList[controlIndex];
-                    for (let i = 0; i < control.mapList.length; i++) {
-                        for (let j = i + 1; j < control.mapList.length; j++) {
-                            if (control.mapList[i].y > control.mapList[j].y) {
-                                let temp = control.mapList[i];
-                                control.mapList[i] = control.mapList[j];
-                                control.mapList[j] = temp;
-                            }
-                        }
-                    }
+                    // for (let i = 0; i < control.mapList.length; i++) {
+                    //     for (let j = i + 1; j < control.mapList.length; j++) {
+                    //         if (control.mapList[i].y > control.mapList[j].y) {
+                    //             let temp = control.mapList[i];
+                    //             control.mapList[i] = control.mapList[j];
+                    //             control.mapList[j] = temp;
+                    //         }
+                    //     }
+                    // }
+                    control.mapList.sort(function (a, b) {
+                        return a.y - b.y;
+                    });
                     for (let i = 0; i < control.mapList.length; i++) {
                         control.mapTransList.push(control.mapList[i])
                     }
                     if (control.mapList.length > 0) {
                         control.mapList.splice(0, control.mapList.length);
                     }
+                    control.stop = false;
                 }
                 return true;
             }
@@ -499,15 +518,18 @@ const Mode = cc.Class({
                 sum--;
                 continue;
             }
-            for (let i = 0; i < control.mapList.length; i++) {
-                for (let j = i + 1; j < control.mapList.length; j++) {
-                    if (control.mapList[i].y > control.mapList[j].y) {
-                        let temp = control.mapList[i];
-                        control.mapList[i] = control.mapList[j];
-                        control.mapList[j] = temp;
-                    }
-                }
-            }
+            // for (let i = 0; i < control.mapList.length; i++) {
+            //     for (let j = i + 1; j < control.mapList.length; j++) {
+            //         if (control.mapList[i].y > control.mapList[j].y) {
+            //             let temp = control.mapList[i];
+            //             control.mapList[i] = control.mapList[j];
+            //             control.mapList[j] = temp;
+            //         }
+            //     }
+            // }
+            control.mapList.sort(function (a, b) {
+                return a.y - b.y;
+            });
 
             if (control.mapList[0].y + 0.5 * control.mapList[0].getContentSize().height * control.mapList[0].scale <= 0) {
                 let newPosY = control.mapList[control.mapList.length - 1].y +

@@ -50,14 +50,19 @@ cc.Class({
     animePlayCallBack(name) {
         if (name == "Escape") {
             this._super("Escape");
+            if (GlobalVar.getBannerSwitch()){
+                weChatAPI.justShowBanner();
+            }
             GlobalVar.eventManager().removeListenerWithTarget(this);
             WindowManager.getInstance().popView(false, null, false, false);
         } else if (name == "Enter") {
             this._super("Enter");
+            if (GlobalVar.getBannerSwitch()){
+                weChatAPI.justHideBanner();
+            }
             this.registerEvent();
             this.node.getChildByName("nodeSCReward").active = true;
 
-            let self = this;
             if (cc.sys.platform === cc.sys.WECHAT_GAME){
                 // weChatAPI.getInviteUserList("invite", function(data){
                 //     self.curInviteCount = data.total;
@@ -135,9 +140,9 @@ cc.Class({
         feedback.x=(0);
         feedback.getChildByName("labelTitle").getComponent(cc.Label).string = data.strName;
         feedback.getChildByName("labelDesc").getComponent(cc.Label).string = data.strDesc;
-        feedback.getChildByName("labelSpcePrice").getComponent(cc.Label).string = data.dwCondition;
+        feedback.getChildByName("labelSpcePrice").getComponent(cc.Label).string = data.nCost;
         feedback.getChildByName("labelOriPrice").getComponent(cc.Label).string = data.nPrice;
-        feedback.getChildByName("ItemObject").getComponent("ItemObject").updateItem(data.byID + 400);
+        feedback.getChildByName("ItemObject").getComponent("ItemObject").updateItem(data.wIcon, data.oVecItems[0].nCount);
         feedback.getChildByName("ItemObject").getComponent("ItemObject").setClick(true, 2);
 
         let dailyBuyState = GlobalVar.me().feedbackData.getFuliBuyStateByID(data.byID);

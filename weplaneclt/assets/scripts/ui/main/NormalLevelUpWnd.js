@@ -5,7 +5,7 @@ const GlobalVar = require('globalvar')
 const EventMsgID = require("eventmsgid");
 const GlobalFunc = require('GlobalFunctions')
 const i18n = require('LanguageData');
-
+const weChatAPI = require("weChatAPI");
 
 const MODE_GET_BUY_ITEM = 0;
 const MODE_GET_DRAW_ITEM = 1;
@@ -117,38 +117,6 @@ cc.Class({
         return item;
     },
 
-    sliceItemData: function(itemDatas){
-        for (let i = 0; i< itemDatas.length; i++){
-            let data = itemDatas[i];
-            let itemID = data.ItemID || data.wItemID;
-            let tblData = GlobalVar.tblApi.getDataBySingleKey('TblItem', itemID);
-            let itemCount = data.Count || data.nCount;
-            let overLap = tblData.wOverlap;
-            if (itemCount > overLap){
-                let sliceCount = Math.floor(itemCount/overLap);
-                let sliceLeft = (itemCount % overLap);
-                let newArr = [];
-                for (let j = 0; j<sliceCount;j++){
-                    let newItem = [];
-                    newItem.ItemID = itemID;
-                    newItem.Count = overLap;
-                    newArr.push(newItem);
-                }
-                if (sliceLeft != 0){
-                    let newItem = [];
-                    newItem.ItemID = itemID;
-                    newItem.Count = overLap;
-                    newArr.push(newItem);
-                }
-                let length = newArr.length;
-                itemDatas.splice(i, 1);
-                newArr.unshift(i, 0);
-                Array.prototype.splice.apply(itemDatas, newArr);
-                i += length-1;
-            }
-        }
-    },
-
     update: function(){
 
     },
@@ -156,17 +124,28 @@ cc.Class({
     animePlayCallBack(name) {
         if (name == "Escape") {
             this._super("Escape");
-            var self = this;
+            var self = this;            
+            if (GlobalVar.getBannerSwitch()){
+                weChatAPI.hideBannerAd();
+            }
             WindowManager.getInstance().popView(false, function () {
+                let level = GlobalVar.me().getLevel();
                 let limitLevel = GlobalVar.tblApi.getDataBySingleKey('TblSystem', 24).wOpenLevel;
-                if (GlobalVar.me().getLevel() >= limitLevel && self.levelOld < limitLevel) {
+                let sweep = GlobalVar.tblApi.getDataBySingleKey('TblSystem', 31).wOpenLevel;
+                if (level >= limitLevel && self.levelOld < limitLevel) {
                     require('Guide').getInstance().guideToEndless();
+                // }
+                // else if (level >= sweep && self.levelOld < sweep) { 
+                //     require('Guide').getInstance().guideToSweep();
                 }else{
                     WindowManager.getInstance().resumeView();
                 }
             }, false);
         } else if (name == "Enter") {
             this._super("Enter");
+            if (GlobalVar.getBannerSwitch() && !GlobalVar.getNeedGuide()){
+                weChatAPI.showBannerAd();
+            }
             GlobalVar.me().setLevelUpFlag();
         }
     },

@@ -188,6 +188,19 @@ var campData = cc.Class({
         return starCount;
     },
 
+    getCampaignData: function (campaignType, chapterID, campaignID) {
+        let CampBag = self.data[campaignType];
+        if (!CampBag || !CampBag.Chapter) {
+            return 0;
+        }
+        let chapter = CampBag.Chapter[chapterID - 1];
+        if (!chapter){
+            return 0;
+        }
+        let campaigns = chapter.Campaign;
+        return campaigns[(campaignID - 1)%10];
+    },
+
     getBattleDieCount: function () {
         return self.dieCount;
     },

@@ -5,8 +5,10 @@ const EventMsgID = require("eventmsgid");
 const GameServerProto = require("GameServerProto");
 const SceneDefines = require("scenedefines");
 const weChatAPI = require("weChatAPI");
+const i18n = require('LanguageData');
 
-const RECV_CUR_REWARD = 0, RECV_ALL_REWARD = 1;
+const RECV_CUR_REWARD = 0, RECV_ALL_REWARD = 1, RECV_ALL_REWARD_VIP = 2;
+const RECV_ALL_NEED_VIP_LEVEL = 2;
 
 cc.Class({
     extends: UIBase,
@@ -31,16 +33,49 @@ cc.Class({
         this.gameEndData = {};
         this.canClickedRecvBtn = false;
 
-        if (!GlobalVar.getShareSwitch()){
-            this.node.getChildByName("nodeBottom").getChildByName("nodeButton").getChildByName("btnRecv").active = true;
-            this.node.getChildByName("nodeBottom").getChildByName("nodeButton").getChildByName("btnRecvNew").active = false;
-            this.node.getChildByName("nodeBottom").getChildByName("nodeButton").getChildByName("btnRecvAll").active = false;
-            this.node.getChildByName("nodeBottom").getChildByName("nodeButton").getChildByName("label").active = false;
+        let nodeButton = this.node.getChildByName("nodeBottom").getChildByName("nodeButton");
+        nodeButton.getChildByName("firstplay").active = false;
+        if (!GlobalVar.srcSwitch()) {
+            if (GlobalVar.me().campData.firstTimePlay) {
+                // nodeButton.getChildByName("firstplay").active = true;
+                if (GlobalVar.me().vipLevel >= RECV_ALL_NEED_VIP_LEVEL) {
+                    nodeButton.getChildByName("nodeShare").active = false;
+                    nodeButton.getChildByName("nodeVip").x = 0;
+                    nodeButton.getChildByName("nodeVip").active = true;
+                    nodeButton.getChildByName("btnRecv").active = false;
+                    nodeButton.getChildByName("btnRecvNew").active = false;
+                }else if (GlobalVar.getShareSwitch()) {
+                    nodeButton.getChildByName("nodeShare").x = -150
+                    nodeButton.getChildByName("nodeShare").active = true;
+                    nodeButton.getChildByName("nodeVip").x = 150;
+                    nodeButton.getChildByName("nodeVip").active = true;
+                    nodeButton.getChildByName("btnRecv").active = false;
+                    nodeButton.getChildByName("btnRecvNew").active = true;
+                } else {
+                    nodeButton.getChildByName("nodeShare").active = false;
+                    nodeButton.getChildByName("nodeVip").x = 0;
+                    nodeButton.getChildByName("nodeVip").active = true;
+                    nodeButton.getChildByName("btnRecv").active = false;
+                    nodeButton.getChildByName("btnRecvNew").active = true;
+                }
+            } else {
+                nodeButton.getChildByName("nodeShare").active = false;
+                nodeButton.getChildByName("nodeVip").active = false;
+                nodeButton.getChildByName("btnRecv").active = true;
+                nodeButton.getChildByName("btnRecvNew").active = false;
+            }
+        } else if (GlobalVar.getShareSwitch() && GlobalVar.me().campData.firstTimePlay) {
+            // nodeButton.getChildByName("firstplay").active = true;
+            nodeButton.getChildByName("nodeShare").x = 0;
+            nodeButton.getChildByName("nodeShare").active = true;
+            nodeButton.getChildByName("nodeVip").active = false;
+            nodeButton.getChildByName("btnRecv").active = false;
+            nodeButton.getChildByName("btnRecvNew").active = true;
         }else{
-            this.node.getChildByName("nodeBottom").getChildByName("nodeButton").getChildByName("btnRecvNew").active = true;
-            this.node.getChildByName("nodeBottom").getChildByName("nodeButton").getChildByName("btnRecv").active = false;
-            this.node.getChildByName("nodeBottom").getChildByName("nodeButton").getChildByName("btnRecvAll").active = true;
-            this.node.getChildByName("nodeBottom").getChildByName("nodeButton").getChildByName("label").active = true;
+            nodeButton.getChildByName("nodeShare").active = false;
+            nodeButton.getChildByName("nodeVip").active = false;
+            nodeButton.getChildByName("btnRecv").active = true;
+            nodeButton.getChildByName("btnRecvNew").active = false;
         }
     },
 
@@ -70,6 +105,16 @@ cc.Class({
                     // console.log("发送freedraw消息");
                     GlobalVar.handlerManager().campHandler.sendFreeDrawReq();
                 });
+            } else if (index == RECV_ALL_REWARD_VIP){
+                if (GlobalVar.me().vipLevel >= RECV_ALL_NEED_VIP_LEVEL){
+                    this.canClickedRecvBtn = true;
+                    GlobalVar.handlerManager().campHandler.sendFreeDrawReq();
+                }else{
+                    let str = i18n.t('label.4000506')
+                    str = str.replace("%count", GlobalVar.tblApi.getDataBySingleKey('TblVipRight', RECV_ALL_NEED_VIP_LEVEL).nRecharge / 10);
+                    str = str.replace("%level", RECV_ALL_NEED_VIP_LEVEL);
+                    GlobalVar.comMsg.showMsg(str);
+                }
             }
         }else{
             this.touchRandomCard();
@@ -169,6 +214,7 @@ cc.Class({
 
             this.canQuitUIBattleCard = true;
             this.node.getChildByName("nodeBottom").getChildByName("nodeButton").active = true;
+            this.node.getChildByName("nodeBottom").getChildByName("labelDrawCardTip").active = false;
         }
     },
 
@@ -195,11 +241,11 @@ cc.Class({
             }
         }
         this.canClickedRecvBtn = false;
-        this.node.getChildByName("nodeBottom").getChildByName("nodeButton").getChildByName("btnRecv").x = 0;
-        this.node.getChildByName("nodeBottom").getChildByName("nodeButton").getChildByName("btnRecvAll").active = false;
-        this.node.getChildByName("nodeBottom").getChildByName("nodeButton").getChildByName("label").active = false;
-        this.node.getChildByName("nodeBottom").getChildByName("nodeButton").getChildByName("btnRecvNew").active = false;
-        this.node.getChildByName("nodeBottom").getChildByName("nodeButton").getChildByName("btnRecv").active = true;
+        let nodeButton = this.node.getChildByName("nodeBottom").getChildByName("nodeButton");
+        nodeButton.getChildByName("nodeShare").active = false;
+        nodeButton.getChildByName("nodeVip").active = false;
+        nodeButton.getChildByName("btnRecvNew").active = false;
+        nodeButton.getChildByName("btnRecv").active = true;
     },
 
 });

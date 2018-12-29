@@ -48,15 +48,20 @@ cc.Class({
     animePlayCallBack(name) {
         if (name == "Escape") {
             this._super("Escape");
-            // GlobalVar.eventManager().removeListenerWithTarget(this);
+            if (GlobalVar.getBannerSwitch()){
+                weChatAPI.hideBannerAd();
+            }
+            GlobalVar.eventManager().removeListenerWithTarget(this);
             WindowManager.getInstance().popView();
         } else if (name == "Enter") {
             this._super("Enter");
+            if (GlobalVar.getBannerSwitch() && !GlobalVar.getNeedGuide()){
+                weChatAPI.showBannerAd();
+            }
             this.initPlayerInfoWnd();
 
             //RENAME
             GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_GET_RENAME_ACK, this.getReNameData, this);
-
 
             let spriteHeader = this.node.getChildByName("nodeCenter").getChildByName("spriteHeader");
             if (cc.sys.platform === cc.sys.WECHAT_GAME) {
@@ -163,7 +168,7 @@ cc.Class({
         }
     },
     setPlayerAvatar: function (url){
-        if (cc.sys.platform !== cc.sys.WECHAT_GAME){
+        if (cc.sys.platform !== cc.sys.WECHAT_GAME && !(window && window["wywGameId"]=="5496")){
             return;
         }
         if (url == "") {
@@ -270,7 +275,7 @@ cc.Class({
     
             self.btnAuthorize = wx.createUserInfoButton({
                 type: 'text',
-                text: '',
+                text: '同步昵称',
                 style: {
                     left: left,
                     top: top,
@@ -291,9 +296,11 @@ cc.Class({
                     // console.log("wxLogin auth success");
                     wx.showToast({title:"授权成功"});
                     weChatAPI.getUserInfo(function(userInfo){
-                        GlobalVar.me().roleName = userInfo.nickName;
-                        GlobalVar.me().loginData.setLoginReqDataAvatar(userInfo.avatarUrl);
-                        GlobalVar.handlerManager().mainHandler.sendReNameReq(GlobalVar.me().roleID, userInfo.nickName, userInfo.avatarUrl);
+                        if (GlobalVar.me().roleID == GlobalVar.me().roleName){
+                            GlobalVar.me().roleName = userInfo.nickName;
+                            GlobalVar.me().loginData.setLoginReqDataAvatar(userInfo.avatarUrl);
+                            GlobalVar.handlerManager().mainHandler.sendReNameReq(GlobalVar.me().roleID, userInfo.nickName, userInfo.avatarUrl);
+                        }
                     })
                 }else {
                     // console.log("wxLogin auth fail");

@@ -67,6 +67,9 @@ var BattleScene = cc.Class({
         } else if (this.battleManager.gameState == BattleDefines.GameResult.DASHOPEN) {
             this.showChargeWnd();
             this.battleManager.gameState = BattleDefines.GameResult.SHOW;
+        } else if (this.battleManager.gameState == BattleDefines.GameResult.GETASSIST) {
+            this.showGetAssistWnd();
+            this.battleManager.gameState = BattleDefines.GameResult.PAUSE;
         }
     },
 
@@ -102,5 +105,9 @@ var BattleScene = cc.Class({
 
     showChargeWnd() {
         this.loadPrefab("UIBattleCharge");
+    },
+
+    showGetAssistWnd() {
+        this.loadPrefab("UIBattleAssist");
     }
 });

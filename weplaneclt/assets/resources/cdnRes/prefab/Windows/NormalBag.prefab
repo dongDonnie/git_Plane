@@ -835,7 +835,7 @@
       "__id__": 14
     },
     "_enabled": true,
-    "audioType": 0,
+    "audioType": 7,
     "_fontSize": 0,
     "_showShadow": false,
     "btnState": true,
@@ -2838,7 +2838,7 @@
       "__id__": 73
     },
     "_enabled": true,
-    "audioType": 0,
+    "audioType": 7,
     "_fontSize": 30,
     "_showShadow": false,
     "btnState": true,

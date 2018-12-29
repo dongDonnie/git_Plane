@@ -1856,7 +1856,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 136,
+      "width": 262,
       "height": 180
     },
     "_anchorPoint": {
@@ -1929,7 +1929,7 @@
     "_enabled": true,
     "_layoutSize": {
       "__type__": "cc.Size",
-      "width": 136,
+      "width": 262,
       "height": 180
     },
     "_resize": 1,
@@ -2347,7 +2347,7 @@
       "__id__": 58
     },
     "_enabled": true,
-    "audioType": 0,
+    "audioType": 7,
     "_fontSize": 30,
     "_showShadow": true,
     "btnState": true,
@@ -2798,7 +2798,7 @@
       "__id__": 71
     },
     "_enabled": true,
-    "audioType": 0,
+    "audioType": 7,
     "_fontSize": 30,
     "_showShadow": true,
     "btnState": true,
@@ -6444,7 +6444,7 @@
     "asset": {
       "__uuid__": "242edccf-2bfe-4103-b1ac-81ec9a2a7a1d"
     },
-    "fileId": "f6MtoyiYpEy5KfEkzRacmb",
+    "fileId": "f503JGdkZG2LSLijm04AjL",
     "sync": false
   },
   {
@@ -6544,7 +6544,7 @@
     "asset": {
       "__uuid__": "242edccf-2bfe-4103-b1ac-81ec9a2a7a1d"
     },
-    "fileId": "27DVKgGKpJAao2eNNSpba4",
+    "fileId": "b70+mVTKxPm5flWZvb8gnd",
     "sync": false
   },
   {
@@ -8989,7 +8989,7 @@
     "asset": {
       "__uuid__": "242edccf-2bfe-4103-b1ac-81ec9a2a7a1d"
     },
-    "fileId": "5bLoXr/dFJwZO7D8Qh5ViP",
+    "fileId": "19ls610vFCs7qRcdAdbuf1",
     "sync": false
   },
   {
@@ -9089,7 +9089,7 @@
     "asset": {
       "__uuid__": "242edccf-2bfe-4103-b1ac-81ec9a2a7a1d"
     },
-    "fileId": "24IvJC7sFGFZxtyjWvzbuY",
+    "fileId": "cdIU5/o+dAmJabS6W1rDnL",
     "sync": false
   },
   {
@@ -13454,7 +13454,7 @@
       "__id__": 333
     },
     "_enabled": true,
-    "audioType": 0,
+    "audioType": 7,
     "_fontSize": 0,
     "_showShadow": false,
     "btnState": true,
@@ -17607,7 +17607,7 @@
       "__id__": 457
     },
     "_enabled": true,
-    "audioType": 0,
+    "audioType": 7,
     "_fontSize": 0,
     "_showShadow": false,
     "btnState": true,
@@ -20156,7 +20156,7 @@
       "__id__": 540
     },
     "_enabled": true,
-    "audioType": 0,
+    "audioType": 7,
     "_fontSize": 0,
     "_showShadow": false,
     "btnState": true,
@@ -22705,7 +22705,7 @@
       "__id__": 623
     },
     "_enabled": true,
-    "audioType": 0,
+    "audioType": 7,
     "_fontSize": 0,
     "_showShadow": false,
     "btnState": true,
@@ -25254,7 +25254,7 @@
       "__id__": 706
     },
     "_enabled": true,
-    "audioType": 0,
+    "audioType": 7,
     "_fontSize": 0,
     "_showShadow": false,
     "btnState": true,
@@ -27803,7 +27803,7 @@
       "__id__": 789
     },
     "_enabled": true,
-    "audioType": 0,
+    "audioType": 7,
     "_fontSize": 0,
     "_showShadow": false,
     "btnState": true,
@@ -30352,7 +30352,7 @@
       "__id__": 872
     },
     "_enabled": true,
-    "audioType": 0,
+    "audioType": 7,
     "_fontSize": 0,
     "_showShadow": false,
     "btnState": true,
@@ -32901,7 +32901,7 @@
       "__id__": 955
     },
     "_enabled": true,
-    "audioType": 0,
+    "audioType": 7,
     "_fontSize": 0,
     "_showShadow": false,
     "btnState": true,
@@ -35450,7 +35450,7 @@
       "__id__": 1038
     },
     "_enabled": true,
-    "audioType": 0,
+    "audioType": 7,
     "_fontSize": 0,
     "_showShadow": false,
     "btnState": true,
@@ -37999,7 +37999,7 @@
       "__id__": 1121
     },
     "_enabled": true,
-    "audioType": 0,
+    "audioType": 7,
     "_fontSize": 0,
     "_showShadow": false,
     "btnState": true,
@@ -40548,7 +40548,7 @@
       "__id__": 1204
     },
     "_enabled": true,
-    "audioType": 0,
+    "audioType": 7,
     "_fontSize": 0,
     "_showShadow": false,
     "btnState": true,
@@ -44932,7 +44932,7 @@
       "__id__": 1345
     },
     "_enabled": true,
-    "audioType": 0,
+    "audioType": 7,
     "_fontSize": 0,
     "_showShadow": false,
     "btnState": true,

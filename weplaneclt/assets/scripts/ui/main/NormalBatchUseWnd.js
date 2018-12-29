@@ -5,6 +5,7 @@ const GlobalVar = require('globalvar')
 const WndTypeDefine = require("wndtypedefine");
 const EventMsgID = require("eventmsgid");
 const GameServerProto = require("GameServerProto");
+const weChatAPI = require("weChatAPI");
 
 cc.Class({
     extends: RootBase,
@@ -48,10 +49,16 @@ cc.Class({
     animePlayCallBack(name) {
         if (name == "Escape") {
             this._super("Escape");
+            if (GlobalVar.getBannerSwitch()){
+                weChatAPI.justShowBanner();
+            }
             GlobalVar.eventManager().removeListenerWithTarget(this);
             WindowManager.getInstance().popView(false, null, false, false);
         } else if (name == "Enter") {
             this._super("Enter");
+            if (GlobalVar.getBannerSwitch()){
+                weChatAPI.justHideBanner();
+            }
             this.registerEvent();
             this.initBatchUseWnd();
         }
@@ -132,6 +139,7 @@ cc.Class({
                 }
                 content.children[i].active = true;
                 content.children[i].getComponent("ItemObject").updateItem(data[i].ItemID, data[i].Count);
+                // content.children[i].getComponent("ItemObject").setClick(true, 2);
             }
 
             if (lastIndex < content.children.length - 1){

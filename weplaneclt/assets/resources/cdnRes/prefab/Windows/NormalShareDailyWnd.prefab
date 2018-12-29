@@ -2038,7 +2038,7 @@
     "asset": {
       "__uuid__": "b2807c41-8519-4de9-b93f-73dd8d94e7fd"
     },
-    "fileId": "77ezW36nFEPo31pB6Ke/bx",
+    "fileId": "58sC9W12dKhpDbk3VAG/wA",
     "sync": false
   },
   {
@@ -2138,7 +2138,7 @@
     "asset": {
       "__uuid__": "b2807c41-8519-4de9-b93f-73dd8d94e7fd"
     },
-    "fileId": "92ekyOg2xE1IqmmPPnM7yI",
+    "fileId": "bf/hdGKZpNP6hQTUgfPm1i",
     "sync": false
   },
   {
@@ -2962,7 +2962,6 @@
     "_fontSize": 0,
     "_showShadow": false,
     "btnState": true,
-    "btnPress": false,
     "_N$fontColor": 0,
     "_N$textLabel": "",
     "_id": ""
@@ -3737,8 +3736,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 90,
-      "height": 90
+      "width": 216,
+      "height": 217
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -3782,7 +3781,7 @@
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
     "_spriteFrame": {
-      "__uuid__": "92f60e7d-9e7a-403d-9be3-5411a75e29e9"
+      "__uuid__": "35ed30ed-0f48-46cf-a66b-c9a816c5102b"
     },
     "_type": 0,
     "_sizeMode": 1,
@@ -3838,7 +3837,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 270,
+      "width": 240,
       "height": 30
     },
     "_anchorPoint": {
@@ -3849,7 +3848,7 @@
     "_position": {
       "__type__": "cc.Vec3",
       "x": 0,
-      "y": -95,
+      "y": -115,
       "z": 0
     },
     "_scale": {
@@ -3883,8 +3882,8 @@
     "_srcBlendFactor": 1,
     "_dstBlendFactor": 771,
     "_useOriginalSize": true,
-    "_string": "分享可获得神秘豪礼",
-    "_N$string": "分享可获得神秘豪礼",
+    "_string": "免费领取神秘豪礼",
+    "_N$string": "免费领取神秘豪礼",
     "_fontSize": 30,
     "_lineHeight": 30,
     "_enableWrapText": true,
@@ -4323,7 +4322,6 @@
     "_fontSize": 0,
     "_showShadow": true,
     "btnState": true,
-    "btnPress": false,
     "_N$fontColor": 0,
     "_N$textLabel": "",
     "_id": ""
@@ -4968,7 +4966,6 @@
     "_fontSize": 30,
     "_showShadow": true,
     "btnState": true,
-    "btnPress": false,
     "_N$fontColor": 0,
     "_N$textLabel": "分享到群",
     "_id": ""

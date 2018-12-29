@@ -13,9 +13,9 @@ CampNormal2.data = {
         {wave:{groups:[658,552,553],wait:0,delay:[0,0.8,0.8]}},
         {wave:{groups:[659,559,560],wait:0,delay:[0,0.5,1]}},
         {wave:{groups:[660,552,553],wait:0,delay:[0,0.6,1]}},
-        {wave:{groups:[87],wait:0,delay:[0],anime:1,isBOSS:1},maps:{mapIndex:[0,2],mapSpeed:[350,700],mapScale:[1,1],mapLoop:[0,0]}},
+        {wave:{groups:[99],wait:0,delay:[0],anime:1,isBOSS:1},maps:{mapIndex:[0,2],mapSpeed:[350,700],mapScale:[1,1],mapLoop:[0,0]}},
     ],
-    monsterExtra:[23,24,25,559,560,552,1308,1309,1310,1311,1312,23,24,25,559,560,552,1308,1309,1310,1311,1312],
+    monsterExtra:[23,24,25,559,560,552,1308,1309,1310,1311,1312,39,43,44,45,41,40,1308,1309,1310,1311,1312],
     totalHint:[
         {
             checkTime:-1,

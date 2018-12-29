@@ -51,9 +51,13 @@ cc.Class({
             default: false,
             visible: false,
         },
+        effectShengjie: {
+            default: null,
+            type: sp.Skeleton,
+        },
 
         curLevelUpInterval: 0.2,
-        minInterval: 0.1,
+        minInterval: 0.05,
         interval: 0,
     },
 
@@ -535,7 +539,7 @@ cc.Class({
         let key = memberID + '_' + member.Quality;
         let qualityData = GlobalVar.tblApi.getDataBySingleKey('TblMemberQuality', key);
 
-        let item = QuTab.getChildByName("nodeItem").getChildByName("ItemObject").getComponent("ItemObject");
+        let item = QuTab.getChildByName("nodeItemQ").getChildByName("ItemObject").getComponent("ItemObject");
         item.updateItem(qualityData.wQualityUpPiece);
         item.setClick(true, 1);
 
@@ -611,6 +615,8 @@ cc.Class({
             this.interval = 0;
             if (this.curLevelUpInterval > this.minInterval) {
                 this.curLevelUpInterval -= 0.01;
+            }else{
+                this.curLevelUpInterval = this.minInterval;
             }
             this.pressSendLevelUp();
         }
@@ -711,7 +717,7 @@ cc.Class({
             } else {
                 GlobalVar.comMsg.showMsg(i18n.t('label.4000223'));
                 let QuTab = this.getNodeByName("spriteQualityUp");
-                let item = QuTab.getChildByName("nodeItem").getChildByName("ItemObject").getComponent("ItemObject");
+                let item = QuTab.getChildByName("nodeItemQ").getChildByName("ItemObject").getComponent("ItemObject");
                 CommonWnd.showItemGetWay(item.itemID, item.getLabelNumberData(), item.getSlot());
             }
         }
@@ -726,6 +732,7 @@ cc.Class({
             GlobalVar.comMsg.errorWarning(msg.data.ErrCode);
             return;
         }
+        let self = this;
         // GlobalVar.comMsg.showMsg("战机品质提升");
         GlobalVar.soundManager().playEffect(AUDIO_QUALITY_UP);
         let member = GlobalVar.me().memberData.getMemberByID(this.memberID);
@@ -733,8 +740,19 @@ cc.Class({
 
         var nodePlanet = this.node.getChildByName("nodeCenter").getChildByName("nodePlanet");
         nodePlanet.active = false;
-        CommonWnd.showPlaneQualityUpWnd(this.qualityDataCur, this.qualityData, function () {
+
+        CommonWnd.showPlaneQualityUpWnd(self.qualityDataCur, self.qualityData, function () {
             nodePlanet.active = true;
         });
+        // let effectFinish = function () {
+        //     self.effectShengjie.node.active = false;
+        //     CommonWnd.showPlaneQualityUpWnd(self.qualityDataCur, self.qualityData, function () {
+        //         nodePlanet.active = true;
+        //     });
+        // }
+        // this.effectShengjie.node.active = true;
+        // this.effectShengjie.setAnimation(0, "animation", false);
+        // GlobalFunc.playSpineAnimation(this.effectShengjie.node, effectFinish, false);
+        
     },
 });

@@ -5,6 +5,7 @@ const WndTypeDefine = require("wndtypedefine");
 const CommonWnd = require("CommonWnd");
 const WindowManager = require("windowmgr");
 const i18n = require('LanguageData');
+const weChatAPI = require("weChatAPI");
 var GetWayObject = cc.Class({
     extends: UIBase,
     
@@ -76,7 +77,7 @@ var GetWayObject = cc.Class({
 
     setSpriteIcon: function (icon) {
         let path = "";
-        path = "cdnRes/daily/dailyicon_power.png"
+        path = "cdnRes/common/dailyicon_power.png"
         this.spriteIcon.getComponent("RemoteSprite").loadFrameFromLocalRes(path);
     },
 
@@ -99,7 +100,12 @@ var GetWayObject = cc.Class({
     setJumpCallback: function (callback) {
         this._jumpGoCallback = callback;
     },
-
+    removeListennerAndBanner: function () {
+        if (GlobalVar.getBannerSwitch()){
+            weChatAPI.hideBannerAd();
+        }
+        GlobalVar.eventManager().removeListenerWithTarget(this);
+    },
     jumpGo: function () {
         let self = this;
         switch (this.getwayID) {
@@ -110,13 +116,13 @@ var GetWayObject = cc.Class({
                     return;
                 }
 
-                GlobalVar.eventManager().removeListenerWithTarget(this);
+                this.removeListennerAndBanner();
                 WindowManager.getInstance().popView(false, function () {
                     CommonWnd.showStoreWithParam(1);
                 }, false, false);
                 break;
             case WndTypeDefine.WindowSystemID.E_DT_NORMALDRAW_VIEW:               //弹出十连抽窗口
-                GlobalVar.eventManager().removeListenerWithTarget(this);
+                this.removeListennerAndBanner();
                 WindowManager.getInstance().popView(false, function () {
                     CommonWnd.showDrawView();
                 }, false, false);
@@ -128,13 +134,12 @@ var GetWayObject = cc.Class({
                     return;
                 }
 
-                GlobalVar.eventManager().removeListenerWithTarget(this);
+                this.removeListennerAndBanner();
                 WindowManager.getInstance().popView(false, function () {
                     CommonWnd.showEndlessView();
                 }, false, false);
                 break;
             case WndTypeDefine.WindowSystemID.E_DT_NORMAL_QUESTLIST_VIEW:
-                GlobalVar.eventManager().removeListenerWithTarget(this);
                 let chapterDataList = GlobalVar.tblApi.getDataBySingleKey('TblChapter', GameServerProto.PT_CAMPTYPE_MAIN);
                 let playerChapterData = GlobalVar.me().campData.getChapterData(GameServerProto.PT_CAMPTYPE_MAIN, self.param1);
                 let campData = playerChapterData[self.param2 - 1];
@@ -145,19 +150,21 @@ var GetWayObject = cc.Class({
                     GlobalVar.comMsg.errorWarning(GameServerProto.PTERR_CAMP_NOT_OPEN);
                     return;
                 }
+                
+                this.removeListennerAndBanner();
 
                 WindowManager.getInstance().popView(false, function () {
                     CommonWnd.showQuestInfoWnd(campData, planetData);
                 }, false, false);
                 break;
             case WndTypeDefine.WindowSystemID.E_DT_NORMAL_RICHTREASURE_WND:       //淘金
-                GlobalVar.eventManager().removeListenerWithTarget(this);
+                this.removeListennerAndBanner();
                 WindowManager.getInstance().popView(false, function () {
                     GlobalVar.handlerManager().drawHandler.sendTreasureData();
                 }, false, false);
                 break;
             case WndTypeDefine.WindowSystemID.E_DT_NORMAL_DAILY_MISSION_WND:
-                GlobalVar.eventManager().removeListenerWithTarget(this);
+                this.removeListennerAndBanner();
                 WindowManager.getInstance().popView(false, function () {
                     GlobalVar.handlerManager().dailyHandler.sendGetDailyDataReq();
                 }, false, false);
@@ -168,6 +175,7 @@ var GetWayObject = cc.Class({
                     GlobalVar.comMsg.showMsg(i18n.t('label.4000258').replace("%d", systemData1.wOpenLevel || 0).replace("%d", systemData1.strName));
                     return;
                 }
+                this.removeListennerAndBanner();
                 WindowManager.getInstance().popView(false, function () {
                     CommonWnd.showLimitStoreWithParam(1);
                 }, false, false);

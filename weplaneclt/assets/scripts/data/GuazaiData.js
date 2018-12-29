@@ -70,7 +70,7 @@ var GuazaiData = cc.Class({
                 canQualityUp = false;
             }
             for (let j = 0; j < wearData.oVecQualityUpNeed.length; j++) {
-                let haveCount = GlobalVar.me().bagData.getItemCountById(wearData.oVecQualityUpNeed[j].wItemID);
+                let haveCount = GlobalVar.me().bagData.getGuazaiQualityUpMaterialCount(wearData.oVecQualityUpNeed[j].wItemID);
                 let needCount = wearData.oVecQualityUpNeed[j].nCount;
                 canQualityUp = haveCount >= needCount;
                 if (!canQualityUp) break;
@@ -86,7 +86,7 @@ var GuazaiData = cc.Class({
                 let expItemValue = GlobalVar.tblApi.getDataBySingleKey('TblItem', j).nResult;
                 canProvideExp += expItemCount * expItemValue;
             }
-            self.levelUpHotFlag[position - 1] = canProvideExp >= levelUpNeedExp && self.guazaiWear[i].GuaZai.Level < levelLimit;
+            self.levelUpHotFlag[position - 1] = levelUpNeedExp > 0 && canProvideExp >= levelUpNeedExp && self.guazaiWear[i].GuaZai.Level < levelLimit;
 
             self.totalHotFlag[position - 1] = self.wearHotFlag[position - 1] || self.qualityUpHotFlag[position - 1] || self.levelUpHotFlag[position - 1];
         }
@@ -280,6 +280,7 @@ var GuazaiData = cc.Class({
             GlobalVar.me().bagData.updateItemDataByGMDT_ITEM_CHANGE(msg.data.ItemChange);
             self.heChengGetItem = msg.data.GetItems;
             GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_GUAZAI_DIRTY_NTF, msg.data);
+            GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_GUAZAI_SMELTER_NTF, msg.data);
         }
         else
             GlobalVar.comMsg.errorWarning(msg.data.ErrCode);

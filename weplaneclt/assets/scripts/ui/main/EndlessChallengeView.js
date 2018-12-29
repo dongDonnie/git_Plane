@@ -10,6 +10,7 @@ const SceneDefines = require("scenedefines");
 const GlobalFunc = require('GlobalFunctions');
 const i18n = require('LanguageData');
 const weChatAPI = require("weChatAPI");
+const StoreageData = require("storagedata");
 
 const MODE_COLOR = [
     [125, 255, 94],
@@ -70,7 +71,6 @@ cc.Class({
             this.fixView();
         }
 
-        this.addPrefabsText();
 
         this.countDownTimerID = -1;
 
@@ -92,6 +92,7 @@ cc.Class({
     animePlayCallBack(name) {
         if (name == "Escape") {
             this._super("Escape");
+            
             GlobalVar.eventManager().removeListenerWithTarget(this);
             if (this.countDownTimerID != -1){
                 GlobalVar.gameTimer().delTimer(this.countDownTimerID)
@@ -130,6 +131,7 @@ cc.Class({
             this.node.getChildByName("nodeCenter").active = true;
             this.node.getChildByName("nodeBottom").active = true;
 
+            this.addPrefabsText();
 
             if (this.bShowUseRewardTip){
                 this.showRewardTip();
@@ -143,6 +145,7 @@ cc.Class({
         GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_SETSTATUS_COUNT, this.setStatusCount, this);
         GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_ENDLESS_START_BATTLE, this.startEndlessBattle, this);
         GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_ENDLESS_RANK_UP_NTF, this.getRankUpResult, this);
+        // GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_ENDLESS_POWER_POINT_CHANGE_NTF, this.refreshCountDown, this);
         GlobalVar.handlerManager().endlessHandler.sendEndlessGetBagReq();
     },
 
@@ -165,9 +168,10 @@ cc.Class({
     },
 
     setCountDown: function () {
-        let lastPowerTime = GlobalVar.me().endlessData.getEndlesslastPowerTime();
+        let self = this;
+        // let lastPowerTime = GlobalVar.me().endlessData.getEndlesslastPowerTime();
         let labelCountDown = this.node.getChildByName("nodeCenter").getChildByName("labelGetChestLeftTIme").getComponent(cc.Label)
-        if (lastPowerTime == 0){
+        if (GlobalVar.me().endlessData.getEndlesslastPowerTime() == 0){
             labelCountDown.node.active = false;
             labelCountDown.string = "00:00";
             return;
@@ -175,17 +179,26 @@ cc.Class({
         labelCountDown.node.active = true;
         let countDownFunc = function () {
             let curTime = GlobalVar.me().serverTime;
-            let leftAddTime = 3600 - (curTime - lastPowerTime);
+            let leftAddTime = 7200 - (curTime - GlobalVar.me().endlessData.getEndlesslastPowerTime());
             let leftMinute = parseInt(leftAddTime/60);
             let leftSecond = leftAddTime - leftMinute * 60;
             if (leftMinute.toString().length == 1) leftMinute = "0" + leftMinute;
             if (leftSecond.toString().length == 1) leftSecond = "0" + leftSecond;
-            labelCountDown.string = leftMinute + ":" + leftSecond;      
+            labelCountDown.string = leftMinute + ":" + leftSecond;
+
+            if (leftAddTime < 0){
+                GlobalVar.gameTimer().delTimer(self.countDownTimerID);
+                GlobalVar.handlerManager().endlessHandler().sendEndlessGetBagReq();
+            }
         };
         countDownFunc();
         this.countDownTimerID = GlobalVar.gameTimer().startTimer(function () {
             countDownFunc();
         }, 1);
+    },
+
+    refreshCountDown: function (event) {
+        
     },
 
     enter: function (isRefresh) {
@@ -215,7 +228,7 @@ cc.Class({
     },
 
     addPrefabsText: function () {
-
+        this.content.removeAllChildren();
         let plusDataList = GlobalVar.tblApi.getData('TblEndlessStatus');
         let length = GlobalVar.tblApi.getLength("TblEndlessStatus");
         
@@ -230,16 +243,26 @@ cc.Class({
             this.plusList[plusData.byStatusID] = plus;
 
             
-            if (!GlobalVar.getShareSwitch()){
-                // plus.getChildByName("btnShare").active = true;
-                // plus.getChildByName("nodeBuy").x -= 30;
-                // plus.getChildByName("nodeBuy").width = 110;
-                plus.getChildByName("nodeBuy").active = true;
-                plus.getChildByName("btnShare").active = false;
-            }else{
+            // if (!GlobalVar.getShareSwitch()){
+            //     plus.getChildByName("nodeBuy").active = true;
+            //     plus.getChildByName("btnShare").active = false;
+            // }else{
+            //     plus.getChildByName("nodeBuy").active = false;
+            //     plus.getChildByName("btnShare").active = true;
+            //     plus.getChildByName("btnShare").y = 0;
+            // }
+
+            if (plusData.byStatusID == 4 && GlobalVar.getShareSwitch()){
                 plus.getChildByName("nodeBuy").active = false;
                 plus.getChildByName("btnShare").active = true;
-                plus.getChildByName("btnShare").y = 0;
+            }else if (plusData.byStatusID == 3 && GlobalVar.getShareSwitch()){
+                plus.getChildByName("nodeBuy").active = false;
+                plus.getChildByName("btnVideo").active = !StoreageData.getShareTimesWithKey("rewardedVideoLimit", 1);
+                plus.getChildByName("btnShare").active = !!StoreageData.getShareTimesWithKey("rewardedVideoLimit", 1);
+            }else{
+                plus.getChildByName("nodeBuy").active = true;
+                plus.getChildByName("btnShare").active = false;
+                plus.getChildByName("btnVideo").active = false;
             }
         }
 
@@ -353,6 +376,27 @@ cc.Class({
         }
     },
 
+    onVideoButtonClick: function (event) {
+        let btnShare = event.target;
+        let plus = btnShare.parent;
+        weChatAPI.showRewardedVideoAd(function () {
+            GlobalVar.handlerManager().endlessHandler.sendEndlessBuyStatusReq(plus.data.byStatusID, 1);
+        }, function () {
+            weChatAPI.shareNormal(plus.data.byStatusID + 107, function () {
+                GlobalVar.handlerManager().endlessHandler.sendEndlessBuyStatusReq(plus.data.byStatusID, 1);
+            }); 
+        });
+
+        let normalRootWnd = WindowManager.getInstance().findViewInWndNode(WndTypeDefine.WindowType.E_DT_NORMALROOT_WND);
+        if (normalRootWnd){
+            let normalRootWndScript = normalRootWnd.getComponent(WndTypeDefine.WindowType.E_DT_NORMALROOT_WND)
+            normalRootWndScript.nodeBlock.enabled = true;
+            setTimeout(function () {
+                normalRootWndScript.nodeBlock.enabled = false;
+            }, 1500);
+        }
+    },
+
     initEndlessView: function (msg) {
 
         let rankID = GlobalVar.me().endlessData.getRankID();
@@ -408,7 +452,9 @@ cc.Class({
         }
 
         // 设置宝箱数量
-        let rewardCountMax = GlobalVar.tblApi.getDataBySingleKey('TblParam', GameServerProto.PTPARAM_ENDLESS_POWERPOINT_MAX).dValue;
+        let defaultMax = GlobalVar.tblApi.getDataBySingleKey('TblParam', GameServerProto.PTPARAM_ENDLESS_POWERPOINT_MAX).dValue;
+        let vipLevelMax = GlobalVar.tblApi.getDataBySingleKey('TblVipRight', GlobalVar.me().vipLevel).byVipPowerPoint
+        let rewardCountMax = defaultMax + vipLevelMax;
         this.node.getChildByName("nodeCenter").getChildByName("labelRate").getComponent(cc.Label).string = data.PowerPoint + "/" + rewardCountMax;
 
         this.endlessRankID = GlobalVar.me().endlessData.getRankID();
@@ -420,7 +466,6 @@ cc.Class({
         itemObj.updateItem(rewardData.wRewardItem);
         itemObj.setSpriteEdgeVisible(false);
 
-        
         this.setCountDown();
     },
 
@@ -574,6 +619,11 @@ cc.Class({
 
     onBtnShowRanking: function () {
         this.animePlay(0);
+    },
+
+    close: function () {
+        this.content.removeAllChildren();
+        this._super();
     },
 
     onDestroy: function () {

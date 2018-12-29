@@ -1,6 +1,7 @@
 const GlobalVar = require("globalvar");
 const ResMapping = require("resmapping");
 const SceneDefines = require("scenedefines");
+const i18n = require('LanguageData');
 
 var NetWaiting = cc.Class({
     ctor: function () {
@@ -29,10 +30,14 @@ var NetWaiting = cc.Class({
     init: function () {
         var self = this;
         GlobalVar.resManager().loadRes(ResMapping.ResType.Prefab, 'cdnRes/prefab/Net/ReConnecting', function (prefab) {
-            self.reconnecting = cc.instantiate(prefab);
+            if (prefab != null) {
+                self.reconnecting = cc.instantiate(prefab);
+            }
         });
         GlobalVar.resManager().loadRes(ResMapping.ResType.Prefab, 'cdnRes/prefab/Net/Waiting', function (prefab) {
-            self.waiting = cc.instantiate(prefab);
+            if (prefab != null) {
+                self.waiting = cc.instantiate(prefab);
+            }
         });
     },
 
@@ -55,6 +60,7 @@ var NetWaiting = cc.Class({
             }
         } else {
             if (!!this.waiting && cc.isValid(this.waiting) && this.wait) {
+                this.waiting.getChildByName('Waiting').active = false;
                 this.waiting.removeFromParent(false);
                 this.wait = false;
             }
@@ -72,9 +78,14 @@ var NetWaiting = cc.Class({
                         parentNode.addChild(this.reconnecting);
                         this.reconnect = true;
                     }
-                }else{
-                    GlobalVar.sceneManager().resetOpen();
+                } else if (GlobalVar.sceneManager().getCurrentSceneType() == SceneDefines.LOGIN_STATE) {
+                    GlobalVar.comMsg.showMsg(i18n.t('label.4000001'));
+                    cc.find("Canvas/UINode").getChildByName('UIServerSel').getComponent('UIServerSel').canSelect = true;
+                } else {
+                    GlobalVar.sceneManager().startUp();
                 }
+            } else {
+                GlobalVar.sceneManager().startUp();
             }
         } else {
             if (!!this.reconnecting && cc.isValid(this.reconnecting) && this.reconnect) {

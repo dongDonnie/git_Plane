@@ -229,7 +229,7 @@ cc.Class({
             }
         }
 
-        CommonWnd.showDrawBoxPreview(null, "宝箱预览", itemMustIDVec, itemProbIDVec);
+        CommonWnd.showDrawBoxPreview(itemMustIDVec, itemProbIDVec);
     },
 
     onBtnDraw: function (event, count) {
@@ -273,7 +273,7 @@ cc.Class({
         let diamondEnough = GlobalVar.me().diamond >= diamondCost;
         if (!diamondEnough) {
             funConfirm = function () {
-                CommonWnd.showNormalFreeGetWnd(GameServerProto.PTERR_DIAMOND_LACK, funCancle, funCancle, funCancle);
+                CommonWnd.showNormalFreeGetWnd(GameServerProto.PTERR_DIAMOND_LACK, funCancle);
             };
         }
         
@@ -287,7 +287,7 @@ cc.Class({
         if (this.animePlaying) {
             return;
         }
-        if (cc.sys.platform !== cc.sys.WECHAT_GAME){
+        if (cc.sys.platform !== cc.sys.WECHAT_GAME && !(window && window["wywGameId"]=="5496")){
             return;
         }
 

@@ -25,17 +25,17 @@
     "_level": 1,
     "_components": [
       {
-        "__id__": 5
-      },
-      {
         "__id__": 6
       },
       {
         "__id__": 7
+      },
+      {
+        "__id__": 8
       }
     ],
     "_prefab": {
-      "__id__": 8
+      "__id__": 9
     },
     "_opacity": 255,
     "_color": {
@@ -96,10 +96,13 @@
     "_components": [
       {
         "__id__": 3
+      },
+      {
+        "__id__": 4
       }
     ],
     "_prefab": {
-      "__id__": 4
+      "__id__": 5
     },
     "_opacity": 255,
     "_color": {
@@ -111,8 +114,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 10,
-      "height": 10
+      "width": 20,
+      "height": 20
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -122,7 +125,7 @@
     "_position": {
       "__type__": "cc.Vec3",
       "x": 0,
-      "y": 50,
+      "y": 20,
       "z": 0
     },
     "_scale": {
@@ -172,7 +175,28 @@
     "_fillRange": 0,
     "_isTrimmedMode": true,
     "_state": 0,
-    "_atlas": null,
+    "_atlas": {
+      "__uuid__": "a2c2c992-057d-4b94-acc7-ebf5264c0efe"
+    },
+    "_id": ""
+  },
+  {
+    "__type__": "cc.Animation",
+    "_name": "",
+    "_objFlags": 0,
+    "node": {
+      "__id__": 2
+    },
+    "_enabled": true,
+    "_defaultClip": {
+      "__uuid__": "698502a1-0071-4323-89fa-ee82d3ac2c77"
+    },
+    "_clips": [
+      {
+        "__uuid__": "698502a1-0071-4323-89fa-ee82d3ac2c77"
+      }
+    ],
+    "playOnLoad": true,
     "_id": ""
   },
   {
@@ -198,7 +222,7 @@
     "_offset": {
       "__type__": "cc.Vec2",
       "x": 0,
-      "y": 50
+      "y": 20
     },
     "_size": {
       "__type__": "cc.Size",
@@ -217,12 +241,12 @@
     "_enabled": true,
     "spine": null,
     "dragonBone": {
-      "__id__": 7
+      "__id__": 8
     },
     "dbArmature": null,
     "dbArmatureCallback": null,
     "collider": {
-      "__id__": 5
+      "__id__": 6
     },
     "_hasStop": false,
     "mixTime": 0.2,
@@ -247,13 +271,13 @@
     "_animationName": "daiji",
     "playTimes": 0,
     "_N$dragonAsset": {
-      "__uuid__": "2ee79f5c-3afe-4d2e-9be0-98193e37ae40"
+      "__uuid__": "e2bd0de4-67ba-429d-8e63-c52517c5245e"
     },
     "_N$dragonAtlasAsset": {
-      "__uuid__": "591d8f30-1972-4c1a-963f-08d561a07f13"
+      "__uuid__": "56f35ee9-a8cb-4980-834c-f00dece0903c"
     },
     "_N$_defaultArmatureIndex": 0,
-    "_N$_animationIndex": 5,
+    "_N$_animationIndex": 6,
     "_N$timeScale": 1,
     "_N$debugBones": false,
     "_id": ""

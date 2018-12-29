@@ -7,7 +7,7 @@ cc.Class({
         tbl: {
             default: null,
             visible: false
-        }
+        },
     },
 
     onLoad() {
@@ -20,10 +20,20 @@ cc.Class({
             this.dragonBone.addEventListener(dragonBones.EventObject.COMPLETE, this._animationEventHandler, this);
         }
         this._hasStop = false;
+        this.originBox = {};
+        this.originBox.offset = cc.v2(this.collider.offset.x, this.collider.offset.y);
+        this.originBox.size = cc.size(this.collider.size.width, this.collider.size.height);
     },
 
     setTBL(tbl) {
         this.tbl = typeof tbl !== 'undefined' ? tbl : null;
+
+        if (typeof this.originBox !== 'undefined') {
+            this.collider.offset.x = this.originBox.offset.x;
+            this.collider.offset.y = this.originBox.offset.y;
+            this.collider.size.width = this.originBox.size.width;
+            this.collider.size.height = this.originBox.size.height;
+        }
 
         if (!!this.tbl) {
             if (this.tbl.strBoxCollider != "") {
@@ -108,13 +118,13 @@ cc.Class({
 
                 this.dbArmature.animation.play(actName, loop);
 
-                if(typeof this.actionCollider!=='undefined'){
-                    if(typeof this.actionCollider[actName] !=='undefined'){
-                        let box=this.getComponent(cc.BoxCollider);
-                        box.offset.x=this.actionCollider[actName].cOffset.x;
-                        box.offset.y=this.actionCollider[actName].cOffset.y;
-                        box.size.width=this.actionCollider[actName].cSize.width;
-                        box.size.height=this.actionCollider[actName].cSize.height;
+                if (typeof this.actionCollider !== 'undefined') {
+                    if (typeof this.actionCollider[actName] !== 'undefined') {
+                        let box = this.getComponent(cc.BoxCollider);
+                        box.offset.x = this.actionCollider[actName].cOffset.x;
+                        box.offset.y = this.actionCollider[actName].cOffset.y;
+                        box.size.width = this.actionCollider[actName].cSize.width;
+                        box.size.height = this.actionCollider[actName].cSize.height;
                     }
                 }
             }
@@ -131,13 +141,13 @@ cc.Class({
             if (this.defaultAction != null) {
                 this.dbArmature.animation.play(this.defaultAction, 0);
 
-                if(typeof this.actionCollider!=='undefined'){
-                    if(typeof this.actionCollider[this.defaultAction] !=='undefined'){
-                        let box=this.getComponent(cc.BoxCollider);
-                        box.offset.x=this.actionCollider[this.defaultAction].cOffset.x;
-                        box.offset.y=this.actionCollider[this.defaultAction].cOffset.y;
-                        box.size.width=this.actionCollider[this.defaultAction].cSize.width;
-                        box.size.height=this.actionCollider[this.defaultAction].cSize.height;
+                if (typeof this.actionCollider !== 'undefined') {
+                    if (typeof this.actionCollider[this.defaultAction] !== 'undefined') {
+                        let box = this.getComponent(cc.BoxCollider);
+                        box.offset.x = this.actionCollider[this.defaultAction].cOffset.x;
+                        box.offset.y = this.actionCollider[this.defaultAction].cOffset.y;
+                        box.size.width = this.actionCollider[this.defaultAction].cSize.width;
+                        box.size.height = this.actionCollider[this.defaultAction].cSize.height;
                     }
                 }
             }

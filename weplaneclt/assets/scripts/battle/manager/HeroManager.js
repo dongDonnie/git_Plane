@@ -35,6 +35,7 @@ const HeroManager = cc.Class({
         this.full = false;
         this.controllable = false;
         this.prepareToEnd = false;
+        this.delayLevel = 0;
     },
 
     start(mgr) {
@@ -339,7 +340,7 @@ const HeroManager = cc.Class({
             }
             let bomber = new PlaneEntity();
             let assistID = GlobalVar.me().memberData.getAssistFighterID();
-            if (assistID == 0){
+            if (assistID == 0) {
                 let index = this.planeEntity.objectName.lastIndexOf('_');
                 assistID = this.planeEntity.objectName.substring(index + 1, this.planeEntity.objectName.length);
             }
@@ -434,6 +435,9 @@ const HeroManager = cc.Class({
 
     openDash: function (open) {
         open = typeof open !== 'undefined' ? open : false;
+        if(open==-2 || !open){
+            this.skillDelayLevelUp();
+        }
         this.planeEntity.addDashTime(open);
     },
 
@@ -454,6 +458,25 @@ const HeroManager = cc.Class({
             if (typeof this.wingmanEntity[1] !== 'undefined') {
                 this.wingmanEntity[1].skillLevelUp(level);
             }
+        }
+        if (BattleManager.getInstance().gameState == Defines.GameResult.DASHSTART ||
+            BattleManager.getInstance().gameState == Defines.GameResult.DASH ||
+            BattleManager.getInstance().gameState == Defines.GameResult.DASHEND) {
+            this.delayLevel += level;
+        }
+    },
+
+    skillDelayLevelUp: function () {
+        if (BattleManager.getInstance().gameState == Defines.GameResult.RUNNING ||
+            BattleManager.getInstance().isDemo) {
+            this.planeEntity.skillLevelUp(this.delayLevel);
+            if (typeof this.wingmanEntity[0] !== 'undefined') {
+                this.wingmanEntity[0].skillLevelUp(this.delayLevel);
+            }
+            if (typeof this.wingmanEntity[1] !== 'undefined') {
+                this.wingmanEntity[1].skillLevelUp(this.delayLevel);
+            }
+            this.delayLevel = 0;
         }
     },
 

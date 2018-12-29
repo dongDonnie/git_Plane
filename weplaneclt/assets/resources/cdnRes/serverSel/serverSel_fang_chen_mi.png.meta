@@ -1,6 +1,6 @@
 {
   "ver": "2.3.0",
-  "uuid": "28a5d09a-fd68-4f48-b48a-63178c874b4a",
+  "uuid": "321f3fa5-6742-4f7d-9e29-b02ddb78a9a8",
   "type": "sprite",
   "wrapMode": "clamp",
   "filterMode": "bilinear",
@@ -9,8 +9,8 @@
   "subMetas": {
     "serverSel_fang_chen_mi": {
       "ver": "1.0.3",
-      "uuid": "4e19996f-a630-42ec-a06a-9ab2fb064909",
-      "rawTextureUuid": "28a5d09a-fd68-4f48-b48a-63178c874b4a",
+      "uuid": "7017457a-554f-4ac9-a464-a8052d28bf8a",
+      "rawTextureUuid": "321f3fa5-6742-4f7d-9e29-b02ddb78a9a8",
       "trimType": "custom",
       "trimThreshold": 1,
       "rotated": false,

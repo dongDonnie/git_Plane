@@ -13,6 +13,7 @@ const ComMsg = require("ComMsg");
 const ServerTime = require("servertime");
 const TblApi = require("tblapi");
 const NetWaiting=require("netwaiting");
+const config = require("config");
 var requestService = require('requestservice')
 
 var GlobalVar = module.exports;
@@ -64,10 +65,14 @@ GlobalVar.netWaiting = function(){
 GlobalVar.IosRechargeLock = true;
 GlobalVar.androidRechargeLock = false;
 GlobalVar.srcSwitch = function () {
-    if (GlobalVar.isIOS){
-        return GlobalVar.IosRechargeLock;
-    }else if (GlobalVar.isAndroid){
-        return GlobalVar.androidRechargeLock;
+    if (cc.sys.platform == cc.sys.WECHAT_GAME){
+        if (GlobalVar.isIOS){
+            return GlobalVar.IosRechargeLock;
+        }else if (GlobalVar.isAndroid){
+            return GlobalVar.androidRechargeLock;
+        }
+    }else if (window && window["wywGameId"]=="5469"){
+        return true;
     }
     return false;
 },
@@ -75,23 +80,43 @@ GlobalVar.shareOpen = false;
 GlobalVar.getShareSwitch = function () {
     if (cc.sys.platform == cc.sys.WECHAT_GAME){
         return GlobalVar.shareOpen;
+    }else if (window && window["wywGameId"]=="5469"){
+        return true;
     }
-    return true;
+    return false;
 },
 GlobalVar.videoAdOpen = false;
 GlobalVar.getVideoAdSwitch = function () {
     if (cc.sys.platform == cc.sys.WECHAT_GAME){
         return GlobalVar.videoAdOpen;
+    }else if (window && window["wywGameId"]=="5469"){
+        return true;
     }
     return false;
 },
 
+GlobalVar.bannerOpen = true;
+GlobalVar.getBannerSwitch = function () {
+    if (cc.sys.platform == cc.sys.WECHAT_GAME){
+        return GlobalVar.bannerOpen;
+    }else if (window && window["wywGameId"]=="5469"){
+        return true;
+    }else{
+        return false;
+    }
+},
+GlobalVar.getNeedGuide = function () {
+    return config.NEED_GUIDE
+},
 
+GlobalVar.firstTimeLaunch = false;
 GlobalVar.showAuthorization = true;
 
 GlobalVar.cleanAllMgr = function () {
+    // ResManager.getInstance().clearCache();
     Soundmanager.getInstance().clearSoundMgr();
-    WindowManager.getInstance().clearWindowMgr();
+    WindowManager.getInstance().resetView();
+    GameTimer.getInstance().delAllTimer();
     Me.destroyInstance();
 };
 

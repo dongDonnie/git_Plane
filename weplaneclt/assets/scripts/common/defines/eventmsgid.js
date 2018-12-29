@@ -52,6 +52,7 @@ module.exports = {
     EVENT_GET_ENDLESS_DATA: "event_get_endless_bag_data",
     EVENT_SHOW_BLESS: "event_show_bless",
     EVENT_ENDLESS_START_BATTLE: "event_endless_start_battle",
+    EVENT_ENDLESS_POWER_POINT_CHANGE_NTF: "event_endless_power_point_change_ntf",
 
     EVENT_SETSTATUS_COUNT: "event_setstatus_count",
     EVENT_SPCHANGE_NTF: "EVENT_SPCHANGE_NTF",
@@ -62,6 +63,7 @@ module.exports = {
     EVENT_CHAPTER_SELECT: "event_chapter_change",
     EVENT_RECIVE_DRAW_REWARD: "event_recive_draw_reward",
     EVENT_GET_RECHARGE_RESULT: "event_get_recharge_result",
+    EVENT_GET_VIP_PACKAGEDATA: "event_get_vip_package_data",
     EVENT_GET_FULI_FEEDBACK_RESULT: "event_get_fuli_feedback_result",
     EVENT_GET_FULI_BUY_RESULT: "event_get_fuli_buy_result",
     EVENT_GET_FULI_SC_RESULT: "event_get_fuli_sc_result",
@@ -81,6 +83,7 @@ module.exports = {
     EVENT_GET_RCGBAG_RESULT: "event_get_rcgbag_result",
     EVENT_GET_VOUCHER_RESULT: "event_get_voucher_result",
     EVENT_GET_RENAME_ACK: "event_get_rename_ack",
+    EVENT_NEWTASK_NTF: "event_newtask_ntf",
 
     EVENT_LOGIN_DATA_NTF : "event_login_data_ntf",
 
@@ -103,6 +106,7 @@ module.exports = {
     EVENT_GUAZAI_DIRTY_NTF:"EVENT_GUAZAI_DIRTY_NTF",
     EVENT_GUAZAI_QUALITY_UP: "event_guazai_quality_up",
     EVENT_GUAZAI_LEVEL_UP: "event_guazai_level_up",
+    EVENT_GUAZAI_SMELTER_NTF: "event_guazai_smelter_ntf",
     EVENT_MEMBER_LEVELUP_NTF:"event_member_levelup_ntf",
     EVENT_MEMBER_QUALITYUP_NTF:"event_member_qualityup_ntf",
     EVENT_LEADEREQUIP_LEVELUP: "event_leader_equip_levelup",
@@ -117,6 +121,7 @@ module.exports = {
     EVENT_ENDLESS_QH_UP_NTF:"event_endless_qh_up_ntf",
     EVENT_ENDLESS_RANK_UP_NTF: "event_endless_rank_up_ntf",
     EVENT_ENDLESS_USESTATUS_NTF:"event_endlsee_usestatus_ntf",
+    EVENT_GET_ASSIST_SHARE_SUCCESS: "event_get_assist_success",
 
     EVENT_GUAZAI_REBIRTH_ACK:"EVENT_GUAZAI_REBIRTH_ACK",
 
@@ -131,6 +136,7 @@ module.exports = {
     EVENT_FULICZ_FLAG_CHANGE: "event_fulicz_flag_change",
     EVENT_THEBAG_FLAG_CHANGE: "event_thebag_flag_change",
     EVENT_CAMP_FLAG_CHANGE: 'event_camp_flag_change',
+    EVENT_VIP_REWARD_FLAG_CHANGE: 'event_vip_reward_flag_change',
 
     //share
     EVENT_GET_FREE_GOLD: "event_get_free_gold",
@@ -139,4 +145,7 @@ module.exports = {
     EVENT_GET_MEMBERTESTPLAY_DATA: "event_get_member_test_play_data",
     EVENT_GET_SHARE_DAILY_DATA: "event_get_share_daily_data",
     EVENT_ENDLESS_GET_CHARGE_DATA: "event_endless_get_charge_data",
+
+    //gm
+    EVENT_GM_SWITCH_CHANGE: "event_gm_switch_change",
 };

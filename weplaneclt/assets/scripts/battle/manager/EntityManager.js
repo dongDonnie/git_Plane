@@ -282,10 +282,9 @@ var EntityManager = cc.Class({
             this.entityExecuteList.push(entity);
 
         }
-
-        if (z != -1) {
-            this.battleManager.displayContainer.addChild(entity, z);
-        }
+        
+        this.battleManager.displayContainer.addChild(entity, z);
+        
     },
 
     deleteEntity: function (entity) {

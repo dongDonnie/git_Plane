@@ -113,7 +113,7 @@ const NetworkManager = cc.Class({
                 console.log('socket open: ', event);
                 GameServerProto.Init();
                 self.connected = true;
-                self.connectError=false;
+                self.connectError = false;
                 serverTimeService.getInstance(); //实例化服务器时间服务
                 self.init();
                 if (!!self.onConnectCallBack) {
@@ -128,7 +128,7 @@ const NetworkManager = cc.Class({
                 }
                 self.connected = false;
                 requestService.getInstance().onDisconnected();
-                if(self.needReConnected){
+                if (self.needReConnected) {
                     self.checkConnection();
                 }
             };
@@ -144,7 +144,7 @@ const NetworkManager = cc.Class({
                 requestService.getInstance().onDisconnected();
             };
             this.socket.onmessage = function (event) {
-                //console.log('socket message event: ', event);
+                // console.log('socket message event: ', event);
                 self.m_readBuf.clear();
                 self.m_readBuf.append(event.data);
                 self.m_readBuf.limit = self.m_readBuf.offset;
@@ -157,7 +157,7 @@ const NetworkManager = cc.Class({
                 }
                 //console.log('socket message data: ', msg);
                 if (msg.id != 1)
-                    console.log('socket message data: ', msg);
+                    console.log("socket message data: ", msg);
             };
         } else {
             if (this.reconnectCount <= this.reconnectMaxCount) {
@@ -167,8 +167,6 @@ const NetworkManager = cc.Class({
     },
 
     send(msg) {
-        if (msg.id != 1)
-            console.log('socket send data: ', msg);
         this.m_writeBuf.clear();
         if (GameServerProto.Encode(msg.id, msg.data, this.m_writeBuf) < 0) {
             return false;
@@ -176,6 +174,8 @@ const NetworkManager = cc.Class({
         this.m_writeBuf.limit = this.m_writeBuf.offset;
         this.m_writeBuf.offset = 0;
 
+        if (msg.id != 1)
+            console.log("socket send data: ", msg);
         if (!!this.socket) {
             this.socket.send(this.m_writeBuf.toArrayBuffer());
             return true;
@@ -201,12 +201,13 @@ const NetworkManager = cc.Class({
     },
 
     connectToServer(host, port, callback) {
+        self.connectError = false;
         self.connectHostAddress = host;
         self.connectHostPort = port;
         if (!!callback) {
-            this.onConnectCallBack = callback;
+            self.onConnectCallBack = callback;
         }
-        this.connect(host, port);
+        self.connect(host, port);
     },
 
     setOnConnectCallBack(callback) {

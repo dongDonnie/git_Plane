@@ -4,6 +4,7 @@ const WndTypeDefine = require("wndtypedefine");
 const RootBase = require("RootBase");
 const i18n = require('LanguageData');
 const GlobalFunc = require('GlobalFunctions');
+const weChatAPI = require("weChatAPI");
 
 cc.Class({
     extends: RootBase,
@@ -51,16 +52,20 @@ cc.Class({
     animePlayCallBack(name) {
         if (name == "Escape") {
             this._super("Escape");
-            
+            if (GlobalVar.getBannerSwitch()){
+                weChatAPI.justShowBanner();
+            }
             this.modeScroll.loopScroll.releaseViewItems();
             WindowManager.getInstance().popView();
         } else if (name == "Enter") {
             this._super("Enter");
-
+            let self = this;
+            if (GlobalVar.getBannerSwitch()){
+                weChatAPI.justHideBanner();
+            }
             if (this.isFirstIn){
                 this.isFirstIn = false;
 
-                let self = this;
                 this.endlessRankID = GlobalVar.me().endlessData.getRankID();
 
                 let modeDataLength = GlobalVar.tblApi.getLength('TblEndlessRank');
@@ -108,15 +113,26 @@ cc.Class({
     updateMode: function(model, index){
         model.getChildByName("spriteIcon").getComponent("RemoteSprite").setFrame(index);
         model.getChildByName("spriteModeText").getComponent("RemoteSprite").setFrame(index);
+        model.getChildByName("labelLevelLimitDesc").active = false;
         // model.getChildByName("btnoSelect").getComponent(cc.Button).clickEvents[0].customEventData = index;
         let strDesc = "";
-        let scoreReq = GlobalVar.tblApi.getDataBySingleKey('TblEndlessRank', index + 1).nScoreReq;
-        if (scoreReq != 0){
-            strDesc = i18n.t('label.4000261').replace("%d", scoreReq/10000);
-            model.getChildByName("labelDesc").color = cc.color(255, 166, 51);
-        }else{
+        let endlessRankData = GlobalVar.tblApi.getDataBySingleKey('TblEndlessRank', index + 1);
+        let scoreReq = endlessRankData.nScoreReq;
+        let levelReq = endlessRankData.wLevelReq;
+        if (GlobalVar.me().endlessData.getRankID() == index + 1){
             strDesc = i18n.t('label.4000260');
-            model.getChildByName("labelDesc").color = cc.color(255, 255, 255);
+            // model.getChildByName("labelDesc").color = cc.color(255, 166, 51);
+            model.getChildByName("spriteTextBg").active = true;
+        }else if (scoreReq != 0 && index >= GlobalVar.me().endlessData.getRankID()){
+            strDesc = i18n.t('label.4000261').replace("%d", scoreReq/10000);
+            // model.getChildByName("labelDesc").color = cc.color(255, 166, 51);
+            model.getChildByName("spriteTextBg").active = true;
+            if (GlobalVar.me().level < levelReq){
+                model.getChildByName("labelLevelLimitDesc").getComponent(cc.Label).string = i18n.t('label.4000265').replace("%level", levelReq);
+                model.getChildByName("labelLevelLimitDesc").active = true;
+            }
+        }else{
+            model.getChildByName("spriteTextBg").active = false;
         }
         model.getChildByName("labelDesc").getComponent(cc.Label).string = strDesc;
         // let rankID = GlobalVar.me().endlessData.getRankID();

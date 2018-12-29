@@ -6,6 +6,8 @@ const EventMsgId = require("eventmsgid");
 const GameServerProto = require("GameServerProto");
 const GlobalFunctions = require("GlobalFunctions");
 const CommonWnd = require("CommonWnd");
+const StoreageData = require("storagedata");
+const weChatAPI = require("weChatAPI");
 
 const DIAMOND_ID = 3;
 
@@ -98,6 +100,9 @@ cc.Class({
     animePlayCallBack(name) {
         if (name == "Escape") {
             this._super("Escape");
+            if (GlobalVar.getBannerSwitch()){
+                weChatAPI.justShowBanner();
+            }
             for (let i = 0; i< this.nodeSVContent.children.length; i++){
                 this.nodeSVContent.children[i].x = -1000;
             }
@@ -105,6 +110,9 @@ cc.Class({
             WindowManager.getInstance().popView(false, null, false, false);
         } else if (name == "Enter") {
             this._super("Enter");
+            if (GlobalVar.getBannerSwitch()){
+                weChatAPI.justHideBanner();
+            }
             GlobalVar.eventManager().addEventListener(EventMsgId.EVENT_LIMIT_STORE_DATA_NTF, this.onLimitStoreDataGet, this);
             GlobalVar.eventManager().addEventListener(EventMsgId.EVENT_LIMIT_STORE_BUY_NTF, this.onLimitStoreBuyDataGet, this);
             this.requestStoreData();
@@ -223,13 +231,34 @@ cc.Class({
         var bought = GlobalVar.me().limitStoreData.findFuliGiftById(this.itemArray[i].wID);
         var cost = GlobalVar.me().limitStoreData.getBuyCostNum(bought.Num + 1, bought.Num + 1, this.itemArray[i].oVecCost);
         this.setChildComponentStringByName(node, "lblCostNum", cost);
-        this.setChildComponentStringByName(node, "lblCanBuyNum", this.itemArray[i].wLimit - bought.Num);
-        if (this.itemArray[i].wLimit - bought.Num <= 0){
-            node.getChildByName("btnoBuy").getComponent(cc.Button).interactable = false;
-        }else{
-            node.getChildByName("btnoBuy").getComponent(cc.Button).interactable = true;
+        let vipLimitTimes = (this.itemArray[i].oVecVIPLimit[GlobalVar.me().vipLevel] && this.itemArray[i].oVecVIPLimit[GlobalVar.me().vipLevel].wLimit) || 0;
+        this.setChildComponentStringByName(node, "lblCanBuyNum", this.itemArray[i].wLimit + vipLimitTimes - bought.Num);
+
+        if (this.itemArray[i].byFree == 0 || !GlobalVar.getShareSwitch()){
+            if (this.itemArray[i].wLimit + vipLimitTimes - bought.Num <= 0){
+                node.getChildByName("btnoBuy").getComponent(cc.Button).interactable = false;
+            }else{
+                node.getChildByName("btnoBuy").getComponent(cc.Button).interactable = true;
+            }
+            node.getChildByName("btnoVideo").active = false;
+            node.getChildByName("btnoShare").active = false;
+        }else if (this.itemArray[i].byFree == 1){
+            node.getChildByName("btnoVideo").active = !StoreageData.getShareTimesWithKey("rewardedVideoLimit", 1);
+            node.getChildByName("btnoShare").active = !!StoreageData.getShareTimesWithKey("rewardedVideoLimit", 1);
+            if (this.itemArray[i].wLimit + vipLimitTimes - bought.Num <= 0){
+                node.getChildByName("btnoVideo").getComponent(cc.Button).interactable = false;
+                node.getChildByName("btnoShare").getComponent(cc.Button).interactable = false;
+            }else{
+                node.getChildByName("btnoVideo").getComponent(cc.Button).interactable = true;
+                node.getChildByName("btnoShare").getComponent(cc.Button).interactable = true;
+            }
+            node.getChildByName("btnoBuy").active = false;
+            node.getChildByName("lblCanBuy").getComponent(cc.Label).string = "今日可获得次数"
         }
+
         node.getChildByName("btnoBuy").newTag = this.itemArray[i].wID;
+        node.getChildByName("btnoVideo").newTag = this.itemArray[i].wID;
+        node.getChildByName("btnoShare").newTag = this.itemArray[i].wID;
         // this.itemList[this.itemArray[i].wID] = node.getChildByName("btnoBuy");
         this.setIcon(node.getChildByName("nodeCostIcon"), DIAMOND_ID);
         node.getChildByName("nodeCostIcon").getChildByName("ItemObject").getComponent("ItemObject").setSpriteEdgeVisible(false);
@@ -239,12 +268,18 @@ cc.Class({
     setDiscount: function (node, item) {
         var bought = GlobalVar.me().limitStoreData.findFuliGiftById(item.wID);
         var firstreward = node.getChildByName('firstreward');
-        if (bought.Num >= item.wLimit) {
+        firstreward.active = true;
+        let vipLimitTimes = (item.oVecVIPLimit[GlobalVar.me().vipLevel] && item.oVecVIPLimit[GlobalVar.me().vipLevel].wLimit) || 0;
+        if (bought.Num >= item.wLimit + vipLimitTimes) {
             firstreward.active = false;
             return;
         }
         for (let i = item.oVecDiscount.length - 1; i >= 0; i--) {
-            if (bought.Num+1 >= item.oVecDiscount[i].byNum) {
+            if (bought.Num + 1 >= item.oVecDiscount[i].byNum) {
+                if (item.oVecDiscount[i].nCost == 0) {
+                    firstreward.active = false;
+                    break;
+                }
                 let discount = item.oVecDiscount[i].nCost / 10 + '折';
                 firstreward.getChildByName('label').getComponent(cc.Label).string = discount;
                 break;
@@ -296,19 +331,62 @@ cc.Class({
                 Type: GlobalVar.me().limitStoreData.nowType,
                 ID: GlobalVar.me().limitStoreData.limitStoreBuyId,
                 Num: num,
+                Free: 0,
             }
             // cc.log(msg);
             GlobalVar.handlerManager().limitStoreHandler.sendReq(GameServerProto.GMID_FULI_GIFT_BUY_REQ, msg);
         }
-
-        if (item.wLimit - bought.Num <= 0)
+        let vipLimitTimes = (this.itemArray[id-1].oVecVIPLimit[GlobalVar.me().vipLevel] && this.itemArray[id-1].oVecVIPLimit[GlobalVar.me().vipLevel].wLimit) || 0;
+        if (item.wLimit + vipLimitTimes - bought.Num <= 0)
             return;
 
         let selectItemData = GlobalVar.tblApi.getDataBySingleKey('TblItem', item.stItems.wItemID);
         if (!selectItemData){
             return;
         }
-        CommonWnd.showPurchaseWnd(getArray, item.wLimit - bought.Num, costArray, "购买", "购买商品", confirmCallback, null, callback);
+        CommonWnd.showPurchaseWnd(getArray, item.wLimit + vipLimitTimes - bought.Num, costArray, "购买", "购买商品", confirmCallback, null, callback);
+    },
+
+    onVideoBtnTouch: function(event){
+        var id = event.target.newTag;
+        GlobalVar.me().limitStoreData.limitStoreBuyId = id;
+        let msg = {
+            Type: GlobalVar.me().limitStoreData.nowType,
+            ID: GlobalVar.me().limitStoreData.limitStoreBuyId,
+            Num: 1,
+            Free: 1,
+        };
+        
+
+        weChatAPI.showRewardedVideoAd(function () {
+            GlobalVar.handlerManager().limitStoreHandler.sendReq(GameServerProto.GMID_FULI_GIFT_BUY_REQ, msg);
+        }, function () {
+            weChatAPI.shareNormal(122, function () {
+                GlobalVar.handlerManager().limitStoreHandler.sendReq(GameServerProto.GMID_FULI_GIFT_BUY_REQ, msg);
+            }); 
+        });
+
+        let self = this;
+        this.nodeBlock.enabled = true;
+        setTimeout(function () {
+            self.nodeBlock.enabled = false;
+        }, 1500);
+
+    },
+
+    onShareBtnTouch: function (event) {
+        var id = event.target.newTag;
+        GlobalVar.me().limitStoreData.limitStoreBuyId = id;
+        let msg = {
+            Type: GlobalVar.me().limitStoreData.nowType,
+            ID: GlobalVar.me().limitStoreData.limitStoreBuyId,
+            Num: 1,
+            Free: 1,
+        };
+
+        weChatAPI.shareNormal(122, function () {
+            GlobalVar.handlerManager().limitStoreHandler.sendReq(GameServerProto.GMID_FULI_GIFT_BUY_REQ, msg);
+        }); 
     },
 
     getItemBuyId: function (id) {

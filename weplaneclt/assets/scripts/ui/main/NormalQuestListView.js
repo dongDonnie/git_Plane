@@ -103,6 +103,9 @@ cc.Class({
                 BattleManager.getInstance().startOutside(uiNode.getChildByName('UIMain').getChildByName('nodeBottom').getChildByName('planeNode'), GlobalVar.me().memberData.getStandingByFighterID(), true);
             }
             this.canUpdate = false;
+            if (!config.NEED_GUIDE) {
+                cc.find('Canvas/GuideNode').active = false;
+            }
         } else if (name == "Enter") {
             this._super("Enter")
             if (!this.clickedChapter){
@@ -121,10 +124,10 @@ cc.Class({
             this.node.getChildByName("nodeTop").active = true;
             this.node.getChildByName("nodeBottom").active = true;
 
-            if (this.needShowTestPlayFinishWnd && !config.NEED_GUIDE && GlobalVar.getShareSwitch()){
+            if (false && this.needShowTestPlayFinishWnd && !config.NEED_GUIDE && GlobalVar.getShareSwitch()){
                 CommonWnd.showShareTestPlayFinishWnd();
             }
-            else if (this.needShowRecommondWnd && !config.NEED_GUIDE && GlobalVar.getShareSwitch()){
+            else if (false && this.needShowRecommondWnd && !config.NEED_GUIDE && GlobalVar.getShareSwitch()){
                 CommonWnd.showRecommandWnd();
             }
             this.needShowTestPlayFinishWnd = false;
@@ -189,7 +192,6 @@ cc.Class({
         let touch = event.touch;
         let deltaMove = touch.getLocation().sub(touch.getStartLocation());
         let disX = deltaMove.x;
-        let anchorX = disX < 0 ? 0 : 1;
 
         let curMap = this.getQuestNodeByIndex(this.curChapterIndex);
         if (!curMap) return;
@@ -205,6 +207,7 @@ cc.Class({
         this.force = typeof this.force !== 'undefined' ? this.force : false;
 
         let curChapterID = GlobalVar.me().campData.getLastChapterID(this.chapterType);
+        this.getNodeByName('lblCp').getComponent(cc.Label).string = GlobalVar.me().getCombatPoint();
 
         if (!curChapterID || this.force) {
             // console.log("curMapIndex error");
@@ -223,6 +226,9 @@ cc.Class({
             this.curChapterIndex = curChapterID - 1;
         }
         this.initQuestView();
+        if (config.NEED_GUIDE) {
+            this.changeQuest(0);
+        }
     },
 
     initChapterHotPoint: function (index) {
@@ -364,7 +370,7 @@ cc.Class({
         for (let i = 0; i<curMap.planetList.length; i++){
             let planet = curMap.planetList[i];
             let campData = playerChapterData[i];
-            this.updatePlanet(planet, campData)
+            this.updatePlanet(planet, campData);
         }
         this.initChapterProgress(index);
         this.initChapterReward(index);
@@ -482,15 +488,16 @@ cc.Class({
             planet.getComponent(cc.Button).interactable = false;
             planet.getChildByName("nodeStar").opacity = 0;
         }
+
+        // 关卡数字颜色开关
+        planet.getChildByName("labelQuestNumber").color = planet.getComponent(cc.Button).interactable?cc.color(255, 255, 255):cc.color(160, 160, 160);
         if (!planetData){
             return;
         }
 
-        let colorOnOff = planet.getComponent(cc.Button).interactable; // 关卡数字颜色开关
         planet.getComponent("RemoteSprite").setFrame(planetData.wIconID - 1);
         let campaignIndex = (planetData.wCampaignID - 1) % 10 + 1;
         planet.getChildByName("labelQuestNumber").getComponent(cc.Label).string = planetData.wIconID==1?campaignIndex:"";
-        planet.getChildByName("labelQuestNumber").color = colorOnOff?cc.color(255, 255, 255):cc.color(160, 160, 160);
 
         let planetPosData = CampPlanetPosData;
         let chapterIndex = index % 9 + 1;
@@ -517,7 +524,43 @@ cc.Class({
         }        
 
         let planet = event.target;
-        CommonWnd.showQuestInfoWnd(planet.data, planet.planetData);
+        // CommonWnd.showQuestInfoWnd(planet.data, planet.planetData);
+        let chapterID = planet.planetData.byChapterID;
+        let campaignIndex = ((planet.planetData.wCampaignID -1) % 10) + 1;
+        
+        let testPlayMemberID = -1;
+        if (chapterID == 1 && campaignIndex == 7){
+            testPlayMemberID = 740;
+        }else if (chapterID == 1 && campaignIndex == 10){
+            testPlayMemberID = 760;
+        }else if (campaignIndex == 10){
+            let totalMemberData = GlobalVar.tblApi.getData('TblMember');
+            let ids = [];
+            for (let i in totalMemberData){
+                if (totalMemberData[i].byGetType == 1 && totalMemberData[i].stPingJia.byStarNum >= 3){
+                    ids.push(parseInt(i));
+                }
+            }
+    
+            for (let i = 0; i<ids.length;i++){
+                let memberData = GlobalVar.me().memberData.getMemberByID(ids[i]);
+                if (memberData || GlobalVar.me().memberData.unLockHotFlag[ids[i]]){
+                    ids.splice(i, 1);
+                    i -= 1;
+                }
+            }
+
+            let randomID = ids[parseInt(Math.random() * ids.length)] || -1;
+            testPlayMemberID = randomID;
+        }
+
+        if (false && testPlayMemberID != -1){
+            CommonWnd.showShareMemberTestPlayWnd(testPlayMemberID, function () {
+                CommonWnd.showQuestInfoWnd(planet.data, planet.planetData);
+            });
+        }else{
+            CommonWnd.showQuestInfoWnd(planet.data, planet.planetData);
+        }
     },
 
     onBtnChapterRewardBox: function (event, index) {
@@ -581,7 +624,7 @@ cc.Class({
         if (!this.canUpdate) {
             this.canUpdate = true;
             this.curTime = (new Date()).getTime();
-            cc.find('Canvas/guideNode').active = false;
+            cc.find('Canvas/GuideNode').active = false;
             return;
         }
         let curChapterID = GlobalVar.me().campData.getLastChapterID(this.chapterType);
@@ -592,11 +635,11 @@ cc.Class({
                 this.curTime = nowTime;
                 return;
             }
-            if (nowTime - this.curTime > 10000) {
+            if (nowTime - this.curTime > 3000) {
                 this.curTime = nowTime;
                 Guide.getInstance().showFinger();
             }
-            if (cc.find('Canvas/guideNode').active) {
+            if (cc.find('Canvas/GuideNode').active) {
                 this.curTime = nowTime;
             }
         }

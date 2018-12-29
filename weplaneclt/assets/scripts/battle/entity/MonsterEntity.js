@@ -27,6 +27,7 @@ cc.Class({
         immediatelyKill: 0,
         clearBulletWhenDead: false,
         isKill: true,
+        isDefend: false,
 
         monsterHpBar: null,
 
@@ -44,6 +45,9 @@ cc.Class({
         watchCondition: null,
         watchEffect: null,
         selfEffect: null,
+
+        attackSuppress: 1,
+        defendSuppress: 1,
     },
 
     ctor() {
@@ -87,6 +91,8 @@ cc.Class({
         this.watchCondition = null;
         this.watchEffect = null;
         this.selfEffect = null;
+        this.attackSuppress = 1;
+        this.defendSuppress = 1;
         this.resetHover();
     },
 
@@ -226,6 +232,10 @@ cc.Class({
                     return -1;
                 }
             }
+            if (this.isDefend) {
+                dmg *= 0.01;
+            }
+            dmg = Math.ceil(dmg);
             this._super(dmg);
             if (this.tbl.dwType == 2 || this.tbl.dwType == 3 || this.tbl.dwType == 6) {
                 if (this.hp < this.maxHp && this.monsterHpBar != null && cc.isValid(this.monsterHpBar)) {
@@ -255,6 +265,8 @@ cc.Class({
         this.monsterID = monsterID;
         this.lv = lv;
         this.tbl = GlobalVar.tblApi.getDataBySingleKey('TblBattleMonster', monsterID);
+
+        let suppress = GlobalVar.tblApi.getData('TblBattleSuppress')
 
         let level = 1;
         if (BattleManager.getInstance().isEndlessFlag) {
@@ -300,6 +312,21 @@ cc.Class({
                 }
             }
             this.maxHp = this.hp = this.prop[Defines.PropName.Life];
+
+            let monsterCombat = tblLvMonster.dwCombatPoint;
+            let heroCombat = GlobalVar.me().getCombatPoint() || monsterCombat;
+            let percent = heroCombat / monsterCombat;
+            for (let key in suppress) {
+                if (suppress[key].byID != level) {
+                    continue;
+                }
+                if (percent >= suppress[key].dPercent) {
+                    this.attackSuppress = suppress[key].dSuppress2;
+                    this.defendSuppress = suppress[key].dSuppress;
+                    break;
+                }
+            }
+
         }
         if (this.tbl.dwType == 4 || this.tbl.dwType == 5) {
             this.prop[Defines.PropName.CollisionDamage] = tblLvMonster.CollisionParam2;
@@ -316,33 +343,59 @@ cc.Class({
     newObject() {
         this.baseObject = this.poolManager.getInstance().getObject(Defines.PoolType.MONSTER, this.objectName);
         if (this.baseObject == null) {
-            let prefab = GlobalVar.resManager().loadRes(ResMapping.ResType.Prefab, 'cdnRes/battlemodel/prefab/Monster/' + this.objectName);
-            if (prefab != null) {
-                this.baseObject = cc.instantiate(prefab);
+            var self = this;
+            let loadObject = function (prefab) {
+                if (prefab != null) {
+                    self.baseObject = cc.instantiate(prefab);
+                    self.addChild(self.baseObject, 1);
+                    if (self.objectType == Defines.ObjectType.OBJ_MONSTER) {
+                        self.baseObject.getComponent('MonsterObject').reset();
+                    }
+                    if (self.tbl.oVecAnchorsPos.length == 2) {
+                        self.setAnchor(self.tbl.oVecAnchorsPos[0], self.tbl.oVecAnchorsPos[1]);
+                    }
+                    if (!self.changeAnchor) {
+                        self.baseObject.setPosition(self.atrb.objectAutoRotato.pos);
+                        self.baseObject.angle = 0;
+                    }
+                    self.baseObject.getComponent('MonsterObject').setTBL(self.tbl);
+                } else {
+                    self.isShow = true;
+                    self.isDead = true;
+                    self.deathShock = false;
+                    self.closeDeathBomb = true;
+                }
             }
-        }
-        if (this.baseObject != null) {
-            this.addChild(this.baseObject, 1);
+            let prefab = GlobalVar.resManager().getCacheRes(ResMapping.ResType.Prefab, 'cdnRes/battlemodel/prefab/Monster/' + this.objectName);
+            if (prefab != null) {
+                loadObject(prefab);
+            } else {
+                GlobalVar.resManager().loadRes(ResMapping.ResType.Prefab, 'cdnRes/battlemodel/prefab/Monster/' + this.objectName, loadObject);
+            }
         } else {
-            return -1;
+            this.addChild(this.baseObject, 1);
+            if (this.objectType == Defines.ObjectType.OBJ_MONSTER) {
+                this.baseObject.getComponent('MonsterObject').reset();
+            }
+            if (this.tbl.oVecAnchorsPos.length == 2) {
+                this.setAnchor(this.tbl.oVecAnchorsPos[0], this.tbl.oVecAnchorsPos[1]);
+            }
+            if (!this.changeAnchor) {
+                this.baseObject.setPosition(this.atrb.objectAutoRotato.pos);
+                this.baseObject.angle = 0;
+            }
+            this.baseObject.getComponent('MonsterObject').setTBL(this.tbl);
         }
-        if (this.objectType == Defines.ObjectType.OBJ_MONSTER) {
-            this.baseObject.getComponent('MonsterObject').reset();
-        }
-        if (this.tbl.oVecAnchorsPos.length == 2) {
-            this.setAnchor(this.tbl.oVecAnchorsPos[0], this.tbl.oVecAnchorsPos[1]);
-        }
-        //this.setScale(this.tbl.dScale, this.scaleY < 0 ? -this.tbl.dScale : this.tbl.dScale);
+
         if (this.tbl.dwType == 2 || this.tbl.dwType == 3 || this.tbl.dwType == 6) {
             this.setMonsterHpBar();
         }
-        this.baseObject.getComponent('MonsterObject').setTBL(this.tbl);
-        let z = this._super();
-        return z;
+
+        this.motionStreakCtrl(0);
+        return this.zOrder;
     },
 
     deleteObject: function () {
-        //this.automaticSkill = false;
         let size = this.getCollider().size;
 
         this._super();
@@ -396,14 +449,16 @@ cc.Class({
             if (this.flyCurTime - this.flyMsgTime1 >= 0.1 || immediately) {
                 var self = this;
                 GlobalVar.resManager().loadRes(ResMapping.ResType.SpriteFrame, 'cdnRes/battle/_text_resist', function (frame) {
-                    let node = new cc.Node();
-                    let sp = node.addComponent(cc.Sprite);
-                    sp.spriteFrame = frame;
-                    node.scale = 1.0;
-                    node.opacity = 230;
-                    node.setPosition(pos);
-                    BattleManager.getInstance().displayContainer.addChild(node, Defines.Z.FLYDAMAGEMSG);
-                    self.flyFadeAction(node, critical, big);
+                    if (frame != null) {
+                        let node = new cc.Node();
+                        let sp = node.addComponent(cc.Sprite);
+                        sp.spriteFrame = frame;
+                        node.scale = 1.0;
+                        node.opacity = 230;
+                        node.setPosition(pos);
+                        BattleManager.getInstance().displayContainer.addChild(node, Defines.Z.FLYDAMAGEMSG);
+                        self.flyFadeAction(node, critical, big);
+                    }
                 });
                 if (!immediately) {
                     this.flyMsgTime1 = this.flyCurTime;
@@ -515,20 +570,22 @@ cc.Class({
         pos = typeof pos !== 'undefined' ? pos : cc.v3(0.5 * size.width, 0.5 * size.height);
         var self = this;
         GlobalVar.resManager().loadRes(ResMapping.ResType.Prefab, 'cdnRes/battlemodel/prefab/effect/lBomb', function (prefab) {
-            let bomb = cc.instantiate(prefab);
-            BattleManager.getInstance().displayContainer.addChild(bomb, Defines.Z.MONSTERBULLETCLEAR);
-            bomb.setPosition(pos);
-            bomb.runAction(cc.sequence(cc.delayTime(0.4), cc.removeSelf(true)));
-            let array = [];
-            for (let i = 0; i < Math.ceil(Math.random() * 5) + 8; i++) {
-                array.push(pos.add(cc.v3((Math.random() - 0.5) * 200, (Math.random() - 0.5) * 200)));
-            }
-            BattleManager.getInstance().screenBomb(0, array, 1.5, function () {
-                if (!!callback) {
-                    callback(self);
+            if (prefab != null) {
+                let bomb = cc.instantiate(prefab);
+                BattleManager.getInstance().displayContainer.addChild(bomb, Defines.Z.MONSTERBULLETCLEAR);
+                bomb.setPosition(pos);
+                bomb.runAction(cc.sequence(cc.delayTime(0.4), cc.removeSelf(true)));
+                let array = [];
+                for (let i = 0; i < Math.ceil(Math.random() * 5) + 8; i++) {
+                    array.push(pos.add(cc.v3((Math.random() - 0.5) * 200, (Math.random() - 0.5) * 200)));
                 }
-                BattleManager.getInstance().endGameAnimeCount--;
-            })
+                BattleManager.getInstance().screenBomb(0, array, 1.5, function () {
+                    if (!!callback) {
+                        callback(self);
+                    }
+                    BattleManager.getInstance().endGameAnimeCount--;
+                })
+            }
         });
     },
     createRotatoScaleAnime: function (callback) {
@@ -628,12 +685,14 @@ cc.Class({
             let cancel = 0;
             if (!!result) {
                 for (let entity of this.inspector) {
-                    if (!!entity.watchEffect) {
-                        entity.watchEffect(result, entity);
+                    if (cc.isValid(entity)) {
+                        if (!!entity.watchEffect && !entity.isDead) {
+                            entity.watchEffect(result, entity);
+                        }
                     }
-                    if (!!this.selfEffect) {
-                        cancel = this.selfEffect(result, this);
-                    }
+                }
+                if (!!this.selfEffect) {
+                    cancel = this.selfEffect(result, this);
                 }
             }
             if (cancel) {
@@ -650,6 +709,16 @@ cc.Class({
         if (typeof entity !== 'undefined') {
             this.inspector.push(entity);
             entity.watchEffect = typeof entityEffect !== 'undefined' ? entityEffect : null;
+        }
+    },
+    popInspector: function (entity) {
+        if (typeof entity !== 'undefined') {
+            for (let i = 0; i < this.inspector.length; i++) {
+                if (this.inspector[i].uuid == entity.uuid) {
+                    this.inspector.splice(i, 1);
+                    break;
+                }
+            }
         }
     },
 
@@ -745,6 +814,13 @@ cc.Class({
 
     setIsKill: function (not) {
         this.isKill = typeof not !== 'undefined' ? not : true;
+    },
+
+    setDefend: function (d) {
+        this.isDefend = typeof d !== 'undefined' ? d : false;
+    },
+    getDefend: function () {
+        return this.isDefend;
     },
 
     setDamageFromExecuteIntervalSet: function (interval) {

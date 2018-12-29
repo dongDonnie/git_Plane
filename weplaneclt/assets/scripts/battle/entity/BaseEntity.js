@@ -172,6 +172,12 @@ cc.Class({
     },
 
     deleteObject: function () {
+        this.motionStreakCtrl(2);
+
+        if (this.baseObject == null) {
+            return;
+        }
+
         if (this.objectType == Defines.ObjectType.OBJ_HERO_BULLET) {
             this.poolManager.getInstance().putObject(Defines.PoolType.BULLET, this.baseObject);
         } else if (this.objectType == Defines.ObjectType.OBJ_MONSTER_BULLET) {
@@ -189,7 +195,6 @@ cc.Class({
         }
         this.removeChild(this.baseObject);
 
-        this.motionStreakCtrl(2);
     },
 
     getObject: function () {
@@ -585,7 +590,7 @@ cc.Class({
     },
 
     updateObjectAutoCircle: function (dt) {
-        if (this.changeAnchor) {
+        if (this.changeAnchor || this.baseObject == null) {
             return;
         }
         let objectAutoRotato = this.atrb.objectAutoRotato;
@@ -610,6 +615,10 @@ cc.Class({
     },
 
     updateObjectSelfCircle: function (dt) {
+        if (this.baseObject == null) {
+            return;
+        }
+
         let objectSelfRotato = this.atrb.objectSelfRotato;
         objectSelfRotato.omega += objectSelfRotato.omegaAcc * dt;
         this.baseObject.angle -= objectSelfRotato.omega;
@@ -846,28 +855,32 @@ cc.Class({
 
             let v = aimAt.target.getPosition().sub(this.getPosition());
 
-            let angle = Math.atan2(v.y, v.x) * 180 / Math.PI;
-            aimAt.angle = angle - 90;
-            if (Math.abs(this.angle - aimAt.angle) > 180) {
-                this.angle = 360 - this.angle;
+            let angle = Math.ceil((Math.atan2(v.y, v.x) * 180 / Math.PI - 90) % 360);
+            if (angle < 0) {
+                angle += 360;
             }
-            if (this.angle > aimAt.angle) {
-                aimAt.omega = -Math.abs(aimAt.omega);
-                aimAt.omegaAcc = -Math.abs(aimAt.omegaAcc);
-                aimAt.omega += aimAt.omegaAcc * dt;
-                if (this.angle + aimAt.omega < aimAt.angle) {
-                    this.angle = aimAt.angle;
-                } else {
-                    this.angle += aimAt.omega;
+            if (aimAt.angle == angle) {
+                return;
+            }
+            aimAt.angle = angle;
+
+            let side = 0;
+            if (Math.abs(this.angle - aimAt.angle) > 180) {
+                side = 1;
+            }
+
+            if (side) {
+                this.angle -= aimAt.omega;
+                if (this.angle < 0) {
+                    this.angle += 360;
                 }
-            } else if (this.angle < aimAt.angle) {
-                aimAt.omega = Math.abs(aimAt.omega);
-                aimAt.omegaAcc = Math.abs(aimAt.omegaAcc);
-                aimAt.omega += aimAt.omegaAcc * dt;
-                if (this.angle + aimAt.omega > aimAt.angle) {
+                if (this.angle < aimAt.angle) {
                     this.angle = aimAt.angle;
-                } else {
-                    this.angle += aimAt.omega;
+                }
+            } else {
+                this.angle += aimAt.omega;
+                if (this.angle > aimAt.angle) {
+                    this.angle = aimAt.angle;
                 }
             }
         }
@@ -996,8 +1009,12 @@ cc.Class({
     //API
     aimAt: function (target, omega, omegaAcc) {
         this.atrb.aimAt.target = target;
-        this.atrb.aimAt.omega = omega;
-        this.atrb.aimAt.omegaAcc = omegaAcc;
+        this.atrb.aimAt.omega = Math.abs(omega);
+        this.atrb.aimAt.omegaAcc = Math.abs(omegaAcc);
+        this.angle = Math.ceil(this.angle % 360);
+        if (this.angle < 0) {
+            this.angle += 360;
+        }
     },
 
     simpleHarmonic: function (amplitude, cycle, fi, moveDirection, speed, speedAcc, fixDirection) {
@@ -1264,19 +1281,6 @@ cc.Class({
         }
     },
 
-    // setObjectRotation: function (angle) {
-    //     if (this.baseObject != null) {
-    //         this.baseObject.rotation = angle;
-    //     }
-    // },
-    // getObjectRotation: function () {
-    //     if (this.baseObject != null) {
-    //         return this.baseObject.rotation;
-    //     } else {
-    //         return 0;
-    //     }
-    // },
-
     setObjectAngle: function (angle) {
         if (this.baseObject != null) {
             this.baseObject.angle = angle;
@@ -1296,13 +1300,6 @@ cc.Class({
     getZ: function () {
         return this.zOrder;
     },
-
-    // setRotation: function (angle) {
-    //     this.rotation = typeof angle !== 'undefined' ? angle : 0;
-    // },
-    // getRotation: function () {
-    //     return this.rotation;
-    // },
 
     setBaseAngle: function (angle) {
         this.angle = typeof angle !== 'undefined' ? angle : 0;
@@ -1331,10 +1328,16 @@ cc.Class({
         return this.hold;
     },
     setAnchor: function (x, y) {
+        if (this.baseObject == null) {
+            return;
+        }
         this.changeAnchor = true;
         this.baseObject.setPosition(x, y);
     },
     getAnchor: function () {
+        if (this.baseObject == null) {
+            return null;
+        }
         return this.baseObject.getPosition();
     },
 
@@ -1408,7 +1411,7 @@ cc.Class({
                 let tail = new cc.Node();
                 this.addChild(tail, 0, '1001');
                 tail.setPosition(this.motionNode.tailPos);
-                this.battleManager.displayContainer.addChild(this.motionNode, Defines.Z.RAY);
+                this.battleManager.displayContainer.addChild(this.motionNode, this.zOrder - 1);
             }
         }
     },
@@ -1422,9 +1425,8 @@ cc.Class({
                     let tail = new cc.Node();
                     this.addChild(tail, 0, '1001');
                     tail.setPosition(this.motionNode.tailPos);
-                    this.battleManager.displayContainer.addChild(this.motionNode, Defines.Z.RAY);
+                    this.battleManager.displayContainer.addChild(this.motionNode, this.zOrder - 1);
                 }
-                //tail.setPosition(cc.v3(0, -0.35 * this.baseObject.getContentSize().height));
             } else if (mode == 1) {
                 //update
                 if (this.getChildByName('1001') != null) {
@@ -1457,11 +1459,11 @@ cc.Class({
     },
 
     pauseAction() {
-        
+
     },
 
     resumeAction() {
-        
+
     },
 
     //Timer

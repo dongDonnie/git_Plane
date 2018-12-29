@@ -12,7 +12,7 @@ CampNormal44.data = {
         {wave:{groups:[1301,45],wait:0,delay:[0,1,2]}}, 
         {wave:{groups:[1303,43],wait:0,delay:[0,1,2]}}, 
         {wave:{groups:[861,1077,1078],wait:0,delay:[0,1,2]}}, 
-        {wave:{groups:[1304],wait:0,delay:[0],anime:1,isBOSS:1},maps:{mapIndex:[0,2],mapSpeed:[400,800],mapScale:[1,1],mapLoop:[0,0]}},
+        {wave:{groups:[91],wait:0,delay:[0],anime:1,isBOSS:1},maps:{mapIndex:[0,2],mapSpeed:[400,800],mapScale:[1,1],mapLoop:[0,0]}},
     ],
 
     monsterExtra:[23,24,25,559,560,552,1308,1309,1310,1311,1312],

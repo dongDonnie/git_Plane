@@ -55,7 +55,7 @@ cc.Class({
         if (this.baseObject == null) {
             this.baseObject = new cc.Node();
             let sp = this.baseObject.addComponent(cc.Sprite);
-            let collider = this.baseObject.addComponent(cc.BoxCollider)
+            let collider = this.baseObject.addComponent(cc.BoxCollider);
             sp.spriteFrame = GlobalVar.resManager().loadRes(ResMapping.ResType.SpriteFrame, resName);
             collider.size = this.baseObject.getContentSize();
         } else {
@@ -91,50 +91,50 @@ cc.Class({
     },
 
     checkOut: function (dt) {
-        let target = this.getParent();
-        if (!!target) {
-            let pos = this.getPosition().add(target.getPosition());
-            let size = BattleManager.getInstance().displayContainer.getContentSize();
+        // let target = this.getParent();
+        // if (!!target) {
+        //     let pos = this.getPosition().add(target.getPosition());
+        //     let size = BattleManager.getInstance().displayContainer.getContentSize();
 
-            if (BattleManager.getInstance().allScreen) {
-                size.height -= 130;
-            } else {
-                size.height -= 47;
-            }
+        //     if (BattleManager.getInstance().allScreen) {
+        //         size.height -= 130;
+        //     } else {
+        //         size.height -= 47;
+        //     }
 
-            if (this.isShow) {
-                if (pos.y >= size.height + this.getContentSize().height*0.5 || pos.y <= -this.getContentSize().height*0.5) {
-                    this.isDead = true;
-                }
-            } else {
-                if (pos.y <= size.height && pos.y >= 0) {
-                    this.isShow = true;
-                    this.setCollisionSwitch(true);
-                }
+        //     if (this.isShow) {
+        //         if (pos.y >= size.height + this.getContentSize().height*0.5 || pos.y <= -this.getContentSize().height*0.5) {
+        //             this.isDead = true;
+        //         }
+        //     } else {
+        //         if (pos.y <= size.height && pos.y >= 0) {
+        //             this.isShow = true;
+        //             this.setCollisionSwitch(true);
+        //         }
+        //     }
+        // } else {
+        //     this.isShow = true;
+        //     this.isDead = true;
+        // }
+        let pos = this.getPosition();
+        let size = BattleManager.getInstance().displayContainer.getContentSize();
+
+        if (BattleManager.getInstance().allScreen) {
+            size.height -= 130;
+        } else {
+            size.height -= 47;
+        }
+
+        if (this.isShow) {
+            if (pos.y > size.height + Defines.OUT_SIDE || pos.x < -Defines.OUT_SIDE || pos.y < -Defines.OUT_SIDE || pos.x > size.width + Defines.OUT_SIDE) {
+                this.isDead = true;
             }
         } else {
-            this.isShow = true;
-            this.isDead = true;
+            if (pos.y <= size.height && pos.y >= 0) {
+                this.isShow = true;
+                this.setCollisionSwitch(true);
+            }
         }
-        // let pos = this.getPosition();
-        // let size = BattleManager.getInstance().displayContainer.getContentSize();
-
-        // if (BattleManager.getInstance().allScreen) {
-        //     size.height -= 130;
-        // } else {
-        //     size.height -= 47;
-        // }
-
-        // if (this.isShow) {
-        //     if (pos.y > size.height + Defines.OUT_SIDE || pos.x < -Defines.OUT_SIDE || pos.y < -Defines.OUT_SIDE || pos.x > size.width + Defines.OUT_SIDE) {
-        //         this.isDead = true;
-        //     }
-        // } else {
-        //     if (pos.y <= size.height && pos.y >= 0) {
-        //         this.isShow = true;
-        //         this.setCollisionSwitch(true);
-        //     }
-        // }
     },
 
     setCollisionSwitch: function (open) {

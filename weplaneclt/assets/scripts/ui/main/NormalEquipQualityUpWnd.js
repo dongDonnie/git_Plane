@@ -98,6 +98,7 @@ cc.Class({
             if (config.NEED_GUIDE) {
                 require('Guide').getInstance().guideNode.active = false;
             }
+            this.spineEffect.node.active = false;
             this.registerEvent();
             this.initEquipQualityUpWnd();
         }
@@ -131,9 +132,11 @@ cc.Class({
         let effect0 = this.spineEffect;
         let effect1 = this.effectFrontNode.getComponent(dragonBones.ArmatureDisplay);
         let effect2 = this.effectBackNode.getComponent(dragonBones.ArmatureDisplay);
+
+        let originNode = this.seekNodeByName(cc.find('Canvas'), 'effectNode');
+        GlobalFunc.converToOtherNodeSpaceAR(originNode, this.spineEffect.node);
         effect0.node.active = true;
-        // effect0.clearTracks();
-        // effect0.setAnimation(0, "animation", false);
+        effect0.node.opacity = 0;
         let effect1Finish = function () {
             effect1.node.active = false;
             self.shaderStartTime = Date.now();
@@ -159,46 +162,8 @@ cc.Class({
             let seq = cc.sequence(cc.scaleTo(0.7, 0.5), callfunc, cc.scaleTo(0.25, 2), cc.scaleTo(0.2, 1))
             self.spriteEquip.node.runAction(seq);
         };
-        
-        GlobalFunc.playSpineAnimation(effect0.node, effect0Finish , false)
-        // effect0.setCompleteListener(trackEntry => {
-        //     var animationName = trackEntry.animation ? trackEntry.animation.name : "";
-        //     if (animationName == "animation") {
-        //         effect0.node.active = false;
-        //         effect1.node.active = true;
-        //         effect1.playAnimation("animation", 1);
-        //         self.spriteEquip.node.runAction(cc.sequence(cc.scaleTo(0.7, 0.5), cc.callFunc(() => {
-        //             let index = self.afterIcon / 10 % 10 + 1;
-        //             GlobalVar.resManager().loadRes(ResMapping.ResType.SpriteFrame, 'cdnRes/itemiconBig/' + index + '/' + self.afterIcon, function (frame) {
-        //                 self.spriteEquip.spriteFrame = frame;
-        //                 effect2.node.active = true;
-        //                 effect2.playAnimation("animation", 1);
-
-        //                 self.scheduleOnce(() => {
-        //                     self.showTextAnime();
-        //                 }, 1.8);
-        //             });
-        //         }), cc.scaleTo(0.25, 2), cc.scaleTo(0.2, 1)));
-        //     }
-        // });
-        // // effect1.setAnimation(0, "animation", false);
-        // effect1.addEventListener(dragonBones.EventObject.COMPLETE, event => {
-        //     var animationName = event.animationState ? event.animationState.name : "";
-        //     if (animationName == "animation") {
-        //         effect1.node.active = false;
-        //         self.shaderStartTime = Date.now();
-        //     }
-        // });
-
-        
-
-        // effect2.addEventListener(dragonBones.EventObject.COMPLETE, event => {
-        //     var animationName = event.animationState ? event.animationState.name : "";
-        //     if (animationName == "animation") {
-        //         self.callbackFunc();
-        //         self.close();
-        //     }
-        // });
+        effect0.node.runAction(cc.sequence(cc.delayTime(0.02), cc.fadeIn(0)));
+        GlobalFunc.playSpineAnimation(effect0.node, effect0Finish, false)
     },
 
     showTextAnime: function () {

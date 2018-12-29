@@ -14,6 +14,7 @@ var rechargeData = cc.Class({
         self = this;
         self.token = "";
         self.data = {};
+        self.canGetRewardHotFlag = false;
     },
 
     setData: function(data){
@@ -23,6 +24,23 @@ var rechargeData = cc.Class({
         self.data = data;
         GlobalVar.me().setVoucher(data.Bag.RcgVoucher);
         // GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_GET_RCGBAG_RESULT, data);
+        self.updateCanGetRewardHotFlag();
+    },
+
+    updateCanGetRewardHotFlag: function () {
+        let vipPackage = self.data.Bag.VipPackage;
+        let curVipLevel = GlobalVar.me().vipLevel;
+        self.canGetRewardHotFlag = false;
+        for (let i = 1; i <= curVipLevel; i++){
+            if (vipPackage.indexOf(i) == -1){
+                self.canGetRewardHotFlag = true;
+            }
+        }
+        GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_VIP_REWARD_FLAG_CHANGE);
+    },
+
+    getCanGetRewardHotFlag: function () {
+        return self.canGetRewardHotFlag;
     },
 
     getData: function(){
@@ -89,6 +107,12 @@ var rechargeData = cc.Class({
         if (data.ErrCode == GameServerProto.PTERR_SUCCESS){
             GlobalVar.me().setVoucher(data.OK.RcgVoucher);
             GlobalVar.me().setDiamond(data.OK.DiamondCur);
+            GlobalVar.me().diamondCz = data.OK.DiamondCZ;
+            GlobalVar.me().vipExp = data.OK.VipExp;
+            if (GlobalVar.me().vipLevel != data.OK.Vip){
+                GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_SPCHANGE_NTF);
+            }
+            GlobalVar.me().vipLevel = data.OK.Vip;
             self.data.Bag.TimeCard = data.OK.TimeCard;
             let index = self.getRechargeDataIndex(data.OK.RcgRecord.RechargeID);
             if (index == -1){
@@ -100,6 +124,7 @@ var rechargeData = cc.Class({
                 self.data.Bag.RcgRecord[index].Count = data.OK.RcgRecord.Count;
             }
         }
+        self.updateCanGetRewardHotFlag();
         GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_GET_RECHARGE_RESULT, data);
         // self.setData(data.OK);
     },
@@ -111,7 +136,20 @@ var rechargeData = cc.Class({
         }
         GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_GET_VOUCHER_RESULT, data);
         // self.setData(data.OK);
-    }
+    },
+
+    setVipPackageData: function (data) {
+        if (data.ErrCode == GameServerProto.PTERR_SUCCESS){
+            self.data.Bag.VipPackage = data.OK.VipPackage;
+            self.updateCanGetRewardHotFlag();
+            GlobalVar.me().bagData.updateItemDataByGMDT_ITEM_CHANGE(data.OK.ItemChange);
+        }
+        GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_GET_VIP_PACKAGEDATA, data);
+    },
+
+    getVipPackageData: function () {
+        return self.data.Bag.VipPackage; 
+    },
 });
 
 module.exports = rechargeData;

@@ -24,6 +24,7 @@ var dailyData = cc.Class({
     },
     setNewTaskData: function(data){
         self.newTaskData = data;
+        GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_NEWTASK_NTF, data);
     },
     getDailyStepsByID(id){
         let dailys = self.data.Daily

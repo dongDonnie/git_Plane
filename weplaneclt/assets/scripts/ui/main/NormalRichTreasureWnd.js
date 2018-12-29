@@ -5,6 +5,7 @@ const EventMsgID = require("eventmsgid");
 const GameServerProto = require("GameServerProto");
 const CommonWnd = require("CommonWnd");
 const i18n = require('LanguageData');
+const weChatAPI = require("weChatAPI");
 
 
 const TREAURE_GOLD = "cdnRes/audio/main/effect/kaicai";
@@ -35,15 +36,31 @@ cc.Class({
 
         let spriteTip = this.node.getChildByName("spriteContinueTip");
         spriteTip.runAction(cc.repeatForever(cc.sequence(cc.fadeIn(0.7), cc.fadeOut(0.7))));
+        spriteTip.active = false;
     },
 
     animePlayCallBack(name) {
         if (name == "Escape") {
             this._super("Escape");
+            if (GlobalVar.getBannerSwitch()){
+                weChatAPI.hideBannerAd();
+            }
             GlobalVar.eventManager().removeListenerWithTarget(this);
             WindowManager.getInstance().popView(false, null, false, false);
         } else if (name == "Enter") {
             this._super("Enter");
+            let spriteTip = this.node.getChildByName("spriteContinueTip");
+            if (GlobalVar.getBannerSwitch() && !GlobalVar.getNeedGuide()){
+                let winHeight = cc.winSize.height;
+                let screenHeight = wx.getSystemInfoSync().screenHeight;
+                weChatAPI.showBannerAd(function (bannerHeight) {
+                    spriteTip.y = -(winHeight/2 - bannerHeight / screenHeight * winHeight);
+                    spriteTip.active = true;
+                });
+            }else{
+                spriteTip.active = true;
+            }
+
             var goldRewardTimes = GlobalVar.tblApi.getData('TblTreasureGoldReward');
             this.times = [];
             for (let i in goldRewardTimes) {

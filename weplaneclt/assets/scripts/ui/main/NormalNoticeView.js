@@ -4,6 +4,7 @@ const WindowManager = require("windowmgr");
 const GlobalVar = require('globalvar')
 const WndTypeDefine = require("wndtypedefine");
 const GameServerProto = require("GameServerProto");
+const weChatAPI = require("weChatAPI");
 
 cc.Class({
     extends: RootBase,
@@ -41,10 +42,16 @@ cc.Class({
     animePlayCallBack(name) {
         if (name == "Escape") {
             this._super("Escape");
+            if (GlobalVar.getBannerSwitch()){
+                weChatAPI.justShowBanner();
+            }
             GlobalVar.eventManager().removeListenerWithTarget(this);
             WindowManager.getInstance().popView(false, null, false, false);
         } else if (name == "Enter") {
             this._super("Enter");
+            if (GlobalVar.getBannerSwitch()){
+                weChatAPI.justHideBanner();
+            }
             this.showNoticeList();
         }
     },

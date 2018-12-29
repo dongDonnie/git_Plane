@@ -204,7 +204,7 @@ var DailyObject = cc.Class({
     onDailyBtnRecvClick: function (event) {
         let data = this.data;
         // console.log("RecvBtnClick")
-        if (GlobalVar.getShareSwitch() && cc.sys.platform == cc.sys.WECHAT_GAME && (data.wID == GameServerProto.PT_DAILY_TASK_SP1 || data.wID == GameServerProto.PT_DAILY_TASK_SP2)){
+        if (GlobalVar.getShareSwitch() && (data.wID == GameServerProto.PT_DAILY_TASK_SP1 || data.wID == GameServerProto.PT_DAILY_TASK_SP2)){
             weChatAPI.shareNormal(121, function(){
                 GlobalVar.handlerManager().dailyHandler.sendDailyRewardReq(data.wID);
             });
@@ -218,11 +218,17 @@ var DailyObject = cc.Class({
         console.log("goBtnClick = ", windowID);
         this.goToWnd(windowID);
     },
+    removeListennerAndBanner: function () {
+        if (GlobalVar.getBannerSwitch()){
+            weChatAPI.hideBannerAd();
+        }
+        GlobalVar.eventManager().removeListenerWithTarget(this);
+    },
 
     goToWnd: function (windowID) {
         switch (windowID) {
             case WndTypeDefine.WindowTypeID.E_DT_NORMALEQUIPMENT_WND:            //跳转至装备强化
-                GlobalVar.eventManager().removeListenerWithTarget(this);
+                this.removeListennerAndBanner();
                 WindowManager.getInstance().popView(false, function () {
                     WindowManager.getInstance().pushView(WndTypeDefine.WindowType.E_DT_NORMALIMPROVEMENT_WND, function (wnd, name, type) {
                         wnd.getComponent(type).selectEquipment(null, 1);
@@ -230,19 +236,32 @@ var DailyObject = cc.Class({
                 }, false, false);
                 break;
             case WndTypeDefine.WindowTypeID.E_DT_NORMAL_QUESTLIST_VIEW:          //跳转至关卡界面
-                GlobalVar.eventManager().removeListenerWithTarget(this);
+                this.removeListennerAndBanner();
                 WindowManager.getInstance().popView(false, function () {
                     CommonWnd.showQuestList();
                 }, false, false);
                 break;
+            case WndTypeDefine.WindowTypeID.E_DT_LIMIT_STORE_WND: 
+                let limitSystemData = GlobalVar.tblApi.getDataBySingleKey('TblSystem', GameServerProto.PT_SYSTEM_FULI_GIFT);
+                if (limitSystemData && GlobalVar.me().level < limitSystemData.wOpenLevel) {
+                    GlobalVar.comMsg.showMsg(i18n.t('label.4000258').replace("%d", limitSystemData.wOpenLevel || 0).replace("%d", limitSystemData.strName));
+                    return;
+                }
+                this.removeListennerAndBanner();
+                WindowManager.getInstance().popView(false, function () {
+                    WindowManager.getInstance().pushView(WndTypeDefine.WindowType.E_DT_LIMIT_STORE_WND, function (wnd, name, type) {
+                        wnd.getComponent(type).setStoreType(1);
+                    });
+                }, false, false);
+                break;
             case WndTypeDefine.WindowTypeID.E_DT_NORMAL_RECHARGE_WND:           //弹出充值窗口
-                GlobalVar.eventManager().removeListenerWithTarget(this);
+                this.removeListennerAndBanner();
                 WindowManager.getInstance().popView(false, function () {
                     CommonWnd.showRechargeWnd();
                 }, false, false);
                 break;
             case WndTypeDefine.WindowTypeID.E_DT_NORMAL_SP_WND:                 //弹出购买体力窗口
-                GlobalVar.eventManager().removeListenerWithTarget(this);
+                this.removeListennerAndBanner();
                 WindowManager.getInstance().popView(false, function () {
                     CommonWnd.showBuySpWnd();
                 }, false, false);
@@ -254,19 +273,19 @@ var DailyObject = cc.Class({
                     return;
                 }
 
-                GlobalVar.eventManager().removeListenerWithTarget(this);
+                this.removeListennerAndBanner();
                 WindowManager.getInstance().popView(false, function () {
                     CommonWnd.showStoreWithParam(1);
                 }, false, false);
                 break;
             case WndTypeDefine.WindowTypeID.E_DT_NORMALDRAW_VIEW:               //弹出十连抽窗口
-                GlobalVar.eventManager().removeListenerWithTarget(this);
+                this.removeListennerAndBanner();
                 WindowManager.getInstance().popView(false, function () {
                     CommonWnd.showDrawView();
                 }, false, false);
                 break;
             case WndTypeDefine.WindowTypeID.E_DT_GUAZAIMAIN_WND:                //挂载首页
-                GlobalVar.eventManager().removeListenerWithTarget(this);
+                this.removeListennerAndBanner();
                 WindowManager.getInstance().popView(false, function () {
                     CommonWnd.showGuazai();
                 }, false, false);
@@ -278,13 +297,13 @@ var DailyObject = cc.Class({
                     return;
                 }
 
-                GlobalVar.eventManager().removeListenerWithTarget(this);
+                this.removeListennerAndBanner();
                 WindowManager.getInstance().popView(false, function () {
                     CommonWnd.showEndlessView();
                 }, false, false);
                 break;
             case WndTypeDefine.WindowTypeID.E_DT_NORMAL_RICHTREASURE_WND:       //淘金
-                GlobalVar.eventManager().removeListenerWithTarget(this);
+                this.removeListennerAndBanner();
                 WindowManager.getInstance().popView(false, function () {
                     GlobalVar.handlerManager().drawHandler.sendTreasureData();
                 }, false, false);

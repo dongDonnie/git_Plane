@@ -2140,7 +2140,7 @@
       "__id__": 48
     },
     "_enabled": true,
-    "audioType": 0,
+    "audioType": 7,
     "_fontSize": 0,
     "_showShadow": false,
     "btnState": true,
@@ -2226,8 +2226,8 @@
     "target": {
       "__id__": 1
     },
-    "component": "UIBattle",
-    "_componentId": "",
+    "component": "",
+    "_componentId": "181e4TLlW9J5Ycl7Cf1pj//",
     "handler": "onPauseClick",
     "customEventData": ""
   },
@@ -4011,7 +4011,7 @@
       "__id__": 103
     },
     "_enabled": true,
-    "audioType": 0,
+    "audioType": 7,
     "_fontSize": 0,
     "_showShadow": false,
     "btnState": true,
@@ -4097,8 +4097,8 @@
     "target": {
       "__id__": 1
     },
-    "component": "UIBattle",
-    "_componentId": "",
+    "component": "",
+    "_componentId": "181e4TLlW9J5Ycl7Cf1pj//",
     "handler": "onPauseClick",
     "customEventData": ""
   },
@@ -5157,7 +5157,7 @@
     "alignMode": 2,
     "_target": null,
     "_alignFlags": 8,
-    "_left": -2.1316282072803006e-14,
+    "_left": -7.105427357601002e-15,
     "_right": 40.61,
     "_top": 18.5,
     "_bottom": 0,
@@ -6814,9 +6814,7 @@
     "barAssistCD": {
       "__id__": 24
     },
-    "spriteFriendNode": {
-      "__id__": 45
-    },
+    "nodeBeyoundFriend": null,
     "_id": ""
   },
   {

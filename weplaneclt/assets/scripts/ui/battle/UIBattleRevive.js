@@ -40,6 +40,8 @@ cc.Class({
             this.node.getChildByName("spriteRevive").getChildByName("spriteDiamondIcon").x = 100;
             this.labelDiamondCost.node.x = 116;
         }
+
+        this.node.getChildByName("spriteRevive").getChildByName("btnCount").active = BattleManager.getInstance().isEndlessFlag;
     },
 
     start: function () {
@@ -69,10 +71,11 @@ cc.Class({
     },
 
     onBtnShare: function (event) {
-        if (cc.sys.platform !== cc.sys.WECHAT_GAME) {
+        if (cc.sys.platform !== cc.sys.WECHAT_GAME && !(window && window["wywGameId"]=="5469")) {
             GlobalVar.comMsg.showMsg("非微信平台不能分享");
             return;
         }
+
         if (!this.waitForRevive) {
             this.waitForRevive = true;
             let self = this;
@@ -119,6 +122,19 @@ cc.Class({
         }
         this.node.destroy();
     },
+
+    // onEnable: function(){
+    //     if (GlobalVar.getBannerSwitch() && !GlobalVar.getNeedGuide()){
+    //         weChatAPI.showBannerAd();
+    //     }
+    // },
+
+    // onDisable: function () {
+    //     if (GlobalVar.getBannerSwitch()){
+    //         weChatAPI.hideBannerAd();
+    //     }
+    // },
+
 
     onDestroy: function () {
         GlobalVar.eventManager().removeListenerWithTarget(this);

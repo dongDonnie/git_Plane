@@ -8,6 +8,7 @@ const GameServerProto = require("GameServerProto");
 const CommonWnd = require("CommonWnd");
 const i18n = require('LanguageData');
 const GlobalFunc = require('GlobalFunctions');
+const weChatAPI = require("weChatAPI");
 
 const TAB_NEWTASK = 0, TAB_DAILYMISSION = 1;
 const BUTTON_INACTIVE = 0, BUTTON_ACTIVE = 1;
@@ -91,12 +92,19 @@ cc.Class({
     animePlayCallBack(name) {
         if (name == "Escape") {
             this._super("Escape");
+            if (GlobalVar.getBannerSwitch()){
+                weChatAPI.justShowBanner();
+            }
             GlobalVar.eventManager().removeListenerWithTarget(this);
             WindowManager.getInstance().popView(false, null, false, false);
         } else if (name == "Enter") {
             this._super("Enter");
+            if (GlobalVar.getBannerSwitch()){
+                weChatAPI.justHideBanner();
+            }
             //接到消息后再初始化窗口
             this.recvLock = false;
+            this.alreadSaveData = false;
             this.nodeTabContent[TAB_DAILYMISSION].getChildByName("nodeRewards").active = true;
             this.registerEvent();
             this.initDailyWnd();
@@ -246,6 +254,24 @@ cc.Class({
                 let nodeRate = nodeChallenge.getChildByName("nodeRate");
                 let maxRate = taskData.nVar;
                 let curRate = newTaskRate.Var;
+                if (taskData.byType == 9) {
+                    maxRate -= 1;
+                    curRate -= 1;
+                }
+                if (taskData.byType == 7 || taskData.byType == 9 || taskData.byType == 11) {
+                    if (Math.floor(maxRate / 100) < Math.floor(curRate / 100)) {
+                        curRate = maxRate = 1;
+                    } else if (Math.floor(maxRate / 100) == Math.floor(curRate / 100)) {
+                        maxRate = maxRate % 100;
+                        curRate = curRate % 100;
+                    } else {
+                        maxRate = maxRate % 100;
+                        curRate = 0;
+                    }
+                }
+                if (curRate > maxRate) {
+                    curRate = maxRate;
+                }
                 if (curRate == -1) return;
                 if (curRate > maxRate) {
                     curRate = maxRate;
@@ -362,13 +388,15 @@ cc.Class({
             let nodeDaily = this.nodeTabContent[TAB_DAILYMISSION];
             nodeDaily.getChildByName("nodeMisstion").active = false;
             nodeDaily.getChildByName("nodeComplete").active = true;
-            let strTips = "关卡【%chapterID-%campaignID %campName】";
+            let strTips = "关卡[%chapterID-%campaignID %campName]";
             let chapterID = GlobalVar.me().campData.getLastChapterID(GameServerProto.PT_CAMPTYPE_MAIN);
-            let campaignID = GlobalVar.me().campData.getLastCampaignID(GameServerProto.PT_CAMPTYPE_MAIN) % 10;
-            strTips = strTips.replace("%chapterID", chapterID).replace("%campaignID", campaignID);
-            let campTblID = GlobalVar.tblApi.getDataBySingleKey('TblChapter', GameServerProto.PT_CAMPTYPE_MAIN)[chapterID - 1].oVecCampaigns[campaignID - 1]
+            let campaignIndex = (GlobalVar.me().campData.getLastCampaignID(GameServerProto.PT_CAMPTYPE_MAIN) - 1) % 10;
+            strTips = strTips.replace("%chapterID", chapterID).replace("%campaignID", campaignIndex + 1);
+            let campTblID = GlobalVar.tblApi.getDataBySingleKey('TblChapter', GameServerProto.PT_CAMPTYPE_MAIN)[chapterID - 1].oVecCampaigns[campaignIndex]
             let campName = GlobalVar.tblApi.getDataBySingleKey('TblCampaign', campTblID).strCampaignName;
             strTips = strTips.replace("%campName", campName);
+
+
             this.labelCompleteQuestName.string = strTips;
         }
 
@@ -635,60 +663,86 @@ cc.Class({
         this.goToWnd(null, windowID);
     },
 
+    removeListennerAndBanner: function () {
+        if (GlobalVar.getBannerSwitch()){
+            weChatAPI.hideBannerAd();
+        }
+        GlobalVar.eventManager().removeListenerWithTarget(this);
+    },
+
     goToWnd: function (event, windowID) {
         switch (parseInt(windowID)) {
             case WndTypeDefine.WindowTypeID.E_DT_NORMALEQUIPMENT_WND:            //跳转至装备强化
-                GlobalVar.eventManager().removeListenerWithTarget(this);
+                this.removeListennerAndBanner();
                 WindowManager.getInstance().popView(false, function () {
                     WindowManager.getInstance().pushView(WndTypeDefine.WindowType.E_DT_NORMALIMPROVEMENT_WND, function (wnd, name, type) {
                         wnd.getComponent(type).selectEquipment(null, 1);
-                    }, true, false);
+                    }, false, false);
+                }, false, false);
+                break;
+            case WndTypeDefine.WindowTypeID.E_DT_NORMALPLANE_WND: 
+                this.removeListennerAndBanner();
+                WindowManager.getInstance().popView(false, function () {
+                    WindowManager.getInstance().pushView(WndTypeDefine.WindowType.E_DT_NORMALPLANE_WND);
+                }, false, false)
+                break;
+            case WndTypeDefine.WindowTypeID.E_DT_LIMIT_STORE_WND: 
+                let systemData = GlobalVar.tblApi.getDataBySingleKey('TblSystem', GameServerProto.PT_SYSTEM_FULI_GIFT);
+                if (systemData && GlobalVar.me().level < systemData.wOpenLevel) {
+                    GlobalVar.comMsg.showMsg(i18n.t('label.4000258').replace("%d", systemData.wOpenLevel || 0).replace("%d", systemData.strName));
+                    return;
+                }
+                this.removeListennerAndBanner();
+                WindowManager.getInstance().popView(false, function () {
+                    WindowManager.getInstance().pushView(WndTypeDefine.WindowType.E_DT_LIMIT_STORE_WND, function (wnd, name, type) {
+                        wnd.getComponent(type).setStoreType(1);
+                    });
                 }, false, false);
                 break;
             case WndTypeDefine.WindowTypeID.E_DT_NORMAL_QUESTLIST_VIEW:          //跳转至关卡界面
-                GlobalVar.eventManager().removeListenerWithTarget(this);
+                this.removeListennerAndBanner();
                 WindowManager.getInstance().popView(false, function () {
                     CommonWnd.showQuestList();
                 }, false, false);
                 break;
             case WndTypeDefine.WindowTypeID.E_DT_NORMAL_RECHARGE_WND:           //弹出充值窗口
-                GlobalVar.eventManager().removeListenerWithTarget(this);
+                this.removeListennerAndBanner();
                 WindowManager.getInstance().popView(false, function () {
                     CommonWnd.showRechargeWnd();
                 }, false, false);
                 break;
             case WndTypeDefine.WindowTypeID.E_DT_NORMAL_SP_WND:                 //弹出购买体力窗口
-                GlobalVar.eventManager().removeListenerWithTarget(this);
+                this.removeListennerAndBanner();
                 WindowManager.getInstance().popView(false, function () {
                     CommonWnd.showBuySpWnd();
                 }, false, false);
                 break;
             case WndTypeDefine.WindowTypeID.E_DT_NORMAL_STORE_WND:              //弹出商店窗口
-                GlobalVar.eventManager().removeListenerWithTarget(this);
+                this.removeListennerAndBanner();
                 WindowManager.getInstance().popView(false, function () {
                     CommonWnd.showStoreWithParam(1);
                 }, false, false);
                 break;
             case WndTypeDefine.WindowTypeID.E_DT_NORMALDRAW_VIEW:               //弹出十连抽窗口
-                GlobalVar.eventManager().removeListenerWithTarget(this);
+                this.removeListennerAndBanner();
                 WindowManager.getInstance().popView(false, function () {
                     CommonWnd.showDrawView();
                 }, false, false);
                 break;
             case WndTypeDefine.WindowTypeID.E_DT_GUAZAIMAIN_WND:                //挂载首页
-                GlobalVar.eventManager().removeListenerWithTarget(this);
+                this.removeListennerAndBanner();
                 WindowManager.getInstance().popView(false, function () {
                     CommonWnd.showGuazai();
                 }, false, false);
                 break;
             case WndTypeDefine.WindowTypeID.E_DT_ENDLESS_CHALLENGE_VIEW:        //无尽挑战
-                GlobalVar.eventManager().removeListenerWithTarget(this);
+                this.removeListennerAndBanner();
                 WindowManager.getInstance().popView(false, function () {
                     CommonWnd.showEndlessView();
                 }, false, false);
                 break;
             case WndTypeDefine.WindowTypeID.E_DT_NORMAL_RICHTREASURE_WND:       //淘金
-                GlobalVar.eventManager().removeListenerWithTarget(this);
+                this.removeListennerAndBanner();
                 WindowManager.getInstance().popView(false, function () {
                     GlobalVar.handlerManager().drawHandler.sendTreasureData();
                 }, false, false);

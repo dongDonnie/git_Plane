@@ -41,9 +41,9 @@
     },
     "_scale": {
       "__type__": "cc.Vec3",
-      "x": 0.4798773107394366,
-      "y": 0.4798773107394366,
-      "z": 0.4798773107394366
+      "x": 0.3328427596830986,
+      "y": 0.3328427596830986,
+      "z": 0.3328427596830986
     },
     "_quat": {
       "__type__": "cc.Quat",
@@ -1262,7 +1262,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "label",
+    "_name": "labelLoadingTips",
     "_objFlags": 0,
     "_parent": {
       "__id__": 11
@@ -1286,8 +1286,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 100,
-      "height": 20
+      "width": 374,
+      "height": 22
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -1296,8 +1296,8 @@
     },
     "_position": {
       "__type__": "cc.Vec3",
-      "x": -28.1,
-      "y": -400,
+      "x": -44,
+      "y": -384,
       "z": 0
     },
     "_scale": {
@@ -1333,10 +1333,10 @@
     "_srcBlendFactor": 1,
     "_dstBlendFactor": 771,
     "_useOriginalSize": false,
-    "_string": "资源加载中",
-    "_N$string": "资源加载中",
-    "_fontSize": 20,
-    "_lineHeight": 20,
+    "_string": "正在努力加载资源，即将进入浩瀚星空",
+    "_N$string": "正在努力加载资源，即将进入浩瀚星空",
+    "_fontSize": 22,
+    "_lineHeight": 22,
     "_enableWrapText": true,
     "_N$file": null,
     "_isSystemFontUsed": true,
@@ -1373,8 +1373,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 28.91,
-      "height": 20
+      "width": 31.8,
+      "height": 22
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -1383,8 +1383,8 @@
     },
     "_position": {
       "__type__": "cc.Vec3",
-      "x": 90,
-      "y": -400,
+      "x": 215,
+      "y": -384,
       "z": 0
     },
     "_scale": {
@@ -1422,8 +1422,8 @@
     "_useOriginalSize": false,
     "_string": "0%",
     "_N$string": "0%",
-    "_fontSize": 20,
-    "_lineHeight": 20,
+    "_fontSize": 22,
+    "_lineHeight": 22,
     "_enableWrapText": true,
     "_N$file": null,
     "_isSystemFontUsed": true,

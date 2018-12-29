@@ -66,7 +66,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 640,
-      "height": 860
+      "height": 800
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -143,7 +143,7 @@
     "_position": {
       "__type__": "cc.Vec3",
       "x": 0,
-      "y": 383,
+      "y": 353,
       "z": 0
     },
     "_scale": {
@@ -281,7 +281,7 @@
     "_position": {
       "__type__": "cc.Vec3",
       "x": 280,
-      "y": 385,
+      "y": 355,
       "z": 0
     },
     "_scale": {
@@ -459,7 +459,6 @@
     "_fontSize": 30,
     "_showShadow": true,
     "btnState": true,
-    "btnPress": false,
     "_N$fontColor": 0,
     "_N$textLabel": "确定",
     "_id": ""
@@ -507,7 +506,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 570,
-      "height": 685
+      "height": 625
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -649,7 +648,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 560,
-      "height": 670
+      "height": 610
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -717,7 +716,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 560,
-      "height": 670
+      "height": 610
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -787,7 +786,7 @@
     "_position": {
       "__type__": "cc.Vec3",
       "x": 0,
-      "y": 335,
+      "y": 305,
       "z": 0
     },
     "_scale": {
@@ -1227,7 +1226,6 @@
     "_fontSize": 30,
     "_showShadow": true,
     "btnState": true,
-    "btnPress": false,
     "_N$fontColor": 0,
     "_N$textLabel": "一键领取",
     "_id": ""

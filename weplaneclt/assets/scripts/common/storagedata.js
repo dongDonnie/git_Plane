@@ -46,6 +46,7 @@ StoredData.Type.ServerListData = "serverListData";
 StoredData.Type.BattleAssitTimes = "battleAssitTimes";
 StoredData.Type.FuLiShare = "fuLiShare";
 StoredData.Type.ClearCache = "clearcache";
+StoredData.Type.LastBannerCreateTime = "lastBannerCreateTime";
 
 StoredData.setClearCache = function (clear) {
     StoredData.setItem(StoredData.Type.ClearCache, typeof clear !=='undefined'?clear:false);
@@ -292,35 +293,21 @@ StoredData.getLocalServerListData = function () {
     return serverData;
 };
 
-// StoredData.getFuliShareState = function (key) {
-//     let fuliShareData = StoredData.getFuliShareData(key);
-//     let curTime = GlobalVar.me().serverTime;
-//     let a = parseInt((curTime - 5 * 3600 + 8 * 3600) / (3600 * 24));
-//     let b = parseInt((fuliShareData[key][GlobalVar.me().roleID].timeStamp - 5 * 3600 + 8 * 3600) / (3600 * 24));
-//     return a > b;
-// };
-// StoredData.setFuliShareState = function (key) {
-//     let fuliShareData = StoredData.getFuliShareData(key);
-//     fuliShareData[key][GlobalVar.me().roleID].timeStamp = GlobalVar.me().serverTime;
-//     StoredData.setItem(StoredData.Type.FuLiShare, JSON.stringify(fuliShareData));
-// };
-// StoredData.getFuliShareData = function (key) {
-//     let fuliShareData = null;
-//     let localData = StoredData.getItem(StoredData.Type.FuLiShare);
-//     if (localData){
-//         fuliShareData = JSON.parse(localData);
-//     }else{
-//         fuliShareData = {};
-//     }
+StoredData.setLastBannerCreateTime = function () {
+    let curTime = GlobalVar.me().serverTime;
+    StoredData.setItem(StoredData.Type.LastBannerCreateTime, curTime);
+};
 
-//     if (!fuliShareData[key]){
-//         fuliShareData[key] = {};
-//         fuliShareData[key][GlobalVar.me().roleID] = {};
-//         fuliShareData[key][GlobalVar.me().roleID].timeStamp = 0;
-//     }else if (!fuliShareData[key][GlobalVar.me().roleID]){
-//         fuliShareData[key][GlobalVar.me().roleID] = {};
-//         fuliShareData[key][GlobalVar.me().roleID].timeStamp = 0;
-//     }
-
-//     return fuliShareData;
-// };
+StoredData.needRefreshBanner = function () {
+    let localData = StoredData.getItem(StoredData.Type.LastBannerCreateTime);
+    if (!localData){
+        return true;
+    }
+    let curTime = GlobalVar.me().serverTime;
+    let LastBannerCreateTime = parseInt(localData);
+    if (curTime - LastBannerCreateTime >= 120){
+        return true;
+    }else {
+        return false;
+    }
+};

@@ -93,7 +93,7 @@ cc.Class({
             WindowManager.getInstance().popView();
         } else if (name == "Enter") {
             this._super("Enter");
-
+            this.spineEffect.node.active = false;
             this.initEquipQualityUpWnd();
         }
     },
@@ -111,10 +111,12 @@ cc.Class({
         let effect0 = this.spineEffect;
         let effect1 = this.effectFrontNode.getComponent(dragonBones.ArmatureDisplay);
         let effect2 = this.effectBackNode.getComponent(dragonBones.ArmatureDisplay);
+        let originNode = this.seekNodeByName(cc.find('Canvas'), 'nodeItemQ');
+        GlobalFunc.converToOtherNodeSpaceAR(originNode, this.spineEffect.node);
         effect0.node.active = true;
+        effect0.node.opacity = 0;
         // effect0.clearTracks();
         // effect0.setAnimation(0, "animation", false);
-
         let effect1Finish = function () {
             effect1.node.active = false;
             self.shaderStartTime = Date.now();
@@ -136,8 +138,8 @@ cc.Class({
             let seq = cc.sequence(cc.scaleTo(0.7, 0.5), callfunc, cc.scaleTo(0.25, 2), cc.scaleTo(0.2, 1.2))
             self.nodePlane.runAction(seq);
         };
-
-        GlobalFunc.playSpineAnimation(effect0.node, effect0Finish, false)
+        effect0.node.runAction(cc.sequence(cc.delayTime(0.02), cc.fadeIn(0)));
+        GlobalFunc.playSpineAnimation(effect0.node, effect0Finish)
     },
 
     showTextAnime: function () {

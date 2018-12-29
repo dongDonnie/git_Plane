@@ -148,6 +148,8 @@ var EndlessData = cc.Class({
     saveEndlessPowerNtf: function (data) {
         self.bagData.PowerPoint = data.PowerPoint;
         self.bagData.LastPowerTime = data.LastPowerTime;
+
+        // GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_ENDLESS_POWER_POINT_CHANGE_NTF, data);
     },
 
     setEndlessMode: function (modeIndex) {

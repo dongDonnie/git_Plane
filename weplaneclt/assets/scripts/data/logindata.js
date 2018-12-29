@@ -16,6 +16,7 @@ var LoginData = cc.Class({
         self.loginReqData.account = null;
         self.loginReqData.sdkTicket = null;
         self.loginReqData.serverID = null;
+        self.loginReqData.serverName = null;
         self.loginReqData.avatar = null;
     },
 
@@ -48,6 +49,12 @@ var LoginData = cc.Class({
     },
     getLoginReqDataAvatar:function(){
         return this.loginReqData.avatar;
+    },
+    setLoginReqDataServerName: function (serverName) {
+        self.loginReqData.serverName = typeof serverName !== 'undefined' ? serverName : null;
+    },
+    getLoginReqDataServerName: function () {
+        return this.loginReqData.serverName;
     },
 
     saveData: function (data) {

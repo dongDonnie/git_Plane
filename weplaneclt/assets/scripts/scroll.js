@@ -7,48 +7,35 @@ cc.Class({
     },
 
     properties: {
-        contentNode: cc.Node,
-        inertia: false,
+        itemTemplate: cc.Node,
+        content: cc.Node,
         spaceingX: 0,
         spaceingY: 0,
-        horizontal: false,
-        itemPrefab: cc.Prefab,
-        cancelInnerEvent: true,
     },
 
     onLoad() {
-        self = this;
-        if (self.horizontal) {
-            self.contentNode.anchor = cc.v2(0, 0.5);
-            self.contentNode.x = -self.node.width / 2;
-        } else {
-            self.contentNode.anchor = cc.v2(0.5, 1);
-            self.contentNode.y = self.node.height / 2;
+        self = self;
+        
+        self.items = [];
+        self.initialize();
+        self.updateTimer = 0;
+        self.updateInterval = 0.2;
+        self.lastContentPosY = 0;
+    },
+
+    initialize: function () {
+        self.content.height = self.totalCount * (self.itemTemplate.height + self.spacing) + self.spacing;
+        for (let i = 0; i < self.spawnCount; ++i) {
+            let item = cc.instantiate(self.itemTemplate);
+            self.content.addChild(item);
+            item.setPosition(0, -item.height * (0.5 + i) - self.spacing * (i + 1));
+            item.getComponent('Item').updateItem(i, i);
+            self.items.push(item);
         }
-
-        self.node.on('touchstart', self.touchstart);
-        self.node.on('touchmove', self.touchmove);
-        self.node.on('touchend', self.touchend);
-        self.node.on('touchcancel', self.touchcancel);
     },
 
-    touchstart: function (event,data) {
-        
-    },
-
-    touchmove: function (event,data) {
-        
-    },
-
-    touchend: function (event,data) {
-        
-    },
-
-    touchcancel: function (event,data) {
-        
-    },
 
     update: function (dt) {
-        
+
     },
 });

@@ -131,7 +131,8 @@ BattleDefines.GameResult = cc.Enum({
     DASHEND: 19,
     DASHOPEN: 20,
     SHOW: 21,
-    COUNT: 22,
+    GETASSIST: 22,
+    COUNT: 23,
 });
 
 BattleDefines.GroupStatus = cc.Enum({

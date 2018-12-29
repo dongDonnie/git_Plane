@@ -79,7 +79,7 @@
     "_position": {
       "__type__": "cc.Vec3",
       "x": 320,
-      "y": 568,
+      "y": 618,
       "z": 0
     },
     "_scale": {
@@ -604,7 +604,6 @@
     "_fontSize": 30,
     "_showShadow": true,
     "btnState": true,
-    "btnPress": false,
     "_N$fontColor": 0,
     "_N$textLabel": "",
     "_id": ""
@@ -1133,7 +1132,6 @@
     "_fontSize": 29,
     "_showShadow": true,
     "btnState": true,
-    "btnPress": false,
     "_N$fontColor": 0,
     "_N$textLabel": "挑战目标",
     "_id": ""
@@ -1683,7 +1681,6 @@
     "_fontSize": 29,
     "_showShadow": true,
     "btnState": true,
-    "btnPress": false,
     "_N$fontColor": 0,
     "_N$textLabel": "今日任务",
     "_id": ""
@@ -4500,11 +4497,10 @@
       "__id__": 60
     },
     "_enabled": true,
-    "audioType": 0,
+    "audioType": 7,
     "_fontSize": 0,
     "_showShadow": false,
     "btnState": true,
-    "btnPress": false,
     "_N$fontColor": 0,
     "_N$textLabel": "",
     "_id": ""
@@ -5769,7 +5765,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 120,
+      "width": 75,
       "height": 30
     },
     "_anchorPoint": {
@@ -5813,11 +5809,11 @@
       "__id__": 172
     },
     "_enabled": true,
-    "_srcBlendFactor": 770,
+    "_srcBlendFactor": 1,
     "_dstBlendFactor": 771,
     "_useOriginalSize": false,
-    "_string": "前往闯关",
-    "_N$string": "前往闯关",
+    "_string": "前 往",
+    "_N$string": "前 往",
     "_fontSize": 30,
     "_lineHeight": 30,
     "_enableWrapText": true,
@@ -5871,7 +5867,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 120,
+      "width": 75,
       "height": 30
     },
     "_anchorPoint": {
@@ -5915,11 +5911,11 @@
       "__id__": 175
     },
     "_enabled": true,
-    "_srcBlendFactor": 770,
+    "_srcBlendFactor": 1,
     "_dstBlendFactor": 771,
     "_useOriginalSize": false,
-    "_string": "前往闯关",
-    "_N$string": "前往闯关",
+    "_string": "前 往",
+    "_N$string": "前 往",
     "_fontSize": 30,
     "_lineHeight": 30,
     "_enableWrapText": true,
@@ -5957,9 +5953,8 @@
     "_fontSize": 30,
     "_showShadow": true,
     "btnState": true,
-    "btnPress": false,
     "_N$fontColor": 0,
-    "_N$textLabel": "前往闯关",
+    "_N$textLabel": "前 往",
     "_id": ""
   },
   {
@@ -6039,8 +6034,8 @@
     "target": {
       "__id__": 1
     },
-    "component": "NormalDailyMissionWnd",
-    "_componentId": "",
+    "component": "",
+    "_componentId": "fad72yHFTNCg4Yxn7WcMPi8",
     "handler": "onNewTaskBtnGoClick",
     "customEventData": ""
   },
@@ -6378,7 +6373,6 @@
     "_fontSize": 30,
     "_showShadow": true,
     "btnState": true,
-    "btnPress": false,
     "_N$fontColor": 0,
     "_N$textLabel": "领取",
     "_id": ""
@@ -7850,7 +7844,6 @@
     "_fontSize": 30,
     "_showShadow": true,
     "btnState": true,
-    "btnPress": false,
     "_N$fontColor": 0,
     "_N$textLabel": "",
     "_id": ""
@@ -8590,7 +8583,6 @@
     "_fontSize": 30,
     "_showShadow": true,
     "btnState": true,
-    "btnPress": false,
     "_N$fontColor": 0,
     "_N$textLabel": "",
     "_id": ""
@@ -9330,7 +9322,6 @@
     "_fontSize": 30,
     "_showShadow": true,
     "btnState": true,
-    "btnPress": false,
     "_N$fontColor": 0,
     "_N$textLabel": "",
     "_id": ""
@@ -10070,7 +10061,6 @@
     "_fontSize": 30,
     "_showShadow": true,
     "btnState": true,
-    "btnPress": false,
     "_N$fontColor": 0,
     "_N$textLabel": "",
     "_id": ""
@@ -11911,7 +11901,6 @@
     "_fontSize": 28,
     "_showShadow": true,
     "btnState": true,
-    "btnPress": false,
     "_N$fontColor": 0,
     "_N$textLabel": "领取",
     "_id": ""
@@ -12353,7 +12342,6 @@
     "_fontSize": 28,
     "_showShadow": true,
     "btnState": true,
-    "btnPress": false,
     "_N$fontColor": 0,
     "_N$textLabel": "前往",
     "_id": ""
@@ -14587,11 +14575,10 @@
       "__id__": 426
     },
     "_enabled": true,
-    "audioType": 0,
+    "audioType": 7,
     "_fontSize": 30,
     "_showShadow": true,
     "btnState": true,
-    "btnPress": false,
     "_N$fontColor": 0,
     "_N$textLabel": "",
     "_id": ""
@@ -15610,11 +15597,10 @@
       "__id__": 455
     },
     "_enabled": true,
-    "audioType": 0,
+    "audioType": 7,
     "_fontSize": 30,
     "_showShadow": true,
     "btnState": true,
-    "btnPress": false,
     "_N$fontColor": 0,
     "_N$textLabel": "",
     "_id": ""
@@ -16099,7 +16085,7 @@
     "_right": 0,
     "_top": 0,
     "_bottom": 0,
-    "_verticalCenter": 0,
+    "_verticalCenter": 50,
     "_horizontalCenter": 0,
     "_isAbsLeft": true,
     "_isAbsRight": true,

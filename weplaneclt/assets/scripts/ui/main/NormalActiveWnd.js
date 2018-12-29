@@ -140,6 +140,7 @@ cc.Class({
         activeTab.data = data;
         activeTab.getChildByName("spriteTextBg").getChildByName("labelName").getComponent(cc.Label).string = data.Name;
         activeTab.getChildByName("spriteHot").active = !!data.StatFlag;
+        activeTab.y = 0;
     },
     onAcitveTabClick: function (event, index) {
         if (!this.canClickTab) {
@@ -242,8 +243,10 @@ cc.Class({
             let nodeItemEqualNeed = model.getChildByName("nodeItemEqualNeed");
             let nodeItemEqualGet = model.getChildByName("nodeItemEqualGet");
             nodeItemEqualNeed.getComponent("ItemObject").updateItem(costCfg.Items[0].ItemID, costCfg.Items[0].Count);
+            nodeItemEqualNeed.getComponent("ItemObject").setLabelNumberData(costCfg.Items[0].Count, true);
             nodeItemEqualNeed.getComponent("ItemObject").setClick(true, 2);
             nodeItemEqualGet.getComponent("ItemObject").updateItem(fenCfg.Items[0].ItemID, fenCfg.Items[0].Count);
+            nodeItemEqualGet.getComponent("ItemObject").setLabelNumberData(fenCfg.Items[0].Count, true);
             nodeItemEqualGet.getComponent("ItemObject").setClick(true, 2);
             let joinTimes = 0;
             if (joinData && joinData.Join) {
@@ -335,6 +338,7 @@ cc.Class({
                 let item = cc.instantiate(itemModel);
                 item.active = true;
                 item.getComponent("ItemObject").updateItem(modelData.Items[i].ItemID, modelData.Items[i].Count);
+                item.getComponent("ItemObject").setLabelNumberData(modelData.Items[i].Count, true);
                 item.getComponent("ItemObject").setClick(true, 2);
                 nodeRewards.addChild(item);
             }
@@ -489,6 +493,7 @@ cc.Class({
                 return;
             }
             item.getComponent("ItemObject").updateItem(itemProbs[index].ItemID, itemProbs[index].Count);
+            item.getComponent("ItemObject").setLabelNumberData(itemProbs[index].Count, true);
             item.getComponent("ItemObject").setClick(true, 2);
             // item.setScale(0);
             item.active = true;
@@ -610,6 +615,7 @@ cc.Class({
             }
             let item = cc.instantiate(itemModel);
             item.getComponent("ItemObject").updateItem(itemData.ItemID, itemData.Count);
+            item.getComponent("ItemObject").setLabelNumberData(itemData.Count, true);
             item.getComponent("ItemObject").setClick(true, 2);
             // item.setScale(0);
             item.active = true;
@@ -629,6 +635,7 @@ cc.Class({
             }
             let item = cc.instantiate(itemModel);
             item.getComponent("ItemObject").updateItem(itemData.ItemID, itemData.Count);
+            item.getComponent("ItemObject").setLabelNumberData(itemData.Count, true);
             item.getComponent("ItemObject").setClick(true, 2);
             // item.setScale(0);
             item.active = true;
@@ -742,7 +749,10 @@ cc.Class({
                 if (rule.Param == 0) {
                     weChatAPI.shareNormal(113, shareSuccessFunc);
                 } else {
-                    weChatAPI.shareNeedClick(113, shareSuccessFunc, null, i18n.t('label.4000311'));
+                    CommonWnd.showMessage(null, CommonWnd.oneConfirm, i18n.t('label.4000216'), i18n.t('label.4000317'));
+                    setTimeout(() => {
+                        weChatAPI.shareNeedClick(113, shareSuccessFunc);
+                    }, 1000);
                 }
             }
         } else {
@@ -775,7 +785,10 @@ cc.Class({
                 if (rule.Param == 0) {
                     weChatAPI.shareNormal(113, shareSuccessFunc);
                 } else {
-                    weChatAPI.shareNeedClick(113, shareSuccessFunc, null, i18n.t('label.4000311'));
+                    CommonWnd.showMessage(null, CommonWnd.oneConfirm, i18n.t('label.4000216'), i18n.t('label.4000317'));
+                    setTimeout(() => {
+                        weChatAPI.shareNeedClick(113, shareSuccessFunc);
+                    }, 1000);
                 }
             }
         } else {

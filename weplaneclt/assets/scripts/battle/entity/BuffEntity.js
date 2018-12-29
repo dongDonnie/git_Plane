@@ -74,11 +74,17 @@ cc.Class({
                 let prefab = GlobalVar.resManager().loadRes(ResMapping.ResType.Prefab, 'cdnRes/battlemodel/prefab/effect/' + this.objectName);
                 if (prefab != null) {
                     this.baseObject = cc.instantiate(prefab);
+                }else{
+                    this.isShow = true;
+                    this.isDead = true;
                 }
             }
         }
 
-        this.addChild(this.baseObject, 1);
+        if(this.baseObject != null){
+            this.addChild(this.baseObject, 1);
+        }
+        
         if (this.objectID == Defines.Assist.GOLD) {
             this.setScale(0.7);
         } else {

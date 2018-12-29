@@ -33,7 +33,13 @@ var LoginScene = cc.Class({
         
         GlobalVar.soundManager().playBGM("cdnRes/audio/main/music/logon");
 
-        if (cc.sys.platform === cc.sys.WECHAT_GAME){
+        if (GlobalVar.getBannerSwitch()){
+            weChatAPI.cleanBannerCount();
+            weChatAPI.hideBannerAd();
+        }
+        
+
+        if (cc.sys.platform === cc.sys.WECHAT_GAME || (window && window["wywGameId"]=="5469")){
             //this.loadPrefab("UIServerSel");
         }else{
             //this.loadPrefab("UILogin");

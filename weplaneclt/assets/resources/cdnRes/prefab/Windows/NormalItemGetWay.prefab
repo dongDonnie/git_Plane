@@ -73,7 +73,7 @@
     "_position": {
       "__type__": "cc.Vec3",
       "x": 320,
-      "y": 568,
+      "y": 598,
       "z": 0
     },
     "_scale": {
@@ -526,7 +526,6 @@
     "_fontSize": 0,
     "_showShadow": false,
     "btnState": true,
-    "btnPress": false,
     "_N$fontColor": 0,
     "_N$textLabel": "",
     "_id": ""
@@ -608,8 +607,8 @@
     "target": {
       "__id__": 1
     },
-    "component": "NormalItemGetWay",
-    "_componentId": "",
+    "component": "",
+    "_componentId": "ed43e5E8oJMDpB/1ADWMNlg",
     "handler": "close",
     "customEventData": ""
   },
@@ -1423,7 +1422,6 @@
     "_fontSize": 30,
     "_showShadow": true,
     "btnState": true,
-    "btnPress": false,
     "_N$fontColor": 0,
     "_N$textLabel": "出售",
     "_id": ""
@@ -3141,7 +3139,7 @@
     "_right": 0,
     "_top": 0,
     "_bottom": 0,
-    "_verticalCenter": 0,
+    "_verticalCenter": 30,
     "_horizontalCenter": 0,
     "_isAbsLeft": true,
     "_isAbsRight": true,

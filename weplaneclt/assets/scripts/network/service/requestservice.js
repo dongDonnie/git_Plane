@@ -1,4 +1,3 @@
-
 var GlobalVar = require("globalvar")
 var EventMsgID = require("eventmsgid")
 var NetRequest = require("netrequest")
@@ -66,7 +65,11 @@ var RequestService = cc.Class({
     addRequest: function (id, msg) {
         let request = new NetRequest(id, msg);
         if (!GlobalVar.networkManager().connected) {
-            self._addCacheRequest(request);
+            if (!GlobalVar.networkManager().connectError) {
+                self._addCacheRequest(request);
+            } else {
+                GlobalVar.networkManager().connectError = false;
+            }
         } else {
             self._requestList.push(request);
         }
@@ -84,7 +87,7 @@ var RequestService = cc.Class({
         for (let i in self._requestList) {
             let request = self._requestList[i];
             if (!request.isSent()) {
-                if(GlobalVar.networkManager().send(request.sendStandBy())){
+                if (GlobalVar.networkManager().send(request.sendStandBy())) {
                     request.sendComplete();
                 }
             }
@@ -127,7 +130,7 @@ var RequestService = cc.Class({
         return waiting;
     },
 
-    _showLoading: function (b) {            
+    _showLoading: function (b) {
         GlobalVar.netWaiting().showWaiting(b);
     },
 

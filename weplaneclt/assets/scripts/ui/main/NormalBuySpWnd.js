@@ -74,6 +74,10 @@ cc.Class({
     animePlayCallBack(name) {
         if (name == "Escape") {
             this._super("Escape");
+            if (GlobalVar.getBannerSwitch()){
+                weChatAPI.hideBannerAd();
+                weChatAPI.justHideBanner();
+            }
             GlobalVar.eventManager().removeListenerWithTarget(this);
             this.shareCallBack = null;
             this.purchaseCallBack = null;
@@ -84,6 +88,9 @@ cc.Class({
             }, false, false);
         } else if (name == "Enter") {
             this._super("Enter");
+            if (GlobalVar.getBannerSwitch() && !GlobalVar.getNeedGuide()){
+                weChatAPI.showBannerAd();
+            }
             this.registerEvent();
         }
     },
@@ -136,7 +143,7 @@ cc.Class({
     },
 
     onBtnShareClick: function (event) {
-        if (cc.sys.platform !== cc.sys.WECHAT_GAME){
+        if (cc.sys.platform !== cc.sys.WECHAT_GAME && !(window && window["wywGameId"]=="5496")){
             if (!!this.shareCallBack){
                 this.shareCallBack();
             }
@@ -149,10 +156,13 @@ cc.Class({
         }
 
         this.canOperata = true;
+        CommonWnd.showMessage(null, CommonWnd.oneConfirm, i18n.t('label.4000216'), i18n.t('label.4000317'));
+        setTimeout(() => {
+            weChatAPI.shareNeedClick(121, function () {
+                GlobalVar.handlerManager().spHandler.sendSpBuyReq(1);
+            });
+        }, 1000);
 
-        weChatAPI.shareNormal(121, function () {
-            GlobalVar.handlerManager().spHandler.sendSpBuyReq(1);
-        });
     },
 
     onBtnPurchaseClick: function (event) {

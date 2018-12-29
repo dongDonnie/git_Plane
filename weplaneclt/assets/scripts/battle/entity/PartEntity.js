@@ -6,6 +6,7 @@ const BM = require('BulletMapping');
 var ShaderUtils = require("ShaderUtils");
 const weChatAPI = require("weChatAPI");
 const config = require("config");
+const i18n = require('LanguageData');
 
 var FighterState = cc.Enum({
     StandingBy: 0,
@@ -89,37 +90,32 @@ cc.Class({
         }
 
         if (this.objectType == Defines.ObjectType.OBJ_HERO || this.objectType == Defines.ObjectType.OBJ_WINGMAN) {
-            let prefab = GlobalVar.resManager().loadRes(ResMapping.ResType.Prefab, 'cdnRes/battlemodel/prefab/' + objectName);
-            if (prefab != null) {
-                this.partObject = cc.instantiate(prefab);
-                this.part = this.partObject.getComponent(this.objectClass);
-                this.part.setObjectType(this.objectType);
-                this.part.setDisPlayLoop(this.showType);
-                this.addChild(this.partObject);
-                if (this.objectType == Defines.ObjectType.OBJ_HERO) {
-                    let index = objectName.lastIndexOf('_');
-                    let id = objectName.substring(index + 1, objectName.length);
-
-                    this.partObject.setPosition(cc.v3(0, -65));
-                    if (id == '710') {
-                        this.partObject.setPosition(cc.v3(0, -35));
+            var self = this;
+            GlobalVar.resManager().loadRes(ResMapping.ResType.Prefab, 'cdnRes/battlemodel/prefab/' + objectName, function (prefab) {
+                if (prefab != null) {
+                    self.partObject = cc.instantiate(prefab);
+                    self.part = self.partObject.getComponent(self.objectClass);
+                    self.part.setObjectType(self.objectType);
+                    self.part.setDisPlayLoop(self.showType);
+                    self.addChild(self.partObject);
+                    if (self.objectType == Defines.ObjectType.OBJ_HERO) {
+                        let index = objectName.lastIndexOf('_');
+                        let id = objectName.substring(index + 1, objectName.length);
+                        if (id == '720') {
+                            self.partObject.setPosition(cc.v3(0, 20));
+                        }
+                        if (id == '740') {
+                            self.partObject.setPosition(cc.v3(0, 20));
+                        }
                     }
-                    // if(id=='1810'){
-                    //     this.partObject.setPosition(cc.v3(0, -65));
-                    // }
-                    // if(id=='1820'){
-                    //     this.partObject.setPosition(cc.v3(0, -65));
-                    // }
+                    //self.shaderRender=self.part.getSpine();
+                    if (self.objectType == Defines.ObjectType.OBJ_HERO && self.showType == 0) {
+                        self.addMotionStreak('huoyan');
+                    }
+                }else{
+                    GlobalVar.comMsg.showMsg(i18n.t('label.4000000'));
                 }
-
-                //this.shaderRender=this.part.getSpine();
-
-                if (this.objectType == Defines.ObjectType.OBJ_HERO && this.showType == 0) {
-                    this.addMotionStreak('huoyan');
-                }
-            } else {
-                return false;
-            }
+            });
             return true;
         } else if (this.objectType == Defines.ObjectType.OBJ_ASSIST) {
             let itemData = GlobalVar.tblApi.getDataBySingleKey('TblItem', objectName);
@@ -132,7 +128,6 @@ cc.Class({
             this.partObject = new cc.Node();
             let sp = this.partObject.addComponent(cc.Sprite);
             sp.spriteFrame = GlobalVar.resManager().loadRes(ResMapping.ResType.SpriteFrame, path);
-            //sp.spriteFrame = GlobalVar.resManager().loadRes(ResMapping.ResType.SpriteFrame, 'cdnRes/itemicon/' + objectName);
             this.addChild(this.partObject);
             //this.shaderRender=sp;
         }
@@ -390,7 +385,9 @@ cc.Class({
         let motionNode = this.addComponent(cc.MotionStreak);
         var self = this;
         GlobalVar.resManager().loadRes(ResMapping.ResType.Texture2D, 'cdnRes/battlemodel/motionstreak/' + res, function (tex) {
-            motionNode.texture = tex;
+            if (tex != null) {
+                motionNode.texture = tex;
+            }
         });
         motionNode.fadeTime = typeof fadeTime !== 'undefined' ? fadeTime : 0.5;
         motionNode.minSeg = typeof minSeg !== 'undefined' ? minSeg : 1;
@@ -401,7 +398,6 @@ cc.Class({
     },
 
     flyIntoScreen(callback) {
-        this.invincibleTime = 1.6;
         if (BattleManager.getInstance().gameState == Defines.GameResult.START) {
             GlobalVar.soundManager().playEffect('cdnRes/audio/battle/effect/hero_appear');
         } else {

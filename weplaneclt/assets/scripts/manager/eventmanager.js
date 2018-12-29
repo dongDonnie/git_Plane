@@ -57,6 +57,7 @@ var EventManager = cc.Class({
             for (let i = 0; i < obj.length; i++) {
                 if (obj[i].target.uuid == target.uuid) {
                     this.listenerList[event].splice(i, 1);
+                    i--;
                 }
             }
             if (this.listenerList[event].length == 0) {
@@ -91,6 +92,7 @@ var EventManager = cc.Class({
                 let obj = objArray[i];
                 if (obj.target.uuid == target.uuid) {
                     objArray.splice(i, 1);
+                    break;
                 }
             }
             if (objArray.length == 0) {

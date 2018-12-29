@@ -97,6 +97,7 @@ cc.Class({
                 }));
                 let actionFade = cc.progressLoading(0.2, self.loadingBarFade.progress, 0.2, null, function (per) {
                     self.loadingBarFade.node.getChildByName("spriteLight").x = self.loadingBarFade.barSprite.node.width * per;
+                    self.loadingBar.node.parent.getChildByName("labelProgressPercent").getComponent(cc.Label).string = Math.floor((per *100)) + "%";
                 });
 
 
@@ -151,6 +152,7 @@ cc.Class({
                         // let serverData = data.serverList[defaultServerIndex];
 
                         GlobalVar.me().loginData.setLoginReqDataServerID(serverData.server_id);
+                        GlobalVar.me().loginData.setLoginReqDataServerName(serverData.name);
                         // console.log("连接的服务器地址为：", serverData.socket_domain, "  连接的端口为：", serverData.socket_port);
                         GlobalVar.networkManager().connectToServer(serverData.socket_domain, serverData.socket_port, function () {
                             GlobalVar.handlerManager().loginHandler.sendLoginReq(
@@ -159,6 +161,8 @@ cc.Class({
                                 GlobalVar.me().loginData.getLoginReqDataServerID(),
                                 GlobalVar.me().loginData.getLoginReqDataAvatar());
                         });
+                    }, function (data) {
+                        GlobalVar.sceneManager().startUp();
                     });
                 })
             } else {

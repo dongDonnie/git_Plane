@@ -2,14 +2,7 @@ const GlobalVar = require("globalvar");
 const WindowManager = require("windowmgr");
 const WndTypeDefine = require("wndtypedefine");
 const RootBase = require("RootBase");
-const i18n = require('LanguageData');
-const GlobalFunc = require('GlobalFunctions');
-const EventMsgID = require("eventmsgid");
 const weChatAPI = require("weChatAPI");
-const GameServerProto = require("GameServerProto");
-const CommonWnd = require("CommonWnd");
-const StoreageData = require("storagedata");
-const BattleManager = require('BattleManager');
 const PlaneEntity = require('PlaneEntity');
 const Defines = require('BattleDefines');
 const ResMapping = require("resmapping");
@@ -31,6 +24,7 @@ cc.Class({
 
         this._callback = null;
         this.memberID = 0;
+        // this.nodePlane.setScale(1.2);
     },
 
     animeStartParam(paramScale, paramOpacity) {
@@ -41,6 +35,9 @@ cc.Class({
     animePlayCallBack(name) {
         if (name == "Escape") {
             this._super("Escape");
+            if (GlobalVar.getBannerSwitch()){
+                weChatAPI.justShowBanner();
+            }
             GlobalVar.eventManager().removeListenerWithTarget(this);
             let self = this;
             WindowManager.getInstance().popView(false, function () {
@@ -49,8 +46,10 @@ cc.Class({
             }, false);
         } else if (name == "Enter") {
             this._super("Enter");
-            this.randomPlane();
-            
+            if (GlobalVar.getBannerSwitch()){
+                weChatAPI.justHideBanner();
+            }
+            this.setPlane();
         }
     },
 
@@ -61,7 +60,9 @@ cc.Class({
                 GlobalVar.me().shareData.testPlayMemberID = self.memberID;
                 self.close();
             })
-        }else{
+        } else if (window && window["wywGameId"]=="5469"){
+
+        } else{
             GlobalVar.me().shareData.testPlayMemberID = self.memberID;
             self.close();
         }
@@ -75,28 +76,13 @@ cc.Class({
         this.close();
     },
 
-    randomPlane: function () {
-        let totalMemberData = GlobalVar.tblApi.getData('TblMember');
-        let ids = [];
-        for (let i in totalMemberData){
-            if (totalMemberData[i].byGetType == 1){
-                ids.push(parseInt(i));
-            }
-        }
-
-        for (let i = 0; i<ids.length;i++){
-            let memberData = GlobalVar.me().memberData.getMemberByID(ids[i]);
-            if (memberData){
-                ids.splice(i, 1);
-                i -= 1;
-            }
-        }
-
-        let randomID = ids[parseInt(Math.random() * ids.length)];
-        this.memberID = randomID;
-
+    setPlane: function () {
         let self = this;
-        GlobalVar.resManager().loadRes(ResMapping.ResType.Prefab, 'cdnRes/battlemodel/prefab/Fighter/Fighter_' + randomID, function(){
+        if (this.memberID == -1 || this.memberID == 0){
+            return;
+        }
+
+        GlobalVar.resManager().loadRes(ResMapping.ResType.Prefab, 'cdnRes/battlemodel/prefab/Fighter/Fighter_' + this.memberID, function(){
             if (!self.planeEntity) {
                 self.planeEntity = new PlaneEntity();
                 self.planeEntity.newPart('Fighter/Fighter_' + self.memberID, Defines.ObjectType.OBJ_HERO, 'PlaneObject', 3, 0, 0);
@@ -105,6 +91,10 @@ cc.Class({
                 self.planeEntity.part.transform();
             }
         });
+    },
+
+    setTestPlayMemberID: function (memberID) {
+        this.memberID = memberID;
     },
 
     setCallback: function (callback) {

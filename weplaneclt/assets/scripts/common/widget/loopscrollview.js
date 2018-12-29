@@ -86,10 +86,10 @@ cc.Class({
      */
     initParameter() {
         this.firstIndex = 0;
-        this.initNum = 0;  // 调整content大小用
+        this.initNum = 0; // 调整content大小用
         this.curItemIndex = 0;
         this.startCreateIndex = 0;
-        this.itemRowCount = 1;  // 行列数
+        this.itemRowCount = 1; // 行列数
         this.itemColCount = 1;
 
         this.gapDisX = 10;
@@ -101,6 +101,8 @@ cc.Class({
         // cc.log('content onload pos: ' + this.content.getPosition());
         // cc.log('item start pos: ' + this.startPos);
         this.startUpdate = false;
+
+        this.intervalIndex = -1;
     },
 
     /**
@@ -128,9 +130,9 @@ cc.Class({
     },
 
     setCreateModel(model) {
-        if (model.__classname__ == "cc.Prefab"){
+        if (model.__classname__ == "cc.Prefab") {
             this._createModel = model.data;
-        }else{
+        } else {
             this._createModel = model;
         }
     },
@@ -243,11 +245,11 @@ cc.Class({
         this.isScrolling = true;
 
         let item = this.itemList[0];
-        if (this.scrollView.vertical){
+        if (this.scrollView.vertical) {
             let y = (item.height + this.gapDisY) * (Math.ceil(index / this.itemColCount));
             this.scrollView.scrollToOffset(cc.v3(time, y));
-        }else{
-            let x = (item.width + this.gapDisX) * (Math.ceil(index/ this.itemRowCount));
+        } else {
+            let x = (item.width + this.gapDisX) * (Math.ceil(index / this.itemRowCount));
             this.scrollView.scrollToOffset(cc.v3(x, time));
         }
 
@@ -276,7 +278,7 @@ cc.Class({
      */
     initItem(item, index) {
         item.dataIndex = index;
-        if (index < this.itemDataCount){
+        if (index < this.itemDataCount) {
             this._updateItemFunc(item, index);
         }
     },
@@ -290,7 +292,7 @@ cc.Class({
                 this._updateItemFunc(item, item.dataIndex);
             });
         }
-        if (!!this._completeFunc){
+        if (!!this._completeFunc) {
             this._completeFunc();
         }
     },
@@ -305,6 +307,10 @@ cc.Class({
             this.itemLoop.put(this.itemList[i]);
         }
         this.itemList = [];
+
+        if (this.intervalIndex != -1) {
+            clearInterval(this.intervalIndex);
+        }
     },
 
     update(dt) {
@@ -322,19 +328,20 @@ cc.Class({
         this.updateTimer = 0;
         this.updateInterval = 0.1;
         this.lastContentPosY = 0;
-        this.bufferZone = this.scrollView.vertical?this._createModel.height + this.gapDisY:this._createModel.width + this.gapDisX;
+        this.curItemIndex = 0;
+        this.bufferZone = this.scrollView.vertical ? this._createModel.height + this.gapDisY : this._createModel.width + this.gapDisX;
 
         let rowNeedCount = this.itemRowCount;
         let colNeedCount = this.itemColCount;
         if (this.scrollView.horizontal) {
             colNeedCount = Math.ceil(this.scrollView.node.width / (this._createModel.width + this.gapDisX)) + 1;
-            this.content.width = (this._createModel.width + this.gapDisX) * this.itemDataCount / this.itemRowCount;
+            this.content.width = (this._createModel.width + this.gapDisX) * Math.ceil(this.itemDataCount / this.itemRowCount);
         } else {
             this.content.width = this._createModel.width;
         }
         if (this.scrollView.vertical) {
             rowNeedCount = Math.ceil(this.scrollView.node.height / (this._createModel.height + this.gapDisY)) + 1;
-            this.content.height = (this._createModel.height + this.gapDisY) * this.itemDataCount / this.itemColCount;
+            this.content.height = (this._createModel.height + this.gapDisY) * Math.ceil(this.itemDataCount / this.itemColCount);
         } else {
             this.content.height = this._createModel.height;
         }
@@ -342,12 +349,13 @@ cc.Class({
         this.pageMaxCount = rowNeedCount * colNeedCount;
 
         this.createItems();
+        this.intervalIndex = setInterval(this.createItems.bind(this), this.createInterval);
     },
 
     createItems() {
         let initNum = this.itemDataCount > this.pageMaxCount ? this.pageMaxCount : this.itemDataCount;
         let scorllToIndex = this.startCreateIndex;
-        if (this.startCreateIndex + initNum > this.itemDataCount){
+        if (this.startCreateIndex + initNum > this.itemDataCount) {
             this.startCreateIndex = this.itemDataCount - initNum;
         }
         let curCreIndex = this.startCreateIndex + this.curItemIndex;
@@ -360,20 +368,24 @@ cc.Class({
                 this.scrollView.scrollToOffset(new cc.Vec2(0, y));
             }
             this.content.addChild(item);
-            let posX = this.scrollView.vertical?(Math.floor(curCreIndex % this.itemColCount) - (this.itemColCount - 1) / 2) * (this._createModel.width + this.gapDisX):item.width * (0.5 + Math.floor(curCreIndex / this.itemColCount)) + this.gapDisX * (Math.ceil((curCreIndex + 1) / this.itemColCount) - 1) + (this.gapLeft || 10);
-            let posY = this.scrollView.vertical?-item.height * (0.5 + Math.floor(curCreIndex / this.itemColCount)) - this.gapDisY * (Math.ceil((curCreIndex + 1) / this.itemColCount) - 1) - (this.gapTop || 10):(Math.floor(curCreIndex % this.itemColCount) - (this.itemColCount - 1) / 2) * (this._createModel.height + this.gapDisY);
+            let posX = this.scrollView.vertical ? (Math.floor(curCreIndex % this.itemColCount) - (this.itemColCount - 1) / 2) * (this._createModel.width + this.gapDisX) : item.width * (0.5 + Math.floor(curCreIndex / this.itemColCount)) + this.gapDisX * (Math.ceil((curCreIndex + 1) / this.itemColCount) - 1) + (this.gapLeft || 10);
+            let posY = this.scrollView.vertical ? -item.height * (0.5 + Math.floor(curCreIndex / this.itemColCount)) - this.gapDisY * (Math.ceil((curCreIndex + 1) / this.itemColCount) - 1) - (this.gapTop || 10) : (Math.floor(curCreIndex % this.itemColCount) - (this.itemColCount - 1) / 2) * (this._createModel.height + this.gapDisY);
             // let posX = (Math.floor(curCreIndex % this.itemColCount) - (this.itemColCount - 1) / 2) * (this._createModel.width + this.gapDisX);
             // let posY = -item.height * (0.5 + Math.floor(curCreIndex / this.itemColCount)) - this.gapDisY * (Math.ceil((curCreIndex + 1) / this.itemColCount) - 1) - (this.gapTop || 10);
             item.position = new cc.Vec2(posX, posY);
             this.initItem(item, curCreIndex);
             this.itemList.push(item);
             this.curItemIndex += 1;
-            setTimeout(this.createItems.bind(this), this.createInterval);
+            //setTimeout(this.createItems.bind(this), this.createInterval);
         } else {
             this.scrollView.enabled = true;
             this.scrollView.node.removeChild(this.nodeBlock);
             this.nodeBlock = null;
             if (this.itemList.length <= 0) return;
+
+            if (this.intervalIndex != -1) {
+                clearInterval(this.intervalIndex);
+            }
 
             this.curItemIndex = 0;
 
@@ -402,63 +414,63 @@ cc.Class({
         //     this.content.anchorX = 0;
         //     this.content.anchorY = 0.5;
         // }
-        if (this.scrollView.vertical){
+        if (this.scrollView.vertical) {
             if (this.lastContentPosY == this.content.y) return;
             let isDown = this.content.y < this.lastContentPosY;
             let offset = (this.itemList[0].height + this.gapDisY) * (Math.ceil(this.itemList.length / this.itemColCount));
-    
+
             for (let i = 0; i < this.itemList.length; ++i) {
                 let item = this.itemList[i];
                 let viewPos = this.getPositionInView(item);
                 if (isDown) {
                     // if (viewPos.y < -buffer - item.height - this.gapDisY) {
-                    if (viewPos.y < -offset/2) {
+                    if (viewPos.y < -offset / 2) {
                         let afterIndex = item.dataIndex - this.itemList.length
                         if (afterIndex < 0 || afterIndex >= this.itemDataCount) continue;
-    
+
                         item.y = (item.y + offset);
                         this.initItem(item, item.dataIndex - this.itemList.length);
                     }
                 } else {
                     // if (viewPos.y > buffer + item.height + this.gapDisY) {
-                    if (viewPos.y > offset/2) {
+                    if (viewPos.y > offset / 2) {
                         let afterIndex = item.dataIndex + this.itemList.length
                         if (afterIndex < 0 || afterIndex >= this.itemDataCount) continue;
-    
+
                         item.y = (item.y - offset);
                         this.initItem(item, item.dataIndex + this.itemList.length);
                     }
                 }
             }
-    
+
             this.lastContentPosY = this.content.y;
-        }else if (this.scrollView.horizontal){
+        } else if (this.scrollView.horizontal) {
             if (this.lastContentPosX == this.content.x) return;
             let isLeft = this.content.x < this.lastContentPosX;
             let offset = (this.itemList[0].width + this.gapDisX) * (Math.ceil(this.itemList.length / this.itemColCount));
-    
+
             for (let i = 0; i < this.itemList.length; ++i) {
                 let item = this.itemList[i];
                 let viewPos = this.getPositionInView(item);
                 if (isLeft) {
-                    if (viewPos.x < -offset/2) {
+                    if (viewPos.x < -offset / 2) {
                         let afterIndex = item.dataIndex + this.itemList.length
                         if (afterIndex < 0 || afterIndex >= this.itemDataCount) continue;
-    
+
                         item.x = (item.x + offset);
                         this.initItem(item, item.dataIndex + this.itemList.length);
                     }
                 } else {
-                    if (viewPos.x > offset/2) {
+                    if (viewPos.x > offset / 2) {
                         let afterIndex = item.dataIndex - this.itemList.length
                         if (afterIndex < 0 || afterIndex >= this.itemDataCount) continue;
-    
+
                         item.x = (item.x - offset);
                         this.initItem(item, item.dataIndex - this.itemList.length);
                     }
                 }
             }
-    
+
             this.lastContentPosX = this.content.x;
         }
     }

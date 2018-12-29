@@ -47,9 +47,11 @@ cc.Class({
         GlobalVar.me().feedbackData.saveFuliBuyData(msg.data);
     },
 
-    sendBuyFuliFeedbackReq: function(feedbackID){
+    sendBuyFuliFeedbackReq: function(feedbackID, free, adCount){
         let msg = {
             ID: feedbackID,
+            Free: free||0,
+            AdCount: adCount||0,
         };
 
         self.sendMsg(GameServerProto.GMID_FULI_CZ_BUY_REQ, msg);

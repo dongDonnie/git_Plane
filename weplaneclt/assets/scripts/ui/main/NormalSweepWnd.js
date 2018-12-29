@@ -8,6 +8,7 @@ const GameServerProto = require("GameServerProto");
 const i18n = require('LanguageData');
 const CommonWnd = require("CommonWnd");
 const BattleDefines = require('BattleDefines');
+const weChatAPI = require("weChatAPI");
 
 const AUDIO_SWEEP_QUEST = 'cdnRes/audio/main/effect/lingquxiaoshi';
 
@@ -65,10 +66,16 @@ cc.Class({
     animePlayCallBack(name) {
         if (name == "Escape") {
             this._super("Escape");
+            if (GlobalVar.getBannerSwitch()){
+                weChatAPI.justShowBanner();
+            }
             GlobalVar.eventManager().removeListenerWithTarget(this);
             WindowManager.getInstance().popView(false, null, false, false);
         } else if (name == "Enter") {
             this._super("Enter");
+            if (GlobalVar.getBannerSwitch()){
+                weChatAPI.justHideBanner();
+            }
             GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_GET_SWEEP_RESULT, this.refreshUI, this);
             GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_GET_BUY_COUNT_RESULT, this.refreshData, this);
             this.sendSweepMsg();
@@ -291,32 +298,33 @@ cc.Class({
         }
         
 
-        let typeID = this.tblData.byTypeID;
-        let chapterID = this.tblData.byChapterID;
-        let campaignID = this.tblData.wCampaignID;
-        let tipDesc = i18n.t('label.4000250');
-        tipDesc = tipDesc.replace('%d', curBuyTimes);
-        tipDesc = tipDesc.replace('%d', buyTimesLimit);
+        // let typeID = this.tblData.byTypeID;
+        // let chapterID = this.tblData.byChapterID;
+        // let campaignID = this.tblData.wCampaignID;
+        // let tipDesc = i18n.t('label.4000250');
+        // tipDesc = tipDesc.replace('%d', curBuyTimes);
+        // tipDesc = tipDesc.replace('%d', buyTimesLimit);
 
-        let diamondCost = GlobalVar.tblApi.getDataBySingleKey('TblCampBuy', curBuyTimes + 1);
-        if (diamondCost){
-            diamondCost = diamondCost.nDiamond;
-        }else{
-            // console.log("发生错误,钻石消费计算失败")
-            return;
-        }
+        // let diamondCost = GlobalVar.tblApi.getDataBySingleKey('TblCampBuy', curBuyTimes + 1);
+        // if (diamondCost){
+        //     diamondCost = diamondCost.nDiamond;
+        // }else{
+        //     // console.log("发生错误,钻石消费计算失败")
+        //     return;
+        // }
 
-        let diamondEnough = GlobalVar.me().diamond >= diamondCost;
-        let confirm = function () {
-            if (diamondEnough){
-                GlobalVar.handlerManager().campHandler.sendCampBuyCountReq(typeID, chapterID, campaignID);
-            }else{
-                CommonWnd.showNormalFreeGetWnd(GameServerProto.PTERR_DIAMOND_LACK);
-            }
-        }
+        // let diamondEnough = GlobalVar.me().diamond >= diamondCost;
+        // let confirm = function () {
+        //     if (diamondEnough){
+        //         GlobalVar.handlerManager().campHandler.sendCampBuyCountReq(typeID, chapterID, campaignID);
+        //     }else{
+        //         CommonWnd.showNormalFreeGetWnd(GameServerProto.PTERR_DIAMOND_LACK);
+        //     }
+        // }
 
 
-        CommonWnd.showResetQuestTimesWnd(null, i18n.t('label.4000239'), tipDesc, diamondCost, null, confirm);
+        // CommonWnd.showResetQuestTimesWnd(null, i18n.t('label.4000239'), tipDesc, diamondCost, null, confirm);
+        CommonWnd.showResetQuestTimesWnd(this.campData, this.tblData);
     },
 
     setSweepTimes: function(times){
@@ -381,10 +389,7 @@ cc.Class({
     },
 
     close: function () {
-        for (let i = 0; i<this.sweepScroll.content.length; i++){
-            this.sweepScroll.content.children[i].destroy();
-        }
-        this.sweepScroll.content.children.splice(0);
+        this.sweepScroll.content.removeAllChildren();
         this.targetDatas.splice(0);
         this._super();
     },
@@ -397,7 +402,6 @@ cc.Class({
     },
 
     updateScore: function (targetData) {
-
         if (typeof targetData.plusScore == 'undefined') {
             targetData.plusScore = Math.ceil((targetData.targetScore - targetData.startScore) / (1 / BattleDefines.BATTLE_FRAME_SECOND));
             targetData.curScore = 0;

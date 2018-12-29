@@ -1069,7 +1069,7 @@
       "__id__": 1
     },
     "_children": [],
-    "_active": true,
+    "_active": false,
     "_level": 2,
     "_components": [
       {
@@ -1269,9 +1269,9 @@
       "__id__": 1
     },
     "_enabled": true,
-    "alignMode": 0,
+    "alignMode": 2,
     "_target": null,
-    "_alignFlags": 45,
+    "_alignFlags": 37,
     "_left": 0,
     "_right": 0,
     "_top": 0,

@@ -12,7 +12,7 @@ var SceneManager = cc.Class({
         this.curScene = null;
 
         //是否是刚开始启动游戏
-        // this.firstEnter = true;
+        this.firstEnter = true;
     },
 
     statics: {
@@ -36,7 +36,7 @@ var SceneManager = cc.Class({
             return;
         }
 
-        if(nextScene=== SceneDefines.BATTLE_STATE){
+        if (nextScene === SceneDefines.BATTLE_STATE) {
             GlobalVar.windowManager().pauseView();
         }
 
@@ -58,11 +58,11 @@ var SceneManager = cc.Class({
         if (sceneName !== "") {
             var self = this;
             //cc.director.preloadScene(sceneName, function () {
-                cc.director.loadScene(sceneName);
-                self.curScene = cc.director.getScene();
-                self.currentScene = nextScene;
+            cc.director.loadScene(sceneName);
+            self.curScene = cc.director.getScene();
+            self.currentScene = nextScene;
 
-                // cc.log("切换到： " + sceneName + " 场景成功!")
+            // cc.log("切换到： " + sceneName + " 场景成功!")
             //});
         } else {
             // cc.error("switch scene wrong");
@@ -91,8 +91,14 @@ var SceneManager = cc.Class({
         this.gotoScene(SceneDefines.LOGIN_STATE);
     },
 
-    resetOpen:function(){
-        this.gotoScene(SceneDefines.INIT_STATE);
+    resetOpen: function () {
+        //this.gotoScene(SceneDefines.LOGIN_STATE);
+        // if(this.currentScene==SceneDefines.INIT_STATE){
+        //     this.gotoScene(SceneDefines.LOGIN_STATE);
+        // }else if(this.currentScene==SceneDefines.LOGIN_STATE){
+        //     this.gotoScene(SceneDefines.INIT_STATE);
+        // }
+        //
     },
 
     getCurrentScene: function () {

@@ -122,17 +122,24 @@ cc.Class({
             }
 
             let pCollider = null;
+            let originCollider = null;
             if (heroManager.planeEntity.barrier != null && cc.isValid(heroManager.planeEntity.barrier) && heroManager.planeEntity.protectTime > 0) {
                 pCollider = heroManager.planeEntity.barrier.getComponent(cc.BoxCollider);
+                originCollider = heroManager.planeEntity.getCollider();
             } else {
                 pCollider = heroManager.planeEntity.getCollider();
             }
 
             let a = this.updateCollider(pCollider);
 
+            let c = null;
+            if (originCollider != null) {
+                c = this.updateCollider(originCollider);
+            }
+
             for (let buff of buffList) {
                 if (buff.objectType != Defines.ObjectType.OBJ_BUFF ||
-                    buff.baseObject == null ||
+                    !cc.isValid(buff.baseObject) ||
                     buff.isDead) {
                     continue;
                 }
@@ -140,9 +147,16 @@ cc.Class({
                 let mBuff = buff.getCollider();
                 let b = this.updateCollider(mBuff);
 
-                if (this.Intersects(a, b)) {
-                    this.collision(buff, heroManager.planeEntity);
-                    break;
+                if (c != null) {
+                    if (this.Intersects(c, b)) {
+                        this.collision(buff, heroManager.planeEntity);
+                        break;
+                    }
+                } else {
+                    if (this.Intersects(a, b)) {
+                        this.collision(buff, heroManager.planeEntity);
+                        break;
+                    }
                 }
             }
 
@@ -414,11 +428,11 @@ cc.Class({
         } else if (buff.objectID == Defines.Assist.HP) {
             hero.addHP();
         } else if (buff.objectID == Defines.Assist.MP) {
-            
+
         } else if (buff.objectID == Defines.Assist.DASH) {
             hero.addDashTime(Defines.DASH_TIME);
         } else if (buff.objectID == Defines.Assist.GHOST) {
-            
+
         } else if (buff.objectID == Defines.Assist.GREENSTONE) {
             hero.addCrystal(1);
         } else if (buff.objectID == Defines.Assist.BLUESTONE) {
@@ -426,7 +440,6 @@ cc.Class({
         } else if (buff.objectID == Defines.Assist.PURPERSTONE) {
             hero.addCrystal(3);
         } else if (buff.objectID == Defines.Assist.GOLD) {
-            //this.heroManager.planeEntity.addGold(buff.objectID);
             hero.addGold(buff.objectID);
         } else if (buff.objectID >= Defines.Assist.CHEST1 && buff.objectID <= Defines.Assist.CHEST6) {
             hero.addChest(buff.objectID);
@@ -434,7 +447,7 @@ cc.Class({
     },
 
     collisionHeroWithSundries(sundries, hero) {
-        if (sundries.collisionSwitch == false || sundries.isShow == false) {
+        if (sundries.collisionSwitch == false || sundries.isShow == false || !this.heroManager.controllable) {
             return;
         }
 
@@ -454,8 +467,6 @@ cc.Class({
         }
         dmgMsg.pos = sundries.getPosition();
 
-        //BattleManager.getInstance().flyDamageMsg(dmgMsg.dmg, dmgMsg.critical, dmgMsg.pos, false);
-
         sundries.hitWithDamage(dmgMsg.dmg);
         bullet.isDead = true;
 
@@ -463,7 +474,7 @@ cc.Class({
     },
 
     collisionHeroWithMonster(hero, monster) {
-        if (monster.collisionSwitch == false) {
+        if (monster.collisionSwitch == false || !this.heroManager.controllable) {
             return;
         }
         let dmg = 0;
@@ -480,14 +491,15 @@ cc.Class({
             dmg = tblLvMonster.dwCollisionParam2;
         }
 
+        dmg *= monster.attackSuppress;
+        dmg = Math.ceil(dmg);
         hero.hitWithDamage(dmg, monster.immediatelyKill);
     },
 
     collisionHeroWithBullet(hero, bullet) {
-        if (!bullet.owner) {
+        if (!bullet.owner || !this.heroManager.controllable) {
             return 0;
         }
-        //let dmgMsg = this.damageResult(bullet.prop, bullet.lv, Part.Monster);
 
         let dmgMsg = {
             dmg: 0,
@@ -521,21 +533,15 @@ cc.Class({
             return;
         }
 
-        // let tblBullet = GlobalVar.tblApi.getDataBySingleKey('TblBattleBullet', bullet.objectID);
-        // let part = Part.Main;
-        // if (!!tblBullet) {
-        //     part = tblBullet.dwPart;
-        // }
-
         let dmgMsg = {
             dmg: 0,
-        }; //this.damageResult(bullet.prop, bullet.lv, part);
+        };
         if (bullet.dmgMsg != null) {
             dmgMsg = bullet.dmgMsg;
+            dmgMsg.dmg *= monster.defendSuppress;
+            dmgMsg.dmg = Math.ceil(dmgMsg.dmg);
         }
         dmgMsg.pos = monster.getPosition();
-
-        //BattleManager.getInstance().flyDamageMsg(dmgMsg.dmg, dmgMsg.critical, dmgMsg.pos, false);
 
         dmgMsg.dmg = monster.hitWithDamage(dmgMsg.dmg);
         bullet.isDead = true;
@@ -586,6 +592,8 @@ cc.Class({
         };
         if (execute.dmgMsg != null) {
             dmgMsg = execute.dmgMsg;
+            dmgMsg.dmg *= monster.defendSuppress;
+            dmgMsg.dmg = Math.ceil(dmgMsg.dmg);
         }
         dmgMsg.pos = monster.getPosition();
         dmgMsg.dmg = monster.hitWithDamage(dmgMsg.dmg, true);
@@ -606,15 +614,15 @@ cc.Class({
         let damage = 0;
         let critical = false;
         if (monster.tbl.dwType == 4 || monster.tbl.dwType == 5) {
-            let rand = Math.random() + 0.2;
+            let rand = Math.random() * 3 / 10;
             damage = monster.maxHp * (rand);
-            if (rand >= 0.7) {
+            if (rand >= 0.2) {
                 critical = true;
             }
         } else if (monster.tbl.dwType == 2 || monster.tbl.dwType == 3) {
-            let rand=Math.random() + 0.4;
+            let rand = Math.random() * 5 / 10;
             damage = monster.maxHp * (rand);
-            if (rand >= 0.8) {
+            if (rand >= 0.25) {
                 critical = true;
             }
         } else {
@@ -637,44 +645,4 @@ cc.Class({
         return dmgMsg;
     },
 
-    // damageResult(atkProp, atkLevel, part) {
-    //     let atkVal = 0;
-    //     let criticalStrike = false;
-
-    //     switch (part) {
-    //         case Part.Unknown:
-    //             atkVal = atkProp[Defines.PropName.Attack];
-    //             break;
-    //         case Part.Main:
-    //             let criticalVal = 0.4 * (atkProp[Defines.PropName.CriticalRate] / (atkProp[Defines.PropName.CriticalRate] + atkLevel * 50 + 500));
-    //             if (Math.random() < criticalVal) {
-    //                 atkVal = atkProp[Defines.PropName.Attack];
-    //             } else {
-    //                 criticalStrike = true;
-    //                 atkVal = atkProp[Defines.PropName.Attack] + atkProp[Defines.PropName.CriticalDamage] * 1.5;
-    //             }
-    //             atkVal *= (Math.random() * 0.1 + 0.95);
-    //             break;
-    //         case Part.Monster:
-    //             atkVal = atkProp[Defines.PropName.Attack];
-    //             break;
-    //         case Part.Pet:
-    //             atkVal = (0.2 + (atkProp[Defines.PropName.PetAttack] + 100) / (atkProp[Defines.Defines.PropName.PetAttack] + 100 + atkLevel * 30)) * atkProp[Defines.PropName.Attack];
-    //             break;
-    //         case Part.Assist:
-    //             atkVal = (0.2 + (atkProp[Defines.PropName.AssistAttack] + 100) / (atkProp[Defines.PropName.AssistAttack] + 100 + atkLevel * 30)) * atkProp[Defines.PropName.Attack];
-    //             break;
-    //         case Part.Skill:
-    //             atkVal = (0.2 + (atkProp[Defines.PropName.SkillAttack] + 100) / (atkProp[Defines.PropName.SkillAttack] + 100 + atkLevel * 30)) * atkProp[Defines.PropName.Attack] * 500;
-    //             break;
-    //         case Part.Missile:
-    //             atkVal = (0.2 + (atkProp[Defines.PropName.MissileAttack] + 100) / (atkProp[Defines.PropName.MissileAttack] + 100 + atkLevel * 30)) * atkProp[Defines.PropName.Attack];
-    //             break;
-    //     }
-
-    //     return {
-    //         dmg: Math.ceil(atkVal),
-    //         critical: criticalStrike
-    //     };
-    // },
 })

@@ -22610,7 +22610,7 @@
       "__id__": 687
     },
     "_enabled": true,
-    "audioType": 0,
+    "audioType": 7,
     "_fontSize": 30,
     "_showShadow": true,
     "btnState": true,

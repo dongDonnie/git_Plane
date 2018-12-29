@@ -9,22 +9,29 @@ var Connecting = cc.Class({
     },
 
     onLoad() {
-        
+
     },
 
-    start(){
-        
+    start() {
+
     },
 
     btnClick: function (event, data) {
+        BattleManager.getInstance().quitOutSide();
         if (data == 1) {
-            if(GlobalVar.sceneManager().getCurrentSceneType()!==SceneDefines.LOGIN_STATE){
-                BattleManager.getInstance().quitOutSide();
-                GlobalVar.sceneManager().gotoScene(SceneDefines.LOGIN_STATE);
-                GlobalVar.netWaiting().reconnect=false;
+            if (GlobalVar.sceneManager().getCurrentSceneType() !== SceneDefines.LOGIN_STATE) {
+                if (cc.sys.platform === cc.sys.WECHAT_GAME && GlobalVar.sceneManager().firstEnter) {
+                    cc.game.restart();
+                    GlobalVar.sceneManager().firstEnter = false;
+                }else{
+                    GlobalVar.sceneManager().gotoScene(SceneDefines.LOGIN_STATE);
+                }
+                GlobalVar.netWaiting().reconnect = false;
+            }else{
+                cc.game.restart();
             }
         } else {
-            cc.log("Reconnect: cancel btn pressed.");
+            cc.game.end();
         }
     }
 });

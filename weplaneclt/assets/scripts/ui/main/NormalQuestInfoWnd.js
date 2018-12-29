@@ -73,6 +73,7 @@ cc.Class({
         this.content = this.scrollTrophyView.content;
 
         this.animeStartParam(0);
+
     },
 
     animeStartParam(paramScaleY) {
@@ -88,11 +89,16 @@ cc.Class({
     animePlayCallBack(name) {
         if (name == "Escape") {
             this._super("Escape");
+            if (GlobalVar.getBannerSwitch()){
+                weChatAPI.hideBannerAd();
+            }
             GlobalVar.eventManager().removeListenerWithTarget(this);
             WindowManager.getInstance().popView(false, null, false, false);
         } else if (name == "Enter") {
             this._super("Enter");
-
+            if (GlobalVar.getBannerSwitch() && !GlobalVar.getNeedGuide()){
+                weChatAPI.showBannerAd();
+            }
             this.registerEvents(); // 注册监听
             if (this.tblData) {
                 this.setQuestTropyh(this.tblData, this.campData);
@@ -102,6 +108,7 @@ cc.Class({
     },
 
     enter: function (isRefresh) {
+        this.nodeQuestInfo.getChildByName("btnSnedGMComplete").active = config.GM_SWITCH;
         if (isRefresh) {
             this._super(true);
         } else {
@@ -121,6 +128,7 @@ cc.Class({
         GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_CAMP_BEGIN_NTF, this.onGameStartNTF, this);
         GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_GET_SWEEP_RESULT, this.refreshUI, this);
         GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_GET_BUY_COUNT_RESULT, this.refreshData, this);
+        GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_CAMP_RESULT_NTF, this.getCampResult, this);
     },
 
     setQuestTropyh: function (tropyhData, campData) {
@@ -306,10 +314,11 @@ cc.Class({
             GlobalVar.comMsg.showMsg("十级开启扫荡系统");
             return;
         }
-        if (!this.checkCombatEnough()) {
-            GlobalVar.comMsg.errorWarning(GameServerProto.PTERR_COMBAT_POINT_LOW);
-            return;
-        }
+        // 战力限制
+        // if (!this.checkCombatEnough()) {
+        //     GlobalVar.comMsg.errorWarning(GameServerProto.PTERR_COMBAT_POINT_LOW);
+        //     return;
+        // }
 
         if (!this.checkFullStarClear()) {
             GlobalVar.comMsg.errorWarning(GameServerProto.PTERR_CAMP_NOT_FULLSTAR);
@@ -370,33 +379,34 @@ cc.Class({
         }
 
 
-        let typeID = this.tblData.byTypeID;
-        let chapterID = this.tblData.byChapterID;
-        let campaignID = this.tblData.wCampaignID;
-        let tipDesc = i18n.t('label.4000250');
-        tipDesc = tipDesc.replace('%d', curBuyTimes);
-        tipDesc = tipDesc.replace('%d', buyTimesLimit);
+        // let typeID = this.tblData.byTypeID;
+        // let chapterID = this.tblData.byChapterID;
+        // let campaignID = this.tblData.wCampaignID;
+        // let tipDesc = i18n.t('label.4000250');
+        // tipDesc = tipDesc.replace('%d', curBuyTimes);
+        // tipDesc = tipDesc.replace('%d', buyTimesLimit);
 
-        let diamondCost = GlobalVar.tblApi.getDataBySingleKey('TblCampBuy', curBuyTimes + 1);
-        if (diamondCost) {
-            diamondCost = diamondCost.nDiamond;
-        } else {
-            // console.log("发生错误,钻石消费计算失败")
-            return;
-        }
-        let diamondEnough = GlobalVar.me().diamond >= diamondCost;
-        let confirm = function () {
-            if (diamondEnough) {
-                GlobalVar.handlerManager().campHandler.sendCampBuyCountReq(typeID, chapterID, campaignID);
-            } else {
-                CommonWnd.showNormalFreeGetWnd(GameServerProto.PTERR_DIAMOND_LACK);
-            }
-        }
-        CommonWnd.showResetQuestTimesWnd(null, i18n.t('label.4000239'), tipDesc, diamondCost, null, confirm);
+        // let diamondCost = GlobalVar.tblApi.getDataBySingleKey('TblCampBuy', curBuyTimes + 1);
+        // if (diamondCost) {
+        //     diamondCost = diamondCost.nDiamond;
+        // } else {
+        //     // console.log("发生错误,钻石消费计算失败")
+        //     return;
+        // }
+        // let diamondEnough = GlobalVar.me().diamond >= diamondCost;
+        // let confirm = function () {
+        //     if (diamondEnough) {
+        //         GlobalVar.handlerManager().campHandler.sendCampBuyCountReq(typeID, chapterID, campaignID);
+        //     } else {
+        //         CommonWnd.showNormalFreeGetWnd(GameServerProto.PTERR_DIAMOND_LACK);
+        //     }
+        // }
+        // CommonWnd.showResetQuestTimesWnd(null, i18n.t('label.4000239'), tipDesc, diamondCost, null, confirm);
+        CommonWnd.showResetQuestTimesWnd(this.campData, this.tblData);
     },
 
     onBtnGameStart: function () {
-        // console.log("onBtnGameStart")
+        console.log("onBtnGameStart")
 
         if (!this.checkSpEnougn()) {
             GlobalVar.comMsg.errorWarning(GameServerProto.PTERR_SP_LACK);
@@ -412,43 +422,7 @@ cc.Class({
 
         this.btnStartBattle.interactable = false;
 
-        let self = this;
-
-        let timesLimit = GlobalVar.tblApi.getDataBySingleKey('TblParam', GameServerProto.PTPARAM_MEMBER_TESTPLAY_DAYMAX).dValue;
-        let curTimes = GlobalVar.me().shareData.getShareMemberTestPlay();
-        //console.log("ShareMemberTestPlay:", curTimes, "/", timesLimit);
-        let randomNum = Math.random()*100 + 1;
-        let show = false;
-        if (this.tblData.wIconID > 1 && randomNum > 20){
-            show = true;
-        }
-        if (show && curTimes < timesLimit && !config.NEED_GUIDE){
-            let totalMemberData = GlobalVar.tblApi.getData('TblMember');
-            let ids = [];
-            for (let i in totalMemberData){
-                if (totalMemberData[i].byGetType == 1){
-                    ids.push(parseInt(i));
-                }
-            }
-    
-            for (let i = 0; i<ids.length;i++){
-                let memberData = GlobalVar.me().memberData.getMemberByID(ids[i]);
-                if (memberData){
-                    ids.splice(i, 1);
-                    i -= 1;
-                }
-            }
-            
-            if (ids.length == 0){
-                GlobalVar.handlerManager().campHandler.sendCampBeginReq(this.tblData.byChapterID, this.tblData.wCampaignID);
-            }else{
-                CommonWnd.showShareMemberTestPlayWnd(function () {
-                    GlobalVar.handlerManager().campHandler.sendCampBeginReq(self.tblData.byChapterID, self.tblData.wCampaignID);
-                });
-            }
-        }else{
-            GlobalVar.handlerManager().campHandler.sendCampBeginReq(this.tblData.byChapterID, this.tblData.wCampaignID);
-        }
+        GlobalVar.handlerManager().campHandler.sendCampBeginReq(this.tblData.byChapterID, this.tblData.wCampaignID);
 
         // GlobalVar.handlerManager().campHandler.sendCampBeginReq(this.tblData.byChapterID, this.tblData.wCampaignID)
 
@@ -458,11 +432,19 @@ cc.Class({
     },
 
     onGameStartNTF: function (msg) {
-        // cc.log('onGameStartNTF', msg);
-        if (msg.ErrCode == 0 && typeof msg.OK !== 'undefined') {
+        cc.log('onGameStartNTF', msg);
+        if (msg.ErrCode == GameServerProto.PTERR_SUCCESS && typeof msg.OK !== 'undefined') {
+
+            if (this.btnStartBattle.interactable){
+                GlobalVar.handlerManager().campHandler.sendCampResultReq(1);
+                return;
+            }
+            
             if (GlobalVar.me().shareData.testPlayMemberID){
                 GlobalVar.me().memberData.setOneTimeChuZhanMemberID(GlobalVar.me().shareData.testPlayMemberID);
             }
+
+            GlobalVar.me().campData.firstTimePlay = GlobalVar.me().campData.getCampaignData(this.tblData.byTypeID, this.tblData.byChapterID, this.tblData.wCampaignID).Star == 0;
 
             var self=this;
             this.btnOrangeAnime.active = false;
@@ -483,6 +465,56 @@ cc.Class({
             this.btnStartBattle.interactable = true;
             // cc.log('battle err! ' + msg.ErrCode);
         }
+    },
+
+    onBtnSendGMComplete: function () {
+        // let commond = "ac " + this.tblData.byChapterID + " " + ((this.tblData.wCampaignID - 1)%10 + 1);
+        // var param = commond.split(" ");
+        // // cc.log(param);
+        // let msg = {
+        //     Params: [],
+        // };
+        // // msg.Params.Param=param;
+        // for (let i = 0; i < param.length; i++) {
+        //     let p = {
+        //         Param: param[i]
+        //     };
+        //     msg.Params.push(p);
+        // }
+        // GlobalVar.handlerManager().gmCmdHandler.sendReq(GameServerProto.GMID_GMCMD_REQ, msg);
+        if (!this.checkSpEnougn()) {
+            GlobalVar.comMsg.errorWarning(GameServerProto.PTERR_SP_LACK);
+            CommonWnd.showBuySpWnd();
+            return;
+        }
+
+        if (!this.checkLeftTimesEnougn()) {
+            GlobalVar.comMsg.errorWarning(GameServerProto.PTERR_CAMP_DAILY_LIMIT);
+            this.onBtnResetTimes();
+            return;
+        }
+        
+        GlobalVar.handlerManager().campHandler.sendCampBeginReq(this.tblData.byChapterID, this.tblData.wCampaignID);
+    },
+    getCampResult: function (event) {
+        if (event.ErrCode != GameServerProto.PTERR_SUCCESS){
+            GlobalVar.comMsg.errorWarning(event.ErrCode);
+            return;
+        }
+        GlobalVar.handlerManager().campHandler.sendGetCampBagReq(this.tblData.byTypeID);
+        GlobalVar.comMsg.showMsg("3星通关关卡"+this.tblData.byChapterID+"-"+((this.tblData.wCampaignID - 1)%10 + 1));
+        let getItems = [];
+        let winData = event.OK.Win;
+        for(let i = 0; i< winData.RewardItem.length; i++){
+            getItems.push(winData.RewardItem[i]);
+        }
+        if (winData.FirstRewardFlag){
+            for(let i = 0; i< winData.FirstReward.RewardItem.length; i++){
+                getItems.push(winData.FirstReward.RewardItem[i]);
+            }
+        }
+        CommonWnd.showTreasureExploit(getItems);
+        // this.close();
     },
 
     onDestroy: function () {

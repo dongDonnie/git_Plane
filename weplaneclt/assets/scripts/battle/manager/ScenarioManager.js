@@ -66,7 +66,7 @@ var ScenarioManager = cc.Class({
 
         if (this.secondKill > 0) {
             this.secondKillTime += dt;
-            if (this.secondKillTime >= 0.24) {
+            if (this.secondKillTime >= 0.8) {
                 this.secondKill = 0;
                 this.secondKillTime = 0;
             }

@@ -97,13 +97,12 @@ cc.Class({
             })
             this.chapterScorll.loopScroll.resetView();
         }else {
+            this.lastChapterID = GlobalVar.me().campData.getLastChapterID(this.chapterType)
             // this.chapterScorll.loopScroll.initParameter();
             this.chapterScorll.loopScroll.setStartIndex(startIndex);
             this.chapterScorll.loopScroll.resetView();
             this.chapterScorll.loopScroll.moveTo(startIndex);
         }
-
-
     },
 
     updateChapter: function (chapter, data) {

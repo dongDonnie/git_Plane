@@ -13,6 +13,23 @@
   "contourBleed": true,
   "paddingBleed": true,
   "filterUnused": false,
-  "platformSettings": {},
+  "platformSettings": {
+    "default": {
+      "formats": [
+        {
+          "name": "png",
+          "quality": 80
+        }
+      ]
+    },
+    "wechatgame": {
+      "formats": [
+        {
+          "name": "png",
+          "quality": 80
+        }
+      ]
+    }
+  },
   "subMetas": {}
 }

@@ -8,9 +8,9 @@
   },
   "type": "Texture Packer",
   "subMetas": {
-    "橙按钮新形状_00000.png": {
+    "orangenewbtn_00000.png": {
       "ver": "1.0.3",
-      "uuid": "58359926-fdc3-4811-a016-5eea21642845",
+      "uuid": "82f3e899-e9cc-4b22-a682-02b6650f35f8",
       "rawTextureUuid": "24ecdd8e-e16b-4f77-8dc1-c7e84d351cbd",
       "trimType": "auto",
       "trimThreshold": 1,
@@ -30,9 +30,9 @@
       "spriteType": "normal",
       "subMetas": {}
     },
-    "橙按钮新形状_00001.png": {
+    "orangenewbtn_00001.png": {
       "ver": "1.0.3",
-      "uuid": "c0de6bd1-03e6-45f5-866d-5fd64285c69f",
+      "uuid": "891d4713-ac68-4750-a09d-931198a5c788",
       "rawTextureUuid": "24ecdd8e-e16b-4f77-8dc1-c7e84d351cbd",
       "trimType": "auto",
       "trimThreshold": 1,
@@ -52,9 +52,9 @@
       "spriteType": "normal",
       "subMetas": {}
     },
-    "橙按钮新形状_00002.png": {
+    "orangenewbtn_00002.png": {
       "ver": "1.0.3",
-      "uuid": "f472a62f-122c-439c-a4f5-9b2bf15db9be",
+      "uuid": "5b3f7bdc-443e-4d67-b269-1e8306c7f45d",
       "rawTextureUuid": "24ecdd8e-e16b-4f77-8dc1-c7e84d351cbd",
       "trimType": "auto",
       "trimThreshold": 1,
@@ -74,9 +74,9 @@
       "spriteType": "normal",
       "subMetas": {}
     },
-    "橙按钮新形状_00003.png": {
+    "orangenewbtn_00003.png": {
       "ver": "1.0.3",
-      "uuid": "51f7e1de-f202-4828-a081-6294c42d35d1",
+      "uuid": "c40e3e98-693a-46e9-89f6-e59457875e36",
       "rawTextureUuid": "24ecdd8e-e16b-4f77-8dc1-c7e84d351cbd",
       "trimType": "auto",
       "trimThreshold": 1,
@@ -96,9 +96,9 @@
       "spriteType": "normal",
       "subMetas": {}
     },
-    "橙按钮新形状_00004.png": {
+    "orangenewbtn_00004.png": {
       "ver": "1.0.3",
-      "uuid": "3cd9fbd8-7929-4f43-a793-92930ec13d19",
+      "uuid": "af3e2e26-b98c-47b6-9520-096e96331fc0",
       "rawTextureUuid": "24ecdd8e-e16b-4f77-8dc1-c7e84d351cbd",
       "trimType": "auto",
       "trimThreshold": 1,
@@ -118,9 +118,9 @@
       "spriteType": "normal",
       "subMetas": {}
     },
-    "橙按钮新形状_00005.png": {
+    "orangenewbtn_00005.png": {
       "ver": "1.0.3",
-      "uuid": "f2b5a820-5988-4bda-ab85-f53ebb6cb36a",
+      "uuid": "63c8d92b-7279-4240-b923-485657ac57cd",
       "rawTextureUuid": "24ecdd8e-e16b-4f77-8dc1-c7e84d351cbd",
       "trimType": "auto",
       "trimThreshold": 1,
@@ -140,9 +140,9 @@
       "spriteType": "normal",
       "subMetas": {}
     },
-    "橙按钮新形状_00006.png": {
+    "orangenewbtn_00006.png": {
       "ver": "1.0.3",
-      "uuid": "2cc2a31c-5ef0-4d47-89a6-2aca4a2ab591",
+      "uuid": "0a14d98a-9566-47fc-a6ff-9a9889d1b80e",
       "rawTextureUuid": "24ecdd8e-e16b-4f77-8dc1-c7e84d351cbd",
       "trimType": "auto",
       "trimThreshold": 1,
@@ -162,9 +162,9 @@
       "spriteType": "normal",
       "subMetas": {}
     },
-    "橙按钮新形状_00007.png": {
+    "orangenewbtn_00007.png": {
       "ver": "1.0.3",
-      "uuid": "6f45b411-3a7d-4732-b447-c0acb46f2350",
+      "uuid": "6ba4c6f5-533b-4664-9d0b-1a63f05f1bc3",
       "rawTextureUuid": "24ecdd8e-e16b-4f77-8dc1-c7e84d351cbd",
       "trimType": "auto",
       "trimThreshold": 1,
@@ -184,9 +184,9 @@
       "spriteType": "normal",
       "subMetas": {}
     },
-    "橙按钮新形状_00008.png": {
+    "orangenewbtn_00008.png": {
       "ver": "1.0.3",
-      "uuid": "54da2e0f-8510-493a-a6d6-e1361583898a",
+      "uuid": "3aea4653-949e-4e4c-8b50-9348d2c45bdf",
       "rawTextureUuid": "24ecdd8e-e16b-4f77-8dc1-c7e84d351cbd",
       "trimType": "auto",
       "trimThreshold": 1,
@@ -206,9 +206,9 @@
       "spriteType": "normal",
       "subMetas": {}
     },
-    "橙按钮新形状_00009.png": {
+    "orangenewbtn_00009.png": {
       "ver": "1.0.3",
-      "uuid": "3bfa1c0e-dcc9-4d25-b7a7-fa19bb5184e4",
+      "uuid": "501424fb-c3c3-473e-9d92-f3d79844e5a8",
       "rawTextureUuid": "24ecdd8e-e16b-4f77-8dc1-c7e84d351cbd",
       "trimType": "auto",
       "trimThreshold": 1,
@@ -228,9 +228,9 @@
       "spriteType": "normal",
       "subMetas": {}
     },
-    "橙按钮新形状_00010.png": {
+    "orangenewbtn_00010.png": {
       "ver": "1.0.3",
-      "uuid": "a84b6c3a-3ca7-43bb-bd2a-2991d48008cd",
+      "uuid": "4b8f602d-52e0-4b72-ae05-64f2799b02ec",
       "rawTextureUuid": "24ecdd8e-e16b-4f77-8dc1-c7e84d351cbd",
       "trimType": "auto",
       "trimThreshold": 1,
@@ -250,9 +250,9 @@
       "spriteType": "normal",
       "subMetas": {}
     },
-    "橙按钮新形状_00011.png": {
+    "orangenewbtn_00011.png": {
       "ver": "1.0.3",
-      "uuid": "de1c347a-d997-4431-8cc9-5828fd0c89a8",
+      "uuid": "0c07478c-afdd-45d5-b39d-e9ddeff44c79",
       "rawTextureUuid": "24ecdd8e-e16b-4f77-8dc1-c7e84d351cbd",
       "trimType": "auto",
       "trimThreshold": 1,
@@ -272,9 +272,9 @@
       "spriteType": "normal",
       "subMetas": {}
     },
-    "橙按钮新形状_00012.png": {
+    "orangenewbtn_00012.png": {
       "ver": "1.0.3",
-      "uuid": "75765886-c0f5-45ba-b486-aab6a111272e",
+      "uuid": "b4a9e5dd-5838-4c8e-b670-c1345a1c0bf5",
       "rawTextureUuid": "24ecdd8e-e16b-4f77-8dc1-c7e84d351cbd",
       "trimType": "auto",
       "trimThreshold": 1,
@@ -294,9 +294,9 @@
       "spriteType": "normal",
       "subMetas": {}
     },
-    "橙按钮新形状_00013.png": {
+    "orangenewbtn_00013.png": {
       "ver": "1.0.3",
-      "uuid": "3ae6cecd-4ac6-4277-8931-30ed91856f7f",
+      "uuid": "d976b0be-7486-47bc-91fe-34993caa9c67",
       "rawTextureUuid": "24ecdd8e-e16b-4f77-8dc1-c7e84d351cbd",
       "trimType": "auto",
       "trimThreshold": 1,
@@ -316,9 +316,9 @@
       "spriteType": "normal",
       "subMetas": {}
     },
-    "橙按钮新形状_00014.png": {
+    "orangenewbtn_00014.png": {
       "ver": "1.0.3",
-      "uuid": "d7a4e496-36a6-4287-a8f1-6ad54fa1be2b",
+      "uuid": "9d373933-d4eb-45a6-b764-47f90cd59480",
       "rawTextureUuid": "24ecdd8e-e16b-4f77-8dc1-c7e84d351cbd",
       "trimType": "auto",
       "trimThreshold": 1,
@@ -338,9 +338,9 @@
       "spriteType": "normal",
       "subMetas": {}
     },
-    "橙按钮新形状_00015.png": {
+    "orangenewbtn_00015.png": {
       "ver": "1.0.3",
-      "uuid": "f1aea224-e3ce-497a-a8f4-4861cfa268b5",
+      "uuid": "892975da-f40c-4797-bc71-bb8f449ae558",
       "rawTextureUuid": "24ecdd8e-e16b-4f77-8dc1-c7e84d351cbd",
       "trimType": "auto",
       "trimThreshold": 1,
@@ -360,9 +360,9 @@
       "spriteType": "normal",
       "subMetas": {}
     },
-    "橙按钮新形状_00016.png": {
+    "orangenewbtn_00016.png": {
       "ver": "1.0.3",
-      "uuid": "4e8bdfd3-8164-4b83-ab3f-4e5c1b85b13a",
+      "uuid": "26c71a53-5889-49c1-836c-cad04c4988ed",
       "rawTextureUuid": "24ecdd8e-e16b-4f77-8dc1-c7e84d351cbd",
       "trimType": "auto",
       "trimThreshold": 1,
@@ -382,9 +382,9 @@
       "spriteType": "normal",
       "subMetas": {}
     },
-    "橙按钮新形状_00017.png": {
+    "orangenewbtn_00017.png": {
       "ver": "1.0.3",
-      "uuid": "da557d06-980a-428b-97de-171ff15b0f3c",
+      "uuid": "38b33ac5-4bc7-41c0-8a00-4a376b685e2b",
       "rawTextureUuid": "24ecdd8e-e16b-4f77-8dc1-c7e84d351cbd",
       "trimType": "auto",
       "trimThreshold": 1,
@@ -404,9 +404,9 @@
       "spriteType": "normal",
       "subMetas": {}
     },
-    "橙按钮新形状_00018.png": {
+    "orangenewbtn_00018.png": {
       "ver": "1.0.3",
-      "uuid": "49ad8521-3e31-4b93-997a-c13301807574",
+      "uuid": "8515c125-3c2b-4d1e-b5d3-cef3e2726789",
       "rawTextureUuid": "24ecdd8e-e16b-4f77-8dc1-c7e84d351cbd",
       "trimType": "auto",
       "trimThreshold": 1,
@@ -426,9 +426,9 @@
       "spriteType": "normal",
       "subMetas": {}
     },
-    "橙按钮新形状_00019.png": {
+    "orangenewbtn_00019.png": {
       "ver": "1.0.3",
-      "uuid": "54639453-a3f2-4669-b8c5-336f4cd5b1f0",
+      "uuid": "5bd7d201-804c-4db6-a953-a5e161f4cb0f",
       "rawTextureUuid": "24ecdd8e-e16b-4f77-8dc1-c7e84d351cbd",
       "trimType": "auto",
       "trimThreshold": 1,

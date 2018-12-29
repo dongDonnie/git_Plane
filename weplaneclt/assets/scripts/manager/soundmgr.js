@@ -19,10 +19,10 @@ var SoundManager = cc.Class({
         this.tempBGM.callback = null;
         this.bPlayBGM = true; //StoreageData.getBgmOnOff();
         this.bPlayEffect = true; //StoreageData.getEffectOnOff();
-        this.curEffectName='';
+        this.curEffectName = '';
     },
 
-    clearSoundMgr: function(){
+    clearSoundMgr: function () {
         this.currentBGM = null;
         this.currentEffect = null;
         this.bgmVolume = 1;
@@ -31,9 +31,9 @@ var SoundManager = cc.Class({
         this.tempBGM.name = '';
         this.tempBGM.loop = false;
         this.tempBGM.callback = null;
-        this.bPlayBGM = true; //StoreageData.getBgmOnOff();
+        this.bPlayBGM = false; //StoreageData.getBgmOnOff();
         this.bPlayEffect = true; //StoreageData.getEffectOnOff();
-        this.curEffectName='';
+        this.curEffectName = '';
     },
 
     statics: {
@@ -58,7 +58,7 @@ var SoundManager = cc.Class({
         if (!this.bPlayBGM) {
             this.stopBGM();
         } else {
-            this.playBGM(this.tempBGM.name,this.tempBGM.loop,this.tempBGM.callback);
+            this.playBGM(this.tempBGM.name, this.tempBGM.loop, this.tempBGM.callback);
         }
     },
 
@@ -103,9 +103,9 @@ var SoundManager = cc.Class({
     },
 
     playEffect(name, callback) {
-        if(this.curEffectName==name && name=='gold_bing'){
-            this.stopEffect();
-        }
+        //if(this.curEffectName==name && name=='gold_bing'){
+        //this.stopEffect();
+        //}
         this.playAudio('EFFECT', name, false, this.effectVolume, callback);
     },
 
@@ -140,23 +140,25 @@ var SoundManager = cc.Class({
     },
 
     playAudio(type, path, loop, volume, callback) {
-        if(path==''){
+        if (path == '') {
             return;
         }
         var self = this;
         GlobalVar.resManager().loadRes(ResMapping.ResType.AudioClip, path, function (clip) {
-            self.play(type, clip, loop, volume, callback,path);
+            if (clip != null) {
+                self.play(type, clip, loop, volume, callback, path);
+            }
         });
     },
 
-    play(type, clip, loop, volume, callback,name) {
+    play(type, clip, loop, volume, callback, name) {
         if (!this.checkSwitch(type)) {
             // cc.log("switch off, play " + type + "failed");
             return;
         }
         let audioIndex = cc.audioEngine.play(clip, loop, volume);
-        var self=this;
-        cc.audioEngine.setFinishCallback(audioIndex, function(){
+        var self = this;
+        cc.audioEngine.setFinishCallback(audioIndex, function () {
             if (!!callback) {
                 callback();
             }
@@ -165,7 +167,7 @@ var SoundManager = cc.Class({
             this.currentBGM = audioIndex;
         } else if (type == 'EFFECT') {
             this.currentEffect = audioIndex;
-            this.curEffectName=name;
+            this.curEffectName = name;
         }
     },
 

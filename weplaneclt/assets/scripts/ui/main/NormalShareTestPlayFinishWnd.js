@@ -44,13 +44,18 @@ cc.Class({
     animePlayCallBack(name) {
         if (name == "Escape") {
             this._super("Escape");
-            let self = this;
+            if (GlobalVar.getBannerSwitch()){
+                weChatAPI.justShowBanner();
+            }
             GlobalVar.eventManager().removeListenerWithTarget(this);
             WindowManager.getInstance().popView(false, function () {
 
             }, false);
         } else if (name == "Enter") {
             this._super("Enter");
+            if (GlobalVar.getBannerSwitch()){
+                weChatAPI.justHideBanner();
+            }
             this.memberID = GlobalVar.me().shareData.testPlayMemberID;
             GlobalVar.me().shareData.testPlayMemberID = 0;
             this.showTestPlayPlane();
@@ -90,7 +95,9 @@ cc.Class({
                 GlobalVar.handlerManager().shareHandler.sendMemberTestPlayReq(self.memberID);
                 self.btnShare.interactable = false;
             })
-        }else{
+        } else if (window && window["wywGameId"]=="5469"){
+
+        } else{
             GlobalVar.handlerManager().shareHandler.sendMemberTestPlayReq(this.memberID);
             this.btnShare.interactable = false;
         }
@@ -104,6 +111,9 @@ cc.Class({
     },
 
     onBtnGetWay: function () {
+        if (GlobalVar.getBannerSwitch()){
+            weChatAPI.hideBannerAd();
+        }
         GlobalVar.eventManager().removeListenerWithTarget(this);
         WindowManager.getInstance().popView(false, function () {
             CommonWnd.showDrawView();

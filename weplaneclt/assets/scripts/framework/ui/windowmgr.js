@@ -2,6 +2,7 @@ const GlobalVar = require("globalvar");
 const ResMapping = require("resmapping");
 const SceneDefines = require("scenedefines");
 const WndTypeDefine = require("wndtypedefine");
+const i18n = require('LanguageData');
 
 var WindowManager = cc.Class({
     extends: cc.Component,
@@ -11,6 +12,7 @@ var WindowManager = cc.Class({
         this.addMask = false;
         this.openLog = false;
         this.pushName = '';
+        this.revertViewStack = [];
     },
     clearWindowMgr: function () {
         this.vectorViewStack = [];
@@ -18,6 +20,7 @@ var WindowManager = cc.Class({
         this.addMask = false;
         this.openLog = false;
         this.pushName = '';
+        this.revertViewStack = [];
     },
 
     statics: {
@@ -50,6 +53,17 @@ var WindowManager = cc.Class({
                 this.mapViewData[key].destroy();
             }
         }
+    },
+
+    resetView: function () {
+        for (let i = 0; i < this.vectorViewStack.length; i++) {
+            if (cc.isValid(this.mapViewData[this.vectorViewStack[i]])) {
+                this.mapViewData[this.vectorViewStack[i]].unRegisterEvents();
+                this.mapViewData[this.vectorViewStack[i]].removeFromParent(false);
+                this.mapViewData[this.vectorViewStack[i]].zIndex = 0;
+            }
+        }
+        this.vectorViewStack.splice(0, this.vectorViewStack.length);
     },
 
     pushView: function (type, callback, needUpMask, skipCheck, param) {
@@ -85,6 +99,7 @@ var WindowManager = cc.Class({
         if (this.findViewInStack(WndTypeDefine.WindowType.E_DT_MASKBACK_WND) != "") {
             if (needUpMask) {
                 this.mapViewData[WndTypeDefine.WindowType.E_DT_MASKBACK_WND].getComponent(WndTypeDefine.WindowType.E_DT_MASKBACK_WND).enter(true);
+                this.setRevertViewStack();
                 this.upViewToCeiling(WndTypeDefine.WindowType.E_DT_MASKBACK_WND);
                 this.showLog("up maskback");
             }
@@ -105,6 +120,8 @@ var WindowManager = cc.Class({
                     self.showLog("PushView: resmanager loadres success, push success!");
                 } else {
                     self.showLog("PushView: push view failed!");
+                    self.revertStack();
+                    GlobalVar.comMsg.showMsg(i18n.t('label.4000000'));
                 }
             });
         } else {
@@ -231,6 +248,7 @@ var WindowManager = cc.Class({
 
             } else {
                 self.showLog("AddMaskBack: MackBack error!");
+                GlobalVar.comMsg.showMsg(i18n.t('label.4000000'));
             }
         });
     },
@@ -247,7 +265,7 @@ var WindowManager = cc.Class({
             let ceilingViewName = this.getCeilingViewTypeName();
             ceilingView.getComponent(ceilingViewType).escape(needRefreshCeilingView);
             this.mapViewData[ceilingViewName].removeFromParent(false);
-            this.mapViewData[ceilingViewName].zIndex=0;
+            this.mapViewData[ceilingViewName].zIndex = 0;
 
             // if (!needKeepView && ceilingViewName != WndTypeDefine.WindowType.E_DT_MASKBACK_WND
             //   && ceilingViewName != WndTypeDefine.WindowType.E_DT_NORMALROOT_WND && ceilingViewName != WndTypeDefine.WindowType.E_DT_ROOTBACK_WND) {
@@ -312,6 +330,7 @@ var WindowManager = cc.Class({
         }
 
         if (!cc.isValid(this.mapViewData[typeName])) {
+            this.setRevertViewStack();
             var self = this;
             GlobalVar.resManager().loadRes(ResMapping.ResType.Prefab, "cdnRes/prefab/Windows/" + type, function (prefab) {
                 if (prefab != null) {
@@ -320,6 +339,8 @@ var WindowManager = cc.Class({
                     self.showLog("InsertView: resmanager loadres success, insert success!");
                 } else {
                     self.showLog("InsertView: insert failed!");
+                    self.revertStack();
+                    GlobalVar.comMsg.showMsg(i18n.t('label.4000000'));
                 }
             });
         } else {
@@ -354,7 +375,7 @@ var WindowManager = cc.Class({
         if (dView != null) {
             dView.getComponent(type).escape(true);
             this.mapViewData[typeName].removeFromParent(false);
-            this.mapViewData[typeName].zIndex=0;
+            this.mapViewData[typeName].zIndex = 0;
             // if (!needKeepView && typeName != WndTypeDefine.WindowType.E_DT_MASKBACK_WND
             //     && typeName != WndTypeDefine.WindowType.E_DT_NORMALROOT_WND && typeName != WndTypeDefine.WindowType.E_DT_ROOTBACK_WND) {
             //     this.mapViewData[typeName].destroy();
@@ -413,6 +434,36 @@ var WindowManager = cc.Class({
                     }
                 }
                 this.record = '';
+            }
+        }
+    },
+
+    setRevertViewStack: function () {
+        this.revertViewStack.splice(0, this.revertViewStack.length);
+        for (let i = 0; i < this.vectorViewStack.length; i++) {
+            let viewData = {};
+            viewData.name = this.vectorViewStack[i];
+            viewData.z = this.mapViewData[this.vectorViewStack[i]].zIndex;
+            this.revertViewStack.push(viewData);
+        }
+    },
+
+    revertStack: function () {
+        this.pushName = '';
+        let topType = this.getCeilingViewType();
+        if (topType == WndTypeDefine.WindowType.E_DT_MASKBACK_WND && this.vectorViewStack.length == 1 && this.revertViewStack.length == this.vectorViewStack.length) {
+            this.popView(false);
+        } else if (this.revertViewStack.length > 0 && this.revertViewStack.length == this.vectorViewStack.length) {
+            this.vectorViewStack.splice(0, this.vectorViewStack.length);
+            for (let i = 0; i < this.revertViewStack.length; i++) {
+                this.vectorViewStack.push(this.revertViewStack[i].name);
+                if (cc.isValid(this.mapViewData[this.revertViewStack[i].name])) {
+                    this.mapViewData[this.revertViewStack[i].name].zIndex = this.revertViewStack[i].z;
+                }
+            }
+            let topView = this.getTopView();
+            if (topView != null) {
+                topView.getComponent(this.getTopViewType()).enter(true);
             }
         }
     },
@@ -526,14 +577,18 @@ var WindowManager = cc.Class({
         //     index = this.findViewIndex(WndTypeDefine.WindowType.E_DT_MASKBACK_WND);
         //     this.vectorViewStack.splice(index, 1);
         // }
-
-
-
+        if (GlobalVar.getBannerSwitch()){
+            require("weChatAPI").cleanBannerCount();
+            require("weChatAPI").hideBannerAd();
+        }
+        
         while (this.vectorViewStack.length > 0) {
-            let topView = this.getTopView();
-            if (!!topView && !!topView.getComponent(this.getTopViewType()).animeStartParam) {
-                topView.getComponent(this.getTopViewType()).animeStartParam(0, 0);
+            let ceilingView = this.getCeilingView();
+            if (!!ceilingView && !!ceilingView.getComponent(this.getCeilingViewType()).animeStartParam) {
+                ceilingView.getComponent(this.getCeilingViewType()).animeStartParam(0, 0);
             }
+            ceilingView.getComponent(this.getCeilingViewType()).unRegisterEvents();
+
             this.popView(false, null, false);
             this.showLog("poptoroot count :" + this.vectorViewStack.length);
         }
@@ -771,7 +826,7 @@ var WindowManager = cc.Class({
                 // }
                 if (topType != WndTypeDefine.WindowType.E_DT_MASKBACK_WND &&
                     topType != WndTypeDefine.WindowType.E_DT_ROOTBACK_WND &&
-                    topType != WndTypeDefine.WindowType.E_DT_NORMALROOT_WND) { 
+                    topType != WndTypeDefine.WindowType.E_DT_NORMALROOT_WND) {
                     let topSize = this.mapViewData[topType].getContentSize();
                     for (let i = this.vectorViewStack.length - 1; i > 0; i--) {
                         if (this.vectorViewStack[i] == WndTypeDefine.WindowType.E_DT_MASKBACK_WND ||

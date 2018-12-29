@@ -167,11 +167,12 @@ cc.Class({
         GlobalVar.me().campData.setCampBuyCountData(msg.data);
     },
 
-    sendCampBuyCountReq: function (campType, chapterID, campaignID){
+    sendCampBuyCountReq: function (campType, chapterID, campaignID, free){
         let msg = {
             CampType: campType,
             ChapterID: chapterID,
             CampaignID: campaignID,
+            Free: free||0,
         };
 
         self.sendMsg(GameServerProto.GMID_CAMP_BUYCOUNT_REQ, msg);

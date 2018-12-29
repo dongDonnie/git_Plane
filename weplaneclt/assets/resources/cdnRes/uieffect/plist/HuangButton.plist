@@ -4,7 +4,7 @@
     <dict>
         <key>frames</key>
         <dict>
-            <key>黄按钮_00000.png</key>
+            <key>yellowbtn_00000.png</key>
             <dict>
                 <key>frame</key>
                 <string>{{2,1044},{215,52}}</string>
@@ -17,7 +17,7 @@
                 <key>sourceSize</key>
                 <string>{237,86}</string>
             </dict>
-            <key>黄按钮_00001.png</key>
+            <key>yellowbtn_00001.png</key>
             <dict>
                 <key>frame</key>
                 <string>{{116,219},{215,54}}</string>
@@ -30,7 +30,7 @@
                 <key>sourceSize</key>
                 <string>{237,86}</string>
             </dict>
-            <key>黄按钮_00002.png</key>
+            <key>yellowbtn_00002.png</key>
             <dict>
                 <key>frame</key>
                 <string>{{60,2},{215,56}}</string>
@@ -43,7 +43,7 @@
                 <key>sourceSize</key>
                 <string>{237,86}</string>
             </dict>
-            <key>黄按钮_00003.png</key>
+            <key>yellowbtn_00003.png</key>
             <dict>
                 <key>frame</key>
                 <string>{{2,986},{215,56}}</string>
@@ -56,7 +56,7 @@
                 <key>sourceSize</key>
                 <string>{237,86}</string>
             </dict>
-            <key>黄按钮_00004.png</key>
+            <key>yellowbtn_00004.png</key>
             <dict>
                 <key>frame</key>
                 <string>{{2,928},{215,56}}</string>
@@ -69,7 +69,7 @@
                 <key>sourceSize</key>
                 <string>{237,86}</string>
             </dict>
-            <key>黄按钮_00005.png</key>
+            <key>yellowbtn_00005.png</key>
             <dict>
                 <key>frame</key>
                 <string>{{2,870},{215,56}}</string>
@@ -82,7 +82,7 @@
                 <key>sourceSize</key>
                 <string>{237,86}</string>
             </dict>
-            <key>黄按钮_00006.png</key>
+            <key>yellowbtn_00006.png</key>
             <dict>
                 <key>frame</key>
                 <string>{{2,653},{215,56}}</string>
@@ -95,7 +95,7 @@
                 <key>sourceSize</key>
                 <string>{237,86}</string>
             </dict>
-            <key>黄按钮_00007.png</key>
+            <key>yellowbtn_00007.png</key>
             <dict>
                 <key>frame</key>
                 <string>{{2,436},{215,56}}</string>
@@ -108,7 +108,7 @@
                 <key>sourceSize</key>
                 <string>{237,86}</string>
             </dict>
-            <key>黄按钮_00008.png</key>
+            <key>yellowbtn_00008.png</key>
             <dict>
                 <key>frame</key>
                 <string>{{2,219},{215,56}}</string>
@@ -121,7 +121,7 @@
                 <key>sourceSize</key>
                 <string>{237,86}</string>
             </dict>
-            <key>黄按钮_00009.png</key>
+            <key>yellowbtn_00009.png</key>
             <dict>
                 <key>frame</key>
                 <string>{{2,2},{215,56}}</string>
@@ -134,7 +134,7 @@
                 <key>sourceSize</key>
                 <string>{237,86}</string>
             </dict>
-            <key>黄按钮_00010.png</key>
+            <key>yellowbtn_00010.png</key>
             <dict>
                 <key>frame</key>
                 <string>{{118,2},{213,56}}</string>
@@ -147,7 +147,7 @@
                 <key>sourceSize</key>
                 <string>{237,86}</string>
             </dict>
-            <key>黄按钮_00011.png</key>
+            <key>yellowbtn_00011.png</key>
             <dict>
                 <key>frame</key>
                 <string>{{118,647},{209,56}}</string>
@@ -160,7 +160,7 @@
                 <key>sourceSize</key>
                 <string>{237,86}</string>
             </dict>
-            <key>黄按钮_00012.png</key>
+            <key>yellowbtn_00012.png</key>
             <dict>
                 <key>frame</key>
                 <string>{{116,436},{209,56}}</string>
@@ -173,7 +173,7 @@
                 <key>sourceSize</key>
                 <string>{237,86}</string>
             </dict>
-            <key>黄按钮_00013.png</key>
+            <key>yellowbtn_00013.png</key>
             <dict>
                 <key>frame</key>
                 <string>{{60,653},{213,56}}</string>
@@ -186,7 +186,7 @@
                 <key>sourceSize</key>
                 <string>{237,86}</string>
             </dict>
-            <key>黄按钮_00014.png</key>
+            <key>yellowbtn_00014.png</key>
             <dict>
                 <key>frame</key>
                 <string>{{174,432},{213,54}}</string>
@@ -199,7 +199,7 @@
                 <key>sourceSize</key>
                 <string>{237,86}</string>
             </dict>
-            <key>黄按钮_00015.png</key>
+            <key>yellowbtn_00015.png</key>
             <dict>
                 <key>frame</key>
                 <string>{{60,436},{215,54}}</string>
@@ -212,7 +212,7 @@
                 <key>sourceSize</key>
                 <string>{237,86}</string>
             </dict>
-            <key>黄按钮_00016.png</key>
+            <key>yellowbtn_00016.png</key>
             <dict>
                 <key>frame</key>
                 <string>{{60,219},{215,54}}</string>
@@ -225,7 +225,7 @@
                 <key>sourceSize</key>
                 <string>{237,86}</string>
             </dict>
-            <key>黄按钮_00017.png</key>
+            <key>yellowbtn_00017.png</key>
             <dict>
                 <key>frame</key>
                 <string>{{176,2},{213,54}}</string>
@@ -238,7 +238,7 @@
                 <key>sourceSize</key>
                 <string>{237,86}</string>
             </dict>
-            <key>黄按钮_00018.png</key>
+            <key>yellowbtn_00018.png</key>
             <dict>
                 <key>frame</key>
                 <string>{{172,217},{213,54}}</string>
@@ -251,7 +251,7 @@
                 <key>sourceSize</key>
                 <string>{237,86}</string>
             </dict>
-            <key>黄按钮_00019.png</key>
+            <key>yellowbtn_00019.png</key>
             <dict>
                 <key>frame</key>
                 <string>{{176,647},{211,52}}</string>

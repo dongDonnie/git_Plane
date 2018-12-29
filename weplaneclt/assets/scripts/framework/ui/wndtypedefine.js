@@ -35,6 +35,7 @@ WndTypeDefine.WindowType = {
     E_DT_DETAILMAIL_VIEW: "DetailMailView",
     E_DT_NORMALNOTICE_VIEW: "NormalNoticeView",
     E_DT_NORMALDRAW_VIEW: "NormalDrawView",
+    E_DT_NORMALDRAW_PREVIEW_WND: "NormalDrawBoxPreviewWnd",
     E_DT_ENDLESS_CHALLENGE_VIEW: "EndlessChallengeView",
     E_DT_ENDLESS_MODE_SELECT_WND:"EndlessModeSelectWnd",
     E_DT_RANKINGLIST_VIEW: "RankingListView",
@@ -58,14 +59,18 @@ WndTypeDefine.WindowType = {
     E_DT_NORMAL_PLANE_QUALITY_UP_WND:"NormalPlaneQualityUpWnd",
     E_DT_NORMAL_FREE_GET_WND: "NormalFreeGetWnd",
     E_DT_NORMAL_BUY_SP_WND: "NormalBuySpWnd",
+    E_DT_NORMAL_QUEST_RESET_WND: "NormalQuestResetWnd",
     E_DT_NORMAL_RECOMMAND_WND: "NormalRecommandWnd",
     E_DT_NORMAL_SHAREDIALY_WND: "NormalShareDailyWnd",
     E_DT_NORMAL_SHARETESTPLAY_WND: "NormalShareMemberTestPlayWnd",
     E_DT_NORMAL_SHARETESTPLAYFINISH_WND: "NormalShareTestPlayFinishWnd",
+    E_DT_NORMAL_DIAMOND_TREASURE_WND: "NormalDiamondTreasureWnd",
 };
 
 WndTypeDefine.WindowTypeID = {
     E_DT_NORMALEQUIPMENT_WND: 1,
+    E_DT_NORMALPLANE_WND: 2,
+    E_DT_LIMIT_STORE_WND: 3,
     E_DT_NORMAL_QUESTLIST_VIEW: 15,
     E_DT_NORMAL_RECHARGE_WND: 34,
     E_DT_NORMAL_SP_WND: 36,

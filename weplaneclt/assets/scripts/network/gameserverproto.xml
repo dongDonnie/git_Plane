@@ -270,7 +270,10 @@
         <define name="PTERR_TREASURE_TIMES_REWARD_ALREADY" value="612" />
         <define name="PTERR_TREASURE_ONE_FREE_LACK" value="613" />
         <define name="PTERR_TREASURE_GOLD_FREE_LACK" value="614" />
-
+        <define name="PTERR_TREASURE_REDUCECOUNT_MAX" value="615"/>
+        <define name="PTREE_TREASURE_NEXTFREETIME_LESS_CURTIME" value="616" />
+        <define name="PTREE_TREASURE_NEXTFREETIME_GREAT_CURTIME" value="617"/>
+        
         <define name="PTERR_LOTTERY_HAS_EXPIRED" value="620" />
         <define name="PTERR_LOTTERY_CAN_NOT" value="621" />
 
@@ -305,9 +308,7 @@
         <define name="PTERR_FULI_TODAY_NOT_CZ" value="680" />
         <define name="PTERR_FULI_MILLION_LOGIN_HEAP_LACK" value="681" />
         <define name="PTERR_FULI_MILLION_ALREADY_GET" value="682" />
-        <define name="PTERR_FULI_CZ_INVITE_TICKET_ERR" value="683" />
-        <define name="PTERR_FULI_CZ_INVITE_LACK" value="684" />
-        <define name="PTERR_FULI_SHARE_ALREADY_GET" value="685" />
+        <define name="PTERR_FULI_SHARE_ALREADY_GET" value="683" />
 
         <define name="PTERR_MAIL_NO_ATTACHMENT" value="931" />
         <define name="PTERR_MAIL_ATTACHMENT_ALREADYGOT" value="932" />
@@ -743,16 +744,19 @@
         <define name="PTPARAM_FULL_BOSS_ATTACK_COST_TYPE" value="298" />
         <define name="PTPARAM_FULI_CZ_INVITE_USER" value="300" />
         <define name="PTPARAM_TREASURE_ONE_FREE_MAX" value="301" />
-        <define name="PTPARAM_RCG_FREE_DIAMOND_MAX" value="302" />
+        <define name="PTPARAM_RCG_FREE_DIAMOND_COUNT_MAX" value="302" />
         <define name="PTPARAM_TREASURE_GOLD_FREE_MAX" value="303" />
         <define name="PTPARAM_SP_FREE_GET_MAX" value="304" />
-        <define name="PTPARAM_RCG_FREE_DIAMOND" value="305" />
+        <define name="PTPARAM_RCG_FREE_DIAMOND_PACKAGE" value="305" />
         <define name="PTPARAM_FULI_SHARE_DAILY_PACKAGE" value="306" />
         <define name="PTPARAM_ENDLESS_GOLD_DAYMAX" value="307" />
         <define name="PTPARAM_ENDLESS_CHARGE_DAYMAX" value="308" />
         <define name="PTPARAM_ENDLESS_CHARGE_ITEMID" value="309" />
         <define name="PTPARAM_MEMBER_TESTPLAY_DAYMAX" value="310" />
-
+        <define name="PTPARAM_TREASUER_NEXTFREETIME_INTERVAL" value="311"/>
+        <define name="PTPARAM_TREASURE_NEXTFREETIME_REDUCEVALUE" value="312" />
+        <define name="PTPARAM_TREASURE_NEXTFREETIME_REDUCECOUNTMAX" value="313" />
+        <define name="PTPARAM_FULI_SHARE_SUPERFULI_PACKAGE" value="314" />
         <!-- param info -->
         <!-- ###########################################################################################################################-->
         <!-- ###########################################################################################################################-->
@@ -1241,6 +1245,7 @@
         <define name="PT_DAILY_TASK_HIGH_MONTHCARD" value="11" />
         <define name="PT_DAILY_TASK_MONTHCARD" value="12" />
         <define name="PT_DAILY_TASK_TREASURE_GOLD" value="13" />
+        <define name="PT_DAILY_TASK_LIMITSTORE_BUY" value="14"/>
 
         <!--成就-->
         <define name="PT_ACHIEVE_MAX" value="999" />
@@ -1289,7 +1294,7 @@
         <define name="PT_FULI_SEVEN_DAY_DIAMOND_CONSUME" value="6" />
         <define name="PT_FULI_SEVEN_DAY_BOSSTOWER" value="7" />
 
-        <define name="PT_FULI_CZ_MAX" value="7" />
+        <define name="PT_FULI_CZ_MAX" value="20" />
 
         <define name="PT_FULI_MILLION_MAX" value="999" />
 
@@ -1585,6 +1590,12 @@
         <define name="PT_NEW_TASK_TYPE_LEVEL" value="3" />
         <define name="PT_NEW_TASK_TYPE_MIXLEVEL" value="4" />
         <define name="PT_NEW_TASK_TYPE_ENDLESS_RANK" value="5" />
+        <define name="PT_NEW_TASK_TYPE_MEMBER_LEVELUP" value="6"/>
+        <define name="PT_NEW_TASK_TYPE_MEMBER_QUALITYUP" value="7"/>
+        <define name="PT_NEW_TASK_TYPE_EQUIP_LEVELUP" value="8"/>
+        <define name="PT_NEW_TASK_TYPE_EQUIP_QUALITYUP" value="9"/>
+        <define name="PT_NEW_TASK_TYPE_GUAZAI_LEVELUP" value="10"/>
+        <define name="PT_NEW_TASK_TYPE_GUAZAI_QUALITYUP" value="11"/>
 
 
         <define name="PT_FLYING_CHESS_PLAYER_COUNT" value="4" />
@@ -3336,6 +3347,7 @@
             <item name="CampType" type="UINT8"/>
             <item name="ChapterID" type="UINT8"/>
             <item name="CampaignID" type="UINT16"/>
+            <item name="Free" type="UINT8"/>
         </type>
 
         <type name="GMDT_CAMP_BUYCOUNT_OK">
@@ -4035,6 +4047,7 @@
         <type name="GMPKG_GET_FREE_DIAMOND_ACK">
             <item name="ErrCode" type="INT32"/>
             <item name="Diamond" type="INT32"/>
+            <item name="Item" type="vector" member_type="GMDT_ITEM_COUNT" max_count="PT_BAG_MAX_SIZE"/>
             <item name="FreeDiamondCount" type="INT32"/>
         </type>
 
@@ -4140,10 +4153,11 @@
             <item name="StatFlag" type="UINT8"/>
         </type>
 
+   
         <type name="GMPKG_TREASURE_DATA_REQ">
             <item name="Reserved" type="UINT8"/>
         </type>
-
+        
         <type name="GMPKG_TREASURE_DATA_ACK">
             <item name="ErrCode" type="INT32"/>
             <item name="GoldMiningTimes" type="UINT8"/>
@@ -4151,6 +4165,8 @@
             <item name="ServerTime" type="UINT32" />
             <item name="OneFreeCount" type="INT32"/>
             <item name="GoldFreeCount" type="INT32"/>
+            <item name="ReduceCount" type="INT32"/>
+            <item name="NextFreeTime" type="UINT32"/>
         </type>
 
         <type name="GMPKG_TREASURE_MINING_REQ">
@@ -4167,8 +4183,19 @@
             <item name="Crit" type="UINT8"/>
             <item name="OneFreeCount" type="INT32"/>
             <item name="GoldFreeCount" type="INT32"/>
+            <item name="NextFreeTime" type="UINT32"/>
         </type>
-
+        
+        <type name="GMPKG_TREASURE_TIMEREDUCE_REQ">
+            <item name="Reserved" type="UINT8"/>
+        </type>
+        
+        <type name="GMPKG_TREASURE_TIMEREDUCE_ACK">
+            <item name="Errcode" type="INT32"/>
+            <item name="NextFreeTime" type="UINT32" />
+            <item name="ReduceCount" type="INT32" />
+        </type>
+      
         <type name="GMPKG_TREASURE_NTF">
             <item name="StatFlag" type="UINT8"/>
         </type>
@@ -4888,6 +4915,7 @@
             <item name="Type" type="UINT8"/>
             <item name="ID" type="UINT8"/>
             <item name="Num" type="UINT8"/>
+            <item name="Free" type="UINT8"/>
         </type>
 
         <type name="GMPKG_FULI_GIFT_BUY_ACK">
@@ -4978,8 +5006,7 @@
         </type>
 
         <type name="GMPKG_FULI_CZ_REQ">
-            <item name="Free" type="UINT8"/>
-            <item name="Ticket" type="string" max_count="PT_CONST_1000"/>
+            <item name="Reserved" type="UINT8"/>
         </type>
 
         <type name="GMPKG_FULI_CZ_ACK">
@@ -4989,6 +5016,8 @@
 
         <type name="GMPKG_FULI_CZ_BUY_REQ">
             <item name="ID" type="UINT8"/>
+            <item name="Free" type="UINT8"/>
+            <item name="AdCount" type="UINT8"/>
         </type>
 
         <type name="GMPKG_FULI_CZ_BUY_ACK">
@@ -5034,10 +5063,20 @@
             <item name="StatFlag" type="UINT8"/>
         </type>
 
+        <type name="GMPKG_FULI_SHARE_SUPERFULI_REQ">
+            <item name="Reserved" type="UINT8" />
+        </type>
+
+        <type name="GMPKG_FULI_SHARE_SUPERFULI_ACK">
+            <item name="Errcode" type="INT32" />
+            <item name="SuperFuli" type="UINT8" />
+            <item name="Item" type="vector" member_type="GMDT_ITEM_COUNT" max_count="PT_BAG_MAX_SIZE" />
+        </type>
+      
         <type name="GMPKG_FULI_SHARE_DAILY_REQ">
             <item name="Reserved" type="UINT8"/>
         </type>
-
+        
         <type name="GMPKG_FULI_SHARE_DAILY_ACK">
             <item name="ErrCode" type="INT32"/>
             <item name="FuliShareDaily" type="UINT8"/>
@@ -8194,6 +8233,8 @@
             <item name="Treasure" type="vector" member_type="DBDT_TREASURE" max_count="PT_TREASURE_MAX" />
             <item name="OneFreeCount" type="INT32" />
             <item name="GoldFreeCount" type="INT32" />
+            <item name="NextFreeTime" type="UINT32" />
+            <item name="ReduceCount" type="INT32" />
         </type>
 
         <type name="DBDT_SIGNIN">
@@ -8321,6 +8362,7 @@
             <item name="Daily" type="UINT8" />
             <item name="Recommend" type="UINT8"/>
             <item name="MemberTestPlay" type="UINT8"/>
+            <item name="SuperFuli" type="UINT8" />
         </type>
 
         <type name="DBDT_FULI_BAG">
@@ -10813,6 +10855,8 @@
         <message name="GMID_TREASURE_NTF" id="814" type="GMPKG_TREASURE_NTF" />
         <message name="GMID_TREASURE_GOLDMINING_REWARD_REQ" id="815" type="GMPKG_TREASURE_GOLDMINING_REWARD_REQ" />
         <message name="GMID_TREASURE_GOLDMINING_REWARD_ACK" id="816" type="GMPKG_TREASURE_GOLDMINING_REWARD_ACK" />
+        <message name="GMID_TREASURE_TIMEREDUCE_REQ" id="817" type="GMPKG_TREASURE_TIMEREDUCE_REQ" />
+        <message name="GMID_TREASURE_TIMEREDUCE_ACK" id="818" type="GMPKG_TREASURE_TIMEREDUCE_ACK"/>
 
         <message name="GMID_LOTTERY_DATA_REQ" id="820" type="GMPKG_LOTTERY_DATA_REQ" />
         <message name="GMID_LOTTERY_DATA_ACK" id="821" type="GMPKG_LOTTERY_DATA_ACK" />
@@ -11010,6 +11054,8 @@
         <message name="GMID_FULI_SHARE_RECOMMAND_ACK" id="1243" type="GMPKG_FULI_SHARE_RECOMMAND_ACK" />
         <message name="GMID_FULI_SHARE_MEMBER_TESTPLAY_REQ" id="1244" type="GMPKG_FULI_SHARE_MEMBER_TESTPLAY_REQ" />
         <message name="GMID_FULI_SHARE_MEMBER_TESTPLAY_ACK" id="1245" type="GMPKG_FULI_SHARE_MEMBER_TESTPLAY_ACK" />
+        <message name="GMID_FULI_SHARE_SUPERFULI_REQ" id="1246" type="GMPKG_FULI_SHARE_SUPERFULI_REQ" />
+        <message name="GMID_FULI_SHARE_SUPERFULI_ACK" id="1247" type="GMPKG_FULI_SHARE_SUPERFULI_ACK" />
 
         <message name="GMID_ARENA_OPEN_REQ" id="1251" type="GMPKG_ARENA_OPEN_REQ" />
         <message name="GMID_ARENA_OPEN_ACK" id="1252" type="GMPKG_ARENA_OPEN_ACK" />

@@ -217,7 +217,7 @@ var Factory = cc.Class({
                 break;
         }
 
-        dps*=this.battleManager.getInstance().damagePlus;
+        dps *= this.battleManager.getInstance().damagePlus;
 
         return {
             dmg: Math.ceil(dps),
@@ -272,6 +272,11 @@ var Factory = cc.Class({
             }
             bullet.dmgMsg = this.bulletDamage(bullet.prop, bullet.lv, tblBullet.dwPart, owner.skillLevel);
             bullet.dmgMsg.dmg *= tblBullet.dDamageCoefficient;
+
+            if (type == Defines.ObjectType.OBJ_MONSTER_BULLET && typeof owner.attackSuppress !== 'undefined') {
+                bullet.dmgMsg.dmg *= owner.attackSuppress;
+            }
+
             bullet.dmgMsg.dmg = Math.ceil(bullet.dmgMsg.dmg);
         }
 
@@ -359,10 +364,7 @@ var Factory = cc.Class({
         return buff;
     },
 
-    produceSundries: function (id, pos, target, hp) {
-        if (!target) {
-            return;
-        }
+    produceSundries: function (id, pos, hp) {
         hp = typeof hp !== 'undefined' ? hp : 0;
         let sundries = this.poolManager.getInstance().getEntity(Defines.PoolType.OBJ_SUNDRIES);
         if (!sundries) {
@@ -374,12 +376,8 @@ var Factory = cc.Class({
         sundries.setHp(hp);
         sundries.isDead = false;
 
-        if (!!target) {
-            target.addChild(sundries);
-            sundries.setPosition(pos);
-        }
-        //sundries.setZ(Defines.Z.SUNDRIES);
-        sundries.setZ(-1);
+        sundries.setPosition(pos);
+        sundries.setZ(Defines.Z.SUNDRIES);
 
         return sundries;
     },

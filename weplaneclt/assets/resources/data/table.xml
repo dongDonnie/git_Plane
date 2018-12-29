@@ -653,6 +653,15 @@
         <col name="MonsterIDs" type="UINT32" vector="true"/>
     </table>
 
+    <table name="TblBattleSuppress" file="data/battlesuppress.tbl" multikey="ID,Index">
+        <col name="ID" type="UINT8"/>
+        <col name="Index" type="UINT16"/>
+        <col name="Percent" type="double"/>
+        <col name="Suppress" type="double"/>
+        <col name="Suppress2" type="double"/>
+        <col name="Comment" type="comment"/>
+    </table>
+
     <table name="TblChapter" file="data/chapter.tbl" setkey="TypeID">
         <col name="TypeID" type="UINT8"/>
         <col name="ChapterID" type="UINT8"/>
@@ -737,6 +746,7 @@
     <table name="TblEndlessRank" file="data/endlessrank.tbl" key="RankID">
         <col name="RankID" type="UINT8"/>
         <col name="RankName" type="string"/>
+        <col name="LevelReq" type="UINT16"/>
         <col name="ScoreReq" type="INT32"/>
         <col name="RewardItem" type="UINT16"/>
         <col name="RushRank" type="INT32"/>
@@ -881,6 +891,7 @@
         <col name="FullBossAttackReward" type="UINT16" />
         <col name="MemberEquipRefineCrit" type="UINT16" />
         <col name="StoreRefreshLimit" type="UINT16" />
+        <col name="VipPowerPoint" type="UINT8"/>  
         <col name="Right" type="string" vector="true"/>
         <col name="Desc" type="comment"/>
     </table>
@@ -1140,6 +1151,7 @@
         <col name="Items" type="TblItemCount" />
         <col name="Level" type="UINT16" />
         <col name="ShowType" type="UINT8" />
+        <col name="Free" type="UINT8"/>
         <col name="Description" type="comment" />
     </table>
 
@@ -1981,6 +1993,7 @@
     <table name="TblGuaZaiHeCheng" file="data/guazaihecheng.tbl" key="Quality">
         <col name="Quality" type="UINT16"/>
         <col name="PackageID" type="UINT16"/>
+        <col name="Cost" type="TblItemCount" vector="true"/>
         <col name="Comment" type="comment"/>
     </table>
 

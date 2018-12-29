@@ -134,7 +134,7 @@ cc.Class({
     animeStartParam(num) {
         this.node.opacity = num;
         this.planeNode.active = false;
-        if (num == 0 || num == 255){
+        if (num == 0 || num == 255) {
             this.hangarScroll.active = false;
         }
     },
@@ -168,7 +168,7 @@ cc.Class({
             let memberData = GlobalVar.tblApi.getData('TblMember');
             let count = 0;
             for (let i in memberData) {
-                if (memberData[i].byGetType == 1){
+                if (memberData[i].byGetType == 1) {
                     count += 1;
                 }
             }
@@ -292,6 +292,9 @@ cc.Class({
 
     selectFighter: function (event, data) {
         let member = GlobalVar.me().memberData.getMemberByID(data);
+        if (data == this.memberID) {
+            return;
+        }
         if (member != null) {
             this.updataFighter(member.MemberID, member.Quality, member.Level);
         } else {
@@ -317,11 +320,11 @@ cc.Class({
         }
         if (msg.data.ErrCode == 0) {
             // CommonWnd.showMessage(null, CommonWnd.oneConfirm, i18n.t('label.4000216'), i18n.t('label.4000224'));
-            CommonWnd.showGetNewRareItemWnd(this.memberID, 0, 2, function() {
+            CommonWnd.showGetNewRareItemWnd(this.memberID, 0, 2, function () {
                 WindowManager.getInstance().popView(false, null, false);
             });
         }
-        if (msg.data.ErrCode != GameServerProto.PTERR_SUCCESS){
+        if (msg.data.ErrCode != GameServerProto.PTERR_SUCCESS) {
             GlobalVar.comMsg.errorWarning(msg.data.ErrCode);
             return;
         }
@@ -336,7 +339,7 @@ cc.Class({
     },
 
     onSetFighter: function (msg) {
-        if (msg.data.ErrCode == GameServerProto.PTERR_SUCCESS){
+        if (msg.data.ErrCode == GameServerProto.PTERR_SUCCESS) {
             GlobalVar.comMsg.showMsg("出战成功");
         }
         this.updateState();

@@ -274,11 +274,6 @@ var ResManager = cc.Class({
             this.resDeepArray = [];
         }
         if (scene == SceneDefines.BATTLE_STATE) {
-            // this.pushDeep('cdnRes/prefab/BattleScene/UIBattlePause', ResMapping.ResType.Prefab);
-            // this.pushDeep('cdnRes/prefab/BattleScene/UIBattleEnd', ResMapping.ResType.Prefab);
-            // this.pushDeep('cdnRes/prefab/BattleScene/UIBattleCount', ResMapping.ResType.Prefab);
-            // this.pushDeep('cdnRes/prefab/BattleScene/UIBattleCard', ResMapping.ResType.Prefab);
-
             this.pushDeep('cdnRes/battlemodel/prefab/effect/EnemyIncoming', ResMapping.ResType.Prefab);
             this.pushDeep('cdnRes/battlemodel/prefab/effect/GetBuff', ResMapping.ResType.Prefab);
             this.pushDeep('cdnRes/battlemodel/prefab/effect/HeroBulletHit', ResMapping.ResType.Prefab);
@@ -320,7 +315,7 @@ var ResManager = cc.Class({
             this.pushDeep('cdnRes/battle/battle_wall_dark', ResMapping.ResType.SpriteFrame);
             this.pushDeep('cdnRes/battle/battle_wall_nebula', ResMapping.ResType.SpriteFrame);
             this.pushDeep('cdnRes/battle/battle_wall_light', ResMapping.ResType.SpriteFrame);
-            this.pushDeep('cdnRes/battleui/heroHit', ResMapping.ResType.SpriteFrame);
+            this.pushDeep('cdnRes/battlemodel/hit/heroHit', ResMapping.ResType.SpriteFrame);
             this.pushDeep('cdnRes/battle/_text_resist', ResMapping.ResType.SpriteFrame);
             this.pushDeep('cdnRes/battle/_text_miss', ResMapping.ResType.SpriteFrame);
             this.pushDeep('cdnRes/battle/_text_baoji', ResMapping.ResType.SpriteFrame);
@@ -331,6 +326,7 @@ var ResManager = cc.Class({
             this.pushDeep('cdnRes/battle/treasure_box_5', ResMapping.ResType.SpriteFrame);
             this.pushDeep('cdnRes/battle/treasure_box_6', ResMapping.ResType.SpriteFrame);
 
+            this.pushDeep('cdnRes/audio/battle/effect/boss_come', ResMapping.ResType.AudioClip);
             this.pushDeep('cdnRes/audio/battle/music/Boss_Room', ResMapping.ResType.AudioClip);
 
             let memberID = GlobalVar.me().memberData.getStandingByFighterID();
@@ -436,13 +432,9 @@ var ResManager = cc.Class({
             this.pushDeep('cdnRes/prefab/Windows/NormalRoot', ResMapping.ResType.Prefab);
             this.pushDeep('cdnRes/prefab/Windows/MaskBack', ResMapping.ResType.Prefab);
             this.pushDeep('cdnRes/prefab/Windows/RootBack', ResMapping.ResType.Prefab);
-            this.pushDeep('cdnRes/prefab/Windows/NormalPlane', ResMapping.ResType.Prefab);
-            this.pushDeep('cdnRes/prefab/Windows/NormalImprovement', ResMapping.ResType.Prefab);
-            this.pushDeep('cdnRes/prefab/Windows/GuazaiMain', ResMapping.ResType.Prefab);
             this.pushDeep('cdnRes/prefab/Windows/EndlessChallengeView', ResMapping.ResType.Prefab);
             this.pushDeep('cdnRes/prefab/Windows/NormalDailyMissionWnd', ResMapping.ResType.Prefab);
             this.pushDeep('cdnRes/prefab/Windows/NormalQuestListView', ResMapping.ResType.Prefab);
-            this.pushDeep('cdnRes/prefab/Windows/NormalDrawView', ResMapping.ResType.Prefab);
             this.pushDeep('cdnRes/prefab/Windows/NormalNoticeView', ResMapping.ResType.Prefab);
         }
         return this.resDeepArray.length;
@@ -586,6 +578,9 @@ var ResManager = cc.Class({
                         if (!!errorCB) {
                             errorCB(ResMapping.ResType.SpriteFrame, path);
                         }
+                        if(!!callback){
+                            callback(null);
+                        }
                         return;
                     }
                     self.cache[ResMapping.ResType.SpriteFrame][path] = obj;
@@ -596,9 +591,12 @@ var ResManager = cc.Class({
             } else if (resType === ResMapping.ResType.Prefab) {
                 cc.loader.loadRes(path, cc.Prefab, function (err, obj) {
                     if (err) {
-                        cc.error("LoadSpriteFrame err." + path);
+                        cc.error("LoadPrefab err." + path);
                         if (!!errorCB) {
-                            errorCB(ResMapping.ResType.SpriteFrame, path);
+                            errorCB(ResMapping.ResType.Prefab, path);
+                        }
+                        if(!!callback){
+                            callback(null);
                         }
                         return;
                     }
@@ -610,9 +608,12 @@ var ResManager = cc.Class({
             } else if (resType === ResMapping.ResType.AudioClip) {
                 cc.loader.loadRes(path, function (err, obj) {
                     if (err) {
-                        cc.error("LoadSpriteFrame err." + path);
+                        cc.error("LoadAudioClip err." + path);
                         if (!!errorCB) {
-                            errorCB(ResMapping.ResType.SpriteFrame, path);
+                            errorCB(ResMapping.ResType.AudioClip, path);
+                        }
+                        if(!!callback){
+                            callback(null);
                         }
                         return;
                     }
@@ -624,9 +625,12 @@ var ResManager = cc.Class({
             } else if (resType === ResMapping.ResType.LabelAtlas) {
                 cc.loader.loadRes(path, function (err, obj) {
                     if (err) {
-                        cc.error("LoadSpriteFrame err." + path);
+                        cc.error("LoadLabelAtlas err." + path);
                         if (!!errorCB) {
-                            errorCB(ResMapping.ResType.SpriteFrame, path);
+                            errorCB(ResMapping.ResType.LabelAtlas, path);
+                        }
+                        if(!!callback){
+                            callback(null);
                         }
                         return;
                     }
@@ -638,9 +642,12 @@ var ResManager = cc.Class({
             } else if (resType === ResMapping.ResType.Texture2D) {
                 cc.loader.loadRes(path, cc.Texture2D, function (err, obj) {
                     if (err) {
-                        cc.error("LoadSpriteFrame err." + path);
+                        cc.error("LoadTexture2D err." + path);
                         if (!!errorCB) {
-                            errorCB(ResMapping.ResType.SpriteFrame, path);
+                            errorCB(ResMapping.ResType.Texture2D, path);
+                        }
+                        if(!!callback){
+                            callback(null);
                         }
                         return;
                     }
@@ -653,8 +660,11 @@ var ResManager = cc.Class({
                 cc.loader.loadRes(path, function (err, obj) {
                     if (err) {
                         cc.error("preLoadResources err." + path);
-                        if (!!errorCB) {
-                            errorCB(ResMapping.ResType.SpriteFrame, path);
+                        // if (!!errorCB) {
+                        //     errorCB(ResMapping.ResType.SpriteFrame, path);
+                        // }
+                        if(!!callback){
+                            callback(null);
                         }
                         return;
                     }

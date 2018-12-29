@@ -9,6 +9,7 @@ const Guide = require('Guide');
 const weChatAPI = require("weChatAPI");
 const StoreageData = require("storagedata");
 const i18n = require('LanguageData');
+const base64 = require("base64");
 
 var UIBattle = cc.Class({
     extends: UIBase,
@@ -85,6 +86,14 @@ var UIBattle = cc.Class({
         this.initView();
 
         GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_ENDLESS_USESTATUS_NTF, this._onAssistClick, this);
+        GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_GET_ASSIST_SHARE_SUCCESS, this._onGetAssistSuccess, this);
+
+        if (cc.sys.platform == cc.sys.WECHAT_GAME) {
+            let openDataContext = wx.getOpenDataContext();
+            let sharedCanvas = openDataContext.canvas;
+            sharedCanvas.width = 120;
+            sharedCanvas.height = 140;
+        }
     },
 
     start() {
@@ -111,7 +120,7 @@ var UIBattle = cc.Class({
         this.updateCombo();
         this.updateChestCount();
 
-        // this.updateBeyoundNode();
+        this.updateBeyoundNode();
     },
 
     onDestroy() {
@@ -216,14 +225,15 @@ var UIBattle = cc.Class({
 
     updateScore: function () {
         if (this.battleManager.isEndlessFlag) {
-            if (this.battleManager.endlessScore != this.targetScore) {
+            let score = Number(base64.decode(this.battleManager.endlessScore));
+            if (score != this.targetScore && this.plusScore == 0) {
                 if (this.scoreShowMode == 1) {
-                    this.targetScore = Math.floor(this.battleManager.endlessScore / 10000);
+                    this.targetScore = Math.floor(score / 10000);
                 } else {
-                    this.targetScore = this.battleManager.endlessScore;
+                    this.targetScore = score;
                 }
-                if (this.battleManager.endlessScore >= 1000000 && this.scoreShowMode == 0) {
-                    this.startScore = this.targetScore = this.curScore = Math.floor(this.battleManager.endlessScore / 10000);
+                if (score >= 1000000 && this.scoreShowMode == 0) {
+                    this.startScore = this.targetScore = this.curScore = Math.floor(score / 10000);
                     this.mainUI.getChildByName("labelScore").getComponent(cc.Label).string = this.curScore + ';<';
                     this.scoreShowMode = 1;
                 }
@@ -231,6 +241,9 @@ var UIBattle = cc.Class({
 
             if (this.startScore != this.targetScore) {
                 this.plusScore = Math.ceil((this.targetScore - this.startScore) / (1 / Defines.BATTLE_FRAME_SECOND));
+                if (this.targetScore - this.startScore <= Math.ceil((this.targetScore) / 100)) {
+                    this.plusScore = this.targetScore - this.startScore;
+                }
                 this.startScore = this.targetScore;
             }
 
@@ -435,40 +448,22 @@ var UIBattle = cc.Class({
 
     onAssistClick() {
         if (this.battleManager.gameState == Defines.GameResult.RUNNING) {
-            if (this.barAssistCD.progress == 0 && this.assistBtnStatus > 0 && this.assistBtnStatusCount > 0) {
+            if (this.barAssistCD.progress != 0) {
+                return;
+            }
+            if (this.assistBtnStatusCount > 0 && this.assistBtnStatus > 0) {
                 GlobalVar.handlerManager().endlessHandler.sendEndlessUseStatusReq(this.assistBtnStatus)
-
-                // let func = require('BulletMapping').getSolution(100015);
-                // if (!!func) {
-                //     func(this.heroManager.planeEntity, [975],100);
-                //     this.assistCurrentCD = 0;
-                //     this.assistTimeCD = 0;
-                //     this.barAssistCD.progress = 0;
-                // }
-            } else if (this.barAssistCD.progress == 0 && this.assistBtnStatusCount <= 0 && GlobalVar.getShareSwitch()) {
+            } else if (this.assistBtnStatusCount == 0 && GlobalVar.getShareSwitch()) {
                 if (StoreageData.getBattleAssitTimes() >= 5) {
                     GlobalVar.comMsg.showMsg(i18n.t('label.4000313'));
                     return;
                 }
-                if (cc.sys.platform == cc.sys.WECHAT_GAME){
-                    this.battleManager.gameState = Defines.GameResult.PAUSE;
-                    let self = this;
-                    weChatAPI.shareNormal(111, function () {
-                        self.heroManager.callAssist();
-                        self.assistCurrentCD = Defines.ASSISTCD;
-                        self.assistTimeCD = Defines.ASSISTCD;
-                        self.barAssistCD.progress = 1;
-                        self.battleManager.gameState = Defines.GameResult.PREPARE;
-                        StoreageData.setBattleAssitTimes();
-                    }, function () {
-                        self.battleManager.gameState = Defines.GameResult.PREPARE;
-                    });
-                }else{
-                    this.heroManager.callAssist();
-                    this.assistCurrentCD = Defines.ASSISTCD;
-                    this.assistTimeCD = Defines.ASSISTCD;
-                    this.barAssistCD.progress = 1;
-                    StoreageData.setBattleAssitTimes();
+
+                if (this.battleManager.gameState == Defines.GameResult.RUNNING ||
+                    this.battleManager.gameState == Defines.GameResult.DASH ||
+                    this.battleManager.gameState == Defines.GameResult.DASHSTART ||
+                    this.battleManager.gameState == Defines.GameResult.DASHEND) {
+                    this.battleManager.gameState = Defines.GameResult.GETASSIST;
                 }
             }
         }
@@ -493,41 +488,52 @@ var UIBattle = cc.Class({
             }
         }
     },
-    
+
+    _onGetAssistSuccess(event) {
+        this.heroManager.callAssist();
+        this.assistCurrentCD = Defines.ASSISTCD;
+        this.assistTimeCD = Defines.ASSISTCD;
+        this.barAssistCD.progress = 1;
+        StoreageData.setBattleAssitTimes();
+    },
+
     updateBeyoundNode() {
-        if (!this.battleManager.isEndlessFlag){
+        if (cc.sys.platform != cc.sys.WECHAT_GAME) {
+            return;
+        }
+        
+        if (!this.battleManager.isEndlessFlag) {
             return;
         }
 
-        if (this.battleManager.gameState != Defines.GameResult.RUNNING){
-            return;
-        }
-
-        if (cc.sys.platform != cc.sys.WECHAT_GAME){
+        if (this.battleManager.gameState != Defines.GameResult.RUNNING) {
             return;
         }
 
         let openDataContext = wx.getOpenDataContext();
         let sharedCanvas = openDataContext.canvas;
         let self = this;
-        if (this.beyoudUpdateTimes == 0){
-            weChatAPI.requestBeyoudRank(this.targetScore, this.isFirtTimeGetBeyoundData);
+        if (this.beyoudUpdateTimes == 0) {
+            weChatAPI.requestBeyoudRank(Number(base64.decode(this.battleManager.endlessScore)), this.isFirtTimeGetBeyoundData);
             this.isFirtTimeGetBeyoundData = false;
-        }else if (this.beyoudUpdateTimes == 200){
+        } else if (this.beyoudUpdateTimes == 100) {
             this.beyoudUpdateTimes = -1;
-            this.nodeBeyoundFriend.getComponent(cc.Sprite).spriteFrame = "";
-            sharedCanvas.width = 120;
-            sharedCanvas.height = 104;
-        }else if (this.beyoudUpdateTimes <= 50){
-            if (this.beyoudUpdateTimes <= 20){
+            // this.nodeBeyoundFriend.getComponent(cc.Sprite).spriteFrame = "";
+            // sharedCanvas.width = 120;
+            // sharedCanvas.height = 104;
+        } else if (this.beyoudUpdateTimes <= 50) {
+            if ((this.beyoudUpdateTimes % 10 == 0) && this.beyoudUpdateTimes > 10) {
                 this.texture2D.initWithElement(sharedCanvas);
                 this.texture2D.handleLoadedTexture();
                 let sf = new cc.SpriteFrame(this.texture2D);
                 this.nodeBeyoundFriend.getComponent(cc.Sprite).spriteFrame = sf;
             }
-            this.nodeBeyoundFriend.x += 2.4;
-        }else if (this.beyoudUpdateTimes >= 150){
-            this.nodeBeyoundFriend.x -= 2.4;
+            if (this.nodeBeyoundFriend.x < -260) {
+                this.nodeBeyoundFriend.x += 2.4;
+            }
+            // this.nodeBeyoundFriend.x += 2.4;
+        } else if (this.beyoudUpdateTimes >= 150) {
+            // this.nodeBeyoundFriend.x -= 2.4;
         }
         this.beyoudUpdateTimes++;
     },

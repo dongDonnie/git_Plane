@@ -64,14 +64,17 @@ var ComMsg = cc.Class({
     },
 
     showMsg: function (text) {
-        if (GlobalVar.me().isKickedOut){
+        if (GlobalVar.me().isKickedOut) {
             return;
         }
-        
+
         self = this;
         if (self.dirty || !self.comMsgNode) {
             self.dirty = false;
             GlobalVar.resManager().loadRes(ResMapping.ResType.Prefab, "cdnRes/prefab/Common/ComMsgNode.prefab", function (prefab) {
+                if (prefab == null) {
+                    return;
+                }
                 let parentNode = cc.find("Canvas/MsgNode");
                 self.comMsgNode = cc.instantiate(prefab);
                 parentNode.addChild(self.comMsgNode);
@@ -81,20 +84,19 @@ var ComMsg = cc.Class({
                 self.showMsgLbl = cc.find("TextMsgLbl", self.showMsgNode);
                 self.showMsgLbl.getComponent(cc.Label).string = text;
                 let winSize = cc.winSize;
-                let goldPosY = winSize.height/(1+0.618) - winSize.height*0.5;
+                let goldPosY = winSize.height / (1 + 0.618) - winSize.height * 0.5;
                 self.showMsgNode.y = goldPosY;
-                self.showMsgImgBg.setScale((1 + self.showMsgLbl.getContentSize().width / 640 * 1.1), 1);
+                // self.showMsgImgBg.setScale((1 + self.showMsgLbl.getContentSize().width / 640 * 1.1), 1);
                 self.showMsgNode.runAction(self.getBlinkAction());
             });
-        }
-        else {
+        } else {
             try {
                 if (self.showMsgNode.getNumberOfRunningActions() != 0) {
-                    if (self.curAction){
+                    if (self.curAction) {
                         self.showMsgNode.stopAction(self.curAction);
                     }
                 }
-            
+
                 self.showMsgLbl.getComponent(cc.Label).string = text;
                 self.showMsgNode.opacity = (255);
                 self.showMsgNode.runAction(cc.sequence(cc.scaleTo(0.01, 1, 0), cc.scaleTo(0.1, 1, 1)));
@@ -112,6 +114,9 @@ var ComMsg = cc.Class({
         self = this;
         self.msgPush();
         GlobalVar.resManager().loadRes(ResMapping.ResType.Prefab, "cdnRes/prefab/Common/ComMsgNode.prefab", function (prefab) {
+            if (prefab == null) {
+                return;
+            }
             let parentNode = cc.find("Canvas/MsgNode");
             self.comMsgNode = cc.instantiate(prefab);
             parentNode.addChild(self.comMsgNode);
@@ -123,9 +128,8 @@ var ComMsg = cc.Class({
             self.pushMsgLbl.getComponent(cc.RichText).string = '获得<color=#e6ab33>金币' + count + '</color>';
             if (crit > 1) {
                 self.pushMsgLbl.x = -100;
-                self.pushMsgCrit.getComponent("RemoteSprite").setFrame(crit-2);
-            }
-            else {
+                self.pushMsgCrit.getComponent("RemoteSprite").setFrame(crit - 2);
+            } else {
                 self.pushMsgCrit.active = false;
             }
             pushMsgNodeArray.push(self.pushMsgNode);
@@ -141,7 +145,8 @@ var ComMsg = cc.Class({
     pushItem: function (itemArray) {
         self = this;
         self.itemPush();
-        var positionArray = [], count = 0;
+        var positionArray = [],
+            count = 0;
         if (itemArray.length % 2 == 1) {
             positionArray.push(cc.v3(0, 0));
             for (i = 1; i < itemArray.length; i = i + 2) {
@@ -150,8 +155,7 @@ var ComMsg = cc.Class({
                 positionArray.push(cc.v3(-pos, 0));
                 count++;
             }
-        }
-        else {
+        } else {
             for (let i = 0; i < itemArray.length; i = i + 2) {
                 var pos = count * 100 + 50;
                 positionArray.push(cc.v3(pos, 0));
@@ -170,6 +174,9 @@ var ComMsg = cc.Class({
         positionArray.sort(compare);
 
         GlobalVar.resManager().loadRes(ResMapping.ResType.Prefab, "cdnRes/prefab/Common/ComMsgNode.prefab", function (prefab) {
+            if (prefab == null) {
+                return;
+            }
             let parentNode = cc.find("Canvas/MsgNode");
             self.comMsgNode = cc.instantiate(prefab);
             parentNode.addChild(self.comMsgNode);
@@ -177,6 +184,9 @@ var ComMsg = cc.Class({
             self.pushItemNode.active = true;
             self.pushItemLayout = cc.find("ItemObjectLayout", self.pushItemNode);
             GlobalVar.resManager().loadRes(ResMapping.ResType.Prefab, "cdnRes/prefab/Common/ItemObject.prefab", function (itemobject) {
+                if (itemobject == null) {
+                    return;
+                }
                 for (let i = 0; i < itemArray.length; i++) {
                     var itemnode = cc.instantiate(itemobject);
                     itemnode.getComponent("ItemObject").updateItem(itemArray[i].ItemID, itemArray[i].Count);
@@ -247,13 +257,16 @@ var ComMsg = cc.Class({
     },
 
     showCombatPoint: function (delta, combatPoint, lastCombatPoint) {
-        if (GlobalVar.me().isKickedOut){
+        if (GlobalVar.me().isKickedOut) {
             return;
         }
         self = this;
         if (self.showCombatPointCount == 0) {
             self.showCombatPointCount++;
             GlobalVar.resManager().loadRes(ResMapping.ResType.Prefab, "cdnRes/prefab/Common/ComMsgNode.prefab", function (prefab) {
+                if (prefab == null) {
+                    return;
+                }
                 let parentNode = cc.find("Canvas/MsgNode");
                 self.comMsgNode = cc.instantiate(prefab);
                 parentNode.addChild(self.comMsgNode);
@@ -307,6 +320,9 @@ var ComMsg = cc.Class({
         if (self.showAttrUpdateCount === 0) {
             self.showAttrUpdateCount++;
             GlobalVar.resManager().loadRes(ResMapping.ResType.Prefab, "cdnRes/prefab/Common/ComMsgNode.prefab", function (prefab) {
+                if (prefab == null) {
+                    return;
+                }
                 let parentNode = cc.find("Canvas/MsgNode");
                 self.comMsgNode = cc.instantiate(prefab);
                 parentNode.addChild(self.comMsgNode);
@@ -314,15 +330,13 @@ var ComMsg = cc.Class({
                 self.showAttrUpdateMsgNode.active = true;
                 self.getAttrUpdateAction(attrArray, type, delayTime);
             });
-        }
-        else {
+        } else {
             while (1) {
                 var child = self.curNode;
                 if (!!child) {
                     child.removeFromParent();
                     child.destroy();
-                }
-                else {
+                } else {
                     break;
                 }
             }
@@ -332,13 +346,14 @@ var ComMsg = cc.Class({
 
     getAttrUpdateAction: function (attrArray, type, delayTime) {
         var positionArray = [];
-        var isUpper = false, upCount = 1, downCount = 0;
+        var isUpper = false,
+            upCount = 1,
+            downCount = 0;
         for (let i = 0; i < attrArray.length + 1; i++) {
             if (isUpper) {
                 var height = 100 + (45 * upCount++);
                 positionArray.push(cc.v3(0, height));
-            }
-            else {
+            } else {
                 var height = 100 + (-45 * downCount++);
                 positionArray.push(cc.v3(0, height));
             }
@@ -362,11 +377,15 @@ var ComMsg = cc.Class({
         switch (type) {
             case 0:
                 imgType.spriteFrame = GlobalVar.resManager().loadRes(ResMapping.ResType.SpriteFrame, "ui/textures/common/msg/shengji.png",
-                    function (img) { imgType.spriteFrame = img; });
+                    function (img) {
+                        imgType.spriteFrame = img;
+                    });
                 break;
             case 1:
                 imgType.spriteFrame = GlobalVar.resManager().loadRes(ResMapping.ResType.SpriteFrame, "ui/textures/common/msg/jinjie.png",
-                    function (img) { imgType.spriteFrame = img; });
+                    function (img) {
+                        imgType.spriteFrame = img;
+                    });
                 break;
             default:
                 break;
@@ -375,7 +394,10 @@ var ComMsg = cc.Class({
         imgNode.setPosition(positionArray[0]);
         //var sequence = cc.sequence(cc.delayTime(delayTime), cc.scaleTo(0.08, 1.3), cc.scaleTo(0.12, 1.0), cc.delayTime(0.8), cc.fadeOut(0.32), cc.removeSelf(), null);
         imgNode.runAction(cc.sequence(cc.delayTime(delayTime), cc.scaleTo(0.08, 1.3), cc.scaleTo(0.12, 1.0),
-            cc.delayTime(0.8), cc.fadeOut(0.32), cc.callFunc(function (target) { target.destroy(); self.showAttrUpdateCount--; })));
+            cc.delayTime(0.8), cc.fadeOut(0.32), cc.callFunc(function (target) {
+                target.destroy();
+                self.showAttrUpdateCount--;
+            })));
         for (let i = 0; i < attrArray.length; i++) {
             var attrNode = new cc.Node("Node" + i);
             attrNode.addComponent(cc.Label);
@@ -390,9 +412,9 @@ var ComMsg = cc.Class({
 
     errorWarning: function (errCode) {
         let errMsg = GlobalVar.tblApi.getDataBySingleKey('TblErrString', errCode);
-        if (errMsg){
+        if (errMsg) {
             this.showMsg(errMsg.strString);
-        }else{
+        } else {
             console.log("errCode:" + errCode + " string can not find");
         }
     },

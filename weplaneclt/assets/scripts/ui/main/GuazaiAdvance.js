@@ -7,9 +7,10 @@ const GameServerProto = require("GameServerProto");
 const GlobalFunctions = require("GlobalFunctions");
 const CommonWnd = require("CommonWnd");
 const WndTypeDefine = require("wndtypedefine");
+const weChatAPI = require("weChatAPI");
 
 const AUDIO_LEVEL_UP = 'cdnRes/audio/main/effect/shengji';
-const AUDIO_QUALITY_UP = 'cdnRes/audio/main/effect/wujinchongfeng'
+const AUDIO_QUALITY_UP = 'cdnRes/audio/main/effect/shengjie2'
 
 var self = null;
 
@@ -65,7 +66,7 @@ cc.Class({
 
         self.expBottleTouched(null, itemObject.itemID);
         self.durTime = 0;
-        self.curTime = 2;
+        self.curTime = 0.15;
         var canSend = function () {
             var itemObject = event.target.getComponent("ItemObject");
             if (itemObject.getLabelNumberData() <= 0) {
@@ -75,11 +76,11 @@ cc.Class({
         }
         
         self.itemTimeHandler = GlobalVar.gameTimer().startTimer(function () {
-            self.durTime += 0.15;
+            self.durTime += 0.01;
             if (self.durTime > self.curTime) {
                 self.durTime = 0;
-                if (self.curTime > 0.8) {
-                    self.curTime -= 0.1;
+                if (self.curTime > 0.05) {
+                    self.curTime -= 0.01;
                 }
                 self.press = true;
                 canSend();
@@ -119,10 +120,16 @@ cc.Class({
     animePlayCallBack(name) {
         if (name == "Escape") {
             this._super("Escape");
+            if (GlobalVar.getBannerSwitch()){
+                weChatAPI.justShowBanner();
+            }
             GlobalVar.eventManager().removeListenerWithTarget(this);
             WindowManager.getInstance().popView(false, null, false, false);
         } else if (name == "Enter") {
             this._super("Enter");
+            if (GlobalVar.getBannerSwitch()){
+                weChatAPI.justHideBanner();
+            }
             this.registerEvent();
             
             this.node.getChildByName("imgbg").getChildByName("nodeBottom").active = true;
@@ -426,13 +433,6 @@ cc.Class({
         GlobalVar.soundManager().playEffect(AUDIO_QUALITY_UP);
         let effect = this.node.getChildByName("imgbg").getChildByName("nodeQualityUpEffect");
         effect.active = true;
-        // effect.getComponent(dragonBones.ArmatureDisplay).playAnimation("animation", 1);
-        // effect.getComponent(dragonBones.ArmatureDisplay).addEventListener(dragonBones.EventObject.COMPLETE, event => {
-        //     var animationName = event.animationState ? event.animationState.name : "";
-        //     if (animationName == "animation") {
-        //         effect.active = false;
-        //     }
-        // });
         effect.getComponent(sp.Skeleton).clearTracks();
         effect.getComponent(sp.Skeleton).setAnimation(0, "animation", false);
         effect.getComponent(sp.Skeleton).setCompleteListener(trackEntry => {
@@ -455,55 +455,9 @@ cc.Class({
                 GlobalFunctions.playDragonBonesAnimation(levelUpEffect, function () { 
                     levelUpEffect.active = false;
                 })
-                // levelUpEffect.getComponent(dragonBones.ArmatureDisplay).playAnimation("animation", 1);
-                // levelUpEffect.getComponent(dragonBones.ArmatureDisplay).addEventListener(dragonBones.EventObject.COMPLETE, event => {
-                //     var animationName = event.animationState ? event.animationState.name : "";
-                //     if (animationName == "animation") {
-                //         levelUpEffect.active = false;
-                //     }
-                // });
             })
-            // effect.active = true;
-            // effect.getComponent(dragonBones.ArmatureDisplay).playAnimation("animation", 1);
-            // effect.getComponent(dragonBones.ArmatureDisplay).addEventListener(dragonBones.EventObject.COMPLETE, event => {
-            //     var animationName = event.animationState ? event.animationState.name : "";
-            //     if (animationName == "animation") {
-            //         effect.active = false;
-            //         let levelUpEffect = self.node.getChildByName("imgbg").getChildByName("nodeLevelUpEffect");
-            //         levelUpEffect.active = true;
-            //         levelUpEffect.getComponent(dragonBones.ArmatureDisplay).playAnimation("animation", 1);
-            //         levelUpEffect.getComponent(dragonBones.ArmatureDisplay).addEventListener(dragonBones.EventObject.COMPLETE, event => {
-            //             var animationName = event.animationState ? event.animationState.name : "";
-            //             if (animationName == "animation") {
-            //                 levelUpEffect.active = false;
-            //             }
-            //         });
-            //     }
-            // });
+            
         }
-        // if (event.levelUpFlag){
-        //     let self = this;
-        //     let effect = this.node.getChildByName("imgbg").getChildByName("nodeUseExpItemEffect");
-        //     effect.active = true;
-        //     effect.getComponent(sp.Skeleton).clearTracks();
-        //     effect.getComponent(sp.Skeleton).setAnimation(0, "animation", false);
-        //     effect.getComponent(sp.Skeleton).setCompleteListener(trackEntry => {
-        //         var animationName = trackEntry.animation ? trackEntry.animation.name : "";
-        //         if (animationName == "animation") {
-        //             effect.active = false;
-        //             let levelUpEffect = self.node.getChildByName("imgbg").getChildByName("nodeLevelUpEffect");
-        //             levelUpEffect.active = true;
-        //             levelUpEffect.getComponent(sp.Skeleton).clearTracks();
-        //             levelUpEffect.getComponent(sp.Skeleton).setAnimation(1, "animation", false);
-        //             levelUpEffect.getComponent(sp.Skeleton).setCompleteListener(trackEntry => {
-        //                 var animationName = trackEntry.animation ? trackEntry.animation.name : "";
-        //                 if (animationName == "animation") {
-        //                     levelUpEffect.active = false;
-        //                 }
-        //             });
-        //         }
-        //     });
-        // }
     },
 
     bagAddItem: function (data) {

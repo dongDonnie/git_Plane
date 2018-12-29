@@ -6,6 +6,7 @@ const EventMsgId = require("eventmsgid");
 const GameServerProto = require("GameServerProto");
 const GlobalFunctions = require("GlobalFunctions");
 const RootBase = require("RootBase");
+const weChatAPI = require("weChatAPI");
 const CommonWnd = require("CommonWnd");
 
 
@@ -153,6 +154,8 @@ cc.Class({
         self = this;
         this.refreshComplete = false;
         this.updateWndSize();
+        let refreshLimitTimes = GlobalVar.tblApi.getDataBySingleKey('TblVipRight', GlobalVar.me().vipLevel).wStoreRefreshLimit;
+        this.node.getChildByName("imgBg").getChildByName("lblLeftTimes").getComponent(cc.Label).string = this.refreshTimes + '/' + refreshLimitTimes;
     },
 
     updateWndSize: function (i) {
@@ -277,6 +280,10 @@ cc.Class({
         this.close();
     },
 
+    onDestroy: function () {
+        GlobalVar.gameTimer().delTimer(this.scheduleHandler);
+    },
+
     enter: function (isRefresh) {
         this.scheduleHandler = GlobalVar.gameTimer().startTimer(function () {
             self.updateRefreshTime();
@@ -306,10 +313,17 @@ cc.Class({
     animePlayCallBack(name) {
         if (name == "Escape") {
             this._super("Escape");
+            if (GlobalVar.getBannerSwitch()){
+                weChatAPI.justShowBanner();
+            }
             GlobalVar.eventManager().removeListenerWithTarget(this);
             WindowManager.getInstance().popView(false, null, false);
         } else if (name == "Enter") {
             this._super("Enter");
+            if (GlobalVar.getBannerSwitch()){
+                let self = this;
+                weChatAPI.justHideBanner();
+            }
             this.registerEvents();
             this.requestStoreData();
 
@@ -404,6 +418,9 @@ cc.Class({
     },
 
     setRefreshTime: function () {
+        if (GlobalVar.networkManager().connectError) {
+            return;
+        }
         var leftTime = this.time - this.serverTime;
         // if (leftTime < 0)
         if (leftTime < 0 && this.refreshComplete){
@@ -467,7 +484,7 @@ cc.Class({
         if (!this.refreshComplete)
             return;
         let refreshLimitTimes = GlobalVar.tblApi.getDataBySingleKey('TblVipRight', GlobalVar.me().vipLevel).wStoreRefreshLimit;
-
+        
         if (self.refreshTimes >= refreshLimitTimes){
             GlobalVar.comMsg.showMsg("今日刷新次数用尽(" + refreshLimitTimes + "次)");
             return;
@@ -492,6 +509,9 @@ cc.Class({
         this.runRefreshAnime();
         this.refreshComplete = false;
         this.updateWndSize();
+
+        let refreshLimitTimes = GlobalVar.tblApi.getDataBySingleKey('TblVipRight', GlobalVar.me().vipLevel).wStoreRefreshLimit;
+        this.node.getChildByName("imgBg").getChildByName("lblLeftTimes").getComponent(cc.Label).string = this.refreshTimes + '/' + refreshLimitTimes;
     },
 
     runRefreshAnime: function () {

@@ -2,70 +2,102 @@ const GlobalVar = require("globalvar");
 const config = require("config");
 const BattleManager = require('BattleManager');
 const Defines = require('BattleDefines');
+const windowmgr = require("windowmgr");
 
 var self = null;
 var buttonArray = [
+    '',
+    '',
     'btnoCharpter',
     'spritePlanetModel0',
     'btnStartBattle',
     '',
     '',
     '',
-    'button', //6
+    'button',
     'btnoGuazai',
     'nodeTouzhi',
     'ItemObject',
-    'button',
-    'btnoCharpter',//11
+    'button',//10
+    'btnoCharpter',
     'spritePlanetModel1',
     'btnStartBattle',
     'btnoSkill',
     'button',//15
     'btnoEquipment',
     'btnLevelUpOne',
-    'button',
+    'btnoAdvance',
+    'btnQualityUp',
+    'button',//20
     'btnoCharpter',
-    'spritePlanetModel2',//20
+    'spritePlanetModel2',
     'btnStartBattle',
     '',
+    'button',//25
+    'btnoPlane',
+    'btnoAdvance',
+    'btnoLevelUp',
+    'button',
+    'button',//30
+    'btnoCharpter',
+    'spritePlanetModel3',
+    'btnStartBattle',
     '',
-    'btnoEndless',//24
+    '',//35
+    'btnoEndless',
+    'btnoCharpter',
+    'spritePlanetModel0',
+    'btnSweepOne',
     '',
     ''
 ];
 var labelArray = [
-    '亲爱的指挥官,我是娜娜,欢迎来到王牌机战,点击闯关,让我们开始第一次旅程',
+    '亲爱的指挥官,我是娜娜,欢迎来到我们的世界,请激活您的第一架战机',
+    '',
+    '点击闯关,让我们开始第一次旅程',
     '点击第一关,让敌人看看我们的实力!',
     '',
-    '滑动战机,可进行移动',//3
+    '滑动战机,可进行移动',
     '战斗中会掉落这些道具',
-    '子弹只有击中中心点时战机的生命值才会减少',
+    '子弹只有击中中心点时战机的生命值才会减少',//5
     '点击返回,我们去装备投掷炸弹',
     '获得了新的投掷炸弹，点击挂载',
     '',
     '点击装备投掷炸弹',
-    '',
-    '已经装备了投掷炸弹,让我们继续冒险',//11
-    '',
-    '',
-    '释放【投掷】炸弹,可以清除全屏子弹,产生巨大威力',//14
-    '现在去强化装备',
+    '',//10
+    '已经装备了投掷炸弹,让我们继续冒险',
     '',
     '',
-    '强化成功，让我们开始下一场战斗',//18
+    '释放【投掷】炸弹,可以清除全屏子弹,产生巨大威力',
+    '现在去强化装备',//15
+    '',
+    '',
+    '现在去升阶吧',
+    '',
+    '强化成功，让我们开始下一场战斗',//20
     '',
     '',
     '',
     '',
-    '你已经成功通过了考验,是一名合格的指挥官了,加油,暴风要塞的未来就靠你了!',
-    '无尽征战已开启，亲爱的指挥官，请迎接你的挑战吧！',//24
+    '现在，我们去升级战机',//25
     '',
+    '',
+    '',
+    '战机升级成功，战力提升，现在去完成最后的考验。',//29
+    '',
+    '',
+    '',
+    '',
+    '',
+    '你已经成功通过了考验,是一名合格的指挥官了,加油,暴风要塞的未来就靠你了!',//35
+    '无尽征战已开启，亲爱的指挥官，请迎接你的挑战吧！',
+    '扫荡开启',
     '',
     '',
     '',
     ''
 ];
-var dialoguePosArray = [0, 150, 0, 50, -200, -200, 0, 0, 0, -200];
+var dialoguePosArray = [-200, 0, 0, 150, 0, 50, -90, -200, 0, 0, 0, -200];
 
 const guide = cc.Class({
     extends: cc.Component,
@@ -105,70 +137,67 @@ const guide = cc.Class({
     enterMain: function () {
         self.getSprite(0);
         this.unscheduleAllCallbacks();
-        if (self.id == 1 && self.step != 24) {
+        if (self.step == 38 || self.step == 39) {
+            self.doNextStep();
+            return;
+        }
+        if (self.id == 1) {
             self.watchBlt = false;
-            self.step = 6;
+            self.step = 8;
+        } else if (self.id == 2) {
+            self.step = 17;
+        } else if (self.id == 3) {
+            self.step = 27;
+        } else if (self.id == 4) {
+            self.step = 37;
         }
         self.id++;
         self.doNextStep();
-        self.guideNode.on('touchstart', self.onTouchBg);
-    },
-
-    onTouchBg(event) {
-        let pos = self.circle.convertToNodeSpaceAR(event.getLocation());
-        let w = self.circle.width / 2;
-        let h = self.circle.height / 2;
-
-        if (pos.y < h && pos.y > -h && pos.x < w && pos.x > -w) {
-            self.guideNode._touchListener.setSwallowTouches(false);
-        } else {
-            self.guideNode._touchListener.setSwallowTouches(true);
-        }
     },
 
     getSprite: function (scenetype) {
         if (scenetype == 1) {
-            self.introductionSprite = cc.find('Canvas/guideNode/Introductions');
+            self.introductionSprite = cc.find('Canvas/GuideNode/Introductions');
         }
-        self.continueSprite = cc.find('Canvas/guideNode/continue');
+        self.continueSprite = cc.find('Canvas/GuideNode/continue');
         self.continueSprite.runAction(cc.repeatForever(cc.sequence(cc.fadeIn(0.7), cc.fadeOut(0.7))));
-        self.guideNode = cc.find('Canvas/guideNode');
-        self.circle = cc.find('Canvas/guideNode/circle');
-        self.fighterSprite = cc.find('Canvas/guideNode/fighter');
-        self.fingerSprite = cc.find('Canvas/guideNode/finger');
-        self.dialogueSprite = cc.find('Canvas/guideNode/dialogue');
+        self.guideNode = cc.find('Canvas/GuideNode');
+        self.maskSprite = cc.find('Canvas/GuideNode/GuideMask');
+        self.fighterSprite = cc.find('Canvas/GuideNode/fighter');
+        self.fingerSprite = cc.find('Canvas/GuideNode/finger');
+        self.dialogueSprite = cc.find('Canvas/GuideNode/dialogue');
     },
 
     enterBattle: function () {
         this.unscheduleAllCallbacks();
         self.getSprite(1);
-        let touchStart =  function () {
-            self.guideNode.active = false;
-            self.clickBtn();
-        }
-        if (self.step == 3) {
+        if (self.step == 5) {
             BattleManager.getInstance().gameState = Defines.GameResult.PAUSE;
             self.mapLoop = true;
             self.doNextStep();
-            self.guideNode.on('touchstart', touchStart);
-        } else if (self.step == 14) {
+        } else if (self.step == 16) {
             self.btnoSkill = self.seekNodeByName("btnoSkill");
             self.btnoSkill.active = false;
             self.scheduleOnce(() => {
                 BattleManager.getInstance().gameState = Defines.GameResult.PAUSE;
                 self.doNextStep();
             }, 4);
-        } else if (self.step == 22) {
+        } else if (self.step == 26 || self.step == 36) {
             self.guideNode.active = false;
             self.step++;
-            self.guideNode.on('touchstart', touchStart);
         }
+    },
+
+    escape: function () {
+        //var GuideNode = cc.find('Canvas/GuideNode');
+        //self.window.destroy();
+        // self.btnClone.destroy();
     },
 
     doNextStep: function () {
         self.initNode();
         setTimeout(() => {
-            // console.log('last step: ',self.step);
+            cc.log(self.step);
             self.showBtn();
         }, 100);
     },
@@ -176,7 +205,6 @@ const guide = cc.Class({
     clickBtn: function (clickBtnName) {
         if (!config.NEED_GUIDE)
             return;
-        // console.log('click Step: ', self.step);
         var scenetype = GlobalVar.sceneManager().getCurrentSceneType();
         if (scenetype != 4 && scenetype != 5) return;
         if (clickBtnName == 'btnoPause') {
@@ -189,13 +217,18 @@ const guide = cc.Class({
                 cc.director.getScheduler().resumeTarget(self);
             }, 3000);
             return;
-        } else if ((clickBtnName == 'ItemObject' && self.step != 10) || clickBtnName == 'btnoSkill' || clickBtnName =='btnoAssist') return;
+        } else if ((clickBtnName == 'ItemObject' && self.step != 11) || clickBtnName == 'btnoSkill' || clickBtnName =='btnoAssist') return;
 
+        var cbtn = cc.find('Canvas/GuideNode/btnClone');
         self.fingerSprite.active = false;
-        self.setCircleSize('');
-        if (self.step == 3 || self.step == 14 || self.step == 22) {
+        if (!!cbtn) {
+            setTimeout(() => {
+                cbtn.removeFromParent();
+            }, 10);
+        }
+        if (self.step == 5 || self.step == 16 || self.step == 26 || self.step == 36) {
             return;
-        } else if (self.step == 4) {
+        } else if (self.step == 6) {
             BattleManager.getInstance().gameState = Defines.GameResult.RUNNING;
             self.mapLoop = false;
             self.scheduleOnce(() => {
@@ -203,32 +236,50 @@ const guide = cc.Class({
                 self.doNextStep();
             }, 5);
             return;
-        } else if (self.step == 5) {
+        } else if (self.step == 7) {
             BattleManager.getInstance().gameState = Defines.GameResult.RUNNING;
             self.scheduleOnce(() => {
                 self.watchBlt = true;
             }, 2);
             return;
-        } else if (self.step == 6) {
+        } else if (self.step == 8) {
             BattleManager.getInstance().gameState = Defines.GameResult.RUNNING;
             return;
-        } else if (self.step == 15 && scenetype == 5) {
+        } else if (self.step == 17 && scenetype == 5) {
             self.guideNode.active = false;
             BattleManager.getInstance().gameState = Defines.GameResult.RUNNING;
+            self.btnoSkill.active = true;
+            self.btnoSkill.x = -257.5;
+            cc.find('Canvas/UINode/UIBattle').getComponent('UIBattle').onSkillClick();
             return;
-        } else if (self.step == 18) {
-            self.circle.getChildByName('mask').opacity = 0;
+        } else if (self.step == 20) {
+            self.maskSprite.opacity = 0;
             setTimeout(() => {
-                self.circle.getChildByName('mask').opacity = 120;
+                self.maskSprite.opacity = 80;
                 self.doNextStep();
-            }, 3000);
+            }, 2000);
+            return;
+        } else if (self.step == 22) {
+            self.maskSprite.opacity = 0;
+            return;
+        } else if (self.step == 31) {
+            self.seekNodeByName('NormalEquipment').getComponent('NormalEquipment').levelUp();
+            setTimeout(() => {
+                self.doNextStep();
+            }, 800);
             return;
         }
 
-        if (self.step == 25) {
+        if (self.step == 39) {
             self.guideNode.active = false;
             config.NEED_GUIDE = false;
-            // require("CommonWnd").showEndlessView();
+            require("CommonWnd").showEndlessView();
+            return;
+        }
+        if (self.step == 42) {
+            self.guideNode.active = false;
+            config.NEED_GUIDE = false;
+            self.seekNodeByName('NormalQuestInfoWnd').getComponent('NormalQuestInfoWnd').onBtnSweep(null, 1);
             return;
         }
         self.doNextStep();
@@ -240,7 +291,7 @@ const guide = cc.Class({
         if (!text) return;
         var step = self.step;
         text.getComponent(cc.Label).string = labelArray[step];
-        self.dialogueSprite.y = step < 10 ? dialoguePosArray[step] : 0;
+        self.dialogueSprite.y = step < 12 ? dialoguePosArray[step] : 0;
 
         self.dialogueSprite.active = labelArray[step] != '';
         self.dialogueSprite.runAction(cc.sequence(cc.delayTime(0.5), cc.fadeIn(0.5)));
@@ -256,76 +307,121 @@ const guide = cc.Class({
             self.clickBtn();
         }
         
-        //mask
-        if (step == 3) {
-            self.circle.getChildByName('mask').active = true;
-            self.circle.getChildByName('mask').opacity = 0;
+        //maskSprite
+        if (step == 0) {
+            self.maskSprite.opacity = 180;
+        }else if (step == 1) {
+            self.maskSprite.active = true;
+            self.maskSprite.opacity = 0;
+        } else if (step == 5) {
+            self.maskSprite.active = true;
+            self.maskSprite.opacity = 0;
         } else {
-            self.circle.getChildByName('mask').active = true;
-            self.circle.getChildByName('mask').opacity = 120;
+            self.maskSprite.active = true;
+            self.maskSprite.opacity = 80;
+        }
+        if (step == 5 || step == 6 || step == 7) {
+            self.maskSprite.once('touchend', touchStart, self);
         }
 
         //fighterSprite
-        if (step == 3) {
+        if (step == 0) {
+            self.fighterSprite.active = true;
+            self.fighterSprite.getComponent('PlaneObject').setDisPlayLoop(2);
+            self.fighterSprite.getComponent('PlaneObject').transform();
+        } else if (step == 5) {
             setTimeout(() => {
                 self.fighterSprite.active = true;
                 self.fingerSprite.active = true;
                 self.fingerSprite.opacity = 255;
             }, 1000);
-        } else if (step == 5) {
+        } else if (step == 7) {
             self.fighterSprite.active = true;
             self.fighterSprite.children[0].active = true;
             self.fighterSprite.children[1].active = false;
             self.fighterSprite.children[2].active = false;
-            self.fighterSprite.scale = 2;
+            self.fighterSprite.children[0].getComponent(dragonBones.ArmatureDisplay).armature().animation.play('putong', 1);
+            self.fighterSprite.scale = 1.2;
         } else {
             self.fighterSprite.active = false;
         }
 
         //fingerSprite
-        if (step == 3) {
+        if (step == 5) {
             self.fingerSprite.getComponent(cc.Animation).play('animeFinger2');
         } else {
             self.fingerSprite.getComponent(cc.Animation).play();
         }
 
         //continueSprite
-        if (step == 4 || step == 5 || step == 23) {
+        if (step == 6 || step == 7 || step == 37) {
             self.continueSprite.active = true;
         }
 
         //introductionSprite
-        if (step == 4) {
+        if (step == 6) {
             self.introductionSprite.opacity = 0;
             self.introductionSprite.active = true;
             self.introductionSprite.runAction(cc.sequence(cc.delayTime(0.5), cc.fadeIn(0.5)));
         }
 
         //else
-        if (step == 14) {
-            self.btnoSkill.once('touchend', touchStart, self);
+        if (step == 16) {
+            self.btnClone.once('touchend', touchStart, self);
         }
 
-        if (step == 23) {
+        if (step == 37) {
             var over = function () {
                 self.guideNode.active = false;
                 config.NEED_GUIDE = false;
+                if (GlobalVar.getShareSwitch()) {
+                    require("CommonWnd").showShareDailyWnd();
+                }
             }
-            self.guideNode.once('touchend', over, self);
+            self.maskSprite.once('touchend', over, self);
         }
     },
 
     showBtn: function () {
         var step = self.step;
+        if (step == 40) {
+            if (GlobalVar.me().campData.getLastChapterID(1) != 1) {
+                let normalquestlistview = windowmgr.getInstance().mapViewData.NormalQuestListView;
+                if (!!normalquestlistview) { 
+                    let curChapterIndex = normalquestlistview.getComponent('NormalQuestListView').curChapterIndex;
+                    if (curChapterIndex == -1 || curChapterIndex != 0) {
+                        setTimeout(() => {
+                            self.cloneBtn(buttonArray[step]);
+                        }, 1000);
+                        return
+                    }
+                } else {
+                    setTimeout(() => {
+                        self.cloneBtn(buttonArray[step]);
+                    }, 1000);
+                    return
+                }
+            }
+        }
         self.cloneBtn(buttonArray[step]);
+        
+        if (step == 0) {
+            var RecvCallback = function () {
+                windowmgr.getInstance().popView(false, null, false);
+            }
+            var callback = function () {
+                require("CommonWnd").showGetNewRareItemWnd(710, 0, 2, RecvCallback);
+                self.cloneBtn('btnRecv');
+            }
+            cc.find('Canvas/GuideNode/fighter/btn_active').once('touchend', callback, this);
+        }
     },
 
     cloneBtn: function (nodename) {
-        if (self.step == 3 || self.step == 4 || self.step == 5 || self.step == 23) {
+        if (self.step == 0 || self.step == 5 || self.step == 6 || self.step == 7 || self.step == 37) {
             self.showLabel();
             self.showSprite();
             self.step++;
-            // console.log('current step: ', self.step);
         }
         if (nodename == '') return;
         var btn = self.seekNodeByName(nodename);
@@ -338,24 +434,56 @@ const guide = cc.Class({
 
         self.showLabel();
         self.showSprite();
-        setTimeout(() => {
+
+        self.btnClone = cc.instantiate(btn);
+        self.guideNode.addChild(self.btnClone);
+        self.btnClone.name = 'btnClone';
+        self.btnClone.active = false;
+
+        let delayShow =  function () {
+            self.btnClone.active = true;
             var pos0 = btn.parent.convertToWorldSpaceAR(btn);
             var pos1 = self.guideNode.convertToNodeSpaceAR(pos0);
+            self.btnClone.setPosition(pos1);
             self.fingerSprite.setPosition(pos1);
+            if (nodename == 'btnoSkill') {
+                self.fingerSprite.setPosition(cc.v3(-257.5, pos1.y));
+                self.btnClone.runAction(cc.sequence(cc.moveTo(0, cc.v3(-382.5, pos1.y)), cc.moveTo(0.2, cc.v3(-257.5, pos1.y))));
+            }
             self.fingerSprite.opacity = 0;
             self.fingerSprite.active = true;
             self.fingerSprite.runAction(cc.sequence(cc.delayTime(0.2), cc.fadeIn(0.3)));
-            self.setCircleSize(btn, pos1);
-            if (nodename == 'btnoSkill') {
-                self.fingerSprite.setPosition(cc.v3(-257.5, pos1.y));
-                self.btnoSkill.active = true;
-                self.btnoSkill.runAction(cc.sequence(cc.moveTo(0, cc.v3(-382.5, pos1.y)), cc.moveTo(0.2, cc.v3(-257.5, pos1.y))));
-                self.setCircleSize(btn, cc.v3(-257.5, pos1.y));
+        }
+
+        setTimeout(() => {
+            delayShow();
+        }, 500);
+
+        for (const key in btn) {
+            if (!self.btnClone.hasOwnProperty(key) && btn.hasOwnProperty(key)) {
+                self.btnClone[key] = btn[key];
             }
-        }, 300);
+        }
+
+        if (nodename.indexOf('spritePlanetModel') != -1) {
+            var anime = self.seekNodeByName(self.btnClone, 'nodeSeletedAnimeModel');
+            if (anime) {
+                anime.getChildByName("spriteCircleAnime1").runAction(cc.repeatForever(cc.rotateBy(4, 360)));
+                anime.getChildByName("spriteCircleAnime2").runAction(cc.repeatForever(cc.rotateBy(4, -360)));
+                anime.getChildByName("spriteCircleAnime3").runAction(cc.repeatForever(cc.rotateBy(4, 360)));
+            }
+        }
+
+        if (self.step == 11) {
+            let path = 'cdnRes/itemicon/53/2/32100';
+            self.btnClone.getChildByName('spriteItemIcon').getComponent("RemoteSprite").loadFrameFromLocalRes(path);
+        }
+
+        if (self.step == 29) {
+            self.btnClone.getChildByName('spriteHot').active = true;
+        }
 
         self.step++;
-        // console.log('current step: ', self.step);
     },
 
     showQuit: function (target) {
@@ -369,15 +497,22 @@ const guide = cc.Class({
         if (config.NEED_GUIDE) {
             this.seekNodeByName(target.node, 'btnRecv').active = true;
             this.seekNodeByName(target.node, 'btnRecvNew').active = false;
-            this.seekNodeByName(target.node, 'btnRecvAll').active = false;
-            this.seekNodeByName(target.node, 'label').active = false;
+            this.seekNodeByName(target.node, 'nodeShare').active = false;
+            this.seekNodeByName(target.node, 'nodeVip').active = false;
         }
     },
 
     guideToEndless: function () {
-        require("windowmgr").getInstance().popToRoot();
+        windowmgr.getInstance().popToRoot();
         config.NEED_GUIDE = true;
-        self.step = 24;
+        self.step = 38;
+        this.enterMain();
+    },
+
+    guideToSweep: function () {
+        windowmgr.getInstance().popToRoot();
+        config.NEED_GUIDE = true;
+        self.step = 39;
         this.enterMain();
     },
 
@@ -401,7 +536,7 @@ const guide = cc.Class({
         self.fingerSprite.active = true;
         self.fingerSprite.runAction(cc.sequence(cc.delayTime(0.2), cc.fadeIn(0.3)));
         self.fingerSprite.getComponent(cc.Animation).play();
-        self.circle.active = false;
+        self.maskSprite.active = false;
         self.guideNode.on('touchstart', () => {
             self.guideNode.active = false;
             self.guideNode._touchListener.setSwallowTouches(false);
@@ -410,7 +545,7 @@ const guide = cc.Class({
 
     initNode: function () {
         self.guideNode.active = true;
-        self.circle.active = true;
+        self.maskSprite.active = true;
         self.fighterSprite.active = false;
         self.dialogueSprite.active = false;
         self.dialogueSprite.opacity = 0;
@@ -420,31 +555,8 @@ const guide = cc.Class({
         if (!!self.introductionSprite) {
             self.introductionSprite.active = false;
         }
-        self.setCircleSize('');
-    },
-
-    setCircleSize: function (button, pos) {
-        if (button == '') {
-            self.circle.width = 0;
-            self.circle.height = 0;
-            return;
-        }
-        let setpos =  function (w,h,p) {
-            self.circle.width = w;
-            self.circle.height = h;
-            self.circle.setPosition(p);
-        }
-        if (button.name == 'btnoCharpter') {
-            setpos(button.width - 50, button.height + 10, cc.v2(pos.x - 20, pos.y));
-        } else if (button.name == 'btnoEndless') { 
-            setpos(button.width - 50, button.height + 10, cc.v2(pos.x + 20, pos.y));
-        } else if (button.name == 'nodeTouzhi') { 
-            setpos(114, 114, pos);
-        } else if (self.step == 2||self.step==13||self.step ==21) { 
-            setpos(button.width + 50, button.height + 50, pos);
-        } else {
-            setpos(button.width + 20, button.height + 20, pos);
-        }
+        if (!!this.seekNodeByName('MaskBack'))
+            this.seekNodeByName("MaskBack").active = false;
     },
 
     seekNodeByName: function (root, name) {
@@ -471,10 +583,10 @@ const guide = cc.Class({
     },
 
     update: function (dt) {
-        if (self.mapLoop) {
+        if (!!self.mapLoop) {
             BattleManager.getInstance().managers[Defines.MgrType.SCENARIO].battleCampaignMode.mapUpdate(Defines.BATTLE_FRAME_SECOND);
         }
-        if (self.watchBlt) {
+        if (!!self.watchBlt) {
             if (BattleManager.getInstance().managers[Defines.MgrType.ENTITY].entityMonBltList.length > 0) {
                 self.watchBlt = false;
                 self.scheduleOnce(() => {
@@ -488,4 +600,3 @@ const guide = cc.Class({
     },
 
 });
-

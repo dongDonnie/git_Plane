@@ -601,11 +601,10 @@
       "__id__": 7
     },
     "_enabled": true,
-    "audioType": 0,
+    "audioType": 7,
     "_fontSize": 30,
     "_showShadow": false,
     "btnState": true,
-    "btnPress": false,
     "_N$fontColor": 0,
     "_N$textLabel": "",
     "_id": ""
@@ -3554,7 +3553,7 @@
     "asset": {
       "__uuid__": "831542a9-6ad8-4232-bf30-e0db74711967"
     },
-    "fileId": "0eZWBAjD5Joq2ouObza2Jn",
+    "fileId": "c1dgsIeB1B2qpt0UQqeVcb",
     "sync": false
   },
   {
@@ -3654,7 +3653,7 @@
     "asset": {
       "__uuid__": "831542a9-6ad8-4232-bf30-e0db74711967"
     },
-    "fileId": "aarwGr7gREyrcum9Pa+mcf",
+    "fileId": "14GGG+vpdDKYOJeBDcenRH",
     "sync": false
   },
   {
@@ -4396,7 +4395,6 @@
     "_fontSize": 0,
     "_showShadow": false,
     "btnState": true,
-    "btnPress": false,
     "_N$fontColor": 0,
     "_N$textLabel": "",
     "_id": ""
@@ -6525,7 +6523,7 @@
     "asset": {
       "__uuid__": "831542a9-6ad8-4232-bf30-e0db74711967"
     },
-    "fileId": "27vZWRsnhJ9pDkO+o+OrMT",
+    "fileId": "faLpCGqJRA+oC2u65C4Xzf",
     "sync": false
   },
   {
@@ -6625,7 +6623,7 @@
     "asset": {
       "__uuid__": "831542a9-6ad8-4232-bf30-e0db74711967"
     },
-    "fileId": "75YkbT1PpHb4mBaMrh4LrO",
+    "fileId": "95b29ik5NHJ525hhmtJtc8",
     "sync": false
   },
   {
@@ -7367,7 +7365,6 @@
     "_fontSize": 0,
     "_showShadow": false,
     "btnState": true,
-    "btnPress": false,
     "_N$fontColor": 0,
     "_N$textLabel": "",
     "_id": ""
@@ -9496,7 +9493,7 @@
     "asset": {
       "__uuid__": "831542a9-6ad8-4232-bf30-e0db74711967"
     },
-    "fileId": "c3xejMKvhHTpcX9mXMQN3B",
+    "fileId": "4bw7NRAXhB05bW7jwSyjrm",
     "sync": false
   },
   {
@@ -9596,7 +9593,7 @@
     "asset": {
       "__uuid__": "831542a9-6ad8-4232-bf30-e0db74711967"
     },
-    "fileId": "70lzLFqwpO4qKy8V2sYCp3",
+    "fileId": "325bc6LXhJsrzJbVxuh1Pc",
     "sync": false
   },
   {
@@ -10338,7 +10335,6 @@
     "_fontSize": 0,
     "_showShadow": false,
     "btnState": true,
-    "btnPress": false,
     "_N$fontColor": 0,
     "_N$textLabel": "",
     "_id": ""
@@ -12467,7 +12463,7 @@
     "asset": {
       "__uuid__": "831542a9-6ad8-4232-bf30-e0db74711967"
     },
-    "fileId": "70UBPDMK1GNbyaxWtPQQZE",
+    "fileId": "a700U2A0dJgKT4Oy3Crnyt",
     "sync": false
   },
   {
@@ -12567,7 +12563,7 @@
     "asset": {
       "__uuid__": "831542a9-6ad8-4232-bf30-e0db74711967"
     },
-    "fileId": "b3fuZJOrlF5KEx6P3JPlb8",
+    "fileId": "e5YqZTFCZJca5dBYa5+pht",
     "sync": false
   },
   {
@@ -13309,7 +13305,6 @@
     "_fontSize": 0,
     "_showShadow": false,
     "btnState": true,
-    "btnPress": false,
     "_N$fontColor": 0,
     "_N$textLabel": "",
     "_id": ""
@@ -15438,7 +15433,7 @@
     "asset": {
       "__uuid__": "831542a9-6ad8-4232-bf30-e0db74711967"
     },
-    "fileId": "f6am0Fz9VD0qu7tBsrHJOj",
+    "fileId": "b2QbQphrpM9IAA4NtX4XSl",
     "sync": false
   },
   {
@@ -15538,7 +15533,7 @@
     "asset": {
       "__uuid__": "831542a9-6ad8-4232-bf30-e0db74711967"
     },
-    "fileId": "6dJ60Huz5LrLMQjXm8x8Yg",
+    "fileId": "3eGPcW63VP75cVmZo8i0t4",
     "sync": false
   },
   {
@@ -16280,7 +16275,6 @@
     "_fontSize": 0,
     "_showShadow": false,
     "btnState": true,
-    "btnPress": false,
     "_N$fontColor": 0,
     "_N$textLabel": "",
     "_id": ""
@@ -18409,7 +18403,7 @@
     "asset": {
       "__uuid__": "831542a9-6ad8-4232-bf30-e0db74711967"
     },
-    "fileId": "a7X6Db6oxMfZ291dGzRb8i",
+    "fileId": "f8QM4dvHlDl5fkzxZE9aPo",
     "sync": false
   },
   {
@@ -18509,7 +18503,7 @@
     "asset": {
       "__uuid__": "831542a9-6ad8-4232-bf30-e0db74711967"
     },
-    "fileId": "0cCt6/Y8ZNvZEIcQNPQITw",
+    "fileId": "d37gK3xaNHIZGOd/BuVCeb",
     "sync": false
   },
   {
@@ -19251,7 +19245,6 @@
     "_fontSize": 0,
     "_showShadow": false,
     "btnState": true,
-    "btnPress": false,
     "_N$fontColor": 0,
     "_N$textLabel": "",
     "_id": ""
@@ -23584,7 +23577,7 @@
     "asset": {
       "__uuid__": "831542a9-6ad8-4232-bf30-e0db74711967"
     },
-    "fileId": "31cJyPUjJDOLoWsz+knlDA",
+    "fileId": "2a0ZqIBO1MsoIzVIBe5g5V",
     "sync": false
   },
   {
@@ -23684,7 +23677,7 @@
     "asset": {
       "__uuid__": "831542a9-6ad8-4232-bf30-e0db74711967"
     },
-    "fileId": "9cN3RcHYROoJg3O1I9fgXX",
+    "fileId": "b6o2IlsvFGgJdG0ye+r7UN",
     "sync": false
   },
   {
@@ -24506,7 +24499,6 @@
     "_fontSize": 0,
     "_showShadow": false,
     "btnState": true,
-    "btnPress": false,
     "_N$fontColor": 0,
     "_N$textLabel": "",
     "_id": ""
@@ -26146,7 +26138,6 @@
     "_fontSize": 26,
     "_showShadow": true,
     "btnState": true,
-    "btnPress": false,
     "_N$fontColor": 0,
     "_N$textLabel": "升级",
     "_id": ""
@@ -26452,7 +26443,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "nodeItem",
+    "_name": "nodeItemQ",
     "_objFlags": 0,
     "_parent": {
       "__id__": 829
@@ -28125,7 +28116,7 @@
     "asset": {
       "__uuid__": "831542a9-6ad8-4232-bf30-e0db74711967"
     },
-    "fileId": "97rwDi7hZO5q5K6DzZ858m",
+    "fileId": "c2Vm8FTcFGOKUSaNwISEQE",
     "sync": false
   },
   {
@@ -28225,7 +28216,7 @@
     "asset": {
       "__uuid__": "831542a9-6ad8-4232-bf30-e0db74711967"
     },
-    "fileId": "ac59aYk09GioJoc1JVeNh7",
+    "fileId": "f66meYaA5ACrKat7zYYmPI",
     "sync": false
   },
   {
@@ -29030,8 +29021,8 @@
     "target": {
       "__id__": 831
     },
-    "component": "ItemObject",
-    "_componentId": "",
+    "component": "",
+    "_componentId": "595dbqT1tZBm5rDdJkdrwer",
     "handler": "clickItem",
     "customEventData": ""
   },
@@ -29047,7 +29038,6 @@
     "_fontSize": 0,
     "_showShadow": false,
     "btnState": true,
-    "btnPress": false,
     "_N$fontColor": 0,
     "_N$textLabel": "",
     "_id": ""
@@ -30559,7 +30549,6 @@
     "_fontSize": 26,
     "_showShadow": true,
     "btnState": true,
-    "btnPress": false,
     "_N$fontColor": 0,
     "_N$textLabel": "进阶",
     "_id": ""
@@ -31031,6 +31020,7 @@
     "useExpItemID": -1,
     "progressAction": false,
     "canUpQuality": false,
+    "effectShengjie": null,
     "curLevelUpInterval": 0.2,
     "minInterval": 0.1,
     "interval": 0,

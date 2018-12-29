@@ -9,7 +9,7 @@ cc.Class({
 
     properties: {
         disappearAnime: false,
-        disappearPos:cc.v3(0,0),
+        disappearPos: cc.v3(0, 0),
         dmgMsg: null,
     },
 
@@ -20,7 +20,7 @@ cc.Class({
     reset() {
         this._super();
         this.disappearAnime = false;
-        this.disappearPos=cc.v3(0,0);
+        this.disappearPos = cc.v3(0, 0);
     },
 
     getPathName: function (path) {
@@ -50,7 +50,10 @@ cc.Class({
                 let anime = this.baseObject.addComponent(cc.Animation);
                 let animeBulletList = [];
                 for (let index = 1; index < 10; index += 2) {
-                    animeBulletList.push(GlobalVar.resManager().loadRes(ResMapping.ResType.SpriteFrame, 'cdnRes/animebullets/' + item.strName + '/' + item.strName + '_000' + index));
+                    let animeFrame = GlobalVar.resManager().loadRes(ResMapping.ResType.SpriteFrame, 'cdnRes/animebullets/' + item.strName + '/' + item.strName + '_000' + index);
+                    if (animeFrame != null) {
+                        animeBulletList.push(animeFrame);
+                    }
                 }
                 let clip = cc.AnimationClip.createWithSpriteFrames(animeBulletList, animeBulletList.length);
                 clip.name = item.strName;
@@ -86,7 +89,10 @@ cc.Class({
                 } else {
                     let animeBulletList = [];
                     for (let index = 1; index < 10; index += 2) {
-                        animeBulletList.push(GlobalVar.resManager().loadRes(ResMapping.ResType.SpriteFrame, 'cdnRes/animebullets/' + item.strName + '/' + item.strName + '_000' + index));
+                        let animeFrame = GlobalVar.resManager().loadRes(ResMapping.ResType.SpriteFrame, 'cdnRes/animebullets/' + item.strName + '/' + item.strName + '_000' + index);
+                        if (animeFrame != null) {
+                            animeBulletList.push(animeFrame);
+                        }
                     }
                     let clip = cc.AnimationClip.createWithSpriteFrames(animeBulletList, animeBulletList.length);
                     clip.name = item.strName;
@@ -111,7 +117,7 @@ cc.Class({
         this.setScale(item.dScale);
         this.addChild(this.baseObject, 1);
         let z = this._super();
-        
+
         return z;
     },
 
@@ -123,9 +129,9 @@ cc.Class({
         }
         if (this.disappearAnime) {
             this.setMovementType(-1);
-            var self=this;
+            var self = this;
             if (this.objectType == Defines.ObjectType.OBJ_HERO_BULLET) {
-                GlobalVar.resManager().loadRes(ResMapping.ResType.Prefab, 'cdnRes/battlemodel/prefab/effect/HeroBulletHit',function(prefab){
+                GlobalVar.resManager().loadRes(ResMapping.ResType.Prefab, 'cdnRes/battlemodel/prefab/effect/HeroBulletHit', function (prefab) {
                     if (prefab != null) {
                         let hit = cc.instantiate(prefab);
                         BattleManager.getInstance().displayContainer.addChild(hit, Defines.Z.HEROBULLETHIT);
@@ -134,7 +140,7 @@ cc.Class({
                     }
                 });
             } else {
-                GlobalVar.resManager().loadRes(ResMapping.ResType.Prefab, 'cdnRes/battlemodel/prefab/effect/MonsterBulletClear',function(prefab){
+                GlobalVar.resManager().loadRes(ResMapping.ResType.Prefab, 'cdnRes/battlemodel/prefab/effect/MonsterBulletClear', function (prefab) {
                     if (prefab != null) {
                         let clear = cc.instantiate(prefab);
                         BattleManager.getInstance().displayContainer.addChild(clear, Defines.Z.MONSTERBULLETCLEAR);
@@ -158,9 +164,9 @@ cc.Class({
 
     resumeAction() {
         if (this.baseObject != null) {
-            if (this.baseObject.getComponent(cc.Animation) != null) {
+            let item = GlobalVar.tblApi.getDataBySingleKey('TblBattleBullet', this.objectID);
+            if (this.baseObject.getComponent(cc.Animation) != null && item.strName.indexOf(".") == -1) {
                 let anime = this.baseObject.getComponent(cc.Animation);
-                let item = GlobalVar.tblApi.getDataBySingleKey('TblBattleBullet', this.objectID);
                 let animState = anime.play(item.strName);
                 animState.speed = 3;
             }

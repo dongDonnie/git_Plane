@@ -158,3 +158,9 @@ gf.playSpineAnimation = function (node, callback, isClearTracks, trackIndex, ani
         }
     })
 };
+
+gf.converToOtherNodeSpaceAR = function (originNode, targetNode) { 
+    let worldPos = originNode.parent.convertToWorldSpaceAR(originNode);
+    var nodePos = targetNode.parent.convertToNodeSpaceAR(worldPos);
+    targetNode.setPosition(nodePos);
+};

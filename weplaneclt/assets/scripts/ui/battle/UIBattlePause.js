@@ -16,6 +16,7 @@ var UIBattlePause = cc.Class({
         if (!require('config').GM_SWITCH) {
             this.node.getChildByName('btnGM').active = false;
         }
+
         if (this.battleManager.isEndlessFlag) {
             this.node.getChildByName('btnoGiveUp').getComponent('ButtonObject').textLabel = '直接结算';
         }
