@@ -23,6 +23,7 @@ cc.Class({
         GlobalVar.messageDispatcher.bindMsg(GameServerProto.GMID_TREASURE_MINING_ACK, self._recvDrawAck, self);
         GlobalVar.messageDispatcher.bindMsg(GameServerProto.GMID_TREASURE_DATA_ACK, self._recvTreasureDataAck, self);
         GlobalVar.messageDispatcher.bindMsg(GameServerProto.GMID_TREASURE_GOLDMINING_REWARD_ACK, self._recvTreasureReasureAck, self);
+        GlobalVar.messageDispatcher.bindMsg(GameServerProto.GMID_TREASURE_TIMEREDUCE_ACK, self._recvTreasureTimeReduceAck, self);
     },
 
     _recvTreasureDataAck: function (msgId, msg) {
@@ -82,5 +83,20 @@ cc.Class({
             Free: free || 0,
         };
         self.sendMsg(GameServerProto.GMID_TREASURE_MINING_REQ, msg);
+    },
+
+    _recvTreasureTimeReduceAck: function (msgId, msg) {
+        if (typeof msg != 'object'){
+            return;
+        }
+
+        GlobalVar.me().drawData.setTreasureTimeReduceData(msg.data);
+    },
+
+    sendTreasureTimeReduceReq: function (reserved) {
+        let msg = {
+            Reserved: reserved||0,
+        };
+        self.sendMsg(GameServerProto.GMID_TREASURE_TIMEREDUCE_REQ, msg);
     },
 });

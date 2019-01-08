@@ -6,9 +6,9 @@ const BattleManager = require('BattleManager');
 const EventMsgID = require("eventmsgid")
 const GameServerProto = require("GameServerProto");
 const md5 = require("md5");
-const weChatAPI = require("weChatAPI");
 const i18n = require('LanguageData');
 const base64 = require("base64");
+const WndTypeDefine = require("wndtypedefine");
 
 const RECV_ALL_NEED_VIP_LEVEL = 3;
 
@@ -121,24 +121,23 @@ cc.Class({
             tokenStr = tokenStr.replace("%d", GlobalVar.me().endlessData.getSeed()).replace("%d", battleMsg.BattleBlessStatusID).replace("%d", GlobalVar.me().campData.getBattleDieCount()).replace("%d", endlessScore).replace("%d", bmgr.endlessGetChsetCount)
             let token = md5.MD5(tokenStr);
             GlobalVar.handlerManager().endlessHandler.sendEndlessEndBattleReq(endlessScore, 0, bmgr.endlessGetChsetCount, token);
-            if (cc.sys.platform == cc.sys.WECHAT_GAME) {
+            let platformApi = GlobalVar.getPlatformApi();
+            if (platformApi){
                 let historyMaxScore = GlobalVar.me().endlessData.getHistoryMaxScore();
                 console.log("my history max score:", historyMaxScore, "  cur round score: ", endlessScore);
                 if (endlessScore >= historyMaxScore) {
-                    weChatAPI.submitUserData("score", endlessScore);
+                    platformApi.submitUserData("score", endlessScore);
                 }
-                weChatAPI.resetRankingData();
-            } else if (window && window["wywGameId"]=="5469"){
-
-            } 
+                platformApi.resetRankingData();
+            }
             let rankID = GlobalVar.me().endlessData.getRankID();
             if (rankID == 0) {
                 rankID = 1;
             }
-            let nextModeData = GlobalVar.tblApi.getDataBySingleKey('TblEndlessRank', rankID + 1);
-            if (nextModeData && endlessScore >= nextModeData.nScoreReq) {
-                GlobalVar.handlerManager().endlessHandler.sendEndlessRankUpReq();
-            }
+            // let nextModeData = GlobalVar.tblApi.getDataBySingleKey('TblEndlessRank', rankID + 1);
+            // if (nextModeData && endlessScore >= nextModeData.nScoreReq) {
+            //     GlobalVar.handlerManager().endlessHandler.sendEndlessRankUpReq();
+            // }
 
             if (bmgr.endlessGetChsetCount > 0) {
                 GlobalVar.me().endlessData.getChestFlag = true;
@@ -459,8 +458,9 @@ cc.Class({
         } else if (index == SHARE_GET) {
             getGold = parseInt(this.labelFiveGetGold.string);
 
-            if (cc.sys.platform == cc.sys.WECHAT_GAME) {
-                weChatAPI.shareNormal(107, function () {
+            let platformApi = GlobalVar.getPlatformApi();
+            if (cc.isValid(platformApi)){
+                platformApi.shareNormal(107, function () {
                     self.alreadRecvGoldBtnClick = true;
                     nodeEndless.getChildByName("nodeRecvGold").active = false;
                     nodeEndless.getChildByName("nodeGet").getChildByName("labelGetValue").getComponent(cc.Label).string = getGold;
@@ -470,9 +470,7 @@ cc.Class({
                     GlobalVar.handlerManager().endlessHandler.sendEndlessGetGoldReq(getGold);
                     // GlobalVar.sceneManager().gotoScene(SceneDefines.MAIN_STATE);
                 });
-            } else if (window && window["wywGameId"]=="5469"){
-
-            } else {
+            }else if (GlobalVar.configGMSwitch()){                
                 this.alreadRecvGoldBtnClick = true;
                 nodeEndless.getChildByName("nodeRecvGold").active = false;
                 nodeEndless.getChildByName("nodeGet").getChildByName("labelGetValue").getComponent(cc.Label).string = getGold;
@@ -506,6 +504,16 @@ cc.Class({
             // this.updateScore(this.targetDatas[i].target, this.targetDatas[i].startScore, this.targetDatas[i].targetScore);
             this.updateScore(this.targetDatas[i]);
         }
+    },
+
+    onBtnGoToLevelUpEquip: function () {
+        GlobalVar.windowManager().record = WndTypeDefine.WindowType.E_DT_NORMALIMPROVEMENT_WND;
+        GlobalVar.sceneManager().gotoScene(SceneDefines.MAIN_STATE);
+    },
+
+    onBtnGoToLevelUpGuaZai: function () {
+        GlobalVar.windowManager().record = WndTypeDefine.WindowType.E_DT_GUAZAIMAIN_WND;
+        GlobalVar.sceneManager().gotoScene(SceneDefines.MAIN_STATE);
     },
 
     updateScore: function (targetData) {

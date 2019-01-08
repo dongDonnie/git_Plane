@@ -108,6 +108,8 @@ cc.Class({
 
     _recvEndlessBuyPowerPointAck: function (msgId, msg) {
         if (!self.checkMsg(msg)) return;
+
+        GlobalVar.me().endlessData.saveBuyPowerPointData(msg.data);
     },
     // _recvEndlessQHUpAck: function(msgId, msg){
     //     if (!self.checkMsg(msg)) return;
@@ -207,11 +209,10 @@ cc.Class({
         self.sendMsg(GameServerProto.GMID_ENDLESS_USESTATUS_REQ, msg);
     },
 
-    sendEndlessBuyPowerPointReq: function () {
+    sendEndlessBuyPowerPointReq: function (free) {
 
-        let reserved = 0;
         let msg = {
-            Reserved: reserved,
+            Free: free || 0,
         };
 
         self.sendMsg(GameServerProto.GMID_ENDLESS_BUY_POWERPOINT_REQ, msg);

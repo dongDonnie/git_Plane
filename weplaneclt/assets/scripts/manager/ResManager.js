@@ -329,6 +329,14 @@ var ResManager = cc.Class({
             this.pushDeep('cdnRes/audio/battle/effect/boss_come', ResMapping.ResType.AudioClip);
             this.pushDeep('cdnRes/audio/battle/music/Boss_Room', ResMapping.ResType.AudioClip);
 
+            this.pushDeep('cdnRes/prefab/BattleScene/UIBattlePause', ResMapping.ResType.Prefab);
+            this.pushDeep('cdnRes/prefab/BattleScene/UIBattleCharge', ResMapping.ResType.Prefab);
+            this.pushDeep('cdnRes/prefab/BattleScene/UIBattleRevive', ResMapping.ResType.Prefab);
+            this.pushDeep('cdnRes/prefab/BattleScene/UIBattleAssist', ResMapping.ResType.Prefab);
+            // this.pushDeep('cdnRes/prefab/BattleScene/UIBattleEnd', ResMapping.ResType.Prefab);
+            // this.pushDeep('cdnRes/prefab/BattleScene/UIBattleCount', ResMapping.ResType.Prefab);
+            // this.pushDeep('cdnRes/prefab/BattleScene/UIBattleCard', ResMapping.ResType.Prefab);
+
             let memberID = GlobalVar.me().memberData.getStandingByFighterID();
             let memberArray = this.resSliceArray[memberID];
             for (let mindex in memberArray) {
@@ -376,7 +384,7 @@ var ResManager = cc.Class({
                     });
                 } else if (campName == 'CampEndless') {
                     let assistID = GlobalVar.me().memberData.getAssistFighterID();
-                    if(assistID!=0){
+                    if (assistID != 0) {
                         let assistArray = this.resSliceArray[assistID];
                         for (let aindex in assistArray) {
                             this.pushDeep(assistArray[aindex].url, assistArray[aindex].type);
@@ -429,13 +437,19 @@ var ResManager = cc.Class({
                 }
             }
         } else if (scene == SceneDefines.MAIN_STATE) {
+            this.pushDeep('cdnRes/prefab/Common/ComMsgNode', ResMapping.ResType.Prefab);
             this.pushDeep('cdnRes/prefab/Windows/NormalRoot', ResMapping.ResType.Prefab);
             this.pushDeep('cdnRes/prefab/Windows/MaskBack', ResMapping.ResType.Prefab);
             this.pushDeep('cdnRes/prefab/Windows/RootBack', ResMapping.ResType.Prefab);
-            this.pushDeep('cdnRes/prefab/Windows/EndlessChallengeView', ResMapping.ResType.Prefab);
             this.pushDeep('cdnRes/prefab/Windows/NormalDailyMissionWnd', ResMapping.ResType.Prefab);
             this.pushDeep('cdnRes/prefab/Windows/NormalQuestListView', ResMapping.ResType.Prefab);
             this.pushDeep('cdnRes/prefab/Windows/NormalNoticeView', ResMapping.ResType.Prefab);
+            // this.pushDeep('cdnRes/prefab/Windows/EndlessChallengeView', ResMapping.ResType.Prefab);
+            // this.pushDeep('cdnRes/prefab/Windows/NormalPlane', ResMapping.ResType.Prefab);
+            // this.pushDeep('cdnRes/prefab/Windows/NormalImprovement', ResMapping.ResType.Prefab);
+            // this.pushDeep('cdnRes/prefab/Windows/GuazaiMain', ResMapping.ResType.Prefab);
+            // this.pushDeep('cdnRes/prefab/Windows/NormalBag', ResMapping.ResType.Prefab);
+            // this.pushDeep('cdnRes/prefab/Windows/NormalDrawView', ResMapping.ResType.Prefab);
         }
         return this.resDeepArray.length;
     },
@@ -444,15 +458,31 @@ var ResManager = cc.Class({
         if (typeof this.resDeepArray !== 'undefined') {
             var self = this;
             for (let deep in this.resDeepArray) {
-                this.loadRes(this.resDeepArray[deep].type, this.resDeepArray[deep].url, callback, function (type, path) {
-                    self.loadRes(type, path, callback, function (errorType, errorPath) {
-                        if (!!callback) {
-                            callback(null, errorType, errorPath);
-                        }
-                    });
+                this.loadRes(this.resDeepArray[deep].type, this.resDeepArray[deep].url, callback, function (completeCount, totalCount, item) {
+                    // console.log("completeCount: "+completeCount);
+                    // console.log("totalCount: "+totalCount);
+                    // console.log("item: ",item);
                 });
+                //     ,function (type, path) {
+                //     self.loadRes(type, path, callback, function (errorType, errorPath) {
+                //         if (!!callback) {
+                //             callback(null, errorType, errorPath);
+                //         }
+                //     });
+                // });
             }
         }
+    },
+
+    checkPreLoadComplete: function () {
+        for (let deep in this.resDeepArray) {
+            let path = this.getPathName(this.resDeepArray[deep].url);
+            let obj = this.getCacheRes(this.resDeepArray[deep].type, path);
+            if (!cc.isValid(obj)) {
+                return false;
+            }
+        }
+        return true;
     },
 
     initResDocument: function () {
@@ -572,13 +602,13 @@ var ResManager = cc.Class({
 
         if (!resObj) {
             if (resType === ResMapping.ResType.SpriteFrame) {
-                cc.loader.loadRes(path, cc.SpriteFrame, function (err, obj) {
+                cc.loader.loadRes(path, cc.SpriteFrame, errorCB, function (err, obj) {
                     if (err) {
                         cc.error("LoadSpriteFrame err." + path);
-                        if (!!errorCB) {
-                            errorCB(ResMapping.ResType.SpriteFrame, path);
-                        }
-                        if(!!callback){
+                        // if (!!errorCB) {
+                        //     errorCB(ResMapping.ResType.SpriteFrame, path);
+                        // }
+                        if (!!callback) {
                             callback(null);
                         }
                         return;
@@ -589,13 +619,13 @@ var ResManager = cc.Class({
                     };
                 });
             } else if (resType === ResMapping.ResType.Prefab) {
-                cc.loader.loadRes(path, cc.Prefab, function (err, obj) {
+                cc.loader.loadRes(path, cc.Prefab, errorCB, function (err, obj) {
                     if (err) {
                         cc.error("LoadPrefab err." + path);
-                        if (!!errorCB) {
-                            errorCB(ResMapping.ResType.Prefab, path);
-                        }
-                        if(!!callback){
+                        // if (!!errorCB) {
+                        //     errorCB(ResMapping.ResType.Prefab, path);
+                        // }
+                        if (!!callback) {
                             callback(null);
                         }
                         return;
@@ -606,13 +636,13 @@ var ResManager = cc.Class({
                     };
                 });
             } else if (resType === ResMapping.ResType.AudioClip) {
-                cc.loader.loadRes(path, function (err, obj) {
+                cc.loader.loadRes(path, errorCB, function (err, obj) {
                     if (err) {
                         cc.error("LoadAudioClip err." + path);
-                        if (!!errorCB) {
-                            errorCB(ResMapping.ResType.AudioClip, path);
-                        }
-                        if(!!callback){
+                        // if (!!errorCB) {
+                        //     errorCB(ResMapping.ResType.AudioClip, path);
+                        // }
+                        if (!!callback) {
                             callback(null);
                         }
                         return;
@@ -623,13 +653,13 @@ var ResManager = cc.Class({
                     };
                 });
             } else if (resType === ResMapping.ResType.LabelAtlas) {
-                cc.loader.loadRes(path, function (err, obj) {
+                cc.loader.loadRes(path, errorCB, function (err, obj) {
                     if (err) {
                         cc.error("LoadLabelAtlas err." + path);
-                        if (!!errorCB) {
-                            errorCB(ResMapping.ResType.LabelAtlas, path);
-                        }
-                        if(!!callback){
+                        // if (!!errorCB) {
+                        //     errorCB(ResMapping.ResType.LabelAtlas, path);
+                        // }
+                        if (!!callback) {
                             callback(null);
                         }
                         return;
@@ -640,13 +670,13 @@ var ResManager = cc.Class({
                     };
                 });
             } else if (resType === ResMapping.ResType.Texture2D) {
-                cc.loader.loadRes(path, cc.Texture2D, function (err, obj) {
+                cc.loader.loadRes(path, cc.Texture2D, errorCB, function (err, obj) {
                     if (err) {
                         cc.error("LoadTexture2D err." + path);
-                        if (!!errorCB) {
-                            errorCB(ResMapping.ResType.Texture2D, path);
-                        }
-                        if(!!callback){
+                        // if (!!errorCB) {
+                        //     errorCB(ResMapping.ResType.Texture2D, path);
+                        // }
+                        if (!!callback) {
                             callback(null);
                         }
                         return;
@@ -657,13 +687,13 @@ var ResManager = cc.Class({
                     };
                 });
             } else {
-                cc.loader.loadRes(path, function (err, obj) {
+                cc.loader.loadRes(path, errorCB, function (err, obj) {
                     if (err) {
                         cc.error("preLoadResources err." + path);
                         // if (!!errorCB) {
                         //     errorCB(ResMapping.ResType.SpriteFrame, path);
                         // }
-                        if(!!callback){
+                        if (!!callback) {
                             callback(null);
                         }
                         return;

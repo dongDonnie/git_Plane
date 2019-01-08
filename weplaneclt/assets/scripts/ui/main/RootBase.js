@@ -1,3 +1,4 @@
+const GlobalVar = require("globalvar");
 const WindowManager = require("windowmgr");
 const WndTypeDefine = require("wndtypedefine");
 const UIBase = require("uibase");
@@ -94,7 +95,7 @@ cc.Class({
                     WindowManager.getInstance().deleteView(this.typeName);
                     WindowManager.getInstance().getTopView().getComponent(WindowManager.getInstance().getTopViewType()).animePlay(1);
                 } else {
-                    if (this.openType == 1){
+                    if (this.openType == 1) {
                         let uiNode = cc.find("Canvas/UINode");
                         if (uiNode != null) {
                             uiNode.active = true;
@@ -132,19 +133,71 @@ cc.Class({
     },
 
     enter: function (isRefresh) {
+
         if (isRefresh) {
             this.initRoot();
         } else {
 
         }
+
+        if (typeof this.showBanner === 'undefined') {
+            let tbl = GlobalVar.tblApi.getData('TblBanner');
+            this.showBanner = false;
+            for (let key in tbl) {
+                if (this.typeName == tbl[key].strWindowName &&
+                    this.openType == tbl[key].byWindowType &&
+                    !!tbl[key].byBanner) {
+                    this.showBanner = true;
+                    break;
+                }
+            }
+        }
+
+        //showBanner
+        if (this.showBanner) {
+            if (GlobalVar.getBannerSwitch() && !GlobalVar.getNeedGuide()) {
+                let platformApi = GlobalVar.getPlatformApi();
+                if (platformApi) {
+                    platformApi.showBannerAdNew(this.showBannnerCallback.bind(this));
+                }
+            }
+        }
     },
 
     escape: function (isRefresh) {
+
         if (isRefresh) {
 
         } else {
 
         }
+
+        if (typeof this.showBanner === 'undefined') {
+            let tbl = GlobalVar.tblApi.getData('TblBanner');
+            this.showBanner = false;
+            for (let key in tbl) {
+                if (this.typeName == tbl[key].strWindowName &&
+                    this.openType == tbl[key].byWindowType &&
+                    !!tbl[key].byBanner) {
+                    this.showBanner = true;
+                    break;
+                }
+            }
+        }
+
+        //hideBanner
+        if (this.showBanner) {
+            if (GlobalVar.getBannerSwitch() && !GlobalVar.getNeedGuide()) {
+                let platformApi = GlobalVar.getPlatformApi();
+                if (platformApi) {
+                    platformApi.hideBannerAdNew();
+                }
+            }
+        }
+    },
+
+    showBannnerCallback: function () {
+        
     },
 
 });

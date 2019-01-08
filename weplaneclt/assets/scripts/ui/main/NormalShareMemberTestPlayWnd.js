@@ -35,9 +35,6 @@ cc.Class({
     animePlayCallBack(name) {
         if (name == "Escape") {
             this._super("Escape");
-            if (GlobalVar.getBannerSwitch()){
-                weChatAPI.justShowBanner();
-            }
             GlobalVar.eventManager().removeListenerWithTarget(this);
             let self = this;
             WindowManager.getInstance().popView(false, function () {
@@ -46,23 +43,19 @@ cc.Class({
             }, false);
         } else if (name == "Enter") {
             this._super("Enter");
-            if (GlobalVar.getBannerSwitch()){
-                weChatAPI.justHideBanner();
-            }
             this.setPlane();
         }
     },
 
     onBtnShare: function (event) {
         let self = this;
-        if (cc.sys.platform == cc.sys.WECHAT_GAME){
-            weChatAPI.shareNormal(118, function () {
+        let platformApi = GlobalVar.getPlatformApi();
+        if (cc.isValid(platformApi)){
+            platformApi.shareNormal(118, function () {
                 GlobalVar.me().shareData.testPlayMemberID = self.memberID;
                 self.close();
             })
-        } else if (window && window["wywGameId"]=="5469"){
-
-        } else{
+        }else if (GlobalVar.configGMSwitch()){
             GlobalVar.me().shareData.testPlayMemberID = self.memberID;
             self.close();
         }

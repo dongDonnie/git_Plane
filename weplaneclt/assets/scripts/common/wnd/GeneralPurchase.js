@@ -135,9 +135,6 @@ cc.Class({
     animePlayCallBack(name) {
         if (name == "Escape") {
             this._super("Escape");
-            if (GlobalVar.getBannerSwitch()){
-                weChatAPI.justShowBanner();
-            }
             GlobalVar.eventManager().removeListenerWithTarget(this);
             let self = this;
             WindowManager.getInstance().popView(false, function () {
@@ -149,9 +146,6 @@ cc.Class({
             }, false, false);
         } else if (name == "Enter") {
             this._super("Enter");
-            if (GlobalVar.getBannerSwitch()){
-                weChatAPI.justHideBanner();
-            }
             this.clickConfirm = false;
             this.setString(this.lblCountNum, 1);
         }

@@ -90,6 +90,7 @@ cc.Class({
     onLoad: function () {
         this._super();
         this.nodeSVContent.removeAllChildren();
+        this.canClose = true;
     },
 
     animeStartParam(paramScale, paramOpacity) {
@@ -100,9 +101,6 @@ cc.Class({
     animePlayCallBack(name) {
         if (name == "Escape") {
             this._super("Escape");
-            if (GlobalVar.getBannerSwitch()){
-                weChatAPI.justShowBanner();
-            }
             for (let i = 0; i< this.nodeSVContent.children.length; i++){
                 this.nodeSVContent.children[i].x = -1000;
             }
@@ -110,16 +108,12 @@ cc.Class({
             WindowManager.getInstance().popView(false, null, false, false);
         } else if (name == "Enter") {
             this._super("Enter");
-            if (GlobalVar.getBannerSwitch()){
-                weChatAPI.justHideBanner();
-            }
             GlobalVar.eventManager().addEventListener(EventMsgId.EVENT_LIMIT_STORE_DATA_NTF, this.onLimitStoreDataGet, this);
             GlobalVar.eventManager().addEventListener(EventMsgId.EVENT_LIMIT_STORE_BUY_NTF, this.onLimitStoreBuyDataGet, this);
             this.requestStoreData();
             //接到消息后再初始化窗口
             this.animeEnd = true;
             this.countTime = -1;
-            this.canClose = false;
         }
     },
 
@@ -251,6 +245,7 @@ cc.Class({
             }else{
                 node.getChildByName("btnoVideo").getComponent(cc.Button).interactable = true;
                 node.getChildByName("btnoShare").getComponent(cc.Button).interactable = true;
+                GlobalVar.me().statFlags.FuLiLimitGiftFlag = 1;
             }
             node.getChildByName("btnoBuy").active = false;
             node.getChildByName("lblCanBuy").getComponent(cc.Label).string = "今日可获得次数"
@@ -297,6 +292,7 @@ cc.Class({
     onLimitStoreDataGet: function (data) {
         this.gift = data; //获取当日已经购买的次数
         this.hasData = true;
+        this.canClose = false;
     },
 
     onBuyBtnTouched: function (event) {
@@ -357,15 +353,18 @@ cc.Class({
             Free: 1,
         };
         
-
-        weChatAPI.showRewardedVideoAd(function () {
-            GlobalVar.handlerManager().limitStoreHandler.sendReq(GameServerProto.GMID_FULI_GIFT_BUY_REQ, msg);
-        }, function () {
-            weChatAPI.shareNormal(122, function () {
+        let platformApi = GlobalVar.getPlatformApi();
+        if (platformApi){
+            platformApi.showRewardedVideoAd(function () {
                 GlobalVar.handlerManager().limitStoreHandler.sendReq(GameServerProto.GMID_FULI_GIFT_BUY_REQ, msg);
-            }); 
-        });
-
+            },function () {
+                platformApi.shareNormal(122, function () {
+                    GlobalVar.handlerManager().limitStoreHandler.sendReq(GameServerProto.GMID_FULI_GIFT_BUY_REQ, msg);
+                }); 
+            })
+        } else {
+            GlobalVar.handlerManager().limitStoreHandler.sendReq(GameServerProto.GMID_FULI_GIFT_BUY_REQ, msg);
+        }
         let self = this;
         this.nodeBlock.enabled = true;
         setTimeout(function () {
@@ -384,9 +383,12 @@ cc.Class({
             Free: 1,
         };
 
-        weChatAPI.shareNormal(122, function () {
-            GlobalVar.handlerManager().limitStoreHandler.sendReq(GameServerProto.GMID_FULI_GIFT_BUY_REQ, msg);
-        }); 
+        let platformApi = GlobalVar.getPlatformApi();
+        if (platformApi){
+            platformApi.shareNormal(122, function () {
+                GlobalVar.handlerManager().limitStoreHandler.sendReq(GameServerProto.GMID_FULI_GIFT_BUY_REQ, msg);
+            }); 
+        }
     },
 
     getItemBuyId: function (id) {
@@ -399,6 +401,7 @@ cc.Class({
 
     onLimitStoreBuyDataGet: function (event) {
         if (event.ErrCode != GameServerProto.PTERR_SUCCESS){
+            this.canClose = true;
             if (event.ErrCode == GameServerProto.PTERR_DIAMOND_LACK){
                 CommonWnd.showNormalFreeGetWnd(event.ErrCode);
             } else{
@@ -409,7 +412,7 @@ cc.Class({
 
 
         CommonWnd.showTreasureExploit(event.Item);
-
+        GlobalVar.me().statFlags.FuLiLimitGiftFlag = 0;
         for (let j = 0; j < this.itemArray.length; j++)
         {
             this.updateItemList(j);

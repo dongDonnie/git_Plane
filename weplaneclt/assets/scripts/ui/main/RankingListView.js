@@ -86,8 +86,11 @@ cc.Class({
                 this.btnAuthorize.destroy();
                 this.btnAuthorize = null;
             }
+            this.nodeMyWorldRanking.active = false;
+            this.spriteRankingContent.node.active = false;
+            this.rankingDataContent.active = false;
 
-            this.setRankingType(TYPE_RANKING_ENDLESS);
+            // this.setRankingType(TYPE_RANKING_ENDLESS);
         } else if (name == "Enter") {
             this._super("Enter")
             this.showRanking();
@@ -194,8 +197,8 @@ cc.Class({
 
     sendGetRankingListReq: function (pageIndex, pageCount) {
         console.log("ranking page:", pageIndex);
-        if (cc.sys.platform !== cc.sys.WECHAT_GAME) {
-            // console.log("not in wechat, return");
+        let platformApi = GlobalVar.getPlatformApi();
+        if (!platformApi){
             return;
         }
 
@@ -210,36 +213,40 @@ cc.Class({
 
                 break;
             case FRIENDS_RANKING:
-                this.nodeMyWorldRanking.active = false;
-                this.spriteRankingContent.node.active = true;
-                this.rankingDataContent.active = false;
-                let self = this;
+                if (cc.sys.platform == cc.sys.WECHAT_GAME){
+                    this.nodeMyWorldRanking.active = false;
+                    this.spriteRankingContent.node.active = true;
+                    this.rankingDataContent.active = false;
+                    let self = this;
 
-                // 传递openid给子域
-                let openDataContext = wx.getOpenDataContext();
-                let ON_MSG_SET_MY_OPENID = 5;
-                openDataContext.postMessage({
-                    id: ON_MSG_SET_MY_OPENID,
-                    openID: GlobalVar.me().loginData.getLoginReqDataAccount(),
-                });
+                    // 传递openid给子域
+                    let openDataContext = wx.getOpenDataContext();
+                    let ON_MSG_SET_MY_OPENID = 5;
+                    openDataContext.postMessage({
+                        id: ON_MSG_SET_MY_OPENID,
+                        openID: GlobalVar.me().loginData.getLoginReqDataAccount(),
+                    });
 
-                let sharedCanvas = openDataContext.canvas;
-                sharedCanvas.width = 640;
-                sharedCanvas.height = this.rankingDataContent.height + 400;
-                weChatAPI.requestEndlessFriendRanking(pageIndex - 1, pageCount);
-                console.log("绘制微信排行榜")
-                this.schedule(function () {
-                    self.texture2D.initWithElement(sharedCanvas);
-                    self.texture2D.handleLoadedTexture();
-                    let sf = new cc.SpriteFrame(self.texture2D);
-                    // console.log(sf);
-                    self.spriteRankingContent.spriteFrame = sf;
-                }, 0.3, 5);
+                    let sharedCanvas = openDataContext.canvas;
+                    sharedCanvas.width = 640;
+                    sharedCanvas.height = this.rankingDataContent.height + 400;
+                    platformApi.requestEndlessFriendRanking(pageIndex - 1, pageCount);
+                    console.log("绘制微信排行榜")
+                    this.schedule(function () {
+                        self.texture2D.initWithElement(sharedCanvas);
+                        self.texture2D.handleLoadedTexture();
+                        let sf = new cc.SpriteFrame(self.texture2D);
+                        // console.log(sf);
+                        self.spriteRankingContent.spriteFrame = sf;
+                    }, 0.3, 5);
+                }else{
+                    platformApi.requestEndlessFriendRanking(pageIndex, pageCount, this.setRankingData.bind(this));
+                }
                 break;
             case WORLD_RANKING:
                 this.spriteRankingContent.node.active = false;
                 this.rankingDataContent.active = true;
-                weChatAPI.requestEndlessWorldRanking(GlobalVar.me().loginData.getLoginReqDataServerID(), GlobalVar.me().roleID, pageIndex, pageCount, this.setRankingData.bind(this));
+                platformApi.requestEndlessWorldRanking(GlobalVar.me().loginData.getLoginReqDataServerID(), GlobalVar.me().roleID, pageIndex, pageCount, this.setRankingData.bind(this));
                 break;
             default:
                 // console.log("error, please check rankingListView");
@@ -313,14 +320,30 @@ cc.Class({
                 spriteHeader.getComponent(cc.Sprite).spriteFrame = frame;
             });
         }else{
-            let url = data.avatar + "?a=a.png";
-            cc.loader.load(url, function (err, tex) {
-                if (err) {
-                    // cc.error("LoadURLSpriteFrame err." + url);
-                }
-                let spriteFrame = new cc.SpriteFrame(tex);
-                spriteHeader.getComponent(cc.Sprite).spriteFrame = spriteFrame;
-            });       
+            if ((window && window["wywGameId"]=="5469")){
+                let path = "cdnRes/common/common_default_head_img";
+                GlobalVar.resManager().loadRes(ResMapping.ResType.SpriteFrame, path, function (frame) {
+                    spriteHeader.getComponent(cc.Sprite).spriteFrame = frame;
+
+                    let url1 = "http://mwxsdk.phonecoolgame.com/avatar.php?s=" + encodeURIComponent(data.avatar) + "?a=a.png";
+                    cc.loader.load({url:url1, type: 'png'}, function (err, tex) {
+                        if (err) {
+                            // cc.error("LoadURLSpriteFrame err.aaaa" + url1);
+                        }
+                        let spriteFrame = new cc.SpriteFrame(tex);
+                        spriteHeader.getComponent(cc.Sprite).spriteFrame = spriteFrame;
+                    }); 
+                });
+            }else{
+                let url = data.avatar + "?a=a.png";
+                cc.loader.load(url, function (err, tex) {
+                    if (err) {
+                        cc.error("LoadURLSpriteFrame err.aaaa" + url);
+                    }
+                    let spriteFrame = new cc.SpriteFrame(tex);
+                    spriteHeader.getComponent(cc.Sprite).spriteFrame = spriteFrame;
+                }); 
+            }
         }
 
         //玩家排名
@@ -342,8 +365,8 @@ cc.Class({
     },
 
     sendChangeRankingPageReq: function (changeType) {
-        if (cc.sys.platform !== cc.sys.WECHAT_GAME) {
-            // console.log("not in wechat, return");
+        let platformApi = GlobalVar.getPlatformApi();
+        if (!platformApi) {
             return;
         }
 
@@ -361,11 +384,11 @@ cc.Class({
                 break;
         }
 
-        if (this.curRankingType == FRIENDS_RANKING){
+        if (this.curRankingType == FRIENDS_RANKING && (cc.sys.platform == cc.sys.WECHAT_GAME)){
             if (curPage > this.pageIndex){
-                weChatAPI.requestEndlessFriendRankingNext();
+                platformApi.requestEndlessFriendRankingNext();
             }else{
-                weChatAPI.requestEndlessFriendRankingBefore();
+                platformApi.requestEndlessFriendRankingBefore();
             }
             let self = this;
             let openDataContext = wx.getOpenDataContext();

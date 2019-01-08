@@ -378,6 +378,12 @@ cc.Class({
             this.curItemIndex += 1;
             //setTimeout(this.createItems.bind(this), this.createInterval);
         } else {
+            if(!cc.isValid(this.scrollView) && this.intervalIndex != -1){
+                cc.error('loop is already release');
+                clearInterval(this.intervalIndex);
+                return;
+            }
+
             this.scrollView.enabled = true;
             this.scrollView.node.removeChild(this.nodeBlock);
             this.nodeBlock = null;

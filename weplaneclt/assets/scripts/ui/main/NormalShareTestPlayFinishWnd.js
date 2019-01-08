@@ -44,18 +44,12 @@ cc.Class({
     animePlayCallBack(name) {
         if (name == "Escape") {
             this._super("Escape");
-            if (GlobalVar.getBannerSwitch()){
-                weChatAPI.justShowBanner();
-            }
             GlobalVar.eventManager().removeListenerWithTarget(this);
             WindowManager.getInstance().popView(false, function () {
 
             }, false);
         } else if (name == "Enter") {
             this._super("Enter");
-            if (GlobalVar.getBannerSwitch()){
-                weChatAPI.justHideBanner();
-            }
             this.memberID = GlobalVar.me().shareData.testPlayMemberID;
             GlobalVar.me().shareData.testPlayMemberID = 0;
             this.showTestPlayPlane();
@@ -90,14 +84,13 @@ cc.Class({
 
     onBtnShare: function (event) {
         let self = this;
-        if (cc.sys.platform == cc.sys.WECHAT_GAME){
-            weChatAPI.shareNormal(119, function () {
+        let platformApi = GlobalVar.getPlatformApi();
+        if (cc.isValid(platformApi)){
+            platformApi.shareNormal(119, function () {
                 GlobalVar.handlerManager().shareHandler.sendMemberTestPlayReq(self.memberID);
                 self.btnShare.interactable = false;
             })
-        } else if (window && window["wywGameId"]=="5469"){
-
-        } else{
+        }else if (GlobalVar.configGMSwitch()){
             GlobalVar.handlerManager().shareHandler.sendMemberTestPlayReq(this.memberID);
             this.btnShare.interactable = false;
         }
@@ -111,9 +104,6 @@ cc.Class({
     },
 
     onBtnGetWay: function () {
-        if (GlobalVar.getBannerSwitch()){
-            weChatAPI.hideBannerAd();
-        }
         GlobalVar.eventManager().removeListenerWithTarget(this);
         WindowManager.getInstance().popView(false, function () {
             CommonWnd.showDrawView();

@@ -19,7 +19,7 @@ CampNormal57.data = {
         {
             checkTime:-1,
             condition:[
-                {interval:18},
+                {interval:16},
             ],
             effect:[
                 {drop:10000},

@@ -6,6 +6,7 @@ const EventMsgID = require("eventmsgid");
 const GlobalFunc = require('GlobalFunctions')
 const i18n = require('LanguageData');
 const weChatAPI = require("weChatAPI");
+const CommonWnd = require("CommonWnd");
 
 const MODE_GET_BUY_ITEM = 0;
 const MODE_GET_DRAW_ITEM = 1;
@@ -27,6 +28,14 @@ cc.Class({
             type: cc.Node,
         },
         itemStack: [],
+        nodeOpenSystem: {
+            default: null,
+            type: cc.Node
+        },
+        openModel: {
+            default: null,
+            type: cc.Node
+        }
     },
 
     onLoad: function () {
@@ -36,6 +45,7 @@ cc.Class({
         
 
         this.spriteBackLight.node.runAction(cc.repeatForever(cc.rotateBy(8, 360)));
+        this.node.getChildByName("spriteContinue").runAction(cc.repeatForever(cc.sequence(cc.fadeOut(0.7),cc.fadeIn(0.7))))
         this.animeStartParam(0, 0);
     },
 
@@ -92,6 +102,7 @@ cc.Class({
         labelLevelBefore.string = levelUpData.LevelOld;
         labelLevelCur.string = levelUpData.LevelCur;
         this.levelOld = levelUpData.LevelOld;
+        this.nodeOpenSystem.removeAllChildren();
     },
 
     addItem: function (data, mode) {
@@ -124,29 +135,80 @@ cc.Class({
     animePlayCallBack(name) {
         if (name == "Escape") {
             this._super("Escape");
-            var self = this;            
-            if (GlobalVar.getBannerSwitch()){
-                weChatAPI.hideBannerAd();
-            }
+            var self = this;
             WindowManager.getInstance().popView(false, function () {
-                let level = GlobalVar.me().getLevel();
-                let limitLevel = GlobalVar.tblApi.getDataBySingleKey('TblSystem', 24).wOpenLevel;
-                let sweep = GlobalVar.tblApi.getDataBySingleKey('TblSystem', 31).wOpenLevel;
-                if (level >= limitLevel && self.levelOld < limitLevel) {
-                    require('Guide').getInstance().guideToEndless();
+                // let level = GlobalVar.me().getLevel();
+                // let limitLevel = GlobalVar.tblApi.getDataBySingleKey('TblSystem', 24).wOpenLevel;
+                // let sweep = GlobalVar.tblApi.getDataBySingleKey('TblSystem', 31).wOpenLevel;
+                // if (level >= limitLevel && self.levelOld < limitLevel) {
+                //     require('Guide').getInstance().guideToEndless();
                 // }
-                // else if (level >= sweep && self.levelOld < sweep) { 
-                //     require('Guide').getInstance().guideToSweep();
-                }else{
-                    WindowManager.getInstance().resumeView();
-                }
+                // // else if (level >= sweep && self.levelOld < sweep) { 
+                // //     require('Guide').getInstance().guideToSweep();
+                // else{
+                //     WindowManager.getInstance().resumeView();
+                // }
+                WindowManager.getInstance().resumeView();
             }, false);
         } else if (name == "Enter") {
             this._super("Enter");
-            if (GlobalVar.getBannerSwitch() && !GlobalVar.getNeedGuide()){
-                weChatAPI.showBannerAd();
-            }
+            let spriteTip = this.node.getChildByName("spriteContinue");
+            spriteTip.active = true;
             GlobalVar.me().setLevelUpFlag();
+            this.openNewFunction();
+        }
+    },
+
+    openNewFunction: function () { 
+        let level = GlobalVar.me().getLevel();
+        let tblSystem = GlobalVar.tblApi.getData('TblSystem');
+        let systems = [];
+        for (let key in tblSystem) {
+            if (tblSystem[key].wOpenLevel != 1 && tblSystem[key].byLevelUpShow == 1) {
+                systems.push(tblSystem[key]);
+            }
+        }
+        for (let i = 0; i < systems.length; i++){
+            if (level >= systems[i].wOpenLevel && this.levelOld < systems[i].wOpenLevel) {
+                let model = cc.instantiate(this.openModel);
+                model.active = true;
+                model.getChildByName('labelOpenTecName').getComponent(cc.Label).string = systems[i].strName+' 开启';
+                model.getChildByName('labelOpenTecDesc').getComponent(cc.Label).string = systems[i].strLevelUpString;
+                model.getChildByName('spriteOpenIcon').active = true;
+                model.getChildByName('btnGo').active = false;
+                this.nodeOpenSystem.addChild(model);
+            }
+        }
+
+        let chapterDataList = GlobalVar.tblApi.getDataBySingleKey('TblChapter', 1);
+        for (let i = 0; i < chapterDataList.length; i++){
+            if (level >= chapterDataList[i].wOpenLv && this.levelOld < chapterDataList[i].wOpenLv) {
+                let str = '第' + (i + 1) + '章  ' + chapterDataList[i].strChapterName + '  开启';
+                let model = cc.instantiate(this.openModel);
+                model.active = true;
+                model.getChildByName('labelOpenTecName').getComponent(cc.Label).string = "主线关卡";
+                model.getChildByName('labelOpenTecDesc').getComponent(cc.Label).string = str;
+                model.getChildByName('spriteOpenIcon').active = false;
+                model.getChildByName('btnGo').active = true;
+                this.nodeOpenSystem.addChild(model);
+            }
+        }
+    },
+
+    goToChapterView: function () {
+        CommonWnd.showQuestList();
+    },
+
+    showBannnerCallback: function (bannerHeight) {
+        let spriteTip = this.node.getChildByName("spriteContinue");
+        if (cc.sys.platform == cc.sys.WECHAT_GAME){
+            let winHeight = cc.winSize.height;
+            let screenHeight = wx.getSystemInfoSync().screenHeight;
+            spriteTip.y = -(winHeight/2 - bannerHeight / screenHeight * winHeight);
+            spriteTip.active = true;
+        }else{
+            spriteTip.y = -300;
+            spriteTip.active = true;
         }
     },
 

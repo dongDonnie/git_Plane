@@ -20,12 +20,8 @@ var DrawData = cc.Class({
         self.oneFreeDrawCount = 0;
         self.goldMiningTimes = 0;
         self.goldMiningRewards = [];
-    },
-
-    showDrawItemInfo: function (data) {
-        // console.log("sumoonData");
-        // cc.log('showDrawItemInfo：', data);
-        GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_GET_DRAW_INFO, data);
+        self.nextFreeTime = 0;
+        self.reduceCount = 0;
     },
 
     setTreasureData: function (data) {
@@ -34,6 +30,8 @@ var DrawData = cc.Class({
             self.goldMiningTimes = data.GoldMiningTimes;
             self.goldMiningRewards = data.GoldMiningRewards;
             self.oneFreeDrawCount = data.OneFreeCount;
+            self.nextFreeTime = data.NextFreeTime;
+            self.reduceCount = data.ReduceCount;
         }
         GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_GET_RICHTREASURE_RESULT, data);
     },
@@ -42,11 +40,28 @@ var DrawData = cc.Class({
         return self.oneFreeDrawCount;
     },
 
+    getFreeReduceCount: function () {
+        return self.reduceCount;
+    },
+
+    getNextFreeTime: function () {
+        return self.nextFreeTime;
+    },
+
+    setTreasureTimeReduceData: function (data) {
+        if (data.ErrCode == GameServerProto.PTERR_SUCCESS){
+            self.nextFreeTime = data.NextFreeTime;
+            self.reduceCount = data.ReduceCount;
+        }
+        GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_TREASURE_REDUCE_TIME_RESULT, data);
+    },
+
     showTrasureMiningResult: function (data) {
         if (data.ErrCode == GameServerProto.PTERR_SUCCESS){
             self.data.trasureMining = data;
             self.goldMiningTimes = data.MiningTimes || self.goldMiningTimes;
             self.oneFreeDrawCount = data.OneFreeCount;
+            self.nextFreeTime = data.NextFreeTime;
         }
         GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_GET_TREASURE_MINING_RESULT, data);
     },

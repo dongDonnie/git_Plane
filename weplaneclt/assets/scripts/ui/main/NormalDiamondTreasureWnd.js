@@ -36,6 +36,7 @@ cc.Class({
 
     onLoad() {
         this._super();
+        this.typeName = WndTypeDefine.WindowType.E_DT_NORMAL_DIAMOND_TREASURE_WND;
         this.animeStartParam(0, 0);
     },
 
@@ -52,24 +53,12 @@ cc.Class({
     animePlayCallBack(name) {
         if (name == "Escape") {
             this._super("Escape");
-            if (GlobalVar.getBannerSwitch()){
-                weChatAPI.hideBannerAd();
-            }
             GlobalVar.eventManager().removeListenerWithTarget(this);
             WindowManager.getInstance().popView(false, null, false, false);
         } else if (name == "Enter") {
             this._super("Enter");
             let spriteTip = this.node.getChildByName("nodeBtn").getChildByName("spriteContinueTip");
-            if (GlobalVar.getBannerSwitch() && !GlobalVar.getNeedGuide()){
-                let winHeight = cc.winSize.height;
-                let screenHeight = wx.getSystemInfoSync().screenHeight;
-                weChatAPI.showBannerAd(function (bannerHeight) {
-                    spriteTip.y = -(winHeight/2 - bannerHeight / screenHeight * winHeight);
-                    spriteTip.active = true;
-                });
-            }else{
-                spriteTip.active = true;
-            }
+            spriteTip.active = true;
 
             if (!GlobalVar.srcSwitch()) {
                 this.getNodeByName('btnRecharge').active = true;
@@ -77,6 +66,19 @@ cc.Class({
             }
             this.registerEvent();
             this.initDiamondTreasureWnd();
+        }
+    },
+
+    showBannnerCallback: function (bannerHeight) {
+        let spriteTip = this.node.getChildByName("nodeBtn").getChildByName("spriteContinueTip");
+        if (cc.sys.platform == cc.sys.WECHAT_GAME){
+            let winHeight = cc.winSize.height;
+            let screenHeight = wx.getSystemInfoSync().screenHeight;
+            spriteTip.y = -(winHeight/2 - bannerHeight / screenHeight * winHeight);
+            spriteTip.active = true;
+        }else{
+            spriteTip.y = -300;
+            spriteTip.active = true;
         }
     },
 
@@ -97,7 +99,7 @@ cc.Class({
         // 剩余次数状态
         let curTime = GlobalVar.me().shareData.getFreeDiamondCount();
         let maxTime = GlobalVar.tblApi.getDataBySingleKey('TblParam', GameServerProto.PTPARAM_RCG_FREE_DIAMOND_COUNT_MAX).dValue;
-        this.labelLeftTimesTip.string = i18n.t('label.4000318').replace("%cur", curTime).replace("%max", maxTime);
+        this.labelLeftTimesTip.string = i18n.t('label.4000318').replace("%cur", maxTime - curTime).replace("%max", maxTime);
 
         if (GlobalVar.me().vipLevel >= NOVIDEO_NEED_VIP_LEVEL){
             // this.labelVipTips.node.color = cc.color(160, 160, 160);
@@ -128,18 +130,19 @@ cc.Class({
         
         if (GlobalVar.me().vipLevel >= NOVIDEO_NEED_VIP_LEVEL){
             GlobalVar.handlerManager().shareHandler.sendGetFreeDiamondReq();
-        }else if (cc.sys.platform == cc.sys.WECHAT_GAME){
-            weChatAPI.showRewardedVideoAd(function () {
-                GlobalVar.handlerManager().shareHandler.sendGetFreeDiamondReq();
-            }, function () {
-                weChatAPI.shareNormal(115, function () {
+        }else{
+            let platformApi = GlobalVar.getPlatformApi();
+            if (cc.isValid(platformApi)){
+                platformApi.showRewardedVideoAd(function () {
                     GlobalVar.handlerManager().shareHandler.sendGetFreeDiamondReq();
-                }); 
-            });
-        } else if (window && window["wywGameId"]=="5469"){
-
-        } else{
-            GlobalVar.handlerManager().shareHandler.sendGetFreeDiamondReq();
+                }, function () {
+                    platformApi.shareNormal(115, function () {
+                        GlobalVar.handlerManager().shareHandler.sendGetFreeDiamondReq();
+                    }); 
+                });
+            }else if (GlobalVar.configGMSwitch()){
+                GlobalVar.handlerManager().shareHandler.sendGetFreeDiamondReq();
+            }
         }
     },
 

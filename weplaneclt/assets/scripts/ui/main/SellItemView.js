@@ -70,9 +70,6 @@ cc.Class({
     animePlayCallBack(name) {
         if (name == "Escape") {
             this._super("Escape");
-            if (GlobalVar.getBannerSwitch()){
-                weChatAPI.justShowBanner();
-            }
             if(this.sellConfirm){
                 this.sellConfirm=false;
                 var self=this;
@@ -86,9 +83,6 @@ cc.Class({
             }
         } else if (name == "Enter") {
             this._super("Enter");
-            if (GlobalVar.getBannerSwitch()){
-                weChatAPI.justHideBanner();
-            }
             this.count = 1;
             this.setLabelCountsNumber(this.count);
             let item=GlobalVar.me().bagData.getItemBySlot(this.slot);

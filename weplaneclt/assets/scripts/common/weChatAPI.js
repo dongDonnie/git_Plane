@@ -4,6 +4,8 @@ const md5 = require("md5");
 const StoreageData = require("storagedata");
 const i18n = require('LanguageData');
 const GlobalFunc = require('GlobalFunctions');
+const CommonWnd = require("CommonWnd");
+const SceneDefines = require("scenedefines")
 
 const GAME_ID = 7002;
 const APP_ID = "wxa60dbd8655a13c00";
@@ -44,8 +46,10 @@ const URL_GET_LAUNCH_NOTICE = "https://wepup.phonecoolgame.com/json.php?_c=start
 
 const URL_GET_MY_SERVER = "https://wepup.phonecoolgame.com/json.php?_c=server&_f=my&opid=" + OP_ID + "&gameopid=" + GAME_OP_ID + "&ver=%d&userid=%d";
 
+const URL_GET_ADC = "https://gamecenter.phonecoolgame.com/adc/getAdFrame";
+
 module.exports = {
-    
+
     //hide,show 时的时间记录
     shareVersion: "2.3.0",
     shareSetting: {
@@ -78,6 +82,14 @@ module.exports = {
 
     _bannerAd: null,
     _bannerCount: 0,
+    _bannerTimeCount: 0,
+    _bannerExchangeTime: 120,
+
+    _framesAd: [],  //悬浮广告
+    _bigFramesAd: [], // 大的序列帧动画
+    _frameIdx: 0,
+    _spriteFrameMap: {},//key:url, value: cc.spriteFrame
+    _resFileMap: null,
 
     getShareSuccess: function () {
         let shareSuccess = false;
@@ -129,15 +141,17 @@ module.exports = {
         let self = this;
         let setting = this.shareSetting;
         this.request(URL_SHARE_CONFIG, null, function (data) {
-            setting.shareDefaultGap = parseInt(data.shareMinTime);
-            setting.shareFailProb = parseInt(data.sharefailprob);
-            setting.shareFailReduceGap = parseInt(data.shareReduceTime);
-            setting.shareGap = parseInt(data.shareBaseTime);
-            setting.shareLowestGap = parseInt(data.shareLowerTime);
-            setting.shareNeedDiffGroup = !!parseInt(data.shareNeedDiffGroup)
+            data.shareMinTime && (setting.shareDefaultGap = parseInt(data.shareMinTime));
+            (data.sharefailprob > -1) && (setting.shareFailProb = parseInt(data.sharefailprob));
+            data.shareReduceTime && (setting.shareFailReduceGap = parseInt(data.shareReduceTime));
+            data.shareBaseTime && (setting.shareGap = parseInt(data.shareBaseTime));
+            data.shareLowerTime && (setting.shareLowestGap = parseInt(data.shareLowerTime));
+            setting.shareNeedDiffGroup = !!parseInt(data.shareNeedDiffGroup);
             setting.shareFailTimes = [3, 5, 7];
-            setting.shareFailTimes.push(parseInt(data.shareValue));
+            data.shareValue && setting.shareFailTimes.push(parseInt(data.shareValue));
             setting.shareTimes = StoreageData.getTotalShareTimes();
+            data.bannerRefreshTime && (self._bannerExchangeTime = parseInt(data.bannerRefreshTime));
+            console.log("bannerRefreshTime:", self._bannerExchangeTime);
             console.log("get share config success, new config:", setting);
         }, null, GET_METHOD, GET_HEADER);
     },
@@ -304,14 +318,11 @@ module.exports = {
         }
     },
 
-    showToast: function (tips, useWXToast = false, showCancel = false,  confirmText, cancelText, confirmCallback, cancelCallback) {
-        // wx.showToast({  
-        //     title: tips
-        // }) true, true, "分享", "取消", shareNeedClick(index, successCallback, failCallback, strTips, successTips, failTips, notShareInGropTips)
-        if (!useWXToast){
+    showToast: function (tips, useWXToast = false, showCancel = false, confirmText, cancelText, confirmCallback, cancelCallback) {
+        if (!useWXToast) {
             tips && GlobalVar.comMsg.showMsg(tips);
-        }else{
-            if (tips){
+        } else {
+            if (tips) {
                 wx.showModal({
                     title: '提示',
                     content: tips,
@@ -319,9 +330,9 @@ module.exports = {
                     confirmText: confirmText || "确定",
                     cancelText: cancelText || "取消",
                     success: function (res) {
-                        if (res.confirm){
+                        if (res.confirm) {
                             confirmCallback && confirmCallback();
-                        }else if (res.cancel){
+                        } else if (res.cancel) {
                             cancelCallback && cancelCallback();
                         }
                     },
@@ -357,6 +368,10 @@ module.exports = {
         if (cc.sys.platform !== cc.sys.WECHAT_GAME) {
             return;
         }
+        if (GlobalVar.getShareControl() == 6) {
+            this.showRewardedVideoAd(successCallback, failCallback);
+            return;
+        }
 
         let material = this.getRandomMaterial(index);
         if (!material) {
@@ -370,6 +385,7 @@ module.exports = {
         this.shareMessageFlag = true;
         let self = this;
         let str = "materialID=" + material.materialID;
+        str += "&from_openid=" + GlobalVar.me().loginData.getLoginReqDataAccount();
 
         let CC_GMAE_ONSHOW_OPEN = this.shareSetting.share;
         if (this.wxBversionLess(this.shareVersion)) {
@@ -389,8 +405,17 @@ module.exports = {
                     self.showToast(successTips || i18n.t('label.4000308'));
                 }
             } else {
-                self.showToast(failTips || i18n.t('label.4000310'));
+                // self.showToast(failTips || i18n.t('label.4000310'));
                 failCallback && failCallback();
+                if (GlobalVar.sceneManager().getCurrentSceneType() == SceneDefines.BATTLE_STATE) {
+                    self.showToast(failTips || i18n.t('label.4000310'), true, true, "分享", "取消", function () {
+                        self.shareNormal(index, successCallback, failCallback, successTips, failTips)
+                    });
+                } else {
+                    CommonWnd.showMessage(null, CommonWnd.oneConfirm, i18n.t('label.4000216'), i18n.t('label.4000310'), null, function () {
+                        self.shareNormal(index, successCallback, failCallback, successTips, failTips)
+                    }, null, i18n.t('label.4000304'));
+                }
             }
             self.setOffShowListener(onShowFunc);
             self.setOffHideListener(onHideFunc);
@@ -410,6 +435,11 @@ module.exports = {
             return;
         }
 
+        if (GlobalVar.getShareControl() == 6) {
+            this.showRewardedVideoAd(successCallback, failCallback);
+            return;
+        }
+
         let material = this.getRandomMaterial(index);
         if (!material) {
             console.log("material not found");
@@ -420,9 +450,8 @@ module.exports = {
         }
         this.reportShareMaterial(material.materialID);
 
-        
-
         let str = "materialID=" + material.materialID;
+        str += "&from_openid=" + GlobalVar.me().loginData.getLoginReqDataAccount();
         let self = this;
         if (this.getShareNeedClickTime() != 0 && this.curShowFunc) {
             this.setOffShowListener(this.curShowFunc);
@@ -825,26 +854,27 @@ module.exports = {
         }
         let self = this;
         let url = URL_GET_MATERIALS.replace("%d", APP_ID);
-        this._defaultMaterial = [
-            {
+        this._defaultMaterial = [{
                 cdnurl: "https://cdn.phonecoolgame.com/wxgame/hezi/back/wpjz-003.jpg",
                 content: "超经典飞行射击游戏，王牌出击等你来战！",
                 materialID: "138",
-            },
-        ],
-        self.request(url, null, function (data) {
-            if (data.ecode !== 0) {
-                self.showLog("getMaterials error, ecode = ", data.ecode);
-                return;
-            }
-            self._Materials = data.data;
-            if (!!successCallback) {
-                successCallback(data.data);
-            }
-        }, null, GET_METHOD, GET_HEADER);
+            }, ],
+            self.request(url, null, function (data) {
+                if (data.ecode !== 0) {
+                    self.showLog("getMaterials error, ecode = ", data.ecode);
+                    return;
+                }
+                self._Materials = data.data;
+                if (!!successCallback) {
+                    successCallback(data.data);
+                }
+            }, null, GET_METHOD, GET_HEADER);
     },
     getRandomMaterial: function (index) {
-        let materials = this._Materials[index] || this._defaultMaterial;
+        if (typeof index != "number") {
+            console.log("文案编号不是数字");
+        }
+        let materials = (this._Materials && this._Materials[index]) || this._defaultMaterial;
         let ranNum = Math.floor(Math.random() * materials.length);
         return materials[ranNum] || materials[0];
     },
@@ -894,13 +924,13 @@ module.exports = {
         let url = URL_SERVER_LIST.replace("%d", version).replace("%d", userID);
         let self = this;
         this.request(url, null, function (data) {
-            self.showLog("getServerList success:", data);
+            console.log("getServerList success:", data);
             StoreageData.setLocalServerListData(data);
             if (!!successCallback) {
                 successCallback(data);
             }
         }, function (data) {
-            self.showLog("getServerList fail:", data);
+            console.log("getServerList fail:", data);
             if (notFirst) {
                 let localData = StoreageData.getLocalServerListData();
                 if (localData) {
@@ -997,7 +1027,7 @@ module.exports = {
             isFirst: isFirst,
         });
     },
-    resetRankingData: function (){
+    resetRankingData: function () {
         let openDataContext = wx.getOpenDataContext();
         let ON_MSG_RESET_RANK_GET_DATA = 7;
         openDataContext.postMessage({
@@ -1043,11 +1073,11 @@ module.exports = {
     },
 
     createRewardedVideoAd: function () {
-        if (this.wxBversionLess("2.0.4")){
+        if (this.wxBversionLess("2.0.4")) {
             StoreageData.setShareTimesWithKey("rewardedVideoLimit", 1);
             return;
         }
-        if (this._rewardedVideoAd){
+        if (this._rewardedVideoAd) {
             console.log("视频组件已存在，无需重新创建");
             return;
         }
@@ -1062,6 +1092,7 @@ module.exports = {
             if (res && res.isEnded || res === undefined) {
                 console.log("看广告成功，获得奖励");
                 self._videoAdSuccessCallback && self._videoAdSuccessCallback();
+                StoreageData.cleanShareTimesWithKey("rewardedVideoLimit", 1);
             } else {
                 // 播放中途退出
                 console.log("退出广告播放，无奖励");
@@ -1078,25 +1109,25 @@ module.exports = {
     },
 
     showRewardedVideoAd: function (successCallback, failCallback, cancelCallback) {
-        if (cc.sys.platform != cc.sys.WECHAT_GAME){
+        if (cc.sys.platform != cc.sys.WECHAT_GAME) {
             return;
         }
-        if (this.wxBversionLess("2.0.4")){
+        if (this.wxBversionLess("2.0.4")) {
             console.log("版本库低于2.0.4，没有创建视频组件");
             failCallback && failCallback();
             return;
         }
-        if (!this._rewardedVideoAd){
+        if (!this._rewardedVideoAd) {
             StoreageData.getShareTimesWithKey("rewardedVideoLimit", 1)
             console.log("视频组件未创建成功");
             failCallback && failCallback();
             return;
         }
-        if (!!StoreageData.getShareTimesWithKey("rewardedVideoLimit", 1)){
-            console.log("因为拉取视频失败而认为今日视频已达到上限");
-            failCallback && failCallback();
-            return;
-        }
+        // if (!!StoreageData.getShareTimesWithKey("rewardedVideoLimit", 1)) {
+        //     console.log("因为拉取视频失败而认为今日视频已达到上限");
+        //     failCallback && failCallback();
+        //     return;
+        // }
         let videoAd = this._rewardedVideoAd;
         this._videoAdSuccessCallback = successCallback;
         this._videoAdCancelCallback = cancelCallback;
@@ -1113,6 +1144,79 @@ module.exports = {
             });
     },
 
+    createBannerAdList: function () {
+        if (this.wxBversionLess("2.0.4")) {
+            console.log("版本库低于2.0.4，不能创建Banner组件");
+            GlobalVar.bannerOpen = false;
+            return;
+        }
+        let arrBannerIDList = BANNERUNIT_ID_LIST;
+        let systemInfo = wx.getSystemInfoSync();
+        for (let i = 0; i< arrBannerIDList.length; i++){
+            let pBanner = wx.createBannerAd({
+                adUnitId: arrBannerIDList[i],
+                style: {
+                    left: 0,
+                    top: systemInfo.screenHeight,
+                    width: systemInfo.screenWidth,
+                }
+            });
+            pBanner.onResize(function () {
+                pBanner.style.top = systemInfo.screenHeight - pBanner.style.realHeight - ((GlobalVar.isIOS && GlobalFunc.isAllScreen()) ? 30 : 0);
+            });
+            pBanner.onError(res => {
+                console.log("Banner广告组件拉取广告异常:", res);
+            })
+            this._bannerAdList.push(pBanner);
+        }
+        this._bannerAdList.sort(function (a, b) {
+            return Math.random() - 0.5;
+        })
+    },
+
+    showBannerAdNew: function (onResizeCallback) {
+        if (this.wxBversionLess("2.0.4")) {
+            console.log("版本库低于2.0.4，不能创建Banner组件");
+            GlobalVar.bannerOpen = false;
+            return;
+        }
+        if (this._bannerAdList.length == 0){
+            console.log("没有创建成功的banner");
+            return;
+        }
+        if (this._bannerShowState){
+            return;
+        }
+        this._bannerShowState = true;
+        if (this._alternateIndex >= this._bannerAdList.length){
+            this._alternateIndex = 0;
+            this._bannerAdList.sort(function (a, b) {
+                return Math.random() - 0.5;
+            })
+        }
+
+        let pBanner = this._bannerAdList[this._alternateIndex];
+        pBanner.show().catch(err =>{
+            console.log("banner展示出现异常:", err)
+        });
+        console.log("banner index:", this._alternateIndex);
+        onResizeCallback && onResizeCallback(pBanner.style.realHeight + ((GlobalVar.isIOS && GlobalFunc.isAllScreen()) ? 30 : 0));
+    },
+
+    hideBannerAdNew: function () {
+        if (this._bannerAdList.length == 0){
+            console.log("没有创建成功的banner");
+            return;
+        }
+        if (!this._bannerShowState){
+            return;
+        }
+        let pBanner = this._bannerAdList[this._alternateIndex];
+        pBanner.hide();
+        this._alternateIndex++;
+        this._bannerShowState = false;
+    },
+
     _createBannerAd: function (onResizeCallback) {
         let screenHeight = wx.getSystemInfoSync().screenHeight;
         let screenWidth = wx.getSystemInfoSync().screenWidth;
@@ -1125,94 +1229,108 @@ module.exports = {
                 width: screenWidth,
             }
         });
-        StoreageData.setLastBannerCreateTime();
         pBanner.onResize(function () {
-            pBanner.style.top = screenHeight - pBanner.style.realHeight - ((GlobalVar.isIOS && GlobalFunc.isAllScreen())?30:0);
+            pBanner.style.top = screenHeight - pBanner.style.realHeight - ((GlobalVar.isIOS && GlobalFunc.isAllScreen()) ? 30 : 0);
             console.log("bannerTop:", pBanner.style.top);
-            if (self._bannerCount > 0){
+            if (self._bannerCount > 0) {
+                StoreageData.setLastBannerShowTime();
                 pBanner.show().catch(err => {
                     self._bannerCount--;
-                    console.log("banner展示出现异常:",err)
+                    StoreageData.resetLastBannerShowTime();
+                    console.log("banner展示出现异常:", err)
                 })
             }
-            onResizeCallback && onResizeCallback(pBanner.style.realHeight + ((GlobalVar.isIOS && GlobalFunc.isAllScreen())?30:0));
+            onResizeCallback && onResizeCallback(pBanner.style.realHeight + ((GlobalVar.isIOS && GlobalFunc.isAllScreen()) ? 30 : 0));
             onResizeCallback = null;
         });
-        pBanner.onError(res =>{
+        pBanner.onError(res => {
             console.log("Banner广告组件拉取广告异常:", res);
         })
         return pBanner;
     },
 
     showBannerAd: function (onResizeCallback) {
-        if (cc.sys.platform != cc.sys.WECHAT_GAME){
+        if (cc.sys.platform != cc.sys.WECHAT_GAME) {
             return;
         }
         this._bannerCount++;
         let self = this;
-        if (this.wxBversionLess("2.0.4")){
+        if (this.wxBversionLess("2.0.4")) {
             console.log("版本库低于2.0.4，不能创建Banner组件");
             GlobalVar.bannerOpen = false;
             return;
         }
-        if (!this._bannerAd){
+        if (!this._bannerAd) {
             this._bannerAd = this._createBannerAd(onResizeCallback);
-        }else if (StoreageData.needRefreshBanner()) {
+        } else if (this._bannerExchangeTime < this._bannerTimeCount) {
+            this._bannerTimeCount = 0;
             this._bannerAd.destroy();
             this._bannerAd = this._createBannerAd(onResizeCallback);
-        }else{
+        } else {
+            StoreageData.setLastBannerShowTime();
             this._bannerAd.show().catch(err => {
+                StoreageData.resetLastBannerShowTime();
                 self._bannerCount--;
-                console.log("banner展示出现异常:",err)
+                console.log("banner展示出现异常:", err)
             })
-            onResizeCallback && onResizeCallback(this._bannerAd.style.realHeight + ((GlobalVar.isIOS && GlobalFunc.isAllScreen())?30:0));
+            onResizeCallback && onResizeCallback(this._bannerAd.style.realHeight + ((GlobalVar.isIOS && GlobalFunc.isAllScreen()) ? 30 : 0));
             onResizeCallback = null;
         }
     },
-    hideBannerAd:function () {
-        if (cc.sys.platform != cc.sys.WECHAT_GAME){
+    hideBannerAd: function () {
+        if (cc.sys.platform != cc.sys.WECHAT_GAME) {
             return;
         }
-        if (this.wxBversionLess("2.0.4")){
+        if (this.wxBversionLess("2.0.4")) {
             console.log("版本库低于2.0.4，没有创建Banner组件");
             return;
         }
-        if (!this._bannerAd){
+        if (!this._bannerAd) {
             console.log("当前不存在banner组件");
             return;
         }
         this._bannerCount--;
-        if (this._bannerCount <= 0){
+        if (this._bannerCount <= 0) {
             this._bannerCount = 0;
             this._bannerAd.hide();
+            this._bannerTimeCount += StoreageData.getBannerTimeCount()
         }
     },
+    destoryBanner: function () {
+        this.cleanBannerCount();
+        this.hideBannerAd();
+    },
     cleanBannerCount: function () {
-        if (cc.sys.platform != cc.sys.WECHAT_GAME){
+        if (cc.sys.platform != cc.sys.WECHAT_GAME) {
             return;
         }
         this._bannerCount = 0;
     },
     justHideBanner: function () {
-        if (cc.sys.platform != cc.sys.WECHAT_GAME){
+        if (cc.sys.platform != cc.sys.WECHAT_GAME) {
             return;
         }
-        if (!this._bannerAd){
+        if (!this._bannerAd) {
             console.log("当前不存在banner组件");
             return;
         }
         this._bannerAd.hide();
+        this._bannerTimeCount += StoreageData.getBannerTimeCount()
     },
     justShowBanner: function () {
-        if (cc.sys.platform != cc.sys.WECHAT_GAME){
+        if (cc.sys.platform != cc.sys.WECHAT_GAME) {
             return;
         }
-        if (!this._bannerAd){
+        if (!this._bannerAd) {
             console.log("当前不存在banner组件");
             return;
         }
-        if (this._bannerCount > 0){
-            this._bannerAd.show();
+        if (this._bannerCount > 0) {
+            StoreageData.setLastBannerShowTime();
+            this._bannerAd.show().catch(err => {
+                StoreageData.resetLastBannerShowTime();
+                console.log("banner展示出现异常:", err)
+            });
         }
     },
 
@@ -1452,6 +1570,49 @@ module.exports = {
         }
     },
 
+    netWorkStatusChange: function (callback) {
+        if (cc.sys.platform === cc.sys.WECHAT_GAME) {
+            wx.onNetworkStatusChange(function (res) {
+                console.log(res.isConnected);
+                console.log(res.networkType);
+                //GlobalVar.networkManager().checkConnection();
+                if (!!callback) {
+                    callback();
+                }
+            })
+        }
+    },
+
+    feedBack: function (left, top, width, height) {
+        if (cc.sys.platform === cc.sys.WECHAT_GAME) {
+            if (!this.checkWeChatAPI(0, '2.1.2')) {
+                return;
+            }
+            if (!this.checkWeChatAPI(1, 'wx.createFeedbackButton')) {
+                return;
+            }
+
+            let feedbackButton = wx.createFeedbackButton({
+                type: 'text',
+                text: '',
+                style: {
+                    left: left,
+                    top: top,
+                    width: width,
+                    height: height,
+                    lineHeight: 0,
+                    backgroundColor: '',
+                    color: '#ffffff',
+                    textAlign: 'center',
+                    fontSize: 16,
+                    borderRadius: 4
+                }
+            })
+            return feedbackButton;
+        }
+        return null;
+    },
+
     assetsCacheCount: 0,
     wxApiCleanAllAssets: function (callback) {
         let self = this;
@@ -1510,9 +1671,15 @@ module.exports = {
                     self.wxApiCleanAllAssets(function () {
                         StoreageData.setClearCache(false);
                         wx.hideLoading();
-                        if(!!callback){
+                        if (!!callback) {
                             callback();
-                        }else{
+                        } else {
+                            if (!this.checkWeChatAPI(0, '1.9.90')) {
+                                return;
+                            }
+                            if (!this.checkWeChatAPI(1, 'wx.getUpdateManager')) {
+                                return;
+                            }
                             let updateManager = wx.getUpdateManager();
                             updateManager.applyUpdate();
                         }
@@ -1525,6 +1692,14 @@ module.exports = {
     updateVersion: function () {
         if (cc.sys.platform === cc.sys.WECHAT_GAME) {
             let self = this;
+
+            if (!this.checkWeChatAPI(0, '1.9.90')) {
+                return;
+            }
+            if (!this.checkWeChatAPI(1, 'wx.getUpdateManager')) {
+                return;
+            }
+
 
             let updateManager = wx.getUpdateManager();
 
@@ -1564,5 +1739,159 @@ module.exports = {
                 })
             })
         }
+    },
+
+    compareVersion: function (v1, v2) {
+        v1 = v1.split('.')
+        v2 = v2.split('.')
+        const len = Math.max(v1.length, v2.length)
+
+        while (v1.length < len) {
+            v1.push('0')
+        }
+        while (v2.length < len) {
+            v2.push('0')
+        }
+
+        for (let i = 0; i < len; i++) {
+            const num1 = parseInt(v1[i])
+            const num2 = parseInt(v2[i])
+
+            if (num1 > num2) {
+                return 1
+            } else if (num1 < num2) {
+                return -1
+            }
+        }
+        return 0
+    },
+
+    checkWeChatAPI: function (type, api) {
+        if (cc.sys.platform === cc.sys.WECHAT_GAME) {
+            let version = wx.getSystemInfoSync().SDKVersion;
+            if (compareVersion(version, '1.1.1') < 0) {
+                wx.showModal({
+                    title: '提示',
+                    content: '当前微信版本过低，请升级到最新微信版本'
+                });
+                return false;
+            }
+            let complete = true;
+            switch (type) {
+                case 0:
+                    if (compareVersion(version, api) >= 0) {
+                        complete = true;
+                    } else {
+                        complete = false;
+                    }
+                    break;
+                case 1:
+                    if (wx.canIUse(api)) {
+                        complete = true;
+                    } else {
+                        complete = false;
+                    }
+                    break;
+                default:
+                    complete = false;
+                    break;
+            }
+            if (complete) {
+                return true;
+            } else {
+                wx.showModal({
+                    title: '提示',
+                    content: '当前微信版本过低，请升级到最新微信版本'
+                });
+                return false;
+            }
+        }
+        return false;
+    },
+
+    wxLoadRes: function (url, cb) {
+        if (cc.sys.platform !== cc.sys.WECHAT_GAME) return;
+        let downloadUrl = () => {
+            wx.downloadFile({
+                url: url,
+                success: (res) => {
+                    console.log(res);
+                    if (res.statusCode === 200) {
+                        mapResFile(url, { "path": res.tempFilePath });
+                        cc.loader.load(res.tempFilePath, (err, texture) => {
+                            cb(new cc.SpriteFrame(texture));
+                        })
+                    }
+                }
+            });
+        }
+        let temp = getResFileMap(url);
+        let localFilePath = temp['path'];
+        if (checkPath(localFilePath)) {
+            wx.getFileSystemManager().access({
+                path: localFilePath,
+                success: () => cc.loader.load(localFilePath, (err, texture) => {
+                    if (!err)
+                        cb(new cc.SpriteFrame(texture));
+                }), 
+                fail: downloadUrl,
+            });
+        } else {
+            downloadUrl();
+        }
+    },
+
+    pullAdcInfo: function (successCallback, failCallback) {
+        let param = {
+            appid: APP_ID,
+            logintype: "wx",
+            noncestr: GlobalFunc.getRandomString(),
+            sex: 0,
+            ptform: GlobalFunc.iosOrAndr(),
+        }
+        console.log("pullAdcInfo", param);
+        wx.request({
+            url: URL_GET_ADC,
+            data: param,
+            method: 'POST',
+            success: successCallback,
+            fail: failCallback,
+        });
+    },
+
+    pullRemoteRes: function (url) {
+        if (!this._spriteFrameMap[url]) {
+            this.wxLoadRes(url, (sf) => this.updateSpriteFrameMap(url, sf))
+        }
+    },
+
+    updateSpriteFrameMap: function (key, val) {
+        this._spriteFrameMap[key] = val;
+    },
+
+    getRemoteSpFrameAd: function (isNew) {
+        if (isNew) {
+            let successCallback = (res) => {
+                let data = res.data;
+                this._framesAd = (data && Array.isArray(data.adFrames)) ? data.adFrames : this._framesAd;
+                console.log("adFrames res:", this._framesAd, data);
+                this._bigFramesAd = (data && Array.isArray(data.adSequences)) ? data.adSequences : this._bigFramesAd;
+                this._framesAd.map((adFrame) => {
+                    if (GlobalFunc.checkLink(adFrame.url)) this.pullRemoteRes(adFrame.url);
+                })
+                this._bigFramesAd.map((adFrame) => {
+                    if (GlobalFunc.checkLink(adFrame.url)) this.pullRemoteRes(adFrame.url);
+                })
+            }
+            let failCallback = (res) => {
+                console.log(res);
+            }
+            this.pullAdcInfo(successCallback, failCallback);
+        }
+        let len = this._framesAd.length;
+        let idx = this._frameIdx % (len > 0 ? len : 1);
+        this._frameIdx += 1;
+        let ans = (typeof this._framesAd[idx] == "object") ? this._framesAd[idx] : {};
+        return ans;
     },
 };

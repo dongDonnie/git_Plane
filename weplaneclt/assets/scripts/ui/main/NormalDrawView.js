@@ -26,6 +26,10 @@ cc.Class({
             default: false,
             visible: false,
         },
+        labelFreeTime: {
+            default: null,
+            type: cc.Label,
+        }
     },
 
     onLoad: function () {
@@ -49,6 +53,7 @@ cc.Class({
             nodeBottom.getChildByName("labelSingleDrawCost").x = -142;
             nodeBottom.getChildByName("spriteTenDrawCost").x = 135;
             nodeBottom.getChildByName("labelTenDrawCost").x = 155;
+            nodeBottom.getChildByName("labelFreeTime").x = -150;
         }else{
             nodeBottom.getChildByName("labelFreeDraw").active = true;
             nodeBottom.getChildByName("btnFreeDraw").active = true;
@@ -58,7 +63,10 @@ cc.Class({
             nodeBottom.getChildByName("labelSingleDrawCost").x = 8;
             nodeBottom.getChildByName("spriteTenDrawCost").x = 185;
             nodeBottom.getChildByName("labelTenDrawCost").x = 205;
+            nodeBottom.getChildByName("labelFreeTime").x = 0;
         }
+        
+        this.countDownTimerID = -1;
 
         this.isFirstIn = true;
     },
@@ -70,7 +78,13 @@ cc.Class({
     animePlayCallBack(name) {
         if (name == "Escape") {
             this._super("Escape");
-            this.node.getChildByName("nodeBlock").active = true;
+
+            if (this.countDownTimerID != -1){
+                GlobalVar.gameTimer().delTimer(this.countDownTimerID)
+                this.countDownTimerID = -1;
+            }
+
+            // this.node.getChildByName("nodeBlock").active = true;
             GlobalVar.eventManager().removeListenerWithTarget(this);
             if (this.deleteMode) {
                 if (WindowManager.getInstance().findViewIndex(WndTypeDefine.WindowType.E_DT_GUAZAIMAIN_WND) == -1) {
@@ -81,29 +95,76 @@ cc.Class({
             }
         } else if (name == "Enter") {
             this._super("Enter")
-            GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_GET_TREASURE_MINING_RESULT, this.showDrawItemInfo, this);
-            GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_RECIVE_DRAW_REWARD, this.playBoxCloseAnime, this);
-            if (WindowManager.getInstance().findViewIndex(WndTypeDefine.WindowType.E_DT_GUAZAIMAIN_WND) == -1) {
-                BattleManager.getInstance().quitOutSide();
-            }
-            if (this.isFirstIn){
-                this.isFirstIn = false;
-                this.initSpine();
-            }
+            this.registerEvent();
+            this.initNormalDrawWnd();
+        }
+    },
 
-            let oneFreeCount = GlobalVar.me().drawData.getOneFreeCount();
-            let oneFreeMax = GlobalVar.tblApi.getDataBySingleKey('TblParam', GameServerProto.PTPARAM_TREASURE_ONE_FREE_MAX).dValue;
-            this.node.getChildByName("nodeBottom").getChildByName("labelFreeDraw").getComponent(cc.Label).string = oneFreeCount + "/" + oneFreeMax;
+    registerEvent: function () {
+        GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_GET_TREASURE_MINING_RESULT, this.showDrawItemInfo, this);
+        GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_RECIVE_DRAW_REWARD, this.playBoxCloseAnime, this);
+    },
 
-            this.node.getChildByName("nodeBlock").active = false;        
-            let normalRootWnd = WindowManager.getInstance().findViewInWndNode(WndTypeDefine.WindowType.E_DT_NORMALROOT_WND);
-            if (normalRootWnd){
-                this.normalRootReturnBtn = normalRootWnd.getComponent(WndTypeDefine.WindowType.E_DT_NORMALROOT_WND).btnReturn;
+    initNormalDrawWnd: function () {
+        if (WindowManager.getInstance().findViewIndex(WndTypeDefine.WindowType.E_DT_GUAZAIMAIN_WND) == -1) {
+            BattleManager.getInstance().quitOutSide();
+        }
+        if (this.isFirstIn){
+            this.isFirstIn = false;
+            this.initSpine();
+        }
+
+        let oneFreeCount = GlobalVar.me().drawData.getOneFreeCount();
+        let oneFreeMax = GlobalVar.tblApi.getDataBySingleKey('TblParam', GameServerProto.PTPARAM_TREASURE_ONE_FREE_MAX).dValue;
+        this.node.getChildByName("nodeBottom").getChildByName("labelFreeDraw").getComponent(cc.Label).string = oneFreeCount + "/" + oneFreeMax;
+
+        // this.node.getChildByName("nodeBlock").active = false;        
+        let normalRootWnd = WindowManager.getInstance().findViewInWndNode(WndTypeDefine.WindowType.E_DT_NORMALROOT_WND);
+        if (normalRootWnd){
+            this.normalRootReturnBtn = normalRootWnd.getComponent(WndTypeDefine.WindowType.E_DT_NORMALROOT_WND).btnReturn;
+        }
+
+        
+        this.setCountDown();
+    },
+
+    setCountDown: function () {
+        if (this.countDownTimerID == -1){
+            let self = this;
+            this.countDownTimerID = GlobalVar.gameTimer().startTimer(function () {
+                self.showFreeDrawTime();
+            }, 1);
+            this.showFreeDrawTime();
+        }
+    },
+
+    showFreeDrawTime: function () {
+        let nextFreeTime = GlobalVar.me().drawData.getNextFreeTime();
+        if (nextFreeTime <= GlobalVar.me().serverTime){
+            // this.labelFreeTime.active = false;
+            this.labelFreeTime.string = i18n.t('label.4000325');
+            this.labelFreeTime.node.y = 20;
+            this.node.getChildByName("nodeBottom").getChildByName("spriteSingleDrawCost").active = false;
+            this.node.getChildByName("nodeBottom").getChildByName("labelSingleDrawCost").active = false;
+        }else{
+            let leftTime = nextFreeTime - GlobalVar.me().serverTime;
+            let hour = parseInt(leftTime/3600);
+            let min = parseInt((leftTime - hour*3600)/60);
+            let sec = parseInt(leftTime - hour*3600 - min*60);
+            if (hour){
+                this.labelFreeTime.string = i18n.t('label.4000323').replace('%hour', hour).replace('%min', min);
+            }else{
+                this.labelFreeTime.string = i18n.t('label.4000324').replace('%min', min).replace('%sec', sec);
             }
+            this.labelFreeTime.node.y = -90;
+            this.node.getChildByName("nodeBottom").getChildByName("spriteSingleDrawCost").active = true;
+            this.node.getChildByName("nodeBottom").getChildByName("labelSingleDrawCost").active = true;
+            // this.labelFreeTime.string = i18n.t('label.4000326').replace('%hour', hour).replace('%min', min).replace('%sec', sec);
         }
     },
 
     enter: function (isRefresh) {
+        this.showFreeDrawTime();
         if (isRefresh) {
             this._super(true);
         } else {
@@ -174,6 +235,7 @@ cc.Class({
             if (event.Type != GameServerProto.PT_TREASURE_WARM && event.Type != GameServerProto.PT_TREASURE_HOT){
                 return;
             }
+            this.showFreeDrawTime();
             // 播放音效
             GlobalVar.soundManager().playEffect(AUDIO_SHILIANCHOU);
 
@@ -259,6 +321,11 @@ cc.Class({
         ticketsEnough = GlobalVar.me().bagData.getItemCountById(TICKET_ICON_ID) > ticketsCost;
 
         if (count == SINGLE_DRAW) {
+            let nextFreeTime = GlobalVar.me().drawData.getNextFreeTime();
+            if (nextFreeTime<= GlobalVar.me().serverTime){
+                GlobalVar.handlerManager().drawHandler.sendSingleDrawReq(1);
+                return;
+            }
             funConfirm = function(){
                 GlobalVar.handlerManager().drawHandler.sendSingleDrawReq(0);
             };
@@ -274,69 +341,77 @@ cc.Class({
         if (!diamondEnough) {
             funConfirm = function () {
                 CommonWnd.showNormalFreeGetWnd(GameServerProto.PTERR_DIAMOND_LACK, funCancle);
+                funCancle();
             };
         }
         
         let title = ticketsEnough ? i18n.t('label.4000245') : i18n.t('label.4000246')
         let text = ticketsEnough ? i18n.t('label.4000247') : i18n.t('label.4000248')
-        CommonWnd.showDrawConfirmWnd(null, title, text, count, ticketsEnough, diamondEnough, funCancle, funConfirm, funClose, i18n.t('label.4000214'));
+        CommonWnd.showTreasureTipWnd(title, text, count, ticketsEnough, diamondEnough, funCancle, funConfirm, funClose);
     },
 
-
-    onBtnFreeDraw: function (event) {
-        if (this.animePlaying) {
-            return;
+    onDestroy: function () {
+        GlobalVar.eventManager().removeListenerWithTarget(this);
+        if (this.countDownTimerID != -1){
+            GlobalVar.gameTimer().delTimer(this.countDownTimerID)
+            this.countDownTimerID = -1;
         }
-        if (cc.sys.platform !== cc.sys.WECHAT_GAME && !(window && window["wywGameId"]=="5496")){
-            return;
-        }
-
-        let oneFreeCount = GlobalVar.me().drawData.getOneFreeCount();
-        let oneFreeMax = GlobalVar.tblApi.getDataBySingleKey('TblParam', GameServerProto.PTPARAM_TREASURE_ONE_FREE_MAX).dValue;
-        if (oneFreeCount >= oneFreeMax){
-            return;
-        }
-
-        if (this.normalRootReturnBtn){
-            this.normalRootReturnBtn.interactable = false;
-        }
-        this.animePlaying = true;
-
-        let self = this;
-
-        if (GlobalVar.getVideoAdSwitch()){
-        // if (false){
-            weChatAPI.showRewardedVideoAd(function () {
-                GlobalVar.handlerManager().drawHandler.sendSingleDrawReq(1);
-            }, function () {
-                weChatAPI.shareNeedClick(104, function () {
-                    GlobalVar.handlerManager().drawHandler.sendSingleDrawReq(1);
-                });
-            }, function () {
-                self.animePlaying = false;
-                if (self.normalRootReturnBtn){
-                    self.normalRootReturnBtn.interactable = true;
-                }
-            })
-        }else if (GlobalVar.getShareSwitch()){
-        // }else if (true){
-            weChatAPI.shareNeedClick(104, function () {
-                GlobalVar.handlerManager().drawHandler.sendSingleDrawReq(1);
-            }, function () {
-                self.animePlaying = false;
-                if (self.normalRootReturnBtn){
-                    self.normalRootReturnBtn.interactable = true;
-                }
-            });
-        }else{
-            self.animePlaying = false;
-            if (self.normalRootReturnBtn){
-                self.normalRootReturnBtn.interactable = true;
-            }
-        }
-        // weChatAPI.shareNeedClick(104, function () {
-        //     GlobalVar.handlerManager().drawHandler.sendSingleDrawReq(1);
-        // });
     },
+
+    // onBtnFreeDraw: function (event) {
+    //     if (this.animePlaying) {
+    //         return;
+    //     }
+    //     if (cc.sys.platform !== cc.sys.WECHAT_GAME && !(window && window["wywGameId"]=="5496")){
+    //         return;
+    //     }
+
+    //     let oneFreeCount = GlobalVar.me().drawData.getOneFreeCount();
+    //     let oneFreeMax = GlobalVar.tblApi.getDataBySingleKey('TblParam', GameServerProto.PTPARAM_TREASURE_ONE_FREE_MAX).dValue;
+    //     if (oneFreeCount >= oneFreeMax){
+    //         return;
+    //     }
+
+    //     if (this.normalRootReturnBtn){
+    //         this.normalRootReturnBtn.interactable = false;
+    //     }
+    //     this.animePlaying = true;
+
+    //     let self = this;
+
+    //     if (GlobalVar.getVideoAdSwitch()){
+    //     // if (false){
+    //         weChatAPI.showRewardedVideoAd(function () {
+    //             GlobalVar.handlerManager().drawHandler.sendSingleDrawReq(1);
+    //         }, function () {
+    //             weChatAPI.shareNeedClick(104, function () {
+    //                 GlobalVar.handlerManager().drawHandler.sendSingleDrawReq(1);
+    //             });
+    //         }, function () {
+    //             self.animePlaying = false;
+    //             if (self.normalRootReturnBtn){
+    //                 self.normalRootReturnBtn.interactable = true;
+    //             }
+    //         })
+    //     }else if (GlobalVar.getShareSwitch()){
+    //     // }else if (true){
+    //         weChatAPI.shareNeedClick(104, function () {
+    //             GlobalVar.handlerManager().drawHandler.sendSingleDrawReq(1);
+    //         }, function () {
+    //             self.animePlaying = false;
+    //             if (self.normalRootReturnBtn){
+    //                 self.normalRootReturnBtn.interactable = true;
+    //             }
+    //         });
+    //     }else{
+    //         self.animePlaying = false;
+    //         if (self.normalRootReturnBtn){
+    //             self.normalRootReturnBtn.interactable = true;
+    //         }
+    //     }
+    //     // weChatAPI.shareNeedClick(104, function () {
+    //     //     GlobalVar.handlerManager().drawHandler.sendSingleDrawReq(1);
+    //     // });
+    // },
 
 });

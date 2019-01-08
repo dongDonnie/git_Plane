@@ -20,14 +20,14 @@ cc.Class({
 
     onBtnShare: function (event) {
         let self = this;
-        if (cc.sys.platform == cc.sys.WECHAT_GAME) {
-            weChatAPI.shareNormal(111, function () {
+
+        let platformApi = GlobalVar.getPlatformApi();
+        if (cc.isValid(platformApi)){
+            platformApi.shareNormal(111, function () {
                 GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_GET_ASSIST_SHARE_SUCCESS);
                 self.onBtnClose();
             }, null, i18n.t('label.4000315'));
-        } else if (window && window["wywGameId"]=="5469"){
-
-        } else {
+        }else if (GlobalVar.configGMSwitch()){
             GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_GET_ASSIST_SHARE_SUCCESS);
             this.onBtnClose();
         }
@@ -37,18 +37,6 @@ cc.Class({
         BattleManager.getInstance().gameState = Defines.GameResult.PREPARE
         this.node.destroy();
     },
-
-    // onEnable: function(){
-    //     if (GlobalVar.getBannerSwitch() && !GlobalVar.getNeedGuide()){
-    //         weChatAPI.showBannerAd();
-    //     }
-    // },
-
-    // onDisable: function () {
-    //     if (GlobalVar.getBannerSwitch()){
-    //         weChatAPI.hideBannerAd();
-    //     }
-    // },
 
     onDestroy: function () {
         GlobalVar.eventManager().removeListenerWithTarget(this);

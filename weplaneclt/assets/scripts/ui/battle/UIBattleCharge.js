@@ -26,14 +26,20 @@ cc.Class({
     },
 
     onBtnShare: function (event) {
-        if (cc.sys.platform == cc.sys.WECHAT_GAME) {
-            weChatAPI.shareNormal(116, function () {
-                GlobalVar.handlerManager().endlessHandler.sendEndlessChargeRewardReq();
-            }, null, i18n.t('label.4000314'));
-        } else if (window && window["wywGameId"]=="5469"){
-
-        } else {
-            GlobalVar.handlerManager().endlessHandler.sendEndlessChargeRewardReq();
+        let self = this;
+        let platformApi = GlobalVar.getPlatformApi();
+        if (cc.isValid(platformApi)){
+            platformApi.shareNormal(116, function () {
+                // GlobalVar.handlerManager().endlessHandler.sendEndlessChargeRewardReq();
+                BattleManager.getInstance().dashMode = 1;
+                BattleManager.getInstance().isOpenDash = true;
+                BattleManager.getInstance().managers[Defines.MgrType.HERO].openDash(-1);
+                BattleManager.getInstance().managers[Defines.MgrType.SCENARIO].battleEndlessMode.setRushRank(true);
+                BattleManager.getInstance().gameState = Defines.GameResult.RESUME;
+                self.node.destroy();
+            });
+        }else if (GlobalVar.configGMSwitch()){
+            // GlobalVar.handlerManager().endlessHandler.sendEndlessChargeRewardReq();
         }
     },
 
@@ -54,20 +60,6 @@ cc.Class({
         BattleManager.getInstance().gameState = Defines.GameResult.RESUME;
         this.node.destroy();
     },
-
-    // onEnable: function(){
-    //     if (GlobalVar.getBannerSwitch() && !GlobalVar.getNeedGuide()){
-    //         weChatAPI.showBannerAd();
-    //     }
-    // },
-
-    // onDisable: function () {
-    //     if (GlobalVar.getBannerSwitch()){
-    //         weChatAPI.hideBannerAd();
-    //     }
-    // },
-
-    
 
     onDestroy: function () {
         GlobalVar.eventManager().removeListenerWithTarget(this);

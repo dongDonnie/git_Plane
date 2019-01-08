@@ -32,7 +32,7 @@ var P = {
     PT_CONST_100 : 100,
     PT_CONST_1000 : 1000,
     PT_MAX_INT32 : 2147483647,
-    PT_SERVER_VERSION : 100,
+    PT_SERVER_VERSION : 103,
     PT_SVRTYPE_ALL : 0,
     PT_SVRTYPE_GAMESERVER : 1,
     PT_SVRTYPE_DBSERVER : 2,
@@ -77,6 +77,7 @@ var P = {
     PT_LOGINTYPE_NORMAL : 1,
     PT_LOGINTYPE_SDK : 2,
     PT_LOGINTYPE_GUEST : 3,
+    PT_LOGINTYPE_H5SDK : 4,
     PTERR_SUCCESS : 0,
     PTERR_FAIL : 1,
     PTERR_SYS_ERROR : 2,
@@ -336,7 +337,7 @@ var P = {
     PTERR_ARENA_CHALLENGE_TICKET_LIMIT : 1107,
     PTERR_ARENA_CHALLENGE_FREE_ENOUGH : 1108,
     PTERR_ARENA_POINT_LACK : 1109,
-    PTERR_ARENA_OTHERPARTY_IS_ROBOT : 1110,
+    PTERR_ARENA_CHALLENGE_ROLE_CHANGE : 1110,
     PTERR_ARENA_SAODANG_COMBAT_LOWER : 1111,
     PTERR_ARENA_SAODANG_RANKING_NOT_IN_500 : 1112,
     PTERR_ARENA_SAODANG_RANKING_LOWER : 1113,
@@ -674,6 +675,7 @@ var P = {
     PTPARAM_TREASURE_NEXTFREETIME_REDUCEVALUE : 312,
     PTPARAM_TREASURE_NEXTFREETIME_REDUCECOUNTMAX : 313,
     PTPARAM_FULI_SHARE_SUPERFULI_PACKAGE : 314,
+    PTPARAM_FULI_GC_TESTPLAY_REWARD_DIAMOND : 315,
     PT_MAX_ACCOUNT_LEN : 101,
     PT_MAX_PASSWORD_LEN : 33,
     PT_MAX_DEVICEID_LEN : 200,
@@ -796,7 +798,7 @@ var P = {
     PT_CLIENT_EVENT_ENTER_GAME : 2,
     PT_CLIENT_EVENT_CLICK_NOTICE : 3,
     PT_CLIENT_EVENT_NORESPONSE : 4,
-    PT_PLAYER_MAX_LEVEL : 100,
+    PT_PLAYER_MAX_LEVEL : 200,
     PT_MEMBER_MAX_COUNT : 30,
     PT_MEMBER_WEAPON_MAX_COUNT : 99,
     PT_GUAZAI_MAX_COUNT : 4,
@@ -1073,6 +1075,7 @@ var P = {
     PT_DAILY_TASK_MONTHCARD : 12,
     PT_DAILY_TASK_TREASURE_GOLD : 13,
     PT_DAILY_TASK_LIMITSTORE_BUY : 14,
+    PT_DAILY_TASK_AD : 15,
     PT_ACHIEVE_MAX : 999,
     PT_ACHIEVE_PLAYER_LEVEL : 1,
     PT_ACHIEVE_COMBAT_POINT : 2,
@@ -1115,6 +1118,7 @@ var P = {
     PT_FULI_SEVEN_DAY_BOSSTOWER : 7,
     PT_FULI_CZ_MAX : 20,
     PT_FULI_MILLION_MAX : 999,
+    PT_FULI_GC_TESTPLAY_REWARD_MAX : 999999,
     PT_ARENA_HIS_MSG_MAX : 10,
     PT_ARENA_RANK_TOP_LIST_MAX_SIZE : 50,
     PT_ARENA_LIST_MAX_SIZE : 13,
@@ -1670,6 +1674,7 @@ var P = {
     GMID_DAILY_REWARD_ACK : 845,
     GMID_DAILY_NTF : 846,
     GMID_DAILY_SHARE_REQ : 847,
+    GMID_DAILY_AD_REQ : 848,
     GMID_ACHIEVE_DATA_REQ : 850,
     GMID_ACHIEVE_DATA_ACK : 851,
     GMID_ACHIEVE_REWARD_REQ : 852,
@@ -1798,7 +1803,8 @@ var P = {
     GMID_FULI_GIFT_DATA_ACK : 1202,
     GMID_FULI_GIFT_BUY_REQ : 1203,
     GMID_FULI_GIFT_BUY_ACK : 1204,
-    GMID_FULI_GIFT_NTF : 1205,
+    GMID_FULI_GIFT_VIP_NTF : 1205,
+    GMID_FULI_GIFT_LIMIT_NTF : 1206,
     GMID_FULI_SEVEN_DATA_REQ : 1211,
     GMID_FULI_SEVEN_DATA_ACK : 1212,
     GMID_FULI_SEVEN_ALL_REQ : 1213,
@@ -1833,6 +1839,10 @@ var P = {
     GMID_FULI_SHARE_MEMBER_TESTPLAY_ACK : 1245,
     GMID_FULI_SHARE_SUPERFULI_REQ : 1246,
     GMID_FULI_SHARE_SUPERFULI_ACK : 1247,
+    GMID_FULI_GC_DATA_REQ : 1281,
+    GMID_FULI_GC_DATA_ACK : 1282,
+    GMID_FULI_GC_TESTPLAY_REWARD_REQ : 1283,
+    GMID_FULI_GC_TESTPLAY_REWARD_ACK : 1284,
     GMID_ARENA_OPEN_REQ : 1251,
     GMID_ARENA_OPEN_ACK : 1252,
     GMID_ARENA_REPORT_REQ : 1253,
@@ -2021,6 +2031,8 @@ var P = {
     GMID_GUAZAI_AWAKE_ACK : 1915,
     GMID_GUAZAI_AWAKEUP_REQ : 1916,
     GMID_GUAZAI_AWAKEUP_ACK : 1917,
+    GMID_GUAZAI_COMPOSE_REQ : 1918,
+    GMID_GUAZAI_COMPOSE_ACK : 1919,
     GMID_MYSTERY_ACTIVE_REQ : 2000,
     GMID_MYSTERY_ACTIVE_ACK : 2001,
     GMID_MYSTERY_UP_REQ : 2002,
@@ -2373,6 +2385,71 @@ var Encode_GMDT_BIG_LOGIN_SDK = function(m, byteBuffer){
     return true;
 }
 
+var Decode_GMDT_BIG_LOGIN_H5SDK = function(byteBuffer, m){
+    var ret = {err : false};
+    m.game_id = NetData.NetReadString(byteBuffer, P.PT_MAX_SDK_ID_LEN, ret);
+    if(ret.err){return false;}
+
+    m.op_id = NetData.NetReadString(byteBuffer, P.PT_MAX_SDK_ID_LEN, ret);
+    if(ret.err){return false;}
+
+    m.user_id = NetData.NetReadString(byteBuffer, P.PT_MAX_SDK_ID_LEN, ret);
+    if(ret.err){return false;}
+
+    m.login_ip = NetData.NetReadString(byteBuffer, P.PT_MAX_SDK_ID_LEN, ret);
+    if(ret.err){return false;}
+
+    m.login_time = NetData.NetReadString(byteBuffer, P.PT_MAX_SDK_ID_LEN, ret);
+    if(ret.err){return false;}
+
+    m.sign = NetData.NetReadString(byteBuffer, P.PT_MAX_SDK_ID_LEN, ret);
+    if(ret.err){return false;}
+
+    m.ServerID = NetData.NetReadString(byteBuffer, P.PT_MAX_SDK_ID_LEN, ret);
+    if(ret.err){return false;}
+
+    m.Avatar = NetData.NetReadString(byteBuffer, P.PT_MAX_AVATAR_LEN, ret);
+    if(ret.err){return false;}
+
+    m.Plat = NetData.NetReadString(byteBuffer, P.PT_MAX_SDK_ID_LEN, ret);
+    if(ret.err){return false;}
+
+    return true;
+}
+
+var Encode_GMDT_BIG_LOGIN_H5SDK = function(m, byteBuffer){
+    if(!m){return false;}
+    if(NetData.NetWriteString(m.game_id, P.PT_MAX_SDK_ID_LEN, byteBuffer) == false){
+        return false;
+    }
+    if(NetData.NetWriteString(m.op_id, P.PT_MAX_SDK_ID_LEN, byteBuffer) == false){
+        return false;
+    }
+    if(NetData.NetWriteString(m.user_id, P.PT_MAX_SDK_ID_LEN, byteBuffer) == false){
+        return false;
+    }
+    if(NetData.NetWriteString(m.login_ip, P.PT_MAX_SDK_ID_LEN, byteBuffer) == false){
+        return false;
+    }
+    if(NetData.NetWriteString(m.login_time, P.PT_MAX_SDK_ID_LEN, byteBuffer) == false){
+        return false;
+    }
+    if(NetData.NetWriteString(m.sign, P.PT_MAX_SDK_ID_LEN, byteBuffer) == false){
+        return false;
+    }
+    if(NetData.NetWriteString(m.ServerID, P.PT_MAX_SDK_ID_LEN, byteBuffer) == false){
+        return false;
+    }
+    if(NetData.NetWriteString(m.Avatar, P.PT_MAX_AVATAR_LEN, byteBuffer) == false){
+        return false;
+    }
+    if(NetData.NetWriteString(m.Plat, P.PT_MAX_SDK_ID_LEN, byteBuffer) == false){
+        return false;
+    }
+
+    return true;
+}
+
 var Decode_GMPKG_BIG_LOGIN_REQ = function(byteBuffer, m){
     var ret = {err : false};
     m.ProgVer = NetData.NetReadUint32(byteBuffer, ret);
@@ -2407,6 +2484,13 @@ var Decode_GMPKG_BIG_LOGIN_REQ = function(byteBuffer, m){
     }
     }
 
+    if(m.LoginType == P.PT_LOGINTYPE_H5SDK){
+    m.H5SDKData = {};
+    if(Decode_GMDT_BIG_LOGIN_H5SDK(byteBuffer, m.H5SDKData) == false){
+        return false;
+    }
+    }
+
     return true;
 }
 
@@ -2433,6 +2517,11 @@ var Encode_GMPKG_BIG_LOGIN_REQ = function(m, byteBuffer){
     }
     if(m.LoginType == P.PT_LOGINTYPE_SDK){
     if(Encode_GMDT_BIG_LOGIN_SDK(m.SDKData, byteBuffer) == false){
+        return false;
+    }
+    }
+    if(m.LoginType == P.PT_LOGINTYPE_H5SDK){
+    if(Encode_GMDT_BIG_LOGIN_H5SDK(m.H5SDKData, byteBuffer) == false){
         return false;
     }
     }
@@ -3281,6 +3370,9 @@ var Decode_GMDT_STAT_FLAGS = function(byteBuffer, m){
     m.AMSFlag = NetData.NetReadUint8(byteBuffer, ret);
     if(ret.err){return false;}
 
+    m.FuLiLimitGiftFlag = NetData.NetReadUint8(byteBuffer, ret);
+    if(ret.err){return false;}
+
     return true;
 }
 
@@ -3326,6 +3418,7 @@ var Encode_GMDT_STAT_FLAGS = function(m, byteBuffer){
     NetData.NetWriteUint8(m.BuildTaskFlag, byteBuffer);
     NetData.NetWriteUint8(m.FuLiMillionFlag, byteBuffer);
     NetData.NetWriteUint8(m.AMSFlag, byteBuffer);
+    NetData.NetWriteUint8(m.FuLiLimitGiftFlag, byteBuffer);
 
     return true;
 }
@@ -5812,6 +5905,9 @@ var Decode_GMDT_SHARE_BAG = function(byteBuffer, m){
     m.FuliMemberTestPlay = NetData.NetReadUint8(byteBuffer, ret);
     if(ret.err){return false;}
 
+    m.SuperFuli = NetData.NetReadUint8(byteBuffer, ret);
+    if(ret.err){return false;}
+
     return true;
 }
 
@@ -5822,6 +5918,7 @@ var Encode_GMDT_SHARE_BAG = function(m, byteBuffer){
     NetData.NetWriteUint8(m.FuliDaily, byteBuffer);
     NetData.NetWriteUint8(m.FuliRecommend, byteBuffer);
     NetData.NetWriteUint8(m.FuliMemberTestPlay, byteBuffer);
+    NetData.NetWriteUint8(m.SuperFuli, byteBuffer);
 
     return true;
 }
@@ -6157,6 +6254,9 @@ var Decode_GMPKG_CREATE_ROLE_REQ = function(byteBuffer, m){
     m.RoleName = NetData.NetReadString(byteBuffer, P.PT_MAX_ROLENAME_LEN, ret);
     if(ret.err){return false;}
 
+    m.FromOpenid = NetData.NetReadString(byteBuffer, P.PT_MAX_ACCOUNT_LEN, ret);
+    if(ret.err){return false;}
+
     return true;
 }
 
@@ -6168,6 +6268,9 @@ var Encode_GMPKG_CREATE_ROLE_REQ = function(m, byteBuffer){
     }
     NetData.NetWriteUint16(m.MemberID, byteBuffer);
     if(NetData.NetWriteString(m.RoleName, P.PT_MAX_ROLENAME_LEN, byteBuffer) == false){
+        return false;
+    }
+    if(NetData.NetWriteString(m.FromOpenid, P.PT_MAX_ACCOUNT_LEN, byteBuffer) == false){
         return false;
     }
 
@@ -12129,7 +12232,7 @@ var Encode_GMPKG_ENDLESS_STATUS_NTF = function(m, byteBuffer){
 
 var Decode_GMPKG_ENDLESS_BUY_POWERPOINT_REQ = function(byteBuffer, m){
     var ret = {err : false};
-    m.Reserved = NetData.NetReadUint8(byteBuffer, ret);
+    m.Free = NetData.NetReadUint8(byteBuffer, ret);
     if(ret.err){return false;}
 
     return true;
@@ -12137,7 +12240,7 @@ var Decode_GMPKG_ENDLESS_BUY_POWERPOINT_REQ = function(byteBuffer, m){
 
 var Encode_GMPKG_ENDLESS_BUY_POWERPOINT_REQ = function(m, byteBuffer){
     if(!m){return false;}
-    NetData.NetWriteUint8(m.Reserved, byteBuffer);
+    NetData.NetWriteUint8(m.Free, byteBuffer);
 
     return true;
 }
@@ -15178,7 +15281,7 @@ var Encode_GMPKG_TREASURE_TIMEREDUCE_REQ = function(m, byteBuffer){
 
 var Decode_GMPKG_TREASURE_TIMEREDUCE_ACK = function(byteBuffer, m){
     var ret = {err : false};
-    m.Errcode = NetData.NetReadInt32(byteBuffer, ret);
+    m.ErrCode = NetData.NetReadInt32(byteBuffer, ret);
     if(ret.err){return false;}
 
     m.NextFreeTime = NetData.NetReadUint32(byteBuffer, ret);
@@ -15192,7 +15295,7 @@ var Decode_GMPKG_TREASURE_TIMEREDUCE_ACK = function(byteBuffer, m){
 
 var Encode_GMPKG_TREASURE_TIMEREDUCE_ACK = function(m, byteBuffer){
     if(!m){return false;}
-    NetData.NetWriteInt32(m.Errcode, byteBuffer);
+    NetData.NetWriteInt32(m.ErrCode, byteBuffer);
     NetData.NetWriteUint32(m.NextFreeTime, byteBuffer);
     NetData.NetWriteInt32(m.ReduceCount, byteBuffer);
 
@@ -15478,6 +15581,25 @@ var Encode_GMPKG_LOTTERY_NTF = function(m, byteBuffer){
     return true;
 }
 
+var Decode_GMDT_SIGNIN_STATE = function(byteBuffer, m){
+    var ret = {err : false};
+    m.Signin = NetData.NetReadUint8(byteBuffer, ret);
+    if(ret.err){return false;}
+
+    m.Heap = NetData.NetReadUint8(byteBuffer, ret);
+    if(ret.err){return false;}
+
+    return true;
+}
+
+var Encode_GMDT_SIGNIN_STATE = function(m, byteBuffer){
+    if(!m){return false;}
+    NetData.NetWriteUint8(m.Signin, byteBuffer);
+    NetData.NetWriteUint8(m.Heap, byteBuffer);
+
+    return true;
+}
+
 var Decode_GMPKG_SIGNIN_DATA_REQ = function(byteBuffer, m){
     var ret = {err : false};
     m.Reserved = NetData.NetReadUint8(byteBuffer, ret);
@@ -15509,8 +15631,10 @@ var Decode_GMPKG_SIGNIN_DATA_ACK = function(byteBuffer, m){
     if(sizeOfSigninState > P.PT_SIGNIN_MAX){return false;}
     m.SigninState = [];
     for(let i = 0; i < sizeOfSigninState; i++){
-        let v = NetData.NetReadUint8(byteBuffer, ret);
-        if(ret.err){return false;}
+        let v = {};
+        if(Decode_GMDT_SIGNIN_STATE(byteBuffer, v) == false){
+            return false;
+        }
         m.SigninState.push(v);
     }
 
@@ -15528,7 +15652,9 @@ var Encode_GMPKG_SIGNIN_DATA_ACK = function(m, byteBuffer){
         if(m.SigninState.length > P.PT_SIGNIN_MAX){return false;}
         NetData.NetWriteInt32(m.SigninState.length, byteBuffer);
         for(let v of m.SigninState){
-            NetData.NetWriteUint8(v, byteBuffer);
+            if(Encode_GMDT_SIGNIN_STATE(v, byteBuffer) == false){
+                return false;
+            }
         }
     }
 
@@ -15540,12 +15666,16 @@ var Decode_GMPKG_SIGNIN_REQ = function(byteBuffer, m){
     m.Day = NetData.NetReadUint8(byteBuffer, ret);
     if(ret.err){return false;}
 
+    m.DoubleGetFlag = NetData.NetReadUint8(byteBuffer, ret);
+    if(ret.err){return false;}
+
     return true;
 }
 
 var Encode_GMPKG_SIGNIN_REQ = function(m, byteBuffer){
     if(!m){return false;}
     NetData.NetWriteUint8(m.Day, byteBuffer);
+    NetData.NetWriteUint8(m.DoubleGetFlag, byteBuffer);
 
     return true;
 }
@@ -15566,8 +15696,10 @@ var Decode_GMPKG_SIGNIN_ACK = function(byteBuffer, m){
     if(sizeOfSigninState > P.PT_SIGNIN_MAX){return false;}
     m.SigninState = [];
     for(let i = 0; i < sizeOfSigninState; i++){
-        let v = NetData.NetReadUint8(byteBuffer, ret);
-        if(ret.err){return false;}
+        let v = {};
+        if(Decode_GMDT_SIGNIN_STATE(byteBuffer, v) == false){
+            return false;
+        }
         m.SigninState.push(v);
     }
 
@@ -15597,7 +15729,9 @@ var Encode_GMPKG_SIGNIN_ACK = function(m, byteBuffer){
         if(m.SigninState.length > P.PT_SIGNIN_MAX){return false;}
         NetData.NetWriteInt32(m.SigninState.length, byteBuffer);
         for(let v of m.SigninState){
-            NetData.NetWriteUint8(v, byteBuffer);
+            if(Encode_GMDT_SIGNIN_STATE(v, byteBuffer) == false){
+                return false;
+            }
         }
     }
     if(!m.Item){
@@ -15640,8 +15774,10 @@ var Decode_GMPKG_SIGNIN_HEAP_ACK = function(byteBuffer, m){
     if(sizeOfSigninState > P.PT_SIGNIN_MAX){return false;}
     m.SigninState = [];
     for(let i = 0; i < sizeOfSigninState; i++){
-        let v = NetData.NetReadUint8(byteBuffer, ret);
-        if(ret.err){return false;}
+        let v = {};
+        if(Decode_GMDT_SIGNIN_STATE(byteBuffer, v) == false){
+            return false;
+        }
         m.SigninState.push(v);
     }
 
@@ -15669,7 +15805,9 @@ var Encode_GMPKG_SIGNIN_HEAP_ACK = function(m, byteBuffer){
         if(m.SigninState.length > P.PT_SIGNIN_MAX){return false;}
         NetData.NetWriteInt32(m.SigninState.length, byteBuffer);
         for(let v of m.SigninState){
-            NetData.NetWriteUint8(v, byteBuffer);
+            if(Encode_GMDT_SIGNIN_STATE(v, byteBuffer) == false){
+                return false;
+            }
         }
     }
     if(!m.Item){
@@ -18848,7 +18986,7 @@ var Encode_GMPKG_FULI_GIFT_BUY_ACK = function(m, byteBuffer){
     return true;
 }
 
-var Decode_GMPKG_FULI_GIFT_NTF = function(byteBuffer, m){
+var Decode_GMPKG_FULI_GIFT_LIMIT_NTF = function(byteBuffer, m){
     var ret = {err : false};
     m.StatFlag = NetData.NetReadUint8(byteBuffer, ret);
     if(ret.err){return false;}
@@ -18856,7 +18994,22 @@ var Decode_GMPKG_FULI_GIFT_NTF = function(byteBuffer, m){
     return true;
 }
 
-var Encode_GMPKG_FULI_GIFT_NTF = function(m, byteBuffer){
+var Encode_GMPKG_FULI_GIFT_LIMIT_NTF = function(m, byteBuffer){
+    if(!m){return false;}
+    NetData.NetWriteUint8(m.StatFlag, byteBuffer);
+
+    return true;
+}
+
+var Decode_GMPKG_FULI_GIFT_VIP_NTF = function(byteBuffer, m){
+    var ret = {err : false};
+    m.StatFlag = NetData.NetReadUint8(byteBuffer, ret);
+    if(ret.err){return false;}
+
+    return true;
+}
+
+var Encode_GMPKG_FULI_GIFT_VIP_NTF = function(m, byteBuffer){
     if(!m){return false;}
     NetData.NetWriteUint8(m.StatFlag, byteBuffer);
 
@@ -19568,7 +19721,7 @@ var Encode_GMPKG_FULI_SHARE_SUPERFULI_REQ = function(m, byteBuffer){
 
 var Decode_GMPKG_FULI_SHARE_SUPERFULI_ACK = function(byteBuffer, m){
     var ret = {err : false};
-    m.Errcode = NetData.NetReadInt32(byteBuffer, ret);
+    m.ErrCode = NetData.NetReadInt32(byteBuffer, ret);
     if(ret.err){return false;}
 
     m.SuperFuli = NetData.NetReadUint8(byteBuffer, ret);
@@ -19591,7 +19744,7 @@ var Decode_GMPKG_FULI_SHARE_SUPERFULI_ACK = function(byteBuffer, m){
 
 var Encode_GMPKG_FULI_SHARE_SUPERFULI_ACK = function(m, byteBuffer){
     if(!m){return false;}
-    NetData.NetWriteInt32(m.Errcode, byteBuffer);
+    NetData.NetWriteInt32(m.ErrCode, byteBuffer);
     NetData.NetWriteUint8(m.SuperFuli, byteBuffer);
     if(!m.Item){
         NetData.NetWriteInt32(0, byteBuffer);
@@ -19760,6 +19913,108 @@ var Encode_GMPKG_FULI_SHARE_MEMBER_TESTPLAY_ACK = function(m, byteBuffer){
     return true;
 }
 
+var Decode_GMPKG_FULI_GC_DATA_REQ = function(byteBuffer, m){
+    var ret = {err : false};
+    m.Reserved = NetData.NetReadUint8(byteBuffer, ret);
+    if(ret.err){return false;}
+
+    return true;
+}
+
+var Encode_GMPKG_FULI_GC_DATA_REQ = function(m, byteBuffer){
+    if(!m){return false;}
+    NetData.NetWriteUint8(m.Reserved, byteBuffer);
+
+    return true;
+}
+
+var Decode_GMPKG_FULI_GC_DATA_ACK = function(byteBuffer, m){
+    var ret = {err : false};
+    m.ErrCode = NetData.NetReadInt32(byteBuffer, ret);
+    if(ret.err){return false;}
+
+    let sizeOfTestPlayReward = NetData.NetReadInt32(byteBuffer, ret);
+    if(ret.err){return false;}
+    if(sizeOfTestPlayReward > P.PT_FULI_GC_TESTPLAY_REWARD_MAX){return false;}
+    m.TestPlayReward = [];
+    for(let i = 0; i < sizeOfTestPlayReward; i++){
+        let v = NetData.NetReadUint32(byteBuffer, ret);
+        if(ret.err){return false;}
+        m.TestPlayReward.push(v);
+    }
+
+    return true;
+}
+
+var Encode_GMPKG_FULI_GC_DATA_ACK = function(m, byteBuffer){
+    if(!m){return false;}
+    NetData.NetWriteInt32(m.ErrCode, byteBuffer);
+    if(!m.TestPlayReward){
+        NetData.NetWriteInt32(0, byteBuffer);
+    }else{
+        if(m.TestPlayReward.length > P.PT_FULI_GC_TESTPLAY_REWARD_MAX){return false;}
+        NetData.NetWriteInt32(m.TestPlayReward.length, byteBuffer);
+        for(let v of m.TestPlayReward){
+            NetData.NetWriteUint32(v, byteBuffer);
+        }
+    }
+
+    return true;
+}
+
+var Decode_GMPKG_FULI_GC_TESTPLAY_REWARD_REQ = function(byteBuffer, m){
+    var ret = {err : false};
+    m.ID = NetData.NetReadUint32(byteBuffer, ret);
+    if(ret.err){return false;}
+
+    return true;
+}
+
+var Encode_GMPKG_FULI_GC_TESTPLAY_REWARD_REQ = function(m, byteBuffer){
+    if(!m){return false;}
+    NetData.NetWriteUint32(m.ID, byteBuffer);
+
+    return true;
+}
+
+var Decode_GMPKG_FULI_GC_TESTPLAY_REWARD_ACK = function(byteBuffer, m){
+    var ret = {err : false};
+    m.ErrCode = NetData.NetReadInt32(byteBuffer, ret);
+    if(ret.err){return false;}
+
+    m.GetDiamond = NetData.NetReadInt32(byteBuffer, ret);
+    if(ret.err){return false;}
+
+    let sizeOfTestPlayReward = NetData.NetReadInt32(byteBuffer, ret);
+    if(ret.err){return false;}
+    if(sizeOfTestPlayReward > P.PT_FULI_GC_TESTPLAY_REWARD_MAX){return false;}
+    m.TestPlayReward = [];
+    for(let i = 0; i < sizeOfTestPlayReward; i++){
+        let v = NetData.NetReadUint32(byteBuffer, ret);
+        if(ret.err){return false;}
+        m.TestPlayReward.push(v);
+    }
+
+    return true;
+}
+
+var Encode_GMPKG_FULI_GC_TESTPLAY_REWARD_ACK = function(m, byteBuffer){
+    if(!m){return false;}
+    NetData.NetWriteInt32(m.ErrCode, byteBuffer);
+    NetData.NetWriteInt32(m.GetDiamond, byteBuffer);
+    if(!m.TestPlayReward){
+        NetData.NetWriteInt32(0, byteBuffer);
+    }else{
+        if(m.TestPlayReward.length > P.PT_FULI_GC_TESTPLAY_REWARD_MAX){return false;}
+        NetData.NetWriteInt32(m.TestPlayReward.length, byteBuffer);
+        for(let v of m.TestPlayReward){
+            NetData.NetWriteUint32(v, byteBuffer);
+        }
+    }
+
+    return true;
+}
+
 var Decode_GMPKG_ARENA_OPEN_REQ = function(byteBuffer, m){
     var ret = {err : false};
     m.Reserved = NetData.NetReadUint8(byteBuffer, ret);
@@ -19777,7 +20032,10 @@ var Encode_GMPKG_ARENA_OPEN_REQ = function(m, byteBuffer){
 
 var Decode_GMDT_ARENA_MEMBER = function(byteBuffer, m){
     var ret = {err : false};
-    m.IconID = NetData.NetReadUint16(byteBuffer, ret);
+    m.MemberID = NetData.NetReadUint16(byteBuffer, ret);
+    if(ret.err){return false;}
+
+    m.Quality = NetData.NetReadUint16(byteBuffer, ret);
     if(ret.err){return false;}
 
     m.Ranking = NetData.NetReadUint32(byteBuffer, ret);
@@ -19787,6 +20045,9 @@ var Decode_GMDT_ARENA_MEMBER = function(byteBuffer, m){
     if(ret.err){return false;}
 
     m.RoleName = NetData.NetReadString(byteBuffer, P.PT_MAX_ROLENAME_LEN, ret);
+    if(ret.err){return false;}
+
+    m.Avatar = NetData.NetReadString(byteBuffer, P.PT_MAX_AVATAR_LEN, ret);
     if(ret.err){return false;}
 
     m.Level = NetData.NetReadUint16(byteBuffer, ret);
@@ -19803,10 +20064,14 @@ var Decode_GMDT_ARENA_MEMBER = function(byteBuffer, m){
 
 var Encode_GMDT_ARENA_MEMBER = function(m, byteBuffer){
     if(!m){return false;}
-    NetData.NetWriteUint16(m.IconID, byteBuffer);
+    NetData.NetWriteUint16(m.MemberID, byteBuffer);
+    NetData.NetWriteUint16(m.Quality, byteBuffer);
     NetData.NetWriteUint32(m.Ranking, byteBuffer);
     NetData.NetWriteUint64(m.RoleID, byteBuffer);
     if(NetData.NetWriteString(m.RoleName, P.PT_MAX_ROLENAME_LEN, byteBuffer) == false){
+        return false;
+    }
+    if(NetData.NetWriteString(m.Avatar, P.PT_MAX_AVATAR_LEN, byteBuffer) == false){
         return false;
     }
     NetData.NetWriteUint16(m.Level, byteBuffer);
@@ -20227,6 +20492,9 @@ var Encode_GMPKG_ARENA_LIKE_ACK = function(m, byteBuffer){
 
 var Decode_GMPKG_ARENA_CHALLENGE_REQ = function(byteBuffer, m){
     var ret = {err : false};
+    m.BeChallengedRoleID = NetData.NetReadUint64(byteBuffer, ret);
+    if(ret.err){return false;}
+
     m.BeChallengedRanking = NetData.NetReadUint32(byteBuffer, ret);
     if(ret.err){return false;}
 
@@ -20238,6 +20506,7 @@ var Decode_GMPKG_ARENA_CHALLENGE_REQ = function(byteBuffer, m){
 
 var Encode_GMPKG_ARENA_CHALLENGE_REQ = function(m, byteBuffer){
     if(!m){return false;}
+    NetData.NetWriteUint64(m.BeChallengedRoleID, byteBuffer);
     NetData.NetWriteUint32(m.BeChallengedRanking, byteBuffer);
     NetData.NetWriteUint8(m.ChallengeType, byteBuffer);
 
@@ -28745,6 +29014,21 @@ var Encode_GMPKG_DAILY_SHARE_REQ = function(m, byteBuffer){
     return true;
 }
 
+var Decode_GMPKG_DAILY_AD_REQ = function(byteBuffer, m){
+    var ret = {err : false};
+    m.Reserved = NetData.NetReadUint8(byteBuffer, ret);
+    if(ret.err){return false;}
+
+    return true;
+}
+
+var Encode_GMPKG_DAILY_AD_REQ = function(m, byteBuffer){
+    if(!m){return false;}
+    NetData.NetWriteUint8(m.Reserved, byteBuffer);
+
+    return true;
+}
+
 var Decode_GMPKG_DAILY_SHARE_ACK = function(byteBuffer, m){
     var ret = {err : false};
     m.ErrCode = NetData.NetReadInt32(byteBuffer, ret);
@@ -29273,6 +29557,67 @@ var Decode_GMPKG_GUAZAI_HECHENG_ACK = function(byteBuffer, m){
 }
 
 var Encode_GMPKG_GUAZAI_HECHENG_ACK = function(m, byteBuffer){
+    if(!m){return false;}
+    NetData.NetWriteInt32(m.ErrCode, byteBuffer);
+    if(!m.GetItems){
+        NetData.NetWriteInt32(0, byteBuffer);
+    }else{
+        if(m.GetItems.length > P.PT_BAG_MAX_SIZE){return false;}
+        NetData.NetWriteInt32(m.GetItems.length, byteBuffer);
+        for(let v of m.GetItems){
+            if(Encode_GMDT_ITEM_COUNT(v, byteBuffer) == false){
+                return false;
+            }
+        }
+    }
+    if(Encode_GMDT_ITEM_CHANGE(m.ItemChange, byteBuffer) == false){
+        return false;
+    }
+
+    return true;
+}
+
+var Decode_GMPKG_GUAZAI_COMPOSE_REQ = function(byteBuffer, m){
+    var ret = {err : false};
+    m.GuaZaiID = NetData.NetReadUint16(byteBuffer, ret);
+    if(ret.err){return false;}
+
+    return true;
+}
+
+var Encode_GMPKG_GUAZAI_COMPOSE_REQ = function(m, byteBuffer){
+    if(!m){return false;}
+    NetData.NetWriteUint16(m.GuaZaiID, byteBuffer);
+
+    return true;
+}
+
+var Decode_GMPKG_GUAZAI_COMPOSE_ACK = function(byteBuffer, m){
+    var ret = {err : false};
+    m.ErrCode = NetData.NetReadInt32(byteBuffer, ret);
+    if(ret.err){return false;}
+
+    let sizeOfGetItems = NetData.NetReadInt32(byteBuffer, ret);
+    if(ret.err){return false;}
+    if(sizeOfGetItems > P.PT_BAG_MAX_SIZE){return false;}
+    m.GetItems = [];
+    for(let i = 0; i < sizeOfGetItems; i++){
+        let v = {};
+        if(Decode_GMDT_ITEM_COUNT(byteBuffer, v) == false){
+            return false;
+        }
+        m.GetItems.push(v);
+    }
+
+    m.ItemChange = {};
+    if(Decode_GMDT_ITEM_CHANGE(byteBuffer, m.ItemChange) == false){
+        return false;
+    }
+
+    return true;
+}
+
+var Encode_GMPKG_GUAZAI_COMPOSE_ACK = function(m, byteBuffer){
     if(!m){return false;}
     NetData.NetWriteInt32(m.ErrCode, byteBuffer);
     if(!m.GetItems){
@@ -34195,6 +34540,8 @@ P.Init = function() {
     P.m_oMapEncodeFunc[P.GMID_DAILY_NTF] = Encode_GMPKG_DAILY_NTF;
     P.m_oMapDecodeFunc[P.GMID_DAILY_SHARE_REQ] = Decode_GMPKG_DAILY_SHARE_REQ;
     P.m_oMapEncodeFunc[P.GMID_DAILY_SHARE_REQ] = Encode_GMPKG_DAILY_SHARE_REQ;
+    P.m_oMapDecodeFunc[P.GMID_DAILY_AD_REQ] = Decode_GMPKG_DAILY_AD_REQ;
+    P.m_oMapEncodeFunc[P.GMID_DAILY_AD_REQ] = Encode_GMPKG_DAILY_AD_REQ;
     P.m_oMapDecodeFunc[P.GMID_ACHIEVE_DATA_REQ] = Decode_GMPKG_ACHIEVE_DATA_REQ;
     P.m_oMapEncodeFunc[P.GMID_ACHIEVE_DATA_REQ] = Encode_GMPKG_ACHIEVE_DATA_REQ;
     P.m_oMapDecodeFunc[P.GMID_ACHIEVE_DATA_ACK] = Decode_GMPKG_ACHIEVE_DATA_ACK;
@@ -34451,8 +34798,10 @@ P.Init = function() {
     P.m_oMapEncodeFunc[P.GMID_FULI_GIFT_BUY_REQ] = Encode_GMPKG_FULI_GIFT_BUY_REQ;
     P.m_oMapDecodeFunc[P.GMID_FULI_GIFT_BUY_ACK] = Decode_GMPKG_FULI_GIFT_BUY_ACK;
     P.m_oMapEncodeFunc[P.GMID_FULI_GIFT_BUY_ACK] = Encode_GMPKG_FULI_GIFT_BUY_ACK;
-    P.m_oMapDecodeFunc[P.GMID_FULI_GIFT_NTF] = Decode_GMPKG_FULI_GIFT_NTF;
-    P.m_oMapEncodeFunc[P.GMID_FULI_GIFT_NTF] = Encode_GMPKG_FULI_GIFT_NTF;
+    P.m_oMapDecodeFunc[P.GMID_FULI_GIFT_VIP_NTF] = Decode_GMPKG_FULI_GIFT_VIP_NTF;
+    P.m_oMapEncodeFunc[P.GMID_FULI_GIFT_VIP_NTF] = Encode_GMPKG_FULI_GIFT_VIP_NTF;
+    P.m_oMapDecodeFunc[P.GMID_FULI_GIFT_LIMIT_NTF] = Decode_GMPKG_FULI_GIFT_LIMIT_NTF;
+    P.m_oMapEncodeFunc[P.GMID_FULI_GIFT_LIMIT_NTF] = Encode_GMPKG_FULI_GIFT_LIMIT_NTF;
     P.m_oMapDecodeFunc[P.GMID_FULI_SEVEN_DATA_REQ] = Decode_GMPKG_FULI_SEVEN_DATA_REQ;
     P.m_oMapEncodeFunc[P.GMID_FULI_SEVEN_DATA_REQ] = Encode_GMPKG_FULI_SEVEN_DATA_REQ;
     P.m_oMapDecodeFunc[P.GMID_FULI_SEVEN_DATA_ACK] = Decode_GMPKG_FULI_SEVEN_DATA_ACK;
@@ -34521,6 +34870,14 @@ P.Init = function() {
     P.m_oMapEncodeFunc[P.GMID_FULI_SHARE_SUPERFULI_REQ] = Encode_GMPKG_FULI_SHARE_SUPERFULI_REQ;
     P.m_oMapDecodeFunc[P.GMID_FULI_SHARE_SUPERFULI_ACK] = Decode_GMPKG_FULI_SHARE_SUPERFULI_ACK;
     P.m_oMapEncodeFunc[P.GMID_FULI_SHARE_SUPERFULI_ACK] = Encode_GMPKG_FULI_SHARE_SUPERFULI_ACK;
+    P.m_oMapDecodeFunc[P.GMID_FULI_GC_DATA_REQ] = Decode_GMPKG_FULI_GC_DATA_REQ;
+    P.m_oMapEncodeFunc[P.GMID_FULI_GC_DATA_REQ] = Encode_GMPKG_FULI_GC_DATA_REQ;
+    P.m_oMapDecodeFunc[P.GMID_FULI_GC_DATA_ACK] = Decode_GMPKG_FULI_GC_DATA_ACK;
+    P.m_oMapEncodeFunc[P.GMID_FULI_GC_DATA_ACK] = Encode_GMPKG_FULI_GC_DATA_ACK;
+    P.m_oMapDecodeFunc[P.GMID_FULI_GC_TESTPLAY_REWARD_REQ] = Decode_GMPKG_FULI_GC_TESTPLAY_REWARD_REQ;
+    P.m_oMapEncodeFunc[P.GMID_FULI_GC_TESTPLAY_REWARD_REQ] = Encode_GMPKG_FULI_GC_TESTPLAY_REWARD_REQ;
+    P.m_oMapDecodeFunc[P.GMID_FULI_GC_TESTPLAY_REWARD_ACK] = Decode_GMPKG_FULI_GC_TESTPLAY_REWARD_ACK;
+    P.m_oMapEncodeFunc[P.GMID_FULI_GC_TESTPLAY_REWARD_ACK] = Encode_GMPKG_FULI_GC_TESTPLAY_REWARD_ACK;
     P.m_oMapDecodeFunc[P.GMID_ARENA_OPEN_REQ] = Decode_GMPKG_ARENA_OPEN_REQ;
     P.m_oMapEncodeFunc[P.GMID_ARENA_OPEN_REQ] = Encode_GMPKG_ARENA_OPEN_REQ;
     P.m_oMapDecodeFunc[P.GMID_ARENA_OPEN_ACK] = Decode_GMPKG_ARENA_OPEN_ACK;
@@ -34897,6 +35254,10 @@ P.Init = function() {
     P.m_oMapEncodeFunc[P.GMID_GUAZAI_AWAKEUP_REQ] = Encode_GMPKG_GUAZAI_AWAKEUP_REQ;
     P.m_oMapDecodeFunc[P.GMID_GUAZAI_AWAKEUP_ACK] = Decode_GMPKG_GUAZAI_AWAKEUP_ACK;
     P.m_oMapEncodeFunc[P.GMID_GUAZAI_AWAKEUP_ACK] = Encode_GMPKG_GUAZAI_AWAKEUP_ACK;
+    P.m_oMapDecodeFunc[P.GMID_GUAZAI_COMPOSE_REQ] = Decode_GMPKG_GUAZAI_HECHENG_REQ;
+    P.m_oMapEncodeFunc[P.GMID_GUAZAI_COMPOSE_REQ] = Encode_GMPKG_GUAZAI_HECHENG_REQ;
+    P.m_oMapDecodeFunc[P.GMID_GUAZAI_COMPOSE_ACK] = Decode_GMPKG_GUAZAI_HECHENG_ACK;
+    P.m_oMapEncodeFunc[P.GMID_GUAZAI_COMPOSE_ACK] = Encode_GMPKG_GUAZAI_HECHENG_ACK;
     P.m_oMapDecodeFunc[P.GMID_MYSTERY_ACTIVE_REQ] = Decode_GMPKG_MYSTERY_ACTIVE_REQ;
     P.m_oMapEncodeFunc[P.GMID_MYSTERY_ACTIVE_REQ] = Encode_GMPKG_MYSTERY_ACTIVE_REQ;
     P.m_oMapDecodeFunc[P.GMID_MYSTERY_ACTIVE_ACK] = Decode_GMPKG_MYSTERY_ACTIVE_ACK;

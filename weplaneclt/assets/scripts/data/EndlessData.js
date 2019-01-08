@@ -52,6 +52,9 @@ var EndlessData = cc.Class({
     getEndlessChargeRewardTimes:function () {
         return self.bagData.TodayChargeReward;
     },
+    getBuyPowerPointCount:function () {
+        return self.bagData.BuyPowerPointCount;
+    },
 
     setStatusCount: function (data) {
         if (data.ErrCode == GameServerProto.PTERR_SUCCESS) {
@@ -138,6 +141,17 @@ var EndlessData = cc.Class({
         GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_ENDLESS_GET_CHARGE_DATA, data);
     },
 
+    saveBuyPowerPointData: function (data) {
+        if (data.ErrCode == GameServerProto.PTERR_SUCCESS) {
+            GlobalVar.me().setDiamond(data.OK.DiamondCur);
+            self.bagData.LastPowerTime = data.OK.LastPowerTime;
+            self.bagData.BuyPowerPointCount = data.OK.BuyCount;
+            self.bagData.PowerPoint = data.OK.PowerPoint;
+        }
+
+        GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_ENDLESS_GET_BUY_POWERPOINT_DATA, data);
+    },
+
     saveGetGoldData: function (data) {
         if (data.ErrCode == GameServerProto.PTERR_SUCCESS) {
             self.bagData.TodayGold = data.TodayGold;   
@@ -148,7 +162,6 @@ var EndlessData = cc.Class({
     saveEndlessPowerNtf: function (data) {
         self.bagData.PowerPoint = data.PowerPoint;
         self.bagData.LastPowerTime = data.LastPowerTime;
-
         // GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_ENDLESS_POWER_POINT_CHANGE_NTF, data);
     },
 

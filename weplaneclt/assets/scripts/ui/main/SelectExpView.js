@@ -32,17 +32,10 @@ cc.Class({
     animePlayCallBack(name) {
         if (name == "Escape") {
             this._super("Escape");
-            if (GlobalVar.getBannerSwitch()){
-                weChatAPI.justShowBanner();
-            }
-
             GlobalVar.eventManager().removeListenerWithTarget(this);
             WindowManager.getInstance().popView();
         } else if (name == "Enter") {
             this._super("Enter");            
-            if (GlobalVar.getBannerSwitch()){
-                weChatAPI.justHideBanner();
-            }
             this.updateTabs();
             GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_BAG_ADDITEM_NTF, this.bagAddItem, this);
             this.getNodeByName('content').on('touchmove', this.touchmove, this);

@@ -43,6 +43,11 @@ var ButtonObject = cc.Class({
         isPress: null,
     },
 
+    editor: {
+        requireComponent: cc.Button,
+        menu: 'i18n:MAIN_MENU.component.ui/ButtonObject'
+    },
+
     properties: {
         audioType: {
             default: audio.switch,
@@ -106,24 +111,30 @@ var ButtonObject = cc.Class({
         }
     },
     onTouchEnd: function (event) {
-        if(!!ButtonObject.isPress){
-            if(ButtonObject.isPress.uuid!=event.target.uuid){
-                event.target.getComponent(cc.Button)._pressed=false;
+        if (!!ButtonObject.isPress) {
+            if (cc.isValid(event.target)) {
+                if (ButtonObject.isPress.uuid != event.target.uuid) {
+                    event.target.getComponent(cc.Button)._pressed = false;
+                } else {
+                    ButtonObject.isPress = null;
+                }
+            } else {
+                ButtonObject.isPress = null;
+            }
+        } else {
+            if (cc.isValid(event.target)) {
+                event.target.getComponent(cc.Button)._pressed = false;
             }else{
                 ButtonObject.isPress = null;
             }
-        }else{
-            event.target.getComponent(cc.Button)._pressed=false;
         }
 
-        ButtonObject.isPress = null;
-        
         if (config.NEED_GUIDE) {
             Guide.getInstance().clickBtn(event.currentTarget.name);
         }
     },
-    onTouchCancel:function(event){
-        ButtonObject.isPress=null;
+    onTouchCancel: function (event) {
+        ButtonObject.isPress = null;
     },
 
     setEventState: function (open) {

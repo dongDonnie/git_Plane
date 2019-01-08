@@ -296,7 +296,7 @@ var GuazaiData = cc.Class({
             GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_GUAZAI_REBIRTH_ACK, msg.data);
         }
         else
-            GlobalVar.comMsg.errorWarning(msg.data.ErrCode);
+            GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_GUAZAI_REBIRTH_ACK, msg.data);
     }
 });
 

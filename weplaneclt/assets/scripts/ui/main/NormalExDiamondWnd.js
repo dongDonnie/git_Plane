@@ -16,6 +16,7 @@ cc.Class({
 
     onLoad: function () {
         this._super();
+        this.typeName = WndTypeDefine.WindowType.E_DT_NORMAL_EXDIAMOND_WND;
         this.animeStartParam(0, 0);
         this.closeShowGet = null;
     },

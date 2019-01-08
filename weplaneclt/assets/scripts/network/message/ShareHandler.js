@@ -19,6 +19,7 @@ cc.Class({
         GlobalVar.messageDispatcher.bindMsg(GameServerProto.GMID_FULI_SHARE_RECOMMAND_ACK, self._recvRecommandAck, self);
         GlobalVar.messageDispatcher.bindMsg(GameServerProto.GMID_FULI_SHARE_MEMBER_TESTPLAY_ACK, self._recvMemberTestPlayAck, self);
         GlobalVar.messageDispatcher.bindMsg(GameServerProto.GMID_FULI_SHARE_DAILY_ACK, self._recvShareDailyAck, self);
+        GlobalVar.messageDispatcher.bindMsg(GameServerProto.GMID_FULI_SHARE_SUPERFULI_ACK, self._recvSuperRewardAck, self);
     },
 
     _recvGetFreeDiamondAck: function (msgId, msg) {
@@ -98,5 +99,20 @@ cc.Class({
             Reserved: reserved,
         };
         self.sendMsg(GameServerProto.GMID_FULI_SHARE_DAILY_REQ, msg);
+    },
+
+    _recvSuperRewardAck: function (msgId, msg) {
+        if (typeof msg != "object"){
+            return;
+        }
+
+        GlobalVar.me().shareData.setSuperRewardData(msg.data);
+    },
+
+    sendSuperRewardReq: function (reserved) {
+        let msg = {
+            Reserved: reserved||0,
+        };
+        self.sendMsg(GameServerProto.GMID_FULI_SHARE_SUPERFULI_REQ, msg);
     },
 });

@@ -100,9 +100,16 @@ const NetworkManager = cc.Class({
         if (!!this.socket) {
             return;
         }
-        let url = (cc.sys.platform === cc.sys.WECHAT_GAME ? ('wss://' + host) : ('ws://' + host + ':' + port));
+        let url = "";
+        if (cc.sys.platform === cc.sys.WECHAT_GAME || (window && window["wywGameId"]=="5469")){
+            url = 'wss://' + host
+        }else{
+            url = 'ws://' + host + ':' + port
+        }
+        // let url = (cc.sys.platform === cc.sys.WECHAT_GAME ? ('wss://' + host) : ('ws://' + host + ':' + port));
+        // let url = ((window && window["wywGameId"]=="5469") ? ('wss://' + host) : ('ws://' + host + ':' + port));
 
-        //url='wss://weplane-s1.17fengyou.com/10005:443';
+        //url='wss://weplane-s1.17fengyou.com/10006';
         this.reconnectCount++;
 
         this.socket = new WebSocket(url);
@@ -114,6 +121,7 @@ const NetworkManager = cc.Class({
                 GameServerProto.Init();
                 self.connected = true;
                 self.connectError = false;
+                self.needReConnected = true;
                 serverTimeService.getInstance(); //实例化服务器时间服务
                 self.init();
                 if (!!self.onConnectCallBack) {

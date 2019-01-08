@@ -69,9 +69,6 @@ cc.Class({
     animePlayCallBack(name) {
         if (name == "Escape") {
             this._super("Escape");
-            if (GlobalVar.getBannerSwitch()){
-                weChatAPI.justShowBanner();
-            }
             this.curMode = PAGE_RECHARGE;
             this.rechargeScroll.node.active = true;
             this.node.getChildByName("nodeExchange").active = true;
@@ -81,9 +78,6 @@ cc.Class({
             WindowManager.getInstance().popView(false, null, false, false);
         } else if (name == "Enter") {
             this._super("Enter");
-            if (GlobalVar.getBannerSwitch()){
-                weChatAPI.justHideBanner();
-            }
             this.initRechargeWnd();
             this.registerEvent();
         }
@@ -170,7 +164,11 @@ cc.Class({
             if (rechargeData.byType == GameServerProto.PT_RCG_TYPE_AMS){
                 continue;
             }
-            showData.push(rechargeData);
+            if (rechargeData.wID == 10){
+                showData.splice(2, 0, rechargeData)
+            }else{
+                showData.push(rechargeData);
+            }
         }
         // for (let i = 1; i <= length; i++) { // 遍历表，用表中数据初始化加成列表
         //     let recgargeData = rechargeDataList[i]

@@ -10,10 +10,11 @@ module.exports = {
     onlyClose: 0,
     oneConfirm: 1,
     bothConfirmAndCancel: 2,
+    shareOnly: 3,
+    videoOnly: 4,
 
     showMessage: function (callback, mode, title, rstrMsg, pFunCloseCallback, pFunConfirmCallback, pFunCancelCallback, confirmName, cancelName) {
-        let windowMgr = WindowManager.getInstance();
-        windowMgr.pushView(WndTypeDefine.WindowType.E_DT_COMMON_WND, function (wnd, name, type) {
+        WindowManager.getInstance().pushView(WndTypeDefine.WindowType.E_DT_COMMON_WND, function (wnd, name, type) {
             wnd.getComponent(WndTypeDefine.WindowType.E_DT_COMMON_WND).setContent(mode, name, type, title, rstrMsg, pFunCloseCallback, pFunConfirmCallback, pFunCancelCallback, "", confirmName, cancelName);
             if (callback) {
                 callback(wnd, name, type);
@@ -30,13 +31,13 @@ module.exports = {
         });
     },
 
-    showDrawConfirmWnd: function (callback, title, rstrMsg, drawMode, ticketsEnough, diamondEnough, pFunCloseCallback, pFunConfirmCallback, pFunCancelCallback, confirmName, cancelName) {
-        WindowManager.getInstance().pushView(WndTypeDefine.WindowType.E_DT_COMMON_WND, function (wnd, name, type) {
-            wnd.getComponent(WndTypeDefine.WindowType.E_DT_COMMON_WND).setDrawConfirmContent(name, type, title, rstrMsg, drawMode, ticketsEnough, diamondEnough, pFunCloseCallback, pFunConfirmCallback, pFunCancelCallback, confirmName, cancelName);
-            if (callback) {
-                callback(wnd, name, type);
-            }
-        });
+    showTreasureTipWnd: function (title, text, drawMode, ticketsEnough, diamondEnough, pFunCloseCallback, pFunConfirmCallback, pFunCancelCallback) {
+        WindowManager.getInstance().pushView(WndTypeDefine.WindowType.E_DT_NORMAL_TREASURE_TIP_WND, function (wnd, name, type) {
+            wnd.getComponent(type).initTreasureTipWnd(title, text, drawMode, ticketsEnough, diamondEnough, pFunCloseCallback, pFunConfirmCallback, pFunCancelCallback)
+        })
+    },
+    showCutTimeWnd: function () {
+        WindowManager.getInstance().pushView(WndTypeDefine.WindowType.E_DT_NORMAL_CUT_TIME_WND)
     },
 
     showDrawBoxPreview: function (itemMustIDVec, itemProbIDVec, callback){
@@ -186,9 +187,9 @@ module.exports = {
         WindowManager.getInstance().pushView(WndTypeDefine.WindowType.E_DT_GUAZAISMELTER_WND);
     },
 
-    showBuySpWnd: function (shareCallBack, purchaseCallback, closeCallback) {
+    showBuySpWnd: function () {
         WindowManager.getInstance().pushView(WndTypeDefine.WindowType.E_DT_NORMAL_BUY_SP_WND, function (wnd, name, type) {
-            wnd.getComponent(type).initBuySpWnd(shareCallBack, purchaseCallback, closeCallback);
+            wnd.getComponent(type).initBuySpWnd();
         });
     },
 
@@ -359,9 +360,7 @@ module.exports = {
                 this.showRechargeWnd();
                 completeCallback && completeCallback();
                 return;
-            }else if (!isActive){
-                GlobalVar.comMsg.errorWarning(errCode);
-            }else if (isActive) {
+            }else {
                 GlobalVar.comMsg.errorWarning(GameServerProto.PTERR_RCG_FREE_DIAMOND_LACK);
             }
             completeCallback && completeCallback();
@@ -406,6 +405,9 @@ module.exports = {
     showShareDailyWnd: function () {
         WindowManager.getInstance().pushView(WndTypeDefine.WindowType.E_DT_NORMAL_SHAREDIALY_WND);
     },
+    showSuperRewardWnd: function () {
+        WindowManager.getInstance().pushView(WndTypeDefine.WindowType.E_DT_NORMAL_SUPER_REWARD_WND);
+    },
     showShareMemberTestPlayWnd: function (testPlayMemberID, callback) {
         WindowManager.getInstance().pushView(WndTypeDefine.WindowType.E_DT_NORMAL_SHARETESTPLAY_WND, function(wnd, name, type){
             wnd.getComponent(type).setTestPlayMemberID(testPlayMemberID);
@@ -414,5 +416,9 @@ module.exports = {
     },
     showShareTestPlayFinishWnd: function () {
         WindowManager.getInstance().pushView(WndTypeDefine.WindowType.E_DT_NORMAL_SHARETESTPLAYFINISH_WND);
+    },
+
+    showBuyPowerPointWnd: function () {
+        WindowManager.getInstance().pushView(WndTypeDefine.WindowType.E_DT_NORMAL_BUY_POWER_POIN_WND);
     },
 };

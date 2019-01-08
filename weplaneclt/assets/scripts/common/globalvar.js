@@ -14,6 +14,8 @@ const ServerTime = require("servertime");
 const TblApi = require("tblapi");
 const NetWaiting=require("netwaiting");
 const config = require("config");
+const weChatAPI = require("weChatAPI");
+const qqPlayAPI = require("qqPlayAPI");
 var requestService = require('requestservice')
 
 var GlobalVar = module.exports;
@@ -62,6 +64,19 @@ GlobalVar.netWaiting = function(){
     return NetWaiting.getInstance();
 },
 
+GlobalVar.getPlatformApi = function () {
+    let platformApi = null;
+    if (cc.sys.platform == cc.sys.WECHAT_GAME){
+        platformApi = weChatAPI || require("weChatAPI");
+    }else if (window && window["wywGameId"]=="5469"){
+        platformApi = qqPlayAPI || require("qqPlayAPI");
+    }
+    if (cc.isValid(platformApi)){
+        return platformApi;
+    }
+    return null;
+},
+
 GlobalVar.IosRechargeLock = true;
 GlobalVar.androidRechargeLock = false;
 GlobalVar.srcSwitch = function () {
@@ -76,14 +91,18 @@ GlobalVar.srcSwitch = function () {
     }
     return false;
 },
+GlobalVar.shareControl = 0;
+GlobalVar.getShareControl = function () {
+    return GlobalVar.shareControl;
+},
 GlobalVar.shareOpen = false;
 GlobalVar.getShareSwitch = function () {
     if (cc.sys.platform == cc.sys.WECHAT_GAME){
         return GlobalVar.shareOpen;
     }else if (window && window["wywGameId"]=="5469"){
-        return true;
+        return false;
     }
-    return false;
+    return true;
 },
 GlobalVar.videoAdOpen = false;
 GlobalVar.getVideoAdSwitch = function () {
@@ -106,10 +125,13 @@ GlobalVar.getBannerSwitch = function () {
     }
 },
 GlobalVar.getNeedGuide = function () {
-    return config.NEED_GUIDE
+    return config.NEED_GUIDE;
+},
+GlobalVar.configGMSwitch = function () {
+    return config.GM_SWITCH;
 },
 
-GlobalVar.firstTimeLaunch = false;
+GlobalVar.firstTimeLaunch = true;
 GlobalVar.showAuthorization = true;
 
 GlobalVar.cleanAllMgr = function () {

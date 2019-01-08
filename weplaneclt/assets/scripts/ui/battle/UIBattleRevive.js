@@ -71,10 +71,10 @@ cc.Class({
     },
 
     onBtnShare: function (event) {
-        if (cc.sys.platform !== cc.sys.WECHAT_GAME && !(window && window["wywGameId"]=="5469")) {
-            GlobalVar.comMsg.showMsg("非微信平台不能分享");
-            return;
-        }
+        // if (cc.sys.platform !== cc.sys.WECHAT_GAME && !(window && window["wywGameId"]=="5469")) {
+        //     GlobalVar.comMsg.showMsg("非微信玩一玩平台不能分享");
+        //     return;
+        // }
 
         if (!this.waitForRevive) {
             this.waitForRevive = true;
@@ -87,11 +87,16 @@ cc.Class({
                 materialID = 101;
             }
 
-            weChatAPI.shareNormal(materialID, function () {
+            let platformApi = GlobalVar.getPlatformApi();
+            if (cc.isValid(platformApi)){
+                platformApi.shareNormal(materialID, function () {
+                    GlobalVar.handlerManager().campHandler.sendCampReviveReq(1);
+                }, function () {
+                    self.waitForRevive = false;
+                });
+            }else if (GlobalVar.configGMSwitch()){
                 GlobalVar.handlerManager().campHandler.sendCampReviveReq(1);
-            }, function () {
-                self.waitForRevive = false;
-            });
+            }
         }
     },
 
@@ -122,19 +127,6 @@ cc.Class({
         }
         this.node.destroy();
     },
-
-    // onEnable: function(){
-    //     if (GlobalVar.getBannerSwitch() && !GlobalVar.getNeedGuide()){
-    //         weChatAPI.showBannerAd();
-    //     }
-    // },
-
-    // onDisable: function () {
-    //     if (GlobalVar.getBannerSwitch()){
-    //         weChatAPI.hideBannerAd();
-    //     }
-    // },
-
 
     onDestroy: function () {
         GlobalVar.eventManager().removeListenerWithTarget(this);

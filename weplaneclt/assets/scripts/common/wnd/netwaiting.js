@@ -56,6 +56,14 @@ var NetWaiting = cc.Class({
                 if (parentNode != null) {
                     parentNode.addChild(this.waiting);
                     this.wait = true;
+                    
+                    if (GlobalVar.sceneManager().getCurrentSceneType() == SceneDefines.LOGIN_STATE) {
+                        let uiserversel=cc.find("Canvas/UINode").getChildByName('UIServerSel');
+                        if(!uiserversel.getComponent('UIServerSel').canSelect){
+                            //GlobalVar.comMsg.showMsg(i18n.t('label.4000006'));
+                            uiserversel.getComponent('UIServerSel').canSelect = true;
+                        }
+                    }
                 }
             }
         } else {

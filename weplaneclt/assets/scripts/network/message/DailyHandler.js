@@ -97,4 +97,11 @@ cc.Class({
         }
         GlobalVar.me().dailyData.setNewTaskData(msg.data.NewTaskBag);
     },
+
+    sendDailyADReq: function () {
+        let msg = {
+            Reserved: 0,
+        }
+        self.sendMsg(GameServerProto.GMID_DAILY_AD_REQ, msg);
+    },
 });

@@ -101,9 +101,6 @@ var GetWayObject = cc.Class({
         this._jumpGoCallback = callback;
     },
     removeListennerAndBanner: function () {
-        if (GlobalVar.getBannerSwitch()){
-            weChatAPI.hideBannerAd();
-        }
         GlobalVar.eventManager().removeListenerWithTarget(this);
     },
     jumpGo: function () {

@@ -122,6 +122,9 @@ cc.Class({
         let self = this;
         let index = self.beforeIcon / 10 % 10 + 1;
         GlobalVar.resManager().loadRes(ResMapping.ResType.SpriteFrame, 'cdnRes/itemiconBig/' + index + '/' + this.beforeIcon, function (frame) {
+            if(!cc.isValid(self.spriteEquip)){
+                return;
+            }
             self.spriteEquip.spriteFrame = frame;
             self.playQualityUpAnime();
         });
@@ -151,6 +154,9 @@ cc.Class({
             let callfunc = cc.callFunc(() => {
                 let index = self.afterIcon / 10 % 10 + 1;
                 GlobalVar.resManager().loadRes(ResMapping.ResType.SpriteFrame, 'cdnRes/itemiconBig/' + index + '/' + self.afterIcon, function (frame) {
+                    if(!cc.isValid(self.spriteEquip)){
+                        return;
+                    }
                     self.spriteEquip.spriteFrame = frame;
                     GlobalFunc.playDragonBonesAnimation(effect2.node, effect2Finish);
 

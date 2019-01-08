@@ -71,9 +71,6 @@ cc.Class({
     animePlayCallBack(name) {
         if (name == "Escape") {
             this._super("Escape");
-            if (GlobalVar.getBannerSwitch()){
-                weChatAPI.hideBannerAd();
-            }
             let confirm = this.node.getChildByName("btnConfirm");
             let cancel = this.node.getChildByName("btnCancel");
             cancel.getComponent("RemoteSprite").setFrame(1);
@@ -136,11 +133,6 @@ cc.Class({
             this.clickIndex = -1;
         } else if (name == "Enter") {
             this._super("Enter");
-
-            if (GlobalVar.getBannerSwitch() && !GlobalVar.getNeedGuide()){
-                let self = this;
-                weChatAPI.showBannerAd();
-            }
         }
     },
 
@@ -205,52 +197,14 @@ cc.Class({
         this.node.getChildByName("labelTitle").active = true;
     },
 
-    setDrawConfirmContent: function (name, type, title, text, drawMode, ticketsEnough, diamondEnough, pFunCloseCallback, pFunConfirmCallback, pFunCancelCallback, confirmName, cancelName) {
-        let CONTENT_DRAWINFO = 1;
-        let contentMode = CONTENT_DRAWINFO;
-        this.selectContent(contentMode);
-
-        this.setDrawTip(drawMode, text, ticketsEnough, diamondEnough);
-        this.setContent(3, name, type, title, "", pFunCloseCallback, pFunConfirmCallback, pFunCancelCallback, "", confirmName, cancelName);
-    },
-
     setItemBoxContent: function (name, type, title, condition, vecItems, closeCallBack, confirmCallBack, cancelCallBack, confirmName, cancelName) {
-        let CONTENT_BOXPREVIEW = 2;
+        let CONTENT_BOXPREVIEW = 1;
         let contentMode = CONTENT_BOXPREVIEW;
         this.selectContent(contentMode);
 
         this.setTreasureBoxItem(condition, vecItems);
         this.setContent(5, name, type, title, "", closeCallBack, confirmCallBack, cancelCallBack, "", confirmName, cancelName);
         this.node.height = 400;
-    },
-
-    setDrawTip: function (drawMode, text, ticketsEnough, diamondEnough) {
-        let nodeDraw = this.node.getChildByName("nodeContents").getChildByName("nodeDrawInfo");
-
-        nodeDraw.getChildByName("labelText").getComponent(cc.Label).string = text;
-
-        let diamond = nodeDraw.getChildByName("spriteDiamond");
-        let diamondCost = diamond.getChildByName("labelDiamondCost");
-        let ticket = nodeDraw.getChildByName("spriteTicket");
-        let ticketCost = ticket.getChildByName("labelTicketCost");
-        if (ticketsEnough) {
-            // ticket.getComponent("RemoteSprite").setFrame(1);
-            diamond.active = false;
-        } else {
-            if (diamondEnough) {
-                diamondCost.color = new cc.color(255, 255, 255);
-            } else {
-                diamondCost.color = new cc.color(255, 0, 0);
-                this.confirmCallBack = this.showDiamondNotEnoughMsg
-            }
-        }
-        if (drawMode === 1) {
-            diamondCost.getComponent(cc.Label).string = 188;
-            ticketCost.getComponent(cc.Label).string = 1;
-        } else if (drawMode === 10) {
-            diamondCost.getComponent(cc.Label).string = 1680;
-            ticketCost.getComponent(cc.Label).string = 10;
-        }
     },
 
     setBuySpTip: function (confirmCallBack) {
@@ -333,27 +287,21 @@ cc.Class({
     setBtnMode: function (mode) {
         let confirm = this.node.getChildByName("btnConfirm");
         let cancel = this.node.getChildByName("btnCancel");
+        confirm.getChildByName("spriteVideo").active = false;
+        confirm.getChildByName("spriteShare").active = false;
         if (mode == 5) {
             confirm.active = true;
-            // confirm.getComponent("RemoteSprite").setFrame(2);
             cancel.active = false;
         } else if (mode == 4) {
             confirm.active = true;
-            confirm.x = 160;
-            confirm.getComponent("RemoteSprite").setFrame(1);
-            cancel.active = true;
-            cancel.x = -160;
-            cancel.getComponent("RemoteSprite").setFrame(2);
-            confirm.getComponent(cc.Widget).bottom = 80;
-            cancel.getComponent(cc.Widget).bottom = 80;
-            confirm.getComponent(cc.Widget).updateAlignment();
-            cancel.getComponent(cc.Widget).updateAlignment();
-
+            cancel.active = false;
+            confirm.x = 0;
+            confirm.getChildByName("spriteVideo").active = true;
         } else if (mode == 3) {
             confirm.active = true;
-            confirm.x = 160;
-            cancel.active = true;
-            cancel.x = -160;
+            cancel.active = false;
+            confirm.x = 0;
+            confirm.getChildByName("spriteShare").active = true;
         } else if (mode == 2) {
             confirm.active = true;
             confirm.x = 160;
@@ -361,6 +309,7 @@ cc.Class({
             cancel.x = -160;
         } else if (mode == 1) {
             confirm.active = true;
+            cancel.active = false;
             confirm.x = 0;
         } else {
             confirm.active = false;

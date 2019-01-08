@@ -235,7 +235,7 @@ const BulletSolutions = cc.Class({
                     BattleManager.getInstance().showShadow(true);
                 }
                 if (idx == 1) {
-                    BulletSolutions.solution_100000_1(entity, ai.posTransfer((cc.v3(70 + Math.random() * 500) / 640, (350 + Math.random() * 500) / 1136)), bulletIds[0]);
+                    BulletSolutions.solution_100000_1(entity,ai.posTransfer(cc.v3((70 + Math.random() * 500) / 640, (350 + Math.random() * 500) / 1136)) , bulletIds[0]);
                 }
                 if (idx == 2) {
                     BattleManager.getInstance().showShadow(false);
@@ -341,8 +341,8 @@ const BulletSolutions = cc.Class({
                     BattleManager.getInstance().showShadow(true);
                 }
                 if (idx == 1) {
-                    BulletSolutions.solution_100000_1(entity, ai.posTransfer((cc.v3(70 + Math.random() * 500) / 640, (250 + Math.random() * 325) / 1136)), bulletIds[0]);
-                    BulletSolutions.solution_100000_1(entity, ai.posTransfer((cc.v3(70 + Math.random() * 500) / 640, (575 + Math.random() * 325)) / 1136), bulletIds[0]);
+                    BulletSolutions.solution_100000_1(entity, ai.posTransfer(cc.v3((70 + Math.random() * 500) / 640, (250 + Math.random() * 325) / 1136)), bulletIds[0]);
+                    BulletSolutions.solution_100000_1(entity, ai.posTransfer(cc.v3((70 + Math.random() * 500) / 640, (575 + Math.random() * 325) / 1136)), bulletIds[0]);
                 }
                 if (idx == 2) {
                     BattleManager.getInstance().showShadow(false);

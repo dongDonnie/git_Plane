@@ -74,10 +74,6 @@ cc.Class({
     animePlayCallBack(name) {
         if (name == "Escape") {
             this._super("Escape");
-            if (GlobalVar.getBannerSwitch()){
-                weChatAPI.hideBannerAd();
-                weChatAPI.justHideBanner();
-            }
             GlobalVar.eventManager().removeListenerWithTarget(this);
             this.shareCallBack = null;
             this.purchaseCallBack = null;
@@ -88,9 +84,6 @@ cc.Class({
             }, false, false);
         } else if (name == "Enter") {
             this._super("Enter");
-            if (GlobalVar.getBannerSwitch() && !GlobalVar.getNeedGuide()){
-                weChatAPI.showBannerAd();
-            }
             this.registerEvent();
         }
     },
@@ -99,7 +92,7 @@ cc.Class({
         GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_BUY_SP_RESULT, this.getBuySpResult, this);
     },
 
-    initBuySpWnd: function (shareCallBack, purchaseCallBack, closeCallBack) {
+    initBuySpWnd: function () {
         let title = i18n.t('label.4000230')
         let shareName = i18n.t("label.4000304");
         let purchaseName = i18n.t("label.4000214");
@@ -123,7 +116,7 @@ cc.Class({
         this.setLeftBuyTimes(leftBuyTimes);
         this.setGetSpCount(spBuyTblData.wGetSp);
         this.setDiamondCost(diamondCost);
-        this.setBtnEvent(shareCallBack, purchaseCallBack, closeCallBack);
+        // this.setBtnEvent(shareCallBack, purchaseCallBack, closeCallBack);
         this.setShareText(shareName);
         this.setPurchaseText(purchaseName);
     },
@@ -143,32 +136,45 @@ cc.Class({
     },
 
     onBtnShareClick: function (event) {
-        if (cc.sys.platform !== cc.sys.WECHAT_GAME && !(window && window["wywGameId"]=="5496")){
-            if (!!this.shareCallBack){
-                this.shareCallBack();
-            }
-            // this.close();
-            return;
-        }
+        // if (cc.sys.platform !== cc.sys.WECHAT_GAME && !(window && window["wywGameId"]=="5469")){
+        //     if (!!this.shareCallBack){
+        //         this.shareCallBack();
+        //     }
+        //     // this.close();
+        //     return;
+        // }
 
         if (!this.canOperata){
             return;
         }
 
         this.canOperata = true;
-        CommonWnd.showMessage(null, CommonWnd.oneConfirm, i18n.t('label.4000216'), i18n.t('label.4000317'));
-        setTimeout(() => {
-            weChatAPI.shareNeedClick(121, function () {
-                GlobalVar.handlerManager().spHandler.sendSpBuyReq(1);
+        if (cc.sys.platform == cc.sys.WECHAT_GAME){
+            // CommonWnd.showMessage(null, CommonWnd.oneConfirm, i18n.t('label.4000216'), i18n.t('label.4000317'));
+            // setTimeout(() => {
+            //     weChatAPI.shareNeedClick(121, function () {
+            //         GlobalVar.handlerManager().spHandler.sendSpBuyReq(1);
+            //     });
+            // }, 1000);
+            CommonWnd.showMessage(null, CommonWnd.oneConfirm, i18n.t('label.4000216'), i18n.t('label.4000317'), null, function () {
+                weChatAPI.shareNeedClick(121, function () {
+                    GlobalVar.handlerManager().spHandler.sendSpBuyReq(1);
+                }, null, i18n.t('label.4000304'));
             });
-        }, 1000);
-
+        }else{
+            let platformApi = GlobalVar.getPlatformApi();
+            if (cc.isValid(platformApi)){
+                platformApi.shareNormal(121, function () {
+                    GlobalVar.handlerManager().spHandler.sendSpBuyReq(1);
+                });
+            }
+        }
     },
 
     onBtnPurchaseClick: function (event) {
-        if (!!this.purchaseCallBack) {
-            this.purchaseCallBack();
-        }
+        // if (!!this.purchaseCallBack) {
+        //     this.purchaseCallBack();
+        // }
 
         if (!this.canOperata){
             return;
@@ -201,9 +207,9 @@ cc.Class({
     },
 
     onBtnClose: function (event) {
-        if (!!this.closeCallBack) {
-            this.closeCallBack();
-        }
+        // if (!!this.closeCallBack) {
+        //     this.closeCallBack();
+        // }
         this.close();
     },
 

@@ -1,5 +1,6 @@
 const RootBase = require("RootBase");
 const GlobalVar = require('globalvar');
+const WndTypeDefine = require("wndtypedefine");
 const WindowManager = require("windowmgr");
 const EventMsgID = require("eventmsgid");
 const GameServerProto = require("GameServerProto");
@@ -27,6 +28,7 @@ cc.Class({
 
     onLoad() {
         this._super();
+        this.typeName = WndTypeDefine.WindowType.E_DT_NORMAL_RICHTREASURE_WND;
         this.animeStartParam(0, 0);
     },
 
@@ -42,24 +44,12 @@ cc.Class({
     animePlayCallBack(name) {
         if (name == "Escape") {
             this._super("Escape");
-            if (GlobalVar.getBannerSwitch()){
-                weChatAPI.hideBannerAd();
-            }
             GlobalVar.eventManager().removeListenerWithTarget(this);
             WindowManager.getInstance().popView(false, null, false, false);
         } else if (name == "Enter") {
             this._super("Enter");
             let spriteTip = this.node.getChildByName("spriteContinueTip");
-            if (GlobalVar.getBannerSwitch() && !GlobalVar.getNeedGuide()){
-                let winHeight = cc.winSize.height;
-                let screenHeight = wx.getSystemInfoSync().screenHeight;
-                weChatAPI.showBannerAd(function (bannerHeight) {
-                    spriteTip.y = -(winHeight/2 - bannerHeight / screenHeight * winHeight);
-                    spriteTip.active = true;
-                });
-            }else{
-                spriteTip.active = true;
-            }
+            spriteTip.active = true;
 
             var goldRewardTimes = GlobalVar.tblApi.getData('TblTreasureGoldReward');
             this.times = [];
@@ -69,6 +59,19 @@ cc.Class({
             GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_GET_TREASURE_MINING_RESULT, this.showTreasureMiningResult, this);
             GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_GET_TREASURE_MINING_REWARD_RESULT, this.showMiningRewardResult, this);
             this.showSurplusTimes();
+        }
+    },
+
+    showBannnerCallback: function (bannerHeight) {
+        let spriteTip = this.node.getChildByName("spriteContinueTip");
+        if (cc.sys.platform == cc.sys.WECHAT_GAME){
+            let winHeight = cc.winSize.height;
+            let screenHeight = wx.getSystemInfoSync().screenHeight;
+            spriteTip.y = -(winHeight/2 - bannerHeight / screenHeight * winHeight);
+            spriteTip.active = true;
+        }else{
+            spriteTip.y = -300;
+            spriteTip.active = true;
         }
     },
 

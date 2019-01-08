@@ -1,4 +1,3 @@
-
 const RootBase = require("RootBase");
 const WindowManager = require("windowmgr");
 const GlobalVar = require('globalvar')
@@ -53,7 +52,7 @@ cc.Class({
         },
         btnFeedback: {
             default: null,
-            type: cc.Button,
+            type: cc.Node,
         },
         editBoxGiftCard: {
             default: null,
@@ -69,6 +68,11 @@ cc.Class({
         this.labelVersion.string = GlobalVar.tblApi.getData('TblVersion')[1].strVersion;
         this.animeStartParam(0, 0);
         this.clickGMTimes = 0;
+
+        if (window && window["wywGameId"] == "5469") {
+            this.btnNotice.node.x = 0;
+            this.btnFeedback.node.active = false;
+        }
     },
 
     animeStartParam(paramScale, paramOpacity) {
@@ -78,23 +82,20 @@ cc.Class({
 
     animePlayCallBack(name) {
         if (name == "Escape") {
-            this._super("Escape");            
-            if (GlobalVar.getBannerSwitch()){
-                weChatAPI.hideBannerAd();
-            }
+            this._super("Escape");
             WindowManager.getInstance().popView();
-            if (this.feedbackButton) {
+            if (!!this.feedbackButton) {
                 this.feedbackButton.destroy();
                 this.feedbackButton = null;
             }
         } else if (name == "Enter") {
             this._super("Enter");
-            if (GlobalVar.getBannerSwitch() && !GlobalVar.getNeedGuide()){
-                weChatAPI.showBannerAd();
-            }
             GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_SHOW_NOTICE_LIST, this.onRecvNoticeAck, this);
             this.clickGMTimes = 0;
-            this.createFeedbackBtn(this.btnFeedback.node);
+            this.btnSize = cc.size(this.btnFeedback.width, this.btnFeedback.height);
+            let btnWorldPos = this.btnFeedback.parent.convertToWorldSpaceAR(this.btnFeedback.position);
+            this.viewPos = this.node.parent.convertToNodeSpaceAR(btnWorldPos);
+            this.createFeedbackBtn();
         }
     },
 
@@ -104,7 +105,7 @@ cc.Class({
             this._super(true);
         } else {
             this._super(false);
-            this.createFeedbackBtn(this.btnFeedback.node);
+            this.createFeedbackBtn();
         }
     },
 
@@ -126,13 +127,15 @@ cc.Class({
     },
 
     setBtnEffectState: function () {
-        let SWITCH_ON = 1, SWITCH_OFF = 0;
+        let SWITCH_ON = 1,
+            SWITCH_OFF = 0;
         let spriteEffect = this.btnEffectOnOff.node.getComponent("RemoteSprite");
         this.effectIsOn ? spriteEffect.setFrame(SWITCH_ON) : spriteEffect.setFrame(SWITCH_OFF);
     },
 
     setBtnBgmState: function () {
-        let SWITCH_ON = 1, SWITCH_OFF = 0;
+        let SWITCH_ON = 1,
+            SWITCH_OFF = 0;
         let spriteBgm = this.btnBgmOnOff.node.getComponent("RemoteSprite");
         this.bgmIsOn ? spriteBgm.setFrame(SWITCH_ON) : spriteBgm.setFrame(SWITCH_OFF)
 
@@ -150,14 +153,14 @@ cc.Class({
     },
 
     onBtnBgmOnOff: function (event) {
-        GlobalVar.soundManager().setBgmOnOff(this.bgmIsOn = !this.bgmIsOn,true);
+        GlobalVar.soundManager().setBgmOnOff(this.bgmIsOn = !this.bgmIsOn, true);
         this.setBtnBgmState();
         // console.log("Bgm checked:" + this.bgmIsOn);
     },
 
     onBtnConfirm: function () {
         let code = this.editBoxGiftCard.string;
-        if (code == ""){
+        if (code == "") {
             GlobalVar.comMsg.showMsg("激活码不能为空!");
             return;
         }
@@ -166,22 +169,21 @@ cc.Class({
 
     onBtnNotice: function () {
         GlobalVar.handlerManager().noticeHandler.sendGetNoticeReq();
-        if (this.feedbackButton) {
+        if (!!this.feedbackButton) {
             this.feedbackButton.destroy();
             this.feedbackButton = null;
         }
     },
 
     onBtnQuit: function () {
-        GlobalVar.handlerManager().loginHandler.sendLogOutReq();
         BattleManager.getInstance().quitOutSide();
-        // GlobalVar.netWaiting().reconnect = false;
-        // GlobalVar.networkManager().socket.onclose();
-        GlobalVar.sceneManager().gotoScene(SceneDefines.LOGIN_STATE);
-        if (this.feedbackButton) {
+        GlobalVar.networkManager().needReConnected = false;
+        GlobalVar.handlerManager().loginHandler.sendLogOutReq();
+        if (!!this.feedbackButton) {
             this.feedbackButton.destroy();
             this.feedbackButton = null;
         }
+        GlobalVar.sceneManager().gotoScene(SceneDefines.LOGIN_STATE);
     },
 
     onRecvNoticeAck: function () {
@@ -189,35 +191,34 @@ cc.Class({
         let self = this;
         if (noticeCount > 0) {
             CommonWnd.showNoticeWnd();
-        }else{
+        } else {
             GlobalVar.comMsg.showMsg("暂无公告");
-            this.createFeedbackBtn(this.btnFeedback.node);
+            this.createFeedbackBtn();
         }
     },
 
     onBtnFeedback: function () {
-        
+
     },
 
     onClickOpenGM: function (event, index) {
-        // return;
-        if (Math.abs(this.clickGMTimes % 2) == index){
-            if (!config.GM_SWITCH){
+        return;
+        if (Math.abs(this.clickGMTimes % 2) == index) {
+            if (!config.GM_SWITCH) {
                 this.clickGMTimes++;
-            }else{
+            } else {
                 this.clickGMTimes--;
             }
             console.log("clickTimes:", this.clickGMTimes);
-        }else{
-            // this.clickGMTimes = 0;
+        } else {
+            this.clickGMTimes = 0;
         }
-
-        if (this.clickGMTimes == 10){
+        if (this.clickGMTimes == 10) {
             config.GM_SWITCH = true;
             this.clickGMTimes = 0;
             // GlobalVar.comMsg.showMsg("开启GM模式");
             GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_GM_SWITCH_CHANGE);
-        }else if (this.clickGMTimes == -10){
+        } else if (this.clickGMTimes == -10) {
             config.GM_SWITCH = false;
             this.clickGMTimes = 0;
             // GlobalVar.comMsg.showMsg("关闭GM模式");
@@ -225,43 +226,23 @@ cc.Class({
         }
     },
 
-    createFeedbackBtn(btnNode) {
+    createFeedbackBtn() {
         if (cc.sys.platform != cc.sys.WECHAT_GAME) {
             return;
         }
         let self = this;
         let createBtn = function () {
-            let btnSize = cc.size(btnNode.width, btnNode.height);
+            let btnSize = self.btnSize;
             let frameSize = cc.view.getFrameSize();
-            // console.log("winSize: ",winSize);
-            // console.log("frameSize: ",frameSize);
-            let worldPos = btnNode.parent.convertToWorldSpaceAR(btnNode.position);
-            let viewPos = self.node.parent.convertToNodeSpaceAR(worldPos);
-            // console.log('viewPos: ', viewPos);
+
+            let viewPos = self.viewPos;
+
             let left = (cc.winSize.width * 0.5 + viewPos.x - btnSize.width * 0.5) / cc.winSize.width * frameSize.width;
             let top = (cc.winSize.height * 0.5 - viewPos.y - btnSize.height * 0.5) / cc.winSize.height * frameSize.height;
             let width = btnSize.width / cc.winSize.width * frameSize.width;
             let height = btnSize.height / cc.winSize.height * frameSize.height;
-            // console.log("button pos: ", cc.v3(left, top));
-            // console.log("button size: ", cc.size(width, height));
 
-
-            self.feedbackButton = wx.createFeedbackButton({
-                type: 'text',
-                text: '',
-                style: {
-                    left: left,
-                    top: top,
-                    width: width,
-                    height: height,
-                    lineHeight: 0,
-                    backgroundColor: '',
-                    color: '#ffffff',
-                    textAlign: 'center',
-                    fontSize: 16,
-                    borderRadius: 4
-                }
-            })
+            self.feedbackButton = weChatAPI.feedBack(left, top, width, height);
         }
 
         createBtn();

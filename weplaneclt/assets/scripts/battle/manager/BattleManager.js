@@ -252,7 +252,7 @@ const BattleManager = cc.Class({
             bmgr.managers[Defines.MgrType.HERO].update(Defines.BATTLE_FRAME_SECOND);
 
             if (bmgr.isEndlessFlag) {
-                if (GlobalVar.getShareSwitch() && GlobalVar.me().endlessData.getRankID() > 1 &&
+                if ((GlobalVar.getShareSwitch() || GlobalVar.getVideoAdSwitch()) && GlobalVar.me().endlessData.getRankID() > 1 &&
                     GlobalVar.me().endlessData.getEndlessChargeRewardTimes() < GlobalVar.tblApi.getDataBySingleKey('TblParam', GameServerProto.PTPARAM_ENDLESS_CHARGE_DAYMAX).dValue) {
                     bmgr.gameState = Defines.GameResult.DASHOPEN;
                 } else {

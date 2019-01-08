@@ -67,7 +67,7 @@ cc.Class({
         if (typeof msg != "object") {
             return;
         }
-        
+        console.log("enterGame消息：", msg);
         GlobalVar.me().loginData.enterGameMain(msg);
     },
 
@@ -82,8 +82,8 @@ cc.Class({
         // }
         // 约定不修改服务器存储的用户头像
         avatar && (avatar = avatar.trim());
-        if (cc.sys.platform === cc.sys.WECHAT_GAME) {
-            
+        if (cc.sys.platform === cc.sys.WECHAT_GAME || (window && window["wywGameId"]=="5469")) {
+            console.log("进入sendLoginReq方法");
             let plat = "android";
             if (cc.sys.os == cc.sys.OS_IOS){
                 plat = "ios";
@@ -91,7 +91,7 @@ cc.Class({
                 plat = "android";
             }
             let msg = {
-                ProgVer: 100,
+                ProgVer: GameServerProto.PT_SERVER_VERSION,
                 ResVer: GlobalVar.tblApi.getData('TblVersion')[1].strVersion,
                 Account: userID,
                 Password: "123",
@@ -106,11 +106,12 @@ cc.Class({
                     Plat: plat,
                 },
             };
-            // console.log("发送的登陆申请消息为: ", msg);
+            console.log("发送的登陆申请消息为: ", msg);
             this.sendMsg(GameServerProto.GMID_BIG_LOGIN_REQ, msg);
+            console.log("发送完毕: ", msg);
         } else {
             let msg = {
-                ProgVer: 100,
+                ProgVer: GameServerProto.PT_SERVER_VERSION,
                 ResVer: GlobalVar.tblApi.getData('TblVersion')[1].strVersion,
                 Account: userID,
                 Password: "123",
@@ -128,14 +129,14 @@ cc.Class({
 
         // 约定不修改服务器存储的用户头像
         avatar && (avatar = avatar.trim());
-        if (cc.sys.platform === cc.sys.WECHAT_GAME) {
+        if (cc.sys.platform === cc.sys.WECHAT_GAME || (window && window["wywGameId"]=="5469")) {
             let msg = {
                 Icon: 40000,
                 Avatar: avatar || "",
                 MemberID: 40000,
                 RoleName: RoleName || "",
             }
-            // console.log("发送的创建角色申请消息为: ", msg);
+            console.log("发送的创建角色申请消息为: ", msg);
             this.sendMsg(GameServerProto.GMID_CREATE_ROLE_REQ, msg);
         }else{
             let msg = {

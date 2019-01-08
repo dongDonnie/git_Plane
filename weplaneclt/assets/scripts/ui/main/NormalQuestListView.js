@@ -259,7 +259,8 @@ cc.Class({
 
     getQuestNodeByIndex: function (index) {
         index = typeof index !== 'undefined' ? index : this.curChapterIndex;
-        if (index == -1 || index == 30) {
+        let len=GlobalVar.tblApi.getDataBySingleKey('TblChapter', this.chapterType).length;
+        if (index == -1 || index >= len) {
             // console.log("error, index can not be '-1'")
             return;
         }
@@ -337,9 +338,9 @@ cc.Class({
             let lastCampign = GlobalVar.me().campData.getLastCampaignID(this.chapterType);
             if (lastCampign == campaignList[i]) {
                 let anime = cc.instantiate(this.nodeSeletedAnime);
-                anime.getChildByName("spriteCircleAnime1").runAction(cc.repeatForever(cc.rotateBy(4, 360)));
-                anime.getChildByName("spriteCircleAnime2").runAction(cc.repeatForever(cc.rotateBy(4, -360)));
-                anime.getChildByName("spriteCircleAnime3").runAction(cc.repeatForever(cc.rotateBy(4, 360)))
+                // anime.getChildByName("spriteCircleAnime1").runAction(cc.repeatForever(cc.rotateBy(4, 360)));
+                // anime.getChildByName("spriteCircleAnime2").runAction(cc.repeatForever(cc.rotateBy(4, -360)));
+                // anime.getChildByName("spriteCircleAnime3").runAction(cc.repeatForever(cc.rotateBy(4, 360)))
                 anime.setPosition(0, 0);
                 anime.setScale(planet.width * 1.6 / anime.width);
                 //console.log("动画缩放尺寸=", planet.width * 1.8 / anime.width)
@@ -564,35 +565,56 @@ cc.Class({
     },
 
     onBtnChapterRewardBox: function (event, index) {
-        let str = "oVecChest" + index;
-        let chapterData = GlobalVar.tblApi.getDataBySingleKey('TblChapter', this.chapterType)[this.curChapterIndex];
+        let self = this;
+        let receiveReward = function () { 
+            let str = "oVecChest" + index;
+            let chapterData = GlobalVar.tblApi.getDataBySingleKey('TblChapter', self.chapterType)[self.curChapterIndex];
 
-        let condition = false;
-        let curStarsCount = GlobalVar.me().campData.getChapterStarCount(this.chapterType, this.curChapterIndex + 1);
-        let goalStarsCount = chapterData.oVecReward[index - 1].wStars
-        // console.log("curStarsCount = ", curStarsCount, "  goalStarsCount = ", goalStarsCount);
-        if (curStarsCount >= goalStarsCount) {
-            condition = true;
+            let condition = false;
+            let curStarsCount = GlobalVar.me().campData.getChapterStarCount(self.chapterType, self.curChapterIndex + 1);
+            let goalStarsCount = chapterData.oVecReward[index - 1].wStars
+            // console.log("curStarsCount = ", curStarsCount, "  goalStarsCount = ", goalStarsCount);
+            if (curStarsCount >= goalStarsCount) {
+                condition = true;
+            }
+
+
+
+            let campType = self.chapterType;
+            let chapterId = self.curChapterIndex + 1;
+            let pos = parseInt(index);
+
+            // 判断关卡宝箱是否已领取
+            let confirmText = "领取";
+            if (GlobalVar.me().campData.isChapterRewardReceived(campType, chapterId, pos)) {
+                condition = false;
+                confirmText = "已领取"
+            }
+
+            let confirm = function () {
+                GlobalVar.handlerManager().campHandler.sendGetCampChapterRewardReq(campType, chapterId, pos - 1);
+            };
+
+            CommonWnd.showRewardBoxWnd(null, i18n.t('label.4000240'), condition, chapterData[str], null, confirm, null, confirmText);
         }
-
-
-
-        let campType = this.chapterType;
-        let chapterId = this.curChapterIndex + 1;
-        let pos = parseInt(index);
-
-        // 判断关卡宝箱是否已领取
-        let confirmText = "领取";
-        if (GlobalVar.me().campData.isChapterRewardReceived(campType, chapterId, pos)) {
-            condition = false;
-            confirmText = "已领取"
+        let platformApi = GlobalVar.getPlatformApi();
+        if ((index == 1 || index == 2) && platformApi && GlobalVar.me().vipLevel < 3) {
+            CommonWnd.showMessage(null, CommonWnd.shareOnly, i18n.t('label.4000216'), i18n.t('label.4000329'), null, function () {
+                platformApi.shareNormal(0, function () {
+                    receiveReward()
+                });
+            }, null, "  " + i18n.t('label.4000304'))
+        } else if (index == 3 && platformApi && GlobalVar.me().vipLevel < 3) {
+            CommonWnd.showMessage(null, CommonWnd.videoOnly, i18n.t('label.4000216'), i18n.t('label.4000330'), null, function () {
+                platformApi.showRewardedVideoAd(function () {
+                    receiveReward()
+                }, function () {
+                    receiveReward()
+                });
+            }, null, "  " + i18n.t('label.4000328'))
+        } else {
+            receiveReward();
         }
-
-        let confirm = function () {
-            GlobalVar.handlerManager().campHandler.sendGetCampChapterRewardReq(campType, chapterId, pos - 1);
-        };
-
-        CommonWnd.showRewardBoxWnd(null, i18n.t('label.4000240'), condition, chapterData[str], null, confirm, null, confirmText);
     },
 
 

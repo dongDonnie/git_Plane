@@ -128,7 +128,9 @@ cc.Class({
 
             let path = "cdnRes/active/" + data.NameImg;
             GlobalVar.resManager().loadRes(ResMapping.ResType.SpriteFrame, path, function (frame) {
-                activeTab.getChildByName("spriteBg").getComponent("RemoteSprite").spriteFrame = frame;
+                if(cc.isValid(activeTab)){
+                    activeTab.getChildByName("spriteBg").getComponent("RemoteSprite").spriteFrame = frame;
+                }
             });
             // })))
         } else {
@@ -318,7 +320,7 @@ cc.Class({
 
             let labelRequire = model.getChildByName("labelRequire");
             let requireData = GlobalVar.tblApi.getDataBySingleKey('TblAMSRule', ruleCfg.RuleList[0].RuleID);
-            let requireStr = requireData.strRuleName.replace("{0}", ruleCfg.RuleList[0].Compare.replace(">=", "达到").replace("==", "").replace("<=", "小于") + ruleCfg.RuleList[0].Var);
+            let requireStr = requireData.strRuleName.replace("{0}", ruleCfg.RuleList[0].Compare.replace(">=", "达到").replace("==", "").replace("<=", "小于") + ruleCfg.RuleList[0].Var > 10000?(parseInt(ruleCfg.RuleList[0].Var/10000)):ruleCfg.RuleList[0].Var);
             labelRequire.getComponent(cc.Label).string = requireStr;
 
             model.getChildByName("btnRecv").active = true;
@@ -467,15 +469,23 @@ cc.Class({
         } 
 
         // 抽奖提示
+        nodeBtn.getChildByName("btnPurchase").getChildByName("spriteVideo").active = false;
+        nodeBtn.getChildByName("btnPurchase").getChildByName("spriteShare").active = false;
         if (data.Join[0] && data.Join[0].Join >= data.Act.LimitNum) {
             nodeBtn.getChildByName("btnPurchase").getComponent(cc.Button).interactable = false
             nodeBtn.getChildByName("btnPurchase").getComponent("ButtonObject").setText("已参与")
         } else {
             nodeBtn.getChildByName("btnPurchase").getComponent(cc.Button).interactable = true
             let btnText = "购 买";
-            (isFree || isShareComplete) && (btnText = "抽 奖");
-            isShare && !isShareComplete && (btnText = "分享到群");
-            isAD && (btnText = "  观看视频");
+            if ((isFree && !isShare && !isAD) || isShareComplete){
+                btnText = "抽 奖";
+            } else if (isShare && !isShareComplete){
+                btnText = "  分享到群";
+                nodeBtn.getChildByName("btnPurchase").getChildByName("spriteShare").active = true;
+            }else if (isAD){
+                btnText = "  观看视频";
+                nodeBtn.getChildByName("btnPurchase").getChildByName("spriteVideo").active = true;
+            }
             nodeBtn.getChildByName("btnPurchase").getComponent("ButtonObject").setText(btnText);
         }
         nodeBtn.getChildByName("labelJoin").getComponent(cc.Label).string = i18n.t('label.4000401').replace("%d", data.Act.LimitNum - curJoinTime);
@@ -580,15 +590,26 @@ cc.Class({
         }
 
         // 抽奖提示
+        nodeBuy.getChildByName("btnPurchase").getChildByName("spriteVideo").active = false;
+        nodeBuy.getChildByName("btnPurchase").getChildByName("spriteShare").active = false;
         if (data.Join[0] && data.Join[0].Join >= data.Act.LimitNum) {
             nodeBuy.getChildByName("btnPurchase").getComponent(cc.Button).interactable = false
             nodeBuy.getChildByName("btnPurchase").getComponent("ButtonObject").setText("已参与");
         } else {
             nodeBuy.getChildByName("btnPurchase").getComponent(cc.Button).interactable = true;
             let btnText = "购 买";
-            (isFree || isShareComplete) && (btnText = "抽 奖");
-            isShare && !isShareComplete && (btnText = "分享到群");
-            isAD && (btnText = "  观看视频");
+            if ((isFree && !isShare && !isAD) || isShareComplete){
+                btnText = "抽 奖";
+            } else if (isShare && !isShareComplete){
+                nodeBuy.getChildByName("btnPurchase").getChildByName("spriteShare").active = true;
+                btnText = "  分享到群"
+            } else if (isAD){
+                btnText = "  观看视频"
+                nodeBuy.getChildByName("btnPurchase").getChildByName("spriteVideo").active = true;
+            }
+            // (isFree || isShareComplete) && (btnText = "抽 奖");
+            // isShare && !isShareComplete && (btnText = "  分享到群");
+            // isAD && (btnText = "  观看视频");
             nodeBuy.getChildByName("btnPurchase").getComponent("ButtonObject").setText(btnText);
         }
 
@@ -734,25 +755,50 @@ cc.Class({
         if (rule && rule.RuleID == GameServerProto.PT_AMS_RULEID_SHARE) {
             let curStep = StoreageData.getShareTimesWithKey(data.Act.Actid, data.Act.Limit, data.Act.EndTime);
             if (curStep >= rule.Var * (curJoinTime + 1)) {
-                console.log("sendActiceJoinReq:  ", "curStep:", curStep, "  rule.Var:", rule.Var, "  curJoinTime:", curJoinTime);
                 GlobalVar.handlerManager().activeHandler.sendActiveJoinReq(curTabActID);
             } else {
                 let shareSuccessFunc = function () {
                     curStep = StoreageData.setShareTimesWithKey(data.Act.Actid, data.Act.Limit, data.Act.EndTime);
                     if (curStep >= rule.Var * (curJoinTime + 1)) {
-                        console.log("sendActiceJoinReq:  ", "curStep:", curStep, "  rule.Var:", rule.Var, "  curJoinTime:", curJoinTime);
                         GlobalVar.handlerManager().activeHandler.sendActiveJoinReq(curTabActID);
                     } else {
                         self.refreshActiveContent(data);
                     }
                 };
-                if (rule.Param == 0) {
-                    weChatAPI.shareNormal(113, shareSuccessFunc);
-                } else {
-                    CommonWnd.showMessage(null, CommonWnd.oneConfirm, i18n.t('label.4000216'), i18n.t('label.4000317'));
-                    setTimeout(() => {
-                        weChatAPI.shareNeedClick(113, shareSuccessFunc);
-                    }, 1000);
+                if (cc.sys.platform == cc.sys.WECHAT_GAME){
+                    if (rule.Param == 0) {
+                        weChatAPI.shareNormal(113, shareSuccessFunc);
+                    } else {
+                        CommonWnd.showMessage(null, CommonWnd.oneConfirm, i18n.t('label.4000216'), i18n.t('label.4000317'), null, function () {
+                            weChatAPI.shareNeedClick(113, shareSuccessFunc);
+                        }, null, i18n.t('label.4000304'));
+                    }
+                }else{
+                    let platformApi = GlobalVar.getPlatformApi();
+                    if (platformApi) {
+                        platformApi.shareNormal(113, shareSuccessFunc);
+                    }
+                }
+
+            }
+        } else if (rule && rule.RuleID == GameServerProto.PT_AMS_RULEID_AD){
+            let curStep = StoreageData.getShareTimesWithKey(data.Act.Actid, data.Act.Limit, data.Act.EndTime);
+            if (curStep >= rule.Var * (curJoinTime + 1)) {
+                GlobalVar.handlerManager().activeHandler.sendActiveJoinReq(curTabActID);
+            } else {
+                let shareSuccessFunc = function () {
+                    curStep = StoreageData.setShareTimesWithKey(data.Act.Actid, data.Act.Limit, data.Act.EndTime);
+                    if (curStep >= rule.Var * (curJoinTime + 1)) {
+                        GlobalVar.handlerManager().activeHandler.sendActiveJoinReq(curTabActID);
+                    } else {
+                        self.refreshActiveContent(data);
+                    }
+                };
+                let platformApi = GlobalVar.getPlatformApi();
+                if (platformApi) {
+                    platformApi.showRewardedVideoAd(shareSuccessFunc, function (data) {
+                        platformApi.shareNormal(113, shareSuccessFunc);
+                    });
                 }
             }
         } else {
@@ -782,13 +828,43 @@ cc.Class({
                         self.refreshActiveContent(data);
                     }
                 };
-                if (rule.Param == 0) {
-                    weChatAPI.shareNormal(113, shareSuccessFunc);
-                } else {
-                    CommonWnd.showMessage(null, CommonWnd.oneConfirm, i18n.t('label.4000216'), i18n.t('label.4000317'));
-                    setTimeout(() => {
-                        weChatAPI.shareNeedClick(113, shareSuccessFunc);
-                    }, 1000);
+                if (cc.sys.platform == cc.sys.WECHAT_GAME){
+                    if (rule.Param == 0) {
+                        weChatAPI.shareNormal(113, shareSuccessFunc);
+                    } else {
+                        // CommonWnd.showMessage(null, CommonWnd.oneConfirm, i18n.t('label.4000216'), i18n.t('label.4000317'));
+                        // setTimeout(() => {
+                        //     weChatAPI.shareNeedClick(113, shareSuccessFunc);
+                        // }, 1000);
+                        CommonWnd.showMessage(null, CommonWnd.oneConfirm, i18n.t('label.4000216'), i18n.t('label.4000317'), null, function () {
+                            weChatAPI.shareNeedClick(113, shareSuccessFunc);
+                        }, null, i18n.t('label.4000304'));
+                    }
+                }else{
+                    let platformApi = GlobalVar.getPlatformApi();
+                    if (platformApi) {
+                        platformApi.shareNormal(113, shareSuccessFunc);
+                    }
+                }
+            }
+        } else if (rule && rule.RuleID == GameServerProto.PT_AMS_RULEID_AD){
+            let curStep = StoreageData.getShareTimesWithKey(data.Act.Actid, data.Act.Limit, data.Act.EndTime);
+            if (curStep >= rule.Var * (curJoinTime + 1)) {
+                GlobalVar.handlerManager().activeHandler.sendActiveJoinReq(curTabActID);
+            } else {
+                let shareSuccessFunc = function () {
+                    curStep = StoreageData.setShareTimesWithKey(data.Act.Actid, data.Act.Limit, data.Act.EndTime);
+                    if (curStep >= rule.Var * (curJoinTime + 1)) {
+                        GlobalVar.handlerManager().activeHandler.sendActiveJoinReq(curTabActID);
+                    } else {
+                        self.refreshActiveContent(data);
+                    }
+                };
+                let platformApi = GlobalVar.getPlatformApi();
+                if (platformApi) {
+                    platformApi.showRewardedVideoAd(shareSuccessFunc, function (data) {
+                        platformApi.shareNormal(113, shareSuccessFunc);
+                    });
                 }
             }
         } else {

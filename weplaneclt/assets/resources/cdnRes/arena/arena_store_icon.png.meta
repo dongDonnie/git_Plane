@@ -1,0 +1,32 @@
+{
+  "ver": "2.3.0",
+  "uuid": "67881881-4171-4f0a-b399-883d2b40b39d",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "platformSettings": {},
+  "subMetas": {
+    "arena_store_icon": {
+      "ver": "1.0.3",
+      "uuid": "4f16cb69-46cf-4f01-9bde-f1afc85f9463",
+      "rawTextureUuid": "67881881-4171-4f0a-b399-883d2b40b39d",
+      "trimType": "custom",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 94,
+      "height": 91,
+      "rawWidth": 94,
+      "rawHeight": 91,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

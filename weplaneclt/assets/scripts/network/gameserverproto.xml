@@ -29,7 +29,7 @@
         <define name="PT_CONST_1000"            value="1000" />
         <define name="PT_MAX_INT32"             value="2147483647" />
 
-        <define name="PT_SERVER_VERSION"        value="100" />
+        <define name="PT_SERVER_VERSION"        value="103" />
 
         <define name="PT_SVRTYPE_ALL"           value="0" />
         <define name="PT_SVRTYPE_GAMESERVER"    value="1" />
@@ -86,6 +86,7 @@
         <define name="PT_LOGINTYPE_NORMAL"      value="1" />
         <define name="PT_LOGINTYPE_SDK"         value="2" />
         <define name="PT_LOGINTYPE_GUEST"       value="3" />
+        <define name="PT_LOGINTYPE_H5SDK"       value="4" />
 
         <define name="PTERR_SUCCESS"            value="0" />
         <define name="PTERR_FAIL"               value="1" />
@@ -378,7 +379,7 @@
         <define name="PTERR_ARENA_CHALLENGE_TICKET_LIMIT" value="1107"/>
         <define name="PTERR_ARENA_CHALLENGE_FREE_ENOUGH" value="1108"/>
         <define name="PTERR_ARENA_POINT_LACK" value="1109"/>
-        <define name="PTERR_ARENA_OTHERPARTY_IS_ROBOT" value="1110"/>
+        <define name="PTERR_ARENA_CHALLENGE_ROLE_CHANGE" value="1110"/>
         <define name="PTERR_ARENA_SAODANG_COMBAT_LOWER" value="1111"/>
         <define name="PTERR_ARENA_SAODANG_RANKING_NOT_IN_500" value="1112"/>
         <define name="PTERR_ARENA_SAODANG_RANKING_LOWER" value="1113"/>
@@ -553,7 +554,7 @@
         <define name="PTERR_GUAZAI_CANNOT_HECHENG" value="2013" />
         <define name="PTERR_GUAZAI_HECHENG_QUALITY_NOT_SAME" value="2014" />
         <define name="PTERR_GUAZAI_HECHENG_ITEM_LACK" value="2015" />
-
+    
         <define name="PTERR_MYSTERY_ALREADY_ACTIVE" value="2101" />
         <define name="PTERR_MYSTERY_MIXLEVEL_LACK" value="2102" />
         <define name="PTERR_MYSTERY_LEVEL_MAX" value="2103" />
@@ -757,6 +758,7 @@
         <define name="PTPARAM_TREASURE_NEXTFREETIME_REDUCEVALUE" value="312" />
         <define name="PTPARAM_TREASURE_NEXTFREETIME_REDUCECOUNTMAX" value="313" />
         <define name="PTPARAM_FULI_SHARE_SUPERFULI_PACKAGE" value="314" />
+        <define name="PTPARAM_FULI_GC_TESTPLAY_REWARD_DIAMOND" value="315" />
         <!-- param info -->
         <!-- ###########################################################################################################################-->
         <!-- ###########################################################################################################################-->
@@ -897,7 +899,7 @@
         <define name="PT_CLIENT_EVENT_CLICK_NOTICE" value="3" />
         <define name="PT_CLIENT_EVENT_NORESPONSE" value="4" />
 
-        <define name="PT_PLAYER_MAX_LEVEL" value="100" />
+        <define name="PT_PLAYER_MAX_LEVEL" value="200" />
 
         <define name="PT_MEMBER_MAX_COUNT"      value="30" />
         <define name="PT_MEMBER_WEAPON_MAX_COUNT"      value="99" />
@@ -1246,6 +1248,7 @@
         <define name="PT_DAILY_TASK_MONTHCARD" value="12" />
         <define name="PT_DAILY_TASK_TREASURE_GOLD" value="13" />
         <define name="PT_DAILY_TASK_LIMITSTORE_BUY" value="14"/>
+        <define name="PT_DAILY_TASK_AD" value="15"/>
 
         <!--成就-->
         <define name="PT_ACHIEVE_MAX" value="999" />
@@ -1297,6 +1300,7 @@
         <define name="PT_FULI_CZ_MAX" value="20" />
 
         <define name="PT_FULI_MILLION_MAX" value="999" />
+        <define name="PT_FULI_GC_TESTPLAY_REWARD_MAX" value="999999" />
 
         <!--Arena-->
         <define name="PT_ARENA_HIS_MSG_MAX" value="10" />
@@ -1695,6 +1699,18 @@
             <item name="Plat" type="string" max_count="PT_MAX_SDK_ID_LEN"/>
         </type>
 
+        <type name="GMDT_BIG_LOGIN_H5SDK">
+            <item name="game_id" type="string" max_count="PT_MAX_SDK_ID_LEN" />
+            <item name="op_id" type="string" max_count="PT_MAX_SDK_ID_LEN" />
+            <item name="user_id" type="string" max_count="PT_MAX_SDK_ID_LEN" />
+            <item name="login_ip" type="string" max_count="PT_MAX_SDK_ID_LEN" />
+            <item name="login_time" type="string" max_count="PT_MAX_SDK_ID_LEN" />
+            <item name="sign" type="string" max_count="PT_MAX_SDK_ID_LEN" />
+            <item name="ServerID" type="string" max_count="PT_MAX_SDK_ID_LEN"/>
+            <item name="Avatar" type="string" max_count="PT_MAX_AVATAR_LEN"/>
+            <item name="Plat" type="string" max_count="PT_MAX_SDK_ID_LEN"/>
+        </type>
+
         <type name="GMPKG_BIG_LOGIN_REQ">
             <item name="ProgVer" type="UINT32" />
             <item name="ResVer" type="string" max_count="PT_MAX_VER_LEN" />
@@ -1704,6 +1720,7 @@
             <item name="LoginType" type="UINT8" />
             <item name="GuestLogin" type="GMDT_BIG_LOGIN_GUEST" select="LoginType" id="PT_LOGINTYPE_GUEST" />
             <item name="SDKData" type="GMDT_BIG_LOGIN_SDK" select="LoginType" id="PT_LOGINTYPE_SDK" />
+            <item name="H5SDKData" type="GMDT_BIG_LOGIN_H5SDK" select="LoginType" id="PT_LOGINTYPE_H5SDK" />
         </type>
 
         <type name="GMPKG_BIG_LOGIN_ACK">
@@ -1915,6 +1932,7 @@
             <item name="BuildTaskFlag" type="UINT8"/>
             <item name="FuLiMillionFlag" type="UINT8"/>
             <item name="AMSFlag" type="UINT8"/>
+            <item name="FuLiLimitGiftFlag" type="UINT8" />
         </type>
 
         <type name="GMDT_SPBAG">
@@ -2339,6 +2357,7 @@
             <item name="FuliDaily" type="UINT8" />
             <item name="FuliRecommend" type="UINT8"/>
             <item name="FuliMemberTestPlay" type="UINT8"/>
+            <item name="SuperFuli" type="UINT8" />
         </type>
         
         <type name="GMDT_PLAYER">
@@ -2405,6 +2424,7 @@
             <item name="Avatar" type="string" max_count="PT_MAX_AVATAR_LEN"/>
             <item name="MemberID" type="UINT16"/>
             <item name="RoleName" type="string" max_count="PT_MAX_ROLENAME_LEN"/>
+            <item name="FromOpenid" type="string" max_count="PT_MAX_ACCOUNT_LEN"/>
         </type>
 
         <type name="GMDT_CREATE_ROLE_OK">
@@ -3583,7 +3603,7 @@
         </type>
 
         <type name="GMPKG_ENDLESS_BUY_POWERPOINT_REQ">
-            <item name="Reserved" type="UINT8"/>
+            <item name="Free" type="UINT8"/>
         </type>
 
         <type name="GMDT_ENDLESS_BUY_POWERPOINT_OK">
@@ -4191,7 +4211,7 @@
         </type>
         
         <type name="GMPKG_TREASURE_TIMEREDUCE_ACK">
-            <item name="Errcode" type="INT32"/>
+            <item name="ErrCode" type="INT32"/>
             <item name="NextFreeTime" type="UINT32" />
             <item name="ReduceCount" type="INT32" />
         </type>
@@ -4252,7 +4272,12 @@
         <type name="GMPKG_LOTTERY_NTF">
             <item name="StatFlag" type="UINT8"/>
         </type>
-
+        
+        <type name="GMDT_SIGNIN_STATE">
+             <item name="Signin" type="UINT8"/>
+             <item name="Heap" type="UINT8"/>
+        </type>
+      
         <type name="GMPKG_SIGNIN_DATA_REQ">
             <item name="Reserved" type="UINT8"/>
         </type>
@@ -4261,28 +4286,29 @@
             <item name="ErrCode" type="INT32"/>
             <item name="PassDay" type="INT32"/>
             <item name="Plan" type="UINT16"/>
-            <item name="SigninState" type="vector" member_type="UINT8" max_count="PT_SIGNIN_MAX"/>
+            <item name="SigninState" type="vector" member_type="GMDT_SIGNIN_STATE" max_count="PT_SIGNIN_MAX"/>
         </type>
 
         <type name="GMPKG_SIGNIN_REQ">
             <item name="Day" type="UINT8"/>
+            <item name="DoubleGetFlag" type="UINT8"/>
         </type>
-
+        
         <type name="GMPKG_SIGNIN_ACK">
             <item name="ErrCode" type="INT32"/>
             <item name="PassDay" type="INT32"/>
             <item name="Plan" type="UINT16"/>
-            <item name="SigninState" type="vector" member_type="UINT8" max_count="PT_SIGNIN_MAX"/>
+            <item name="SigninState" type="vector" member_type="GMDT_SIGNIN_STATE" max_count="PT_SIGNIN_MAX"/>
             <item name="Item" type="vector" member_type="GMDT_ITEM_COUNT" max_count="PT_BAG_MAX_SIZE"/>
         </type>
-
+        
         <type name="GMPKG_SIGNIN_HEAP_REQ">
             <item name="Day" type="UINT8"/>
         </type>
 
         <type name="GMPKG_SIGNIN_HEAP_ACK">
             <item name="ErrCode" type="INT32"/>
-            <item name="SigninState" type="vector" member_type="UINT8" max_count="PT_SIGNIN_MAX"/>
+            <item name="SigninState" type="vector" member_type="GMDT_SIGNIN_STATE" max_count="PT_SIGNIN_MAX"/>
             <item name="Item" type="vector" member_type="GMDT_ITEM_COUNT" max_count="PT_BAG_MAX_SIZE"/>
         </type>
 
@@ -4925,7 +4951,11 @@
             <item name="Item" type="vector" member_type="GMDT_ITEM_COUNT" max_count="PT_BAG_MAX_SIZE"/>
         </type>
 
-        <type name="GMPKG_FULI_GIFT_NTF">
+        <type name="GMPKG_FULI_GIFT_LIMIT_NTF">
+          <item name="StatFlag" type="UINT8"/>
+        </type>    
+
+        <type name="GMPKG_FULI_GIFT_VIP_NTF">
             <item name="StatFlag" type="UINT8"/>
         </type>
 
@@ -5068,7 +5098,7 @@
         </type>
 
         <type name="GMPKG_FULI_SHARE_SUPERFULI_ACK">
-            <item name="Errcode" type="INT32" />
+            <item name="ErrCode" type="INT32" />
             <item name="SuperFuli" type="UINT8" />
             <item name="Item" type="vector" member_type="GMDT_ITEM_COUNT" max_count="PT_BAG_MAX_SIZE" />
         </type>
@@ -5102,6 +5132,25 @@
             <item name="FuliShareMemberTestPlay" type="UINT8"/>
             <item name="Item" type="vector" member_type="GMDT_ITEM_COUNT" max_count="PT_BAG_MAX_SIZE"/>
         </type>
+
+        <type name="GMPKG_FULI_GC_DATA_REQ">
+            <item name="Reserved" type="UINT8"/>
+        </type>
+
+        <type name="GMPKG_FULI_GC_DATA_ACK">
+            <item name="ErrCode" type="INT32"/>
+            <item name="TestPlayReward" type="vector" member_type="UINT32" max_count="PT_FULI_GC_TESTPLAY_REWARD_MAX" />
+        </type>
+
+        <type name="GMPKG_FULI_GC_TESTPLAY_REWARD_REQ">
+            <item name="ID" type="UINT32"/>
+        </type>
+
+        <type name="GMPKG_FULI_GC_TESTPLAY_REWARD_ACK">
+            <item name="ErrCode" type="INT32"/>
+            <item name="GetDiamond" type="INT32"/>
+            <item name="TestPlayReward" type="vector" member_type="UINT32" max_count="PT_FULI_GC_TESTPLAY_REWARD_MAX" />
+        </type>
         
         <!-- Arena -->
         <type name="GMPKG_ARENA_OPEN_REQ">
@@ -5109,10 +5158,12 @@
         </type>
 
         <type name="GMDT_ARENA_MEMBER">
-            <item name="IconID" type="UINT16"/>
+            <item name="MemberID" type="UINT16"/>
+            <item name="Quality" type="UINT16"/>
             <item name="Ranking" type="UINT32"/>
             <item name="RoleID" type="UINT64"/>
             <item name="RoleName" type="string" max_count="PT_MAX_ROLENAME_LEN"/>
+            <item name="Avatar" type="string" max_count="PT_MAX_AVATAR_LEN"/>
             <item name="Level" type="UINT16"/>
             <item name="CombatPoint" type="INT32"/>
             <item name="Likes" type="UINT32"/>
@@ -5194,6 +5245,7 @@
         </type>
 
         <type name="GMPKG_ARENA_CHALLENGE_REQ">
+            <item name="BeChallengedRoleID" type="UINT64"/>
             <item name="BeChallengedRanking" type="UINT32"/>
             <item name="ChallengeType" type="UINT8"/>
         </type>
@@ -6756,6 +6808,10 @@
             <item name="Reserved" type="UINT8"/>
         </type>
 
+        <type name="GMPKG_DAILY_AD_REQ">
+            <item name="Reserved" type="UINT8"/>
+        </type>
+
         <type name="GMPKG_DAILY_SHARE_ACK">
             <item name="ErrCode" type="INT32"/>
         </type>
@@ -6853,6 +6909,16 @@
             <item name="ItemChange" type="GMDT_ITEM_CHANGE" />
         </type>
 
+        <type name="GMPKG_GUAZAI_COMPOSE_REQ">
+            <item name="GuaZaiID" type="UINT16" />
+        </type>
+
+        <type name="GMPKG_GUAZAI_COMPOSE_ACK">
+            <item name="ErrCode" type="INT32" />
+            <item name="GetItems" type="vector" member_type="GMDT_ITEM_COUNT" max_count="PT_BAG_MAX_SIZE"/>
+            <item name="ItemChange" type="GMDT_ITEM_CHANGE" />
+        </type>
+      
         <type name="GMPKG_MYSTERY_ACTIVE_REQ">
             <item name="ID" type="UINT16" />
         </type>
@@ -8365,6 +8431,10 @@
             <item name="SuperFuli" type="UINT8" />
         </type>
 
+        <type name="DBDT_FULI_GC">
+            <item name="TestPlayReward" type="vector" member_type="UINT32" max_count="PT_FULI_GC_TESTPLAY_REWARD_MAX" />
+        </type>
+
         <type name="DBDT_FULI_BAG">
             <item name="GiftBag" type="DBDT_FULI_GIFT_BAG" />
             <item name="SevenBag" type="DBDT_FULI_SEVEN_BAG" />
@@ -8373,6 +8443,7 @@
             <item name="VipBonus" type="DBDT_FULI_VIPBONUS" />
             <item name="Million" type="DBDT_FULI_MILLION" />
             <item name="Share" type="DBDT_FULI_SHARE" />
+            <item name="GC" type="DBDT_FULI_GC" />
         </type>
 
         <type name="DBDT_ARENA_HIS_MSG">
@@ -9585,10 +9656,12 @@
         </type>
 
         <type name="DBDT_ARENA_MEMBER">
-            <item name="IconID" type="UINT16"/>
+            <item name="MemberID" type="UINT16"/>
+            <item name="Quality" type="UINT16"/>
             <item name="Ranking" type="UINT32"/>
             <item name="RoleID" type="UINT64"/>
             <item name="RoleName" type="string" max_count="PT_MAX_ROLENAME_LEN"/>
+            <item name="Avatar" type="string" max_count="PT_MAX_AVATAR_LEN"/>
             <item name="Level" type="UINT16"/>
             <item name="CombatPoint" type="INT32"/>
             <item name="Likes" type="UINT32"/>
@@ -9652,6 +9725,7 @@
             <item name="RoleID" type="UINT64"/>
             <item name="ChallengeType" type="UINT8" />
             <item name="CombatPoint" type="INT32"/>
+            <item name="BeChallengedRoleID" type="UINT64"/>
             <item name="BeChallengedRanking" type="UINT32"/>
         </type>
 
@@ -10127,6 +10201,7 @@
             <item name="orderid" type="string" max_count="PT_MAX_SDK_ID_LEN"/>
             <item name="amount" type="INT32"/>
             <item name="platform" type="string" max_count="PT_MAX_SDK_ID_LEN"/>
+            <item name="from_openid" type="string" max_count="PT_MAX_ACCOUNT_LEN"/>
         </type>
 
         <!--YunWei Protocol-->
@@ -10883,6 +10958,7 @@
         <message name="GMID_DAILY_REWARD_ACK" id="845" type="GMPKG_DAILY_REWARD_ACK" />
         <message name="GMID_DAILY_NTF" id="846" type="GMPKG_DAILY_NTF" />
         <message name="GMID_DAILY_SHARE_REQ" id="847" type="GMPKG_DAILY_SHARE_REQ" />
+        <message name="GMID_DAILY_AD_REQ" id="848" type="GMPKG_DAILY_AD_REQ" />
 
         <message name="GMID_ACHIEVE_DATA_REQ" id="850" type="GMPKG_ACHIEVE_DATA_REQ" />
         <message name="GMID_ACHIEVE_DATA_ACK" id="851" type="GMPKG_ACHIEVE_DATA_ACK" />
@@ -11017,7 +11093,8 @@
         <message name="GMID_FULI_GIFT_DATA_ACK" id="1202" type="GMPKG_FULI_GIFT_DATA_ACK" />
         <message name="GMID_FULI_GIFT_BUY_REQ" id="1203" type="GMPKG_FULI_GIFT_BUY_REQ" />
         <message name="GMID_FULI_GIFT_BUY_ACK" id="1204" type="GMPKG_FULI_GIFT_BUY_ACK" />
-        <message name="GMID_FULI_GIFT_NTF" id="1205" type="GMPKG_FULI_GIFT_NTF" />
+        <message name="GMID_FULI_GIFT_VIP_NTF" id="1205" type="GMPKG_FULI_GIFT_VIP_NTF" />
+        <message name="GMID_FULI_GIFT_LIMIT_NTF" id="1206" type="GMPKG_FULI_GIFT_LIMIT_NTF"/>
 
         <message name="GMID_FULI_SEVEN_DATA_REQ" id="1211" type="GMPKG_FULI_SEVEN_DATA_REQ" />
         <message name="GMID_FULI_SEVEN_DATA_ACK" id="1212" type="GMPKG_FULI_SEVEN_DATA_ACK" />
@@ -11056,6 +11133,11 @@
         <message name="GMID_FULI_SHARE_MEMBER_TESTPLAY_ACK" id="1245" type="GMPKG_FULI_SHARE_MEMBER_TESTPLAY_ACK" />
         <message name="GMID_FULI_SHARE_SUPERFULI_REQ" id="1246" type="GMPKG_FULI_SHARE_SUPERFULI_REQ" />
         <message name="GMID_FULI_SHARE_SUPERFULI_ACK" id="1247" type="GMPKG_FULI_SHARE_SUPERFULI_ACK" />
+
+        <message name="GMID_FULI_GC_DATA_REQ" id="1281" type="GMPKG_FULI_GC_DATA_REQ" />
+        <message name="GMID_FULI_GC_DATA_ACK" id="1282" type="GMPKG_FULI_GC_DATA_ACK" />
+        <message name="GMID_FULI_GC_TESTPLAY_REWARD_REQ" id="1283" type="GMPKG_FULI_GC_TESTPLAY_REWARD_REQ" />
+        <message name="GMID_FULI_GC_TESTPLAY_REWARD_ACK" id="1284" type="GMPKG_FULI_GC_TESTPLAY_REWARD_ACK" />
 
         <message name="GMID_ARENA_OPEN_REQ" id="1251" type="GMPKG_ARENA_OPEN_REQ" />
         <message name="GMID_ARENA_OPEN_ACK" id="1252" type="GMPKG_ARENA_OPEN_ACK" />
@@ -11263,6 +11345,8 @@
         <message name="GMID_GUAZAI_AWAKE_ACK" id="1915" type="GMPKG_GUAZAI_AWAKE_ACK" />
         <message name="GMID_GUAZAI_AWAKEUP_REQ" id="1916" type="GMPKG_GUAZAI_AWAKEUP_REQ" />
         <message name="GMID_GUAZAI_AWAKEUP_ACK" id="1917" type="GMPKG_GUAZAI_AWAKEUP_ACK" />
+        <message name="GMID_GUAZAI_COMPOSE_REQ" id="1918" type="GMPKG_GUAZAI_HECHENG_REQ" />
+        <message name="GMID_GUAZAI_COMPOSE_ACK" id="1919" type="GMPKG_GUAZAI_HECHENG_ACK" />
 
         <message name="GMID_MYSTERY_ACTIVE_REQ" id="2000" type="GMPKG_MYSTERY_ACTIVE_REQ" />
         <message name="GMID_MYSTERY_ACTIVE_ACK" id="2001" type="GMPKG_MYSTERY_ACTIVE_ACK" />

@@ -11,6 +11,7 @@ const GameServerProto = require("GameServerProto");
 const WindowManager = require("windowmgr");
 const i18n = require('LanguageData');
 const weChatAPI = require("weChatAPI");
+const qqPlayAPI = require("qqPlayAPI");
 const GlobalFunc = require('GlobalFunctions');
 const config = require("config");
 const StoreageData = require("storagedata");
@@ -35,6 +36,7 @@ var UIMain = cc.Class({
         this.updateExpBar();
         this.judgeLevelUp();
         this.setMode();
+        this.onShowFunc = null;
 
         if (!GlobalFunc.isAllScreen() && !this.fixViewComplete) {
             this.fixViewComplete = true;
@@ -70,6 +72,7 @@ var UIMain = cc.Class({
                 })
             });
             weChatAPI.createRewardedVideoAd();
+            weChatAPI.createBannerAdList();
             
             if (GlobalVar.me().loginData.getLoginReqDataServerID()) {
                 weChatAPI.reportServerLogin(GlobalVar.me().loginData.getLoginReqDataAccount(), GlobalVar.me().loginData.getLoginReqDataServerID(), GlobalVar.me().serverTime * 100);
@@ -83,7 +86,11 @@ var UIMain = cc.Class({
                 })
             }
         } else if (window && window["wywGameId"]=="5469"){
-
+            // this.reportMaterialClick();
+            qqPlayAPI.getMaterials(function (data) {
+                console.log("拉取到的文案:", data);
+            });
+            this.getNodeByName("btnoMoreFunGame").active = false;
         }
 
         if (!GlobalVar.srcSwitch()){
@@ -136,6 +143,10 @@ var UIMain = cc.Class({
             btnoShareDaily && (btnoShareDaily.active = false);
         }
 
+        if (!GlobalVar.me().shareData.getSuperRewardState()){
+            let btnoSuperGift = this.getNodeByName("btnoSuperGift");
+            btnoSuperGift && (btnoSuperGift.active = true);
+        }
         this.showLaunchWindow();
     },
 
@@ -205,6 +216,7 @@ var UIMain = cc.Class({
         GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_EXPCHANGE_NTF, this.updateExpBar, this);
         GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_NEWTASK_NTF, this.updateNewTask, this);
         GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_GET_SHARE_DAILY_DATA, this.getShareDailyData, this);
+        GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_GET_SUPER_REWARD_DATA, this.hideSuperFuliBtn, this);
 
         //RENAME
         GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_GET_RENAME_ACK, this.getReNameData, this);
@@ -221,6 +233,8 @@ var UIMain = cc.Class({
         GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_FULICZ_FLAG_CHANGE, this.setFuliFlag, this);
         GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_CAMP_FLAG_CHANGE, this.setCampFlag, this);
         GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_VIP_REWARD_FLAG_CHANGE, this.setRechargeFlag, this);
+        GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_FREE_DIAMOND_FLAG_CHANGE, this.setFreeDiamondFlag, this);
+        GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_LIMIT_STORE_FLAG_CHANGE, this.setLimitStoreFlag, this);
 
         //gm
         GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_GM_SWITCH_CHANGE, this.setMode, this);
@@ -238,7 +252,8 @@ var UIMain = cc.Class({
         this.setBagFlag();
         this.setFuliFlag();
         this.setRechargeFlag();
-
+        this.setFreeDiamondFlag();
+        this.setLimitStoreFlag();
 
         // 邮件要先获取邮件信息才可以判断是否有红点
         this.setMailFlag();
@@ -279,9 +294,19 @@ var UIMain = cc.Class({
     //         }
     //     }
     // },
+    hideSuperFuliBtn: function () {
+        let btnoSuperGift = this.getNodeByName("btnoSuperGift");
+        btnoSuperGift && (btnoSuperGift.active = false);
+    },
 
     getVoucher: function () {
         GlobalVar.handlerManager().rechargeHandler.sendRcgBagReq();
+    },
+
+    setFreeDiamondFlag: function (event) {
+        let curTime = GlobalVar.me().shareData.getFreeDiamondCount();
+        let maxTime = GlobalVar.tblApi.getDataBySingleKey('TblParam', GameServerProto.PTPARAM_RCG_FREE_DIAMOND_COUNT_MAX).dValue;
+        this.setFlagByNodeName("btnoFreeDiamond", curTime < maxTime);
     },
 
     setGuazaiFlag: function(event){
@@ -319,6 +344,7 @@ var UIMain = cc.Class({
     setActiveFlag: function(event){
         let flags = GlobalVar.me().statFlags;
         this.setFlagByNodeName("btnoActivity", flags.AMSFlag);
+        this.getNodeByName('btnoActivity').getChildByName('effect').active = !!flags.AMSFlag;
     },
     setNormalStoreFlag: function(event){
         let flags = GlobalVar.me().statFlags;
@@ -326,7 +352,30 @@ var UIMain = cc.Class({
     },
     setFuliFlag: function(event){
         let flags = GlobalVar.me().statFlags;
-        this.setFlagByNodeName("btnoFirstCharge", flags.FuLiCZFlag);
+        let flag = false;
+        let diamondcz = GlobalVar.me().diamondCz;
+        let dailyData = GlobalVar.me().feedbackData.data.Daily;
+        if (!dailyData) {
+            GlobalVar.handlerManager().feedbackHandler.sendGetFeedbackDataReq();
+            return;
+        }
+        let feedbackDataList = GlobalVar.tblApi.getData('TblFuLiCZ');
+        let length = GlobalVar.tblApi.getLength("TblFuLiCZ");
+        let showData = [];
+        for (let i = 1; i <= length; i++) {
+            let feedbackData = feedbackDataList[i]
+            if (!feedbackData || diamondcz < feedbackData.dwCondition) {
+                break;
+            }
+            showData.push(feedbackData);
+        }
+
+        for (let i = 0; i < showData.length; i++) {
+            if (dailyData.indexOf(showData[i].byID) == -1) {
+                flag = true;
+            }
+        }
+        this.setFlagByNodeName("btnoFirstCharge", flags.FuLiCZFlag || flag);
     },
 
     setCampFlag: function (data) {
@@ -336,6 +385,11 @@ var UIMain = cc.Class({
     setRechargeFlag:function (event) {
         let flag = GlobalVar.me().rechargeData.getCanGetRewardHotFlag();
         this.setFlagByNodeName("btnoRecharge", flag);
+    },
+
+    setLimitStoreFlag: function (event) {
+        let flags = GlobalVar.me().statFlags;
+        this.setFlagByNodeName("btnoLimitStore", flags.FuLiLimitGiftFlag);
     },
 
     setFlagByNodeName: function(nodeName, flag){
@@ -386,14 +440,19 @@ var UIMain = cc.Class({
         weChatAPI.judgeInvite();
     },
     reportMaterialClick: function () {
-        // weChatAPI.reportClickMaterial();
-
-        let onShowFunc = function (res) {
-            if (res.query.materialID >= 0){
-                weChatAPI.reportClickMaterial(res.query.materialID);
+        let platformApi = GlobalVar.getPlatformApi();
+        if (platformApi){
+            if (!(cc.sys.platform == cc.sys.WECHAT_GAME)){
+                return;
             }
-        };
-        weChatAPI.setOnShowListener(onShowFunc);
+            this.onShowFunc = function (res) {
+                console.log("主城上报文案点击");
+                if (res.query.materialID >= 0){
+                    platformApi.reportClickMaterial(res.query.materialID);
+                }
+            };
+            platformApi.setOnShowListener(this.onShowFunc);
+        }
     },
 
     showPlayerLevelUpWnd: function (event) {
@@ -511,7 +570,7 @@ var UIMain = cc.Class({
     },
 
     setPlayerAvatar: function (url) {
-        if (cc.sys.platform !== cc.sys.WECHAT_GAME && !(window && window["wywGameId"]=="5496")) {
+        if (cc.sys.platform !== cc.sys.WECHAT_GAME && !(window && window["wywGameId"]=="5469")) {
             return;
         }
         if (url == ""){
@@ -519,11 +578,16 @@ var UIMain = cc.Class({
         }
         let imgTopBg = this.node.getChildByName("imgTopBg");
         let spriteAvatarImg = imgTopBg.getChildByName("spriteAvatarImg");
-
-        url = url + "?aaa=aa.png";
-        cc.loader.load(url, function (err, tex) {
+        if (cc.sys.platform == cc.sys.WECHAT_GAME){
+            url = url + "?a=a.png";
+        }else if (window && window["wywGameId"]=="5469"){
+            url = "http://mwxsdk.phonecoolgame.com/avatar.php?s=" + encodeURIComponent(url);
+            url = url + "?a=a.png";
+            console.log("url:", url);
+        }
+        cc.loader.load({url:url, type: 'png'}, function (err, tex) {
             if (err) {
-                // cc.error("LoadURLSpriteFrame err." + url);
+                cc.error("LoadURLSpriteFrame err." + url);
             }
             let spriteFrame = new cc.SpriteFrame(tex);
             spriteAvatarImg.getComponent("RemoteSprite").spriteFrame = spriteFrame;
@@ -587,6 +651,10 @@ var UIMain = cc.Class({
         if (this.btnAuthorize){
             this.btnAuthorize.destroy();
             this.btnAuthorize = null;
+        }
+        let platformApi = GlobalVar.getPlatformApi();
+        if (platformApi){
+            platformApi.setOffShowListener(this.onShowFunc);
         }
         GlobalVar.eventManager().removeListenerWithTarget(this);
     },
@@ -734,6 +802,9 @@ var UIMain = cc.Class({
     },
     onShareDailyBtnClick: function (event) {
         CommonWnd.showShareDailyWnd();
+    },
+    onSuperGiftBtnClic: function (event) {
+        CommonWnd.showSuperRewardWnd();
     },
     activeMsgRecv: function (errCode){
         if (errCode != GameServerProto.PTERR_SUCCESS){

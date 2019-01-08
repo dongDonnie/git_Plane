@@ -121,6 +121,7 @@ module.exports = {
     EVENT_ENDLESS_QH_UP_NTF:"event_endless_qh_up_ntf",
     EVENT_ENDLESS_RANK_UP_NTF: "event_endless_rank_up_ntf",
     EVENT_ENDLESS_USESTATUS_NTF:"event_endlsee_usestatus_ntf",
+    EVENT_ENDLESS_GET_BUY_POWERPOINT_DATA: "event_endless_get_buy_powerpoint_data",
     EVENT_GET_ASSIST_SHARE_SUCCESS: "event_get_assist_success",
 
     EVENT_GUAZAI_REBIRTH_ACK:"EVENT_GUAZAI_REBIRTH_ACK",
@@ -137,6 +138,8 @@ module.exports = {
     EVENT_THEBAG_FLAG_CHANGE: "event_thebag_flag_change",
     EVENT_CAMP_FLAG_CHANGE: 'event_camp_flag_change',
     EVENT_VIP_REWARD_FLAG_CHANGE: 'event_vip_reward_flag_change',
+    EVENT_FREE_DIAMOND_FLAG_CHANGE: 'event_free_diamond_flag_change',
+    EVENT_LIMIT_STORE_FLAG_CHANGE: 'event_limit_store_flag_change',
 
     //share
     EVENT_GET_FREE_GOLD: "event_get_free_gold",
@@ -145,6 +148,9 @@ module.exports = {
     EVENT_GET_MEMBERTESTPLAY_DATA: "event_get_member_test_play_data",
     EVENT_GET_SHARE_DAILY_DATA: "event_get_share_daily_data",
     EVENT_ENDLESS_GET_CHARGE_DATA: "event_endless_get_charge_data",
+    EVENT_GET_SUPER_REWARD_DATA: "event_get_super_reward_data",
+    EVENT_TREASURE_REDUCE_TIME_RESULT: "event_treasure_reduce_time_result",
+    
 
     //gm
     EVENT_GM_SWITCH_CHANGE: "event_gm_switch_change",

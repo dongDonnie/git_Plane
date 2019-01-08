@@ -34,9 +34,6 @@ cc.Class({
     animePlayCallBack(name) {
         if (name == "Escape") {
             this._super("Escape");
-            if (GlobalVar.getBannerSwitch()){
-                weChatAPI.justShowBanner();
-            }
             GlobalVar.eventManager().removeListenerWithTarget(this);
             let recommandSuccess = this.recommandSuccess;
             WindowManager.getInstance().popView(false, function () {
@@ -51,24 +48,19 @@ cc.Class({
             });
         } else if (name == "Enter") {
             this._super("Enter");
-            if (GlobalVar.getBannerSwitch()){
-                weChatAPI.justHideBanner();
-            }
             GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_GET_RECOMMAND_DATA, this.getRecommandData, this);
             this.recommandSuccess = false;
         }
     },
 
     onBtnRecommand: function (event) {
-        if (cc.sys.platform == cc.sys.WECHAT_GAME){
-            weChatAPI.shareNormal(120, function () {
+        let platformApi = GlobalVar.getPlatformApi();
+        if (cc.isValid(platformApi)){
+            platformApi.shareNormal(120, function () {
                 GlobalVar.handlerManager().shareHandler.sendRecomandReq();
             })
-        } else if (window && window["wywGameId"]=="5469"){
-
-        } else{
-            let handlerMgr = GlobalVar.handlerManager()
-            handlerMgr.shareHandler.sendRecomandReq();
+        }else if (GlobalVar.configGMSwitch()){
+            GlobalVar.handlerManager().shareHandler.sendRecomandReq();
         }
     },
 

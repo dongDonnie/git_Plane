@@ -10,7 +10,6 @@ cc.Class({
     properties: {
         collisionSwitch: false,
         invicible: true,
-        monsterHpBar: null,
     },
 
     ctor() {
@@ -23,7 +22,6 @@ cc.Class({
         this.maxHp = 0;
         this.collisionSwitch = false;
         this.invicible = true;
-        this.setMonsterHpBar();
     },
 
     reset() {
@@ -72,21 +70,10 @@ cc.Class({
             this.setScale(1);
         }
 
-        if (this.baseObject != null && this.monsterHpBar != null) {
-            let size = this.getCollider().size;
-            let offset = this.getCollider().offset;
-            let bar = this.monsterHpBar.getChildByName("bar");
-            if (size.width * 0.94 < bar.getContentSize().width) {
-                bar.setContentSize(size.width * 0.94, bar.getContentSize().height);
-                this.monsterHpBar.setContentSize(size.width, this.monsterHpBar.getContentSize().height);
-            }
-            bar.x = (-0.5 * bar.getContentSize().width);
-            this.monsterHpBar.setPosition(0, offset.y - 0.5 * size.height);
-            this.monsterHpBar.getComponent(cc.ProgressBar).progress = 1;
-            //this.monsterHpBar.active=true;
-        }
-
         let z = this._super();
+
+        this.active = false;
+
         return z;
     },
 
@@ -119,18 +106,19 @@ cc.Class({
         let pos = this.getPosition();
         let size = BattleManager.getInstance().displayContainer.getContentSize();
 
-        if (BattleManager.getInstance().allScreen) {
-            size.height -= 130;
-        } else {
-            size.height -= 47;
-        }
+        // if (BattleManager.getInstance().allScreen) {
+        //     size.height -= 130;
+        // } else {
+        //     size.height -= 47;
+        // }
 
         if (this.isShow) {
             if (pos.y > size.height + Defines.OUT_SIDE || pos.x < -Defines.OUT_SIDE || pos.y < -Defines.OUT_SIDE || pos.x > size.width + Defines.OUT_SIDE) {
                 this.isDead = true;
             }
         } else {
-            if (pos.y <= size.height && pos.y >= 0) {
+            if ((pos.y - 60) <= size.height && pos.y >= 0) {
+                this.active = true;
                 this.isShow = true;
                 this.setCollisionSwitch(true);
             }
@@ -153,25 +141,9 @@ cc.Class({
         return this.invicible;
     },
 
-    setMonsterHpBar: function () {
-        if (this.monsterHpBar == null) {
-            let prefab = GlobalVar.resManager().loadRes(ResMapping.ResType.Prefab, 'cdnRes/battlemodel/prefab/effect/MonsterHp');
-            if (prefab != null) {
-                this.monsterHpBar = cc.instantiate(prefab);
-                this.addChild(this.monsterHpBar, 3);
-                this.monsterHpBar.active = false;
-            }
-        }
-    },
-
     hitWithDamage: function (dmg) {
         if (!this.invicible) {
             // this._super(dmg);
-            // if (this.hp < this.maxHp && this.monsterHpBar != null) {
-            //     this.monsterHpBar.active = true;
-            //     let percent = this.hp / this.maxHp;
-            //     this.monsterHpBar.getComponent(cc.ProgressBar).progress = percent;
-            // }
         }
     },
 });

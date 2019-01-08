@@ -493,7 +493,8 @@ cc.Class({
         lvTab.getChildByName("btnoLevelUp").getChildByName("spriteHot").active = !!GlobalVar.me().memberData.levelUpHotFlag[memberID];
 
 
-        if (member.Level == 200) {
+        let maxLevel = GameServerProto.PT_PLAYER_MAX_LEVEL * 2;
+        if (member.Level == maxLevel) {
             lvTab.getChildByName("labelFullLevel").active = true;
             lvTab.getChildByName("labelCenter").getComponent(cc.Label).string = '';
             lvTab.getChildByName("labelOwn").getComponent(cc.Label).string = '';

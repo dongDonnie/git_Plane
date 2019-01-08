@@ -109,9 +109,6 @@ cc.Class({
     animePlayCallBack(name) {
         if (name == "Escape") {
             this._super("Escape");
-            if (GlobalVar.getBannerSwitch()){
-                weChatAPI.hideBannerAd();
-            }
             GlobalVar.eventManager().removeListenerWithTarget(this);
             if (this.sellMode) {
                 this.sellMode = false;
@@ -127,9 +124,6 @@ cc.Class({
             }
         } else if (name == "Enter") {
             this._super("Enter");
-            if (GlobalVar.getBannerSwitch() && !GlobalVar.getNeedGuide()){
-                weChatAPI.showBannerAd();
-            }
             GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_ITEM_USE_RESULT, this.getUseItemResult, this);
         }
     },

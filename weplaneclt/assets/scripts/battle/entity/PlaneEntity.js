@@ -394,8 +394,8 @@ cc.Class({
         }
     },
 
-    hitWithDamage(dmg, immediately) {
-        this._super(dmg, immediately);
+    hitWithDamage(dmg, immediately, param) {
+        this._super(dmg, immediately, param);
         if (this.hp <= 0 && this.objectType == Defines.ObjectType.OBJ_HERO) {
             // if(BattleManager.getInstance().isEndlessFlag){
             //     BattleManager.getInstance().result = 2;

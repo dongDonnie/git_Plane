@@ -3,6 +3,7 @@ const weChatAPI = require("weChatAPI");
 const i18n = require('LanguageData');
 const EventMsgID = require("eventmsgid");
 const SceneDefines = require("scenedefines");
+const StoreageData = require("storagedata");
 cc.Class({
     extends: cc.Component,
 
@@ -28,41 +29,43 @@ cc.Class({
     onLoad() {
         cc.game.setFrameRate(60);
 
-        this.isJsonLoaded = false;
-        this.isLoadingEnd = false;
         this.isGetServerListEnd = false;
-        this.isLoginEnd = false;
         this.clearCache = false;
+        if (cc.sys.platform == cc.sys.WECHAT_GAME){
+            this.timeoutID = setTimeout(function () {
+                weChatAPI.showToast("网络链接超时, 是否重试", true, true, "确认", "取消", function () {
+                    cc.game.restart();
+                }, function () {
+                    //cc.game.end();
+                })
+            }, 20000);
+        }
+
 
         GlobalVar.isAndroid = cc.sys.os == cc.sys.OS_ANDROID;
         GlobalVar.isIOS = cc.sys.os == cc.sys.OS_IOS;
         // GlobalVar.isIOS = true;
         let self = this;
 
-        // let action = cc.sequence(cc.progressLoading(3, 0, 1, null, function (per) {
-        //     self.loadingBar.node.getChildByName("spriteLight").x = self.loadingBar.barSprite.node.width * per;
-        // }), cc.callFunc(()=>{
-        //     self.isLoadingEnd = true;
-        // }));
         if (!!require("storagedata").getClearCache()) {
-            weChatAPI.loadingClearCache(function(){
-                cc.game.restart();
-            });
+            if (cc.sys.platform == cc.sys.WECHAT_GAME){
+                weChatAPI.loadingClearCache(function () {
+                    cc.game.restart();
+                });
+            }
             this.clearCache = true;
         } else {
-            weChatAPI.updateVersion();
+            if (cc.sys.platform == cc.sys.WECHAT_GAME){
+                weChatAPI.updateVersion();
+            }
 
-            let action = cc.sequence(cc.progressLoading(3, 0, 1, null, function (per) {
+            this.loadingBar.node.runAction(cc.progressLoading(1, 0, 1, null, function (per) {
                 self.loadingBar.node.getChildByName("spriteLight").x = self.loadingBar.barSprite.node.width * per;
-            }), cc.callFunc(() => {
-                self.isLoadingEnd = true;
             }));
-            this.loadingBar.node.runAction(action);
-
-            let actionFade = cc.progressLoading(3, 0, 0.2, null, function (per) {
+            this.loadingBarFade.node.runAction(cc.progressLoading(1, 0, 0.2, null, function (per) {
                 self.loadingBarFade.node.getChildByName("spriteLight").x = self.loadingBarFade.barSprite.node.width * per;
-            });
-            this.loadingBarFade.node.runAction(actionFade);
+                self.loadingBar.node.parent.getChildByName("labelProgressPercent").getComponent(cc.Label).string = Math.floor((per *100)) + "%";
+            }));
 
             GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_NEED_CREATE_ROLE, this.createRoll, this);
             GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_LOGIN_DATA_NTF, this.getLoginData, this);
@@ -73,7 +76,17 @@ cc.Class({
 
     start() {
         //weChatAPI.setFramesPerSecond(60);
-        weChatAPI.deviceKeepScreenOn();
+        if (cc.sys.platform == cc.sys.WECHAT_GAME){
+            weChatAPI.deviceKeepScreenOn();
+            weChatAPI.netWorkStatusChange(function(){
+                if(GlobalVar.sceneManager().getCurrentSceneType() == SceneDefines.INIT_STATE ||
+                GlobalVar.sceneManager().getCurrentSceneType() == SceneDefines.LOGIN_STATE){
+                    cc.game.restart();
+                }else{
+                    GlobalVar.networkManager().checkConnection();
+                }
+            });
+        }
 
         i18n.init('zh');
         let self = this;
@@ -84,32 +97,11 @@ cc.Class({
         }
 
         GlobalVar.tblApi.init(function () {
-            self.isJsonLoaded = true;
-
-            if (!self.isLoadingEnd) {
-                self.loadingBar.node.stopAllActions();
-                self.loadingBarFade.node.stopAllActions();
-
-                let action = cc.sequence(cc.progressLoading(0.2, self.loadingBar.progress, 1, null, function (per) {
-                    self.loadingBar.node.getChildByName("spriteLight").x = self.loadingBar.barSprite.node.width * per;
-                }), cc.callFunc(() => {
-                    self.isLoadingEnd = true;
-                }));
-                let actionFade = cc.progressLoading(0.2, self.loadingBarFade.progress, 0.2, null, function (per) {
-                    self.loadingBarFade.node.getChildByName("spriteLight").x = self.loadingBarFade.barSprite.node.width * per;
-                    self.loadingBar.node.parent.getChildByName("labelProgressPercent").getComponent(cc.Label).string = Math.floor((per *100)) + "%";
-                });
-
-
-                self.loadingBar.node.runAction(action)
-                self.loadingBarFade.node.runAction(actionFade);
-            }
-
             GlobalVar.resManager().setPreLoadHero();
-
             //拉取服务器列表
-            if (cc.sys.platform === cc.sys.WECHAT_GAME) {
-                weChatAPI.login(function (user_id, ticket, avatar) {
+            let platformApi = GlobalVar.getPlatformApi();
+            if (platformApi){
+                platformApi.login(function (user_id, ticket, avatar) {
                     GlobalVar.me().loginData.setLoginReqDataAccount(user_id);
                     GlobalVar.me().loginData.setLoginReqDataSdkTicket(ticket);
                     GlobalVar.me().loginData.setLoginReqDataAvatar(avatar);
@@ -117,39 +109,24 @@ cc.Class({
                     if (cc.sys.platform == cc.sys.WECHAT_GAME) {
                         let launchInfo = wx.getLaunchOptionsSync();
                         if (launchInfo.query.materialID >= 0) {
-                            weChatAPI.reportClickMaterial(launchInfo.query.materialID);
+                            platformApi.reportClickMaterial(launchInfo.query.materialID);
+                        }
+                        if (launchInfo.scene == 1104){
+                            StoreageData.setShareTimesWithKey("superReward", 0);
                         }
                     }
-                    // console.log("get data for login, userID:" + user_id + " ticket:" + ticket + " avatar:" + avatar);
-                    weChatAPI.getMyServer(GlobalVar.tblApi.getData('TblVersion')[1].strVersion, GlobalVar.me().loginData.getLoginReqDataAccount(), function (data) {
+                    console.log("get data for login, userID:" + user_id + " ticket:" + ticket + " avatar:" + avatar);
+                    platformApi.getMyServer(GlobalVar.tblApi.getData('TblVersion')[1].strVersion, GlobalVar.me().loginData.getLoginReqDataAccount(), function (data) {
                         // self.serverList = data.serverList;
                         // self.userData = data.userData;
                         let serverData = null;
                         if (data.ret == 0) {
                             serverData = data.my;
                         } else {
-                            GlobalVar.sceneManager().startUp();
+                            //GlobalVar.sceneManager().startUp();
+                            self.startUp();
+                            return;
                         }
-
-                        // let defaultServerID = null;
-                        // let defaultServerIndex = -1;
-                        // if (data.userData && data.userData.server) {
-                        //     if (data.userData.server.length != 0) {
-                        //         defaultServerID = data.userData.server[0];
-                        //     }
-                        // }
-
-                        // for (let i = 0; i < data.serverList.length; i++) {
-                        //     if (data.serverList[i].server_id == defaultServerID) {
-                        //         defaultServerIndex = i;
-                        //     }
-                        // }
-
-                        // if (!defaultServerID || defaultServerIndex == -1) {
-                        //     defaultServerID = data.serverList[0].server_id;
-                        //     defaultServerIndex = 0;
-                        // }
-                        // let serverData = data.serverList[defaultServerIndex];
 
                         GlobalVar.me().loginData.setLoginReqDataServerID(serverData.server_id);
                         GlobalVar.me().loginData.setLoginReqDataServerName(serverData.name);
@@ -162,11 +139,20 @@ cc.Class({
                                 GlobalVar.me().loginData.getLoginReqDataAvatar());
                         });
                     }, function (data) {
-                        GlobalVar.sceneManager().startUp();
+                        if (cc.sys.platform == cc.sys.WECHAT_GAME) {
+                            platformApi.showToast("网络链接异常, 是否重试", true, true, "确认", "取消", function () {
+                                cc.game.restart();
+                            }, function () {
+                                cc.game.end();
+                            })
+                        }else{
+                            cc.game.restart();
+                        }
                     });
                 })
             } else {
-                self.isLoginEnd = true;
+                //GlobalVar.sceneManager().startUp();
+                self.startUp();
             }
 
         });
@@ -177,22 +163,13 @@ cc.Class({
     },
 
     update() {
-        let self = this;
-        if (this.isJsonLoaded && this.isLoadingEnd && this.isLoginEnd) {
-            this.isJsonLoaded = false;
-            this.isLoadingEnd = false;
-            this.isLoginEnd = false;
-            if (cc.sys.platform == cc.sys.WECHAT_GAME) {
-                GlobalVar.sceneManager().gotoScene(SceneDefines.MAIN_STATE);
-            } else {
-                GlobalVar.sceneManager().startUp();
-            }
-        }
+
     },
 
     createRoll: function () {
-        if (cc.sys.platform === cc.sys.WECHAT_GAME) {
-            weChatAPI.createRoll(function (nickName, avatar) {
+        let platformApi = GlobalVar.getPlatformApi();
+        if (platformApi){
+            platformApi.createRoll(function (nickName, avatar) {
                 // console.log("发送创建角色消息, nickName:" + nickName + "  avatar:" + avatar);
                 GlobalVar.handlerManager().loginHandler.sendCreateRollReq(nickName || "", avatar || "");
                 GlobalVar.me().loginData.setLoginReqDataAvatar(avatar);
@@ -203,7 +180,8 @@ cc.Class({
     getLoginData: function (event) {
         if (event.data.ErrCode !== 0) {
             // GlobalVar.networkManager().needReConnected = false;
-            GlobalVar.sceneManager().startUp();
+            //GlobalVar.sceneManager().startUp();
+            this.startUp();
             return;
         }
 
@@ -213,22 +191,50 @@ cc.Class({
         GlobalVar.me().setServerTime(event.data.ServerTime);
         GlobalVar.me().updatePlayerDataByGMDT_PLAYER(event.data.Player);
 
-        if (cc.sys.platform === cc.sys.WECHAT_GAME) {
-            weChatAPI.requestIosRechageLockState(GlobalVar.me().level, GlobalVar.me().combatPoint, GlobalVar.me().creatTime, function (state) {
+        let platformApi = GlobalVar.getPlatformApi();
+        if (platformApi){
+            platformApi.requestIosRechageLockState(GlobalVar.me().level, GlobalVar.me().combatPoint, GlobalVar.me().creatTime, function (state) {
                 GlobalVar.IosRechargeLock = !!state;
             });
-            weChatAPI.requestShareOpenState(GlobalVar.tblApi.getData('TblVersion')[1].strVersion, function (state) {
+            platformApi.requestShareOpenState(GlobalVar.tblApi.getData('TblVersion')[1].strVersion, function (state) {
                 GlobalVar.shareOpen = !!parseInt(state);
+                GlobalVar.shareControl = parseInt(state);
+                switch (parseInt(state)) {
+                    case 0:
+                        GlobalVar.shareOpen = false;
+                        GlobalVar.videoAdOpen = false;
+                        break;
+                    case 1:
+                        GlobalVar.shareOpen = true;
+                        GlobalVar.videoAdOpen = true;
+                    case 6:
+                        GlobalVar.shareOpen = true;
+                        GlobalVar.videoAdOpen = true;
+                    default:
+                        break;
+                }
                 console.log("get shareOpen:", state, GlobalVar.shareOpen);
             })
         }
+        
         GlobalVar.handlerManager().noticeHandler.sendGetNoticeReq();
         GlobalVar.handlerManager().drawHandler.sendTreasureData();
 
-
-        this.isLoginEnd = true;
+        if (cc.sys.platform === cc.sys.WECHAT_GAME) {
+            clearTimeout(this.timeoutID);
+            GlobalVar.sceneManager().gotoScene(SceneDefines.MAIN_STATE);
+        } else {
+            //GlobalVar.sceneManager().startUp();
+            this.startUp();
+        }
     },
 
+    startUp: function () {
+        if (cc.sys.platform === cc.sys.WECHAT_GAME) {
+            clearTimeout(this.timeoutID);
+        }
+        GlobalVar.sceneManager().startUp();
+    },
 
     onDestroy: function () {
         GlobalVar.eventManager().removeListenerWithTarget(this);

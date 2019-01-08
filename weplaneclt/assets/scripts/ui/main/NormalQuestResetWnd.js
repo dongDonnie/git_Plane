@@ -41,7 +41,7 @@ cc.Class({
     onLoad: function () {
         this._super();
         i18n.init('zh');
-        this.typeName = WndTypeDefine.WindowType.E_DT_NORMAL_BUY_SP_WND;
+        this.typeName = WndTypeDefine.WindowType.E_DT_NORMAL_QUEST_RESET_WND;
         this.animeStartParam(0, 0);
 
     },
@@ -54,19 +54,12 @@ cc.Class({
     animePlayCallBack(name) {
         if (name == "Escape") {
             this._super("Escape");
-            if (GlobalVar.getBannerSwitch()){
-                weChatAPI.hideBannerAd();
-                weChatAPI.justHideBanner();
-            }
             GlobalVar.eventManager().removeListenerWithTarget(this);
             WindowManager.getInstance().popView(false, function () {
                 
             }, false, false);
         } else if (name == "Enter") {
             this._super("Enter");
-            if (GlobalVar.getBannerSwitch() && !GlobalVar.getNeedGuide()){
-                weChatAPI.showBannerAd();
-            }
             if (!GlobalVar.getShareSwitch()) {
                 this.btnShare.node.active = false;
                 this.btnVideo.node.active = false;
@@ -121,17 +114,16 @@ cc.Class({
 
     onBtnShareClick: function (event) {
         let self = this;
-        if (cc.sys.platform == cc.sys.WECHAT_GAME){
-            weChatAPI.shareNormal(123, function () {
+        let platformApi = GlobalVar.getPlatformApi();
+        if (cc.isValid(platformApi)){
+            platformApi.shareNormal(123, function () {
                 let typeID = self.tblData.byTypeID;
                 let chapterID = self.tblData.byChapterID;
                 let campaignID = self.tblData.wCampaignID;
                 GlobalVar.handlerManager().campHandler.sendCampBuyCountReq(typeID, chapterID, campaignID, 1);
                 self.close();
             }); 
-        } else if (window && window["wywGameId"]=="5469"){
-
-        } else{
+        }else if (GlobalVar.configGMSwitch()){
             let typeID = self.tblData.byTypeID;
             let chapterID = self.tblData.byChapterID;
             let campaignID = self.tblData.wCampaignID;
@@ -142,15 +134,16 @@ cc.Class({
 
     onBtnVideoClick:function (event) {
         let self = this;
-        if (cc.sys.platform == cc.sys.WECHAT_GAME){
-            weChatAPI.showRewardedVideoAd(function () {
+        let platformApi = GlobalVar.getPlatformApi();
+        if (cc.isValid(platformApi)){
+            platformApi.showRewardedVideoAd(function () {
                 let typeID = self.tblData.byTypeID;
                 let chapterID = self.tblData.byChapterID;
                 let campaignID = self.tblData.wCampaignID;
                 GlobalVar.handlerManager().campHandler.sendCampBuyCountReq(typeID, chapterID, campaignID, 1);
                 self.close();
             }, function () {
-                weChatAPI.shareNormal(123, function () {
+                platformApi.shareNormal(123, function () {
                     let typeID = self.tblData.byTypeID;
                     let chapterID = self.tblData.byChapterID;
                     let campaignID = self.tblData.wCampaignID;
@@ -158,9 +151,7 @@ cc.Class({
                     self.close();
                 }); 
             });
-        } else if (window && window["wywGameId"]=="5469"){
-
-        } else{
+        }else if (GlobalVar.configGMSwitch()){
             let typeID = self.tblData.byTypeID;
             let chapterID = self.tblData.byChapterID;
             let campaignID = self.tblData.wCampaignID;

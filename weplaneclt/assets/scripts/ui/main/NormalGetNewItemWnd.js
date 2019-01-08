@@ -64,7 +64,7 @@ cc.Class({
     addPlane: function (id, showType) {
         var self = this;
         GlobalVar.resManager().loadRes(ResMapping.ResType.Prefab, 'cdnRes/battlemodel/prefab/Fighter/Fighter_' + id, function (prefab) {
-            if (!!prefab) {
+            if (!!prefab && cc.isValid(self.spriteNode)) {
                 let PlaneEntity = require('PlaneEntity');
                 let planeEntity = new PlaneEntity();
                 planeEntity.newPart('Fighter/Fighter_' + id, 1, 'PlaneObject', showType ? showType : 3, 0, 0);

@@ -23,6 +23,7 @@ var feedbackData = cc.Class({
     setFuliFeedbackData: function(data){
         self.setData(data);
         GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_GET_FULI_FEEDBACK_RESULT, data);
+        GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_FULICZ_FLAG_CHANGE);
     },
 
     saveFuliBuyData: function(data){

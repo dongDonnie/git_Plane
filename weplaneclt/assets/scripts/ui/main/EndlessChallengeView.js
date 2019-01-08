@@ -145,6 +145,7 @@ cc.Class({
         GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_SETSTATUS_COUNT, this.setStatusCount, this);
         GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_ENDLESS_START_BATTLE, this.startEndlessBattle, this);
         GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_ENDLESS_RANK_UP_NTF, this.getRankUpResult, this);
+        GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_ENDLESS_GET_BUY_POWERPOINT_DATA, this.initEndlessView, this);
         // GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_ENDLESS_POWER_POINT_CHANGE_NTF, this.refreshCountDown, this);
         GlobalVar.handlerManager().endlessHandler.sendEndlessGetBagReq();
     },
@@ -171,15 +172,19 @@ cc.Class({
         let self = this;
         // let lastPowerTime = GlobalVar.me().endlessData.getEndlesslastPowerTime();
         let labelCountDown = this.node.getChildByName("nodeCenter").getChildByName("labelGetChestLeftTIme").getComponent(cc.Label)
+        let labelBtnBuyChest = this.node.getChildByName("nodeCenter").getChildByName("labelBtnGetChest");
         if (GlobalVar.me().endlessData.getEndlesslastPowerTime() == 0){
             labelCountDown.node.active = false;
+            labelBtnBuyChest.active = false;
             labelCountDown.string = "00:00";
             return;
         }
+        labelBtnBuyChest.active = true;
         labelCountDown.node.active = true;
+        let timeInterval = GlobalVar.tblApi.getDataBySingleKey('TblVipRight', GlobalVar.me().vipLevel).dwEndlessPowerPointInterval;
         let countDownFunc = function () {
             let curTime = GlobalVar.me().serverTime;
-            let leftAddTime = 7200 - (curTime - GlobalVar.me().endlessData.getEndlesslastPowerTime());
+            let leftAddTime = timeInterval - (curTime - GlobalVar.me().endlessData.getEndlesslastPowerTime());
             let leftMinute = parseInt(leftAddTime/60);
             let leftSecond = leftAddTime - leftMinute * 60;
             if (leftMinute.toString().length == 1) leftMinute = "0" + leftMinute;
@@ -188,10 +193,12 @@ cc.Class({
 
             if (leftAddTime < 0){
                 GlobalVar.gameTimer().delTimer(self.countDownTimerID);
-                GlobalVar.handlerManager().endlessHandler().sendEndlessGetBagReq();
+                GlobalVar.handlerManager().endlessHandler.sendEndlessGetBagReq();
             }
         };
-        countDownFunc();
+        if (this.countDownTimerID != -1) {
+            return;
+        }
         this.countDownTimerID = GlobalVar.gameTimer().startTimer(function () {
             countDownFunc();
         }, 1);
@@ -365,27 +372,36 @@ cc.Class({
                 return;
             }
             let self = this;
-            weChatAPI.shareNormal(plus.data.byStatusID + 107, function () {
-                self.canBuyBless = false;
-                GlobalVar.handlerManager().endlessHandler.sendEndlessBuyBlessReq(1);
-            });
+            let platformApi = GlobalVar.getPlatformApi();
+            if (cc.isValid(platformApi)){
+                platformApi.shareNormal(plus.data.byStatusID + 107, function () {
+                    self.canBuyBless = false;
+                    GlobalVar.handlerManager().endlessHandler.sendEndlessBuyBlessReq(1);
+                });
+            }
         } else{
-            weChatAPI.shareNormal(plus.data.byStatusID + 107, function () {
-                GlobalVar.handlerManager().endlessHandler.sendEndlessBuyStatusReq(plus.data.byStatusID, 1);
-            });
+            let platformApi = GlobalVar.getPlatformApi();
+            if (cc.isValid(platformApi)){
+                platformApi.shareNormal(plus.data.byStatusID + 107, function () {
+                    GlobalVar.handlerManager().endlessHandler.sendEndlessBuyStatusReq(plus.data.byStatusID, 1);
+                });
+            }
         }
     },
 
     onVideoButtonClick: function (event) {
         let btnShare = event.target;
         let plus = btnShare.parent;
-        weChatAPI.showRewardedVideoAd(function () {
-            GlobalVar.handlerManager().endlessHandler.sendEndlessBuyStatusReq(plus.data.byStatusID, 1);
-        }, function () {
-            weChatAPI.shareNormal(plus.data.byStatusID + 107, function () {
+        let platformApi = GlobalVar.getPlatformApi();
+        if (cc.isValid(platformApi)){
+            platformApi.showRewardedVideoAd(function () {
                 GlobalVar.handlerManager().endlessHandler.sendEndlessBuyStatusReq(plus.data.byStatusID, 1);
-            }); 
-        });
+            }, function () {
+                platformApi.shareNormal(plus.data.byStatusID + 107, function () {
+                    GlobalVar.handlerManager().endlessHandler.sendEndlessBuyStatusReq(plus.data.byStatusID, 1);
+                }); 
+            });
+        }
 
         let normalRootWnd = WindowManager.getInstance().findViewInWndNode(WndTypeDefine.WindowType.E_DT_NORMALROOT_WND);
         if (normalRootWnd){
@@ -397,6 +413,10 @@ cc.Class({
         }
     },
 
+    onBuyPowerPointButtonClick: function () {
+        CommonWnd.showBuyPowerPointWnd();
+    },
+
     initEndlessView: function (msg) {
 
         let rankID = GlobalVar.me().endlessData.getRankID();
@@ -405,7 +425,7 @@ cc.Class({
         labelCurMode.getComponent(cc.Label).string = i18n.t('endlessModeText.' + (rankID - 1));
         
 
-        let data = msg.Bag;
+        let data = msg.Bag || GlobalVar.me().endlessData.bagData;
         this.labelHistoryHighestScore.string = data.HistoryMaxScore;  //设置历史最高分和本周最高分显示
         this.labelWeekHighestScore.string = data.WeekMaxScore;
         let tbldata = GlobalVar.tblApi.getDataBySingleKey('TblEndlessStatus', data.BlessStatusID);
@@ -465,6 +485,7 @@ cc.Class({
         let itemObj = this.node.getChildByName("nodeCenter").getChildByName("ItemBoxIcon").getComponent("ItemObject");
         itemObj.updateItem(rewardData.wRewardItem);
         itemObj.setSpriteEdgeVisible(false);
+        itemObj.node.active = true;
 
         this.setCountDown();
     },

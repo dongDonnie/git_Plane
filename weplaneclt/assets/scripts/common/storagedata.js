@@ -7,34 +7,52 @@ StoredData.Type = {};
 StoredData.setItem = null;
 
 StoredData.setItem = function (key, value) {
-    if (cc.sys.platform == cc.sys.WECHAT_GAME){
+    if (cc.sys.platform == cc.sys.WECHAT_GAME) {
         try {
             wx.setStorageSync(key, value)
-        } catch (e) { 
-            console.log("微信本地存储失败");
+        } catch (e) {
+            console.log("微信本地存储失败:", e);
         }
-    }else{
+    } else if (window && window["wywGameId"] == "5469") {
+        // try {
+        //     BK.localStorage.setItem(key, value);
+        // } catch (e){
+        //     console.log("玩一玩本地存储失败:", e);
+        // }
+        cc.sys.localStorage.setItem(key, value);
+    } else {
         cc.sys.localStorage.setItem(key, value);
     }
 },
 
-StoredData.getItem = function (key) {
-    if (cc.sys.platform == cc.sys.WECHAT_GAME){
-        try {
-            let value = wx.getStorageSync(key);
-            if (value) {
-              return value;
+    StoredData.getItem = function (key) {
+        if (cc.sys.platform == cc.sys.WECHAT_GAME) {
+            try {
+                let value = wx.getStorageSync(key);
+                if (value) {
+                    return value;
+                }
+            } catch (e) {
+                console.log("微信本地取值失败:", e);
+                return null;
             }
-        } catch (e) {
-            console.log("微信本地取值失败");
-            return null;
+        } else if (window && window["wywGameId"] == "5469") {
+            // try {
+            //     let value = BK.localStorage.getItem(key);
+            //     if (value) {
+            //       return value;
+            //     }
+            // } catch (e) {
+            //     console.log("玩一玩本地取值失败:", e);
+            //     return null;
+            // }
+            return cc.sys.localStorage.getItem(key);
+        } else {
+            return cc.sys.localStorage.getItem(key);
         }
-    }else{
-        return cc.sys.localStorage.getItem(key);
-    }
-},
+    },
 
-StoredData.Type.UserName = "username";
+    StoredData.Type.UserName = "username";
 StoredData.Type.Password = "password";
 StoredData.Type.Version = "version";
 StoredData.Type.BgmOnOff = "bgmOnOff";
@@ -46,10 +64,12 @@ StoredData.Type.ServerListData = "serverListData";
 StoredData.Type.BattleAssitTimes = "battleAssitTimes";
 StoredData.Type.FuLiShare = "fuLiShare";
 StoredData.Type.ClearCache = "clearcache";
-StoredData.Type.LastBannerCreateTime = "lastBannerCreateTime";
+StoredData.Type.LastBannerShowTime = "lastBannerCreateTime";
+StoredData.Type.ResFileMap = "resFileMap";
+
 
 StoredData.setClearCache = function (clear) {
-    StoredData.setItem(StoredData.Type.ClearCache, typeof clear !=='undefined'?clear:false);
+    StoredData.setItem(StoredData.Type.ClearCache, typeof clear !== 'undefined' ? clear : false);
 };
 
 StoredData.getClearCache = function () {
@@ -101,40 +121,45 @@ StoredData.getEffectOnOff = function () {
 StoredData.setEndlessMode = function (index) {
     let endlessModeData = null;
     let localData = StoredData.getItem(StoredData.Type.EndlessMode);
-    if (localData){
+    if (localData) {
         endlessModeData = JSON.parse(localData);
     }
-    if(!endlessModeData){
+    if (!endlessModeData) {
         endlessModeData = {};
     }
     endlessModeData[GlobalVar.me().roleID] = index;
 
     StoredData.setItem(StoredData.Type.EndlessMode, JSON.stringify(endlessModeData));
 }
-StoredData.getEndlessMode = function (){
+StoredData.getEndlessMode = function () {
     let endlessModeData = null;
     let localData = StoredData.getItem(StoredData.Type.EndlessMode);
-    if (localData){
+    if (localData) {
         endlessModeData = JSON.parse(localData);
     }
-    if(!endlessModeData){
+    if (!endlessModeData) {
         endlessModeData = {};
         endlessModeData[GlobalVar.me().roleID] = 0;
-    }else if (!endlessModeData[GlobalVar.me().roleID]){
+    } else if (!endlessModeData[GlobalVar.me().roleID]) {
         endlessModeData[GlobalVar.me().roleID] = 0;
     }
 
     StoredData.setItem(StoredData.Type.EndlessMode, JSON.stringify(endlessModeData));
     return endlessModeData[GlobalVar.me().roleID];
 }
-
-StoredData.setShareTimesWithKey = function (key, saveType, endTime) {
+StoredData.cleanShareTimesWithKey = function (key, saveType, endTime) {
     let shareTimesData = StoredData.getShareDataWithKey(key, saveType, endTime);
-    shareTimesData[key][GlobalVar.me().roleID].times += 1;
+    shareTimesData[key][GlobalVar.me().roleID].times = 0;
     console.log("保存分享次数到本地：", shareTimesData);
     StoredData.setItem(StoredData.Type.ShareTimes, JSON.stringify(shareTimesData));
-    return shareTimesData[key][GlobalVar.me().roleID].times;
-};
+},
+    StoredData.setShareTimesWithKey = function (key, saveType, endTime) {
+        let shareTimesData = StoredData.getShareDataWithKey(key, saveType, endTime);
+        shareTimesData[key][GlobalVar.me().roleID].times += 1;
+        console.log("保存分享次数到本地：", shareTimesData);
+        StoredData.setItem(StoredData.Type.ShareTimes, JSON.stringify(shareTimesData));
+        return shareTimesData[key][GlobalVar.me().roleID].times;
+    };
 StoredData.getShareTimesWithKey = function (key, saveType, endTime) {
     let shareTimesData = StoredData.getShareDataWithKey(key, saveType, endTime);
     console.log("从本地获取分享次数数据:", shareTimesData);
@@ -144,55 +169,55 @@ StoredData.getShareTimesWithKey = function (key, saveType, endTime) {
 StoredData.getShareDataWithKey = function (key, saveType, endTime) {
     let shareTimesData = null;
     let localData = StoredData.getItem(StoredData.Type.ShareTimes);
-    if (localData){
+    if (localData) {
         shareTimesData = JSON.parse(localData);
     }
 
-    if (!shareTimesData){
+    if (!shareTimesData) {
         shareTimesData = {};
     }
     let timesData = shareTimesData[key];
-    if (!timesData){
+    if (!timesData) {
         shareTimesData[key] = {};
     }
     let roleData = shareTimesData[key][GlobalVar.me().roleID];
 
     let curTime = GlobalVar.me().serverTime;
-    if (!roleData || saveType != roleData.saveType){
+    if (!roleData || saveType != roleData.saveType) {
         roleData = {};
         roleData.timeStamp = curTime;
         roleData.times = 0;
         roleData.endTime = endTime;
         roleData.saveType = saveType;
-    }else if (roleData.saveType == GameServerProto.PT_AMS_ACT_LIMIT_DAILY){
+    } else if (roleData.saveType == GameServerProto.PT_AMS_ACT_LIMIT_DAILY) {
         let a = parseInt((curTime - 5 * 3600 + 8 * 3600) / (3600 * 24));
-        let b = parseInt((roleData.timeStamp - 5 * 3600 + 8 * 3600)/ (3600 * 24));
-        if (a > b){
+        let b = parseInt((roleData.timeStamp - 5 * 3600 + 8 * 3600) / (3600 * 24));
+        if (a > b) {
             roleData.timeStamp = curTime;
             roleData.times = 0;
             roleData.saveType = saveType;
             roleData.endTime = endTime;
         }
-    }else if (roleData.saveType == GameServerProto.PT_AMS_ACT_LIMIT_LONG){
-        if (curTime > roleData.endTime){
+    } else if (roleData.saveType == GameServerProto.PT_AMS_ACT_LIMIT_LONG) {
+        if (curTime > roleData.endTime) {
             roleData.timeStamp = curTime;
             roleData.endTime = endTime;
             roleData.times = 0;
             roleData.saveType = saveType;
         }
-    }else if (roleData.saveType == 0){
-        
+    } else if (roleData.saveType == 0) {
+
     }
     shareTimesData[key][GlobalVar.me().roleID] = roleData;
     return shareTimesData;
 },
 
-StoredData.setTotalShareTimes = function () {
-    let totalTimesData = StoredData.getTotalShareData();
-    totalTimesData[GlobalVar.me().roleID].times += 1;
-    console.log("保存总分享次数到本地:", totalTimesData);
-    StoredData.setItem(StoredData.Type.TotalShareTimes, JSON.stringify(totalTimesData));
-};
+    StoredData.setTotalShareTimes = function () {
+        let totalTimesData = StoredData.getTotalShareData();
+        totalTimesData[GlobalVar.me().roleID].times += 1;
+        console.log("保存总分享次数到本地:", totalTimesData);
+        StoredData.setItem(StoredData.Type.TotalShareTimes, JSON.stringify(totalTimesData));
+    };
 StoredData.getTotalShareTimes = function () {
     let totalTimesData = StoredData.getTotalShareData();
     console.log("判断后的分享数据:", totalTimesData);
@@ -202,16 +227,16 @@ StoredData.getTotalShareTimes = function () {
 StoredData.getTotalShareData = function () {
     let totalTimesData = null;
     let localData = StoredData.getItem(StoredData.Type.TotalShareTimes);
-    if (localData){
+    if (localData) {
         totalTimesData = JSON.parse(localData);
     }
     // let totalTimesData = JSON.parse(StoredData.getItem(StoredData.Type.TotalShareTimes) || "{}");
 
     console.log("从本地获取总分享次数:", totalTimesData);
     let roleData = null;
-    if (totalTimesData){
+    if (totalTimesData) {
         roleData = totalTimesData[GlobalVar.me().roleID];
-        if (!roleData){
+        if (!roleData) {
             roleData = {};
             roleData.timeStamp = GlobalVar.me().serverTime;
             roleData.times = 0;
@@ -219,12 +244,12 @@ StoredData.getTotalShareData = function () {
 
         let curTime = GlobalVar.me().serverTime;
         let a = parseInt((curTime - 5 * 3600 + 8 * 3600) / (3600 * 24));
-        let b = parseInt((roleData.timeStamp - 5 * 3600 + 8 * 3600)/ (3600 * 24));
-        if (a > b){
+        let b = parseInt((roleData.timeStamp - 5 * 3600 + 8 * 3600) / (3600 * 24));
+        if (a > b) {
             roleData.timeStamp = curTime;
             roleData.times = 0;
         }
-    }else {
+    } else {
         totalTimesData = {};
         roleData = {};
         roleData.timeStamp = GlobalVar.me().serverTime;
@@ -249,13 +274,13 @@ StoredData.getBattleAssitTimes = function () {
 StoredData.getBattleAssitData = function () {
     let assitTimesData = null;
     let localData = StoredData.getItem(StoredData.Type.BattleAssitTimes);
-    if (localData){
+    if (localData) {
         assitTimesData = JSON.parse(localData);
     };
     let roleData = null;
-    if (assitTimesData){
+    if (assitTimesData) {
         roleData = assitTimesData[GlobalVar.me().roleID];
-        if (!roleData){
+        if (!roleData) {
             roleData = {};
             roleData.timeStamp = GlobalVar.me().serverTime;
             roleData.times = 0;
@@ -264,11 +289,11 @@ StoredData.getBattleAssitData = function () {
         let curTime = GlobalVar.me().serverTime;
         let a = parseInt((curTime - 5 * 3600 + 8 * 3600) / (3600 * 24));
         let b = parseInt((roleData.timeStamp - 5 * 3600 + 8 * 3600) / (3600 * 24));
-        if (a > b){
+        if (a > b) {
             roleData.timeStamp = curTime;
             roleData.times = 0;
         }
-    }else{
+    } else {
         assitTimesData = {};
         roleData = {};
         roleData.timeStamp = GlobalVar.me().serverTime;
@@ -286,28 +311,50 @@ StoredData.setLocalServerListData = function (serverListData) {
 StoredData.getLocalServerListData = function () {
     let serverData = null;
     let localData = StoredData.getItem(StoredData.Type.ServerListData);
-    if (localData){
+    if (localData) {
         serverData = JSON.parse(localData);
     }
     console.log("从本地获取服务器列表信息:", serverData);
     return serverData;
 };
 
-StoredData.setLastBannerCreateTime = function () {
+StoredData.setLastBannerShowTime = function () {
     let curTime = GlobalVar.me().serverTime;
-    StoredData.setItem(StoredData.Type.LastBannerCreateTime, curTime);
+    StoredData.setItem(StoredData.Type.LastBannerShowTime, curTime);
 };
+StoredData.resetLastBannerShowTime = function () {
+    StoredData.setItem(StoredData.Type.LastBannerShowTime, 0);
+}
 
 StoredData.needRefreshBanner = function () {
-    let localData = StoredData.getItem(StoredData.Type.LastBannerCreateTime);
-    if (!localData){
+    let localData = StoredData.getItem(StoredData.Type.LastBannerShowTime);
+    if (!localData) {
         return true;
     }
     let curTime = GlobalVar.me().serverTime;
-    let LastBannerCreateTime = parseInt(localData);
-    if (curTime - LastBannerCreateTime >= 120){
+    let lastBannerCreateTime = parseInt(localData);
+    if (lastBannerCreateTime != 0 && (curTime - lastBannerCreateTime >= 120)) {
         return true;
-    }else {
+    } else {
         return false;
     }
+};
+
+StoredData.getBannerTimeCount = function () {
+    let localData = StoredData.getItem(StoredData.Type.LastBannerShowTime);
+    if (!localData) {
+        return 0;
+    }
+    let curTime = GlobalVar.me().serverTime;
+    let lastBannerShowTime = parseInt(localData);
+    if (lastBannerShowTime == 0) {
+        return 0;
+    }
+    let timeCount = curTime - lastBannerShowTime;
+    StoredData.resetLastBannerShowTime();
+    return timeCount > 0 ? timeCount : 0;
+};
+
+StoredData.setResFileMap = function (map) {
+    StoredData.setItem(StoredData.Type.ResFileMap, map);
 };

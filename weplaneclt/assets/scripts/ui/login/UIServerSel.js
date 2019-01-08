@@ -31,29 +31,26 @@ var UIServerSel = cc.Class({
         console.log("UIServerSel onLoad!!!!!!");
         GlobalVar.cleanAllMgr();
         let self = this;
-        self.noticeData = null;
         this.canSelect = false;
         GlobalVar.isFirstTimesLoading = false;
-        // this.createAuthorizeBtn(this.node.getChildByName("toggleAgreement"));
-        if (cc.sys.platform === cc.sys.WECHAT_GAME) {
-            weChatAPI.login(function (user_id, ticket, avatar) {
+
+        let platformApi = GlobalVar.getPlatformApi();
+        if (platformApi){
+            platformApi.login(function (user_id, ticket, avatar) {
                 GlobalVar.me().loginData.setLoginReqDataAccount(user_id);
                 GlobalVar.me().loginData.setLoginReqDataSdkTicket(ticket);
                 GlobalVar.me().loginData.setLoginReqDataAvatar(avatar);
                 // console.log("get data for login, userID:" + user_id + " ticket:" + ticket + " avatar:" + avatar);
-                weChatAPI.getServerList(GlobalVar.tblApi.getData('TblVersion')[1].strVersion, GlobalVar.me().loginData.getLoginReqDataAccount(), function (data) {
+                platformApi.getServerList(GlobalVar.tblApi.getData('TblVersion')[1].strVersion, GlobalVar.me().loginData.getLoginReqDataAccount(), function (data) {
                     self.serverList = data.serverList;
                     self.userData = data.userData;
                     self.setInitServer();
                 });
             })
 
-            weChatAPI.getLaunchNotice(function (data) {
-                self.noticeData = data;
+            platformApi.getLaunchNotice(function (data) {
                 self.initLaunchNoticeWnd(data);
             });
-        } else if (window && window["wywGameId"]=="5469"){
-
         }
         GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_NEED_CREATE_ROLE, this.createRoll, this);
         GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_LOGIN_DATA_NTF, this.getLoginData, this);
@@ -135,7 +132,7 @@ var UIServerSel = cc.Class({
             this.canSelect = true;
         }
         if (!this.canSelect) return;
-        if (cc.sys.platform === cc.sys.WECHAT_GAME) {
+        if (GlobalVar.getPlatformApi()){
             this.canSelect = false;
             // console.log("点击登陆按钮")
             let serverData = this.serverList[this.selServerIndex];
@@ -150,20 +147,17 @@ var UIServerSel = cc.Class({
                     GlobalVar.me().loginData.getLoginReqDataServerID(),
                     GlobalVar.me().loginData.getLoginReqDataAvatar());
             });
-        } else if (window && window["wywGameId"]=="5469"){
-
         }
     },
 
     createRoll: function () {
-        if (cc.sys.platform === cc.sys.WECHAT_GAME) {
-            weChatAPI.createRoll(function (nickName, avatar) {
+        let platformApi = GlobalVar.getPlatformApi();
+        if (platformApi){
+            platformApi.createRoll(function (nickName, avatar) {
                 // console.log("发送创建角色消息, nickName:" + nickName + "  avatar:" + avatar);
                 GlobalVar.handlerManager().loginHandler.sendCreateRollReq(nickName || "", avatar || "");
                 GlobalVar.me().loginData.setLoginReqDataAvatar(avatar);
             })
-        } else if (window && window["wywGameId"]=="5469"){
-
         }
     },
 
@@ -171,7 +165,7 @@ var UIServerSel = cc.Class({
         // console.log("canSelect:", !!this.canSelect);
         if (!this.canSelect) return;
         // console.log("打开选服界面")
-        if ((this.serverList && this.serverList.length == 0) || (cc.sys.platform !== cc.sys.WECHAT_GAME && !(window && window["wywGameId"] == "5496"))) {
+        if ((this.serverList && this.serverList.length == 0) || (cc.sys.platform !== cc.sys.WECHAT_GAME && !(window && window["wywGameId"] == "5469"))) {
             // GlobalVar.comMsg.showMsg("无服务器可以选择");
             // console.log("无服务器可以选择");
             return;
@@ -223,7 +217,7 @@ var UIServerSel = cc.Class({
         this.setServer(server.data.server_id);
         var self = this;
         this.nodeSelectServerWnd.active = false;
-        // this.createAuthorizeBtn(this.node.getChildByName("toggleAgreement"));
+        
         // }
     },
 
@@ -256,77 +250,12 @@ var UIServerSel = cc.Class({
     },
 
     onBtnNotice: function () {
-        if (this.noticeData.ret != 0 || this.noticeData.data.length == 0) {
-            GlobalVar.comMsg.showMsg("暂无公告");
-            return;
-        }
         this.nodeLaunchNoticeWnd.active = true;
     },
 
     onBtnClose: function () {
         this.nodeSelectServerWnd.active = false;
         this.nodeLaunchNoticeWnd.active = false;
-
-        // this.createAuthorizeBtn(this.node.getChildByName("toggleAgreement"));
-    },
-
-    createAuthorizeBtn(btnNode) {
-        let self = this;
-        let createBtn = function () {
-            let btnSize = cc.size(btnNode.width + 20, btnNode.height + 20);
-            let frameSize = cc.view.getFrameSize();
-            let left = (cc.winSize.width * 0.5 + btnNode.x - btnSize.width * 0.5) / cc.winSize.width * frameSize.width;
-            let top = (cc.winSize.height * 0.5 - btnNode.y - btnSize.height * 0.5) / cc.winSize.height * frameSize.height;
-            let width = btnSize.width / cc.winSize.width * frameSize.width;
-            let height = btnSize.height / cc.winSize.height * frameSize.height;
-
-
-            self.btnAuthorize = wx.createUserInfoButton({
-                type: 'text',
-                text: '',
-                style: {
-                    left: left,
-                    top: top,
-                    width: width,
-                    height: height,
-                    lineHeight: 0,
-                    backgroundColor: '',
-                    color: '#ffffff',
-                    textAlign: 'center',
-                    fontSize: 16,
-                    borderRadius: 4
-                }
-            })
-
-            self.btnAuthorize.onTap((uinfo) => {
-                // console.log("onTap uinfo: ",uinfo);
-                if (uinfo.userInfo) {
-                    // console.log("wxLogin auth success");
-                    wx.showToast({
-                        title: "授权成功"
-                    });
-                    if (!!self.btnAuthorize) {
-                        self.btnAuthorize.destroy();
-                        //self.btnAuthorize = null;
-                    }
-                    btnNode.getComponent(cc.Toggle).check();
-                    weChatAPI.getUserInfo(function (userInfo) {
-                        GlobalVar.me().loginData.setLoginReqDataAvatar(userInfo.avatarUrl);
-                    })
-                } else {
-                    // console.log("wxLogin auth fail");
-                    // wx.showToast({title:"授权失败"});
-                }
-            });
-        }
-
-
-        weChatAPI.getSetting("userInfo", function () {
-            btnNode.getComponent(cc.Toggle).check();
-        }, function () {
-            btnNode.getComponent(cc.Toggle).uncheck();
-            createBtn();
-        })
 
     },
 

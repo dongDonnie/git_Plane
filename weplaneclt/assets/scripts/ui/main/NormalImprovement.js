@@ -126,7 +126,7 @@ cc.Class({
         this.spriteEquip[0].node.scale = (1 - scale) < 0 ? 0 : (1 - scale);
         let dir = deltaMove.x < 0 ? 1 : -1;
         this.setNodeIcon(dir);
-        this.spriteEquip[1].node.x = dir*this.nodeSlip.width / 2 + deltaMove.x;
+        this.spriteEquip[1].node.x = dir * this.nodeSlip.width / 2 + deltaMove.x;
         this.spriteEquip[1].node.scale = scale > 1 ? 1 : scale;
     },
 
@@ -164,6 +164,9 @@ cc.Class({
         let equipData = GlobalVar.tblApi.getDataByMultiKey("TblLeaderEquip", equips[index].Pos, equips[index].Quality);
         let iconIndex = equipData.wIcon / 10 % 10 + 1;
         GlobalVar.resManager().loadRes(ResMapping.ResType.SpriteFrame, 'cdnRes/itemiconBig/' + iconIndex + '/' + equipData.wIcon, function (frame) {
+            if(!cc.isValid(self.spriteEquip[1])){
+                return;
+            }
             self.spriteEquip[1].node.getComponent(cc.Sprite).spriteFrame = frame;
         });
     },
@@ -200,14 +203,14 @@ cc.Class({
             self.spriteEquip[0].node.scale = 1;
             self.selectEquipment(null, self.index + dir);
         });
-        
+
         let seq0 = cc.sequence(spawnOut, func1);
         self.spriteEquip[0].node.runAction(seq0);
 
         let func3 = cc.callFunc(function () {
             self.spriteEquip[1].node.x = self.nodeSlip.width / 2 * dir;
         })
-        let func4 = cc.callFunc(function () { 
+        let func4 = cc.callFunc(function () {
             self.spriteEquip[1].node.scale = 0;
             self.spriteEquip[1].node.getComponent(cc.Sprite).spriteFrame = null;
         })
@@ -228,7 +231,7 @@ cc.Class({
             let itemObj = this.equipment[i].getComponent("ItemObject");
             // itemObj.updateItem(id, -1, level);
             itemObj.setAllVisible(false);
-            itemObj.setSpriteItemIconData(leaderEquipData.wIcon,leaderEquipData.byColor);
+            itemObj.setSpriteItemIconData(leaderEquipData.wIcon, leaderEquipData.byColor);
             itemObj.setSpriteEdgeData(leaderEquipData.byColor * 100);
             itemObj.setLabelNumberData(-1);
             itemObj.setLabelLevelData(level);
@@ -274,7 +277,7 @@ cc.Class({
     animeStartParam(num) {
         this.node.opacity = num;
 
-        if (num == 0 || num == 255){
+        if (num == 0 || num == 255) {
             this.node.getChildByName("spriteTop").active = false;
             this.node.getChildByName("nodeCenter").active = false;
             this.node.getChildByName("nodeBottom").active = false;
@@ -285,8 +288,7 @@ cc.Class({
         if (name == "Escape") {
             this._super("Escape");
             GlobalVar.eventManager().removeListenerWithTarget(this);
-            if (!this.deleteMode) {
-            } else {
+            if (!this.deleteMode) {} else {
                 let uiNode = cc.find("Canvas/UINode");
                 if (WindowManager.getInstance().findViewIndex(WndTypeDefine.WindowType.E_DT_NORMALPLANE_WND) == -1) {
                     BattleManager.getInstance().quitOutSide();
@@ -305,7 +307,7 @@ cc.Class({
             if (GlobalVar.srcSwitch()) {
                 this.getNodeByName('vipTip').active = false;
             }
-            
+
             this.node.getChildByName("spriteTop").active = true;
             this.node.getChildByName("nodeCenter").active = true;
             this.node.getChildByName("nodeBottom").active = true;
@@ -331,29 +333,29 @@ cc.Class({
     initParam() {
         let index = this.index - 1;
         let equips = GlobalVar.me().leaderData.getLeaderEquips();
-        let equipData = GlobalVar.tblApi.getDataByMultiKey("TblLeaderEquip", equips[index].Pos, equips[index].Quality)
-
+        let equipData = GlobalVar.tblApi.getDataByMultiKey("TblLeaderEquip", equips[index].Pos, equips[index].Quality);
 
         let nodeCenter = this.node.getChildByName("nodeCenter");
         let labelEquiptName = nodeCenter.getChildByName("spriteNameBg").getChildByName("labelName");
         labelEquiptName.getComponent(cc.Label).string = equipData.strName;
         labelEquiptName.color = GlobalFunc.getSystemColor(equipData.byColor);
 
-
         let nodeIcon = nodeCenter.getChildByName("nodeIcon");
         let iconIndex = equipData.wIcon / 10 % 10 + 1;
-        GlobalVar.resManager().loadRes(ResMapping.ResType.SpriteFrame, 'cdnRes/itemiconBig/' +iconIndex+'/'+ equipData.wIcon, function (frame) {
-            nodeIcon.getComponent(cc.Sprite).spriteFrame = frame;
+        GlobalVar.resManager().loadRes(ResMapping.ResType.SpriteFrame, 'cdnRes/itemiconBig/' + iconIndex + '/' + equipData.wIcon, function (frame) {
+            if (cc.isValid(nodeIcon) && frame != null) {
+                nodeIcon.getComponent(cc.Sprite).spriteFrame = frame;
+            }
         });
 
-        if(this.curOperaType==0)
+        if (this.curOperaType == 0)
             this.initLevelUp();
         else
             this.initQualityUp();
     },
 
     getLabel(parent, name) {
-        return this.seekNodeByName(parent,name).getComponent(cc.Label);
+        return this.seekNodeByName(parent, name).getComponent(cc.Label);
     },
 
     initLevelUp: function () {
@@ -392,7 +394,7 @@ cc.Class({
         }
 
         canUplevel = canUplevel == 0 ? 1 : canUplevel;
-        
+
         for (let i = 0; i < canUplevel; i++) {
             if (equips[index].Level == levelLimit) {
                 canUplevel = 1;
@@ -405,7 +407,7 @@ cc.Class({
             labelLevelUpFiveNeedGold.string = levelUpNeedGold;
             if (levelUpNeedGold > GlobalVar.me().gold) {
                 canUplevel = canUplevel < i ? canUplevel : i;
-                if(canUplevel != 0) 
+                if (canUplevel != 0)
                     labelLevelUpFiveNeedGold.string = levelUpNeedGold - levelUpData.oVecGoldCost[equips[index].Pos - 1];
                 break;
             }
@@ -431,7 +433,7 @@ cc.Class({
         this.curEquipLevel = equips[this.index - 1].Level;
         labelLevelNumberBefore.string = equips[index].Level + "/" + levelLimit;
         labelLevelNumberAfter.string = (equips[index].Level + 1) > levelLimit ? (levelLimit + "/" + levelLimit) : equips[index].Level + 1 + "/" + levelLimit;
-        
+
         let hasMaxLevelFunc = function (bool) {
             levelUpInterface.getChildByName('labelAttributeAfter').active = !bool;
             levelUpInterface.getChildByName('labelLevelAfter').active = !bool;
@@ -521,7 +523,7 @@ cc.Class({
             // labelAttributeNumberAfter.string = ""
             // labelNameAfter.string = ""
             hasMaxLevelFunc(true);
-        }else{
+        } else {
             // advanceInterface.getChildByName("spriteArrow").active = true;
             hasMaxLevelFunc(false);
             // labelAttributeAfter.string = GlobalVar.tblApi.getDataBySingleKey("TblPropName", leaderEquipDataAfter.oVecProp[0].wPropID).strName;
@@ -708,7 +710,7 @@ cc.Class({
         }
         let leaderEquipData = GlobalVar.tblApi.getDataByMultiKey("TblLeaderEquip", event.Equip.Pos, event.Equip.Quality);
         let itemObj = this.equipment[event.Equip.Pos - 1].getComponent("ItemObject");
-        itemObj.setSpriteItemIconData(leaderEquipData.wIcon,leaderEquipData.byColor);
+        itemObj.setSpriteItemIconData(leaderEquipData.wIcon, leaderEquipData.byColor);
         itemObj.setSpriteEdgeData(leaderEquipData.byColor * 100);
         itemObj.setLabelLevelData(event.Equip.Level);
         itemObj.setLabelQualityNumberData(leaderEquipData.strName);
@@ -792,7 +794,7 @@ cc.Class({
         let labelTip = self.effectUI.getChildByName('labelTip');
         let spriteContinue = self.effectUI.getChildByName('spriteContinue');
         let addValue = self.effectUI.getChildByName('addValuebg');
-        let showTextAnime =  function () {
+        let showTextAnime = function () {
             spriteContinue.active = true;
             spriteContinue.runAction(cc.repeatForever(cc.sequence(cc.fadeIn(0.7), cc.fadeOut(0.7))));
             effect2.armature().animation.stop();
@@ -816,6 +818,9 @@ cc.Class({
             let callfunc = cc.callFunc(() => {
                 let index = afterItemIcon / 10 % 10 + 1;
                 GlobalVar.resManager().loadRes(ResMapping.ResType.SpriteFrame, 'cdnRes/itemiconBig/' + index + '/' + afterItemIcon, function (frame) {
+                    if(!cc.isValid(equipSprite)){
+                        return;
+                    }
                     equipSprite.getComponent(cc.Sprite).spriteFrame = frame;
                     GlobalFunc.playDragonBonesAnimation(effect2.node, null);
 

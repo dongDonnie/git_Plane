@@ -33,12 +33,6 @@ var LoginScene = cc.Class({
         
         GlobalVar.soundManager().playBGM("cdnRes/audio/main/music/logon");
 
-        if (GlobalVar.getBannerSwitch()){
-            weChatAPI.cleanBannerCount();
-            weChatAPI.hideBannerAd();
-        }
-        
-
         if (cc.sys.platform === cc.sys.WECHAT_GAME || (window && window["wywGameId"]=="5469")){
             //this.loadPrefab("UIServerSel");
         }else{
@@ -69,11 +63,12 @@ var LoginScene = cc.Class({
         GlobalVar.me().setServerTime(evt.data.ServerTime);
         GlobalVar.me().updatePlayerDataByGMDT_PLAYER(evt.data.Player);
         
-        if (cc.sys.platform === cc.sys.WECHAT_GAME) {
-            weChatAPI.requestIosRechageLockState(GlobalVar.me().level, GlobalVar.me().combatPoint, GlobalVar.me().creatTime, function (state) {
+        let platformApi = GlobalVar.getPlatformApi();
+        if (platformApi){
+            platformApi.requestIosRechageLockState(GlobalVar.me().level, GlobalVar.me().combatPoint, GlobalVar.me().creatTime, function (state) {
                 GlobalVar.IosRechargeLock = !!state;
             });
-            weChatAPI.requestShareOpenState(GlobalVar.tblApi.getData('TblVersion')[1].strVersion, function (state) {
+            platformApi.requestShareOpenState(GlobalVar.tblApi.getData('TblVersion')[1].strVersion, function (state) {
                 GlobalVar.shareOpen = !!parseInt(state);
                 console.log("get shareOpen:", state, GlobalVar.shareOpen);
             })

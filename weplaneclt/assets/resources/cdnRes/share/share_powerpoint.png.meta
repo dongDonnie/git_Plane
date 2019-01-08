@@ -1,0 +1,32 @@
+{
+  "ver": "2.3.0",
+  "uuid": "f3ee3a78-6cde-40e7-9697-6ab0dcf873b3",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "platformSettings": {},
+  "subMetas": {
+    "share_powerpoint": {
+      "ver": "1.0.3",
+      "uuid": "e6bf37ac-212c-4318-ac89-c82efde5926d",
+      "rawTextureUuid": "f3ee3a78-6cde-40e7-9697-6ab0dcf873b3",
+      "trimType": "custom",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 406,
+      "height": 144,
+      "rawWidth": 406,
+      "rawHeight": 144,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

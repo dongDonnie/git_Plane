@@ -134,7 +134,9 @@ cc.Class({
         chapter.getChildByName("labelStarCount").getComponent(cc.Label).string = (curStarsCount + "/30");
         let path = "cdnRes/chapterBg/chapter_bkg_" + data.byChapterID;
         GlobalVar.resManager().loadRes(ResMapping.ResType.SpriteFrame, path, function (frame) {
-            chapter.getChildByName("spriteChapterBg").getComponent("RemoteSprite").spriteFrame = frame;
+            if(cc.isValid(chapter)){
+                chapter.getChildByName("spriteChapterBg").getComponent("RemoteSprite").spriteFrame = frame;
+            }
         });
         // chapter.runAction(cc.sequence(cc.scaleTo(0.1, 1.1), cc.scaleTo(0.05, 1)));
 

@@ -97,9 +97,6 @@ cc.Class({
     animePlayCallBack(name) {
         if (name == "Escape") {
             this._super("Escape");
-            if (GlobalVar.getBannerSwitch()){
-                weChatAPI.hideBannerAd();
-            }
             if(this.sellMode){
                 this.sellMode=false;
                 var param=this.slot;
@@ -114,9 +111,6 @@ cc.Class({
             }
         } else if (name == "Enter") {
             this._super("Enter");
-            if (GlobalVar.getBannerSwitch() && !GlobalVar.getNeedGuide()){
-                weChatAPI.showBannerAd();
-            }
             let itemData=GlobalVar.tblApi.getDataBySingleKey('TblItem', this.itemID);
             if (!itemData){
                 GlobalVar.comMsg.showMsg("道具信息错误");

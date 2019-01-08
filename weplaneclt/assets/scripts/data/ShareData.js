@@ -46,6 +46,9 @@ var shareData = cc.Class({
     getShareMemberTestPlay: function () {
         return self.data.FuliMemberTestPlay;
     },
+    getSuperRewardState: function () {
+        return self.data.SuperFuli;
+    },
 
     setFreeGoldCount: function (data) {
         if (data.ErrCode == GameServerProto.PTERR_SUCCESS){
@@ -63,6 +66,7 @@ var shareData = cc.Class({
             GlobalVar.me().setDiamond(data.Diamond);
         }
         GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_GET_FREE_DIAMOND, data);
+        GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_FREE_DIAMOND_FLAG_CHANGE);
     },
 
     setRecommandData: function (data) {
@@ -87,6 +91,13 @@ var shareData = cc.Class({
             // StoreageData.setFuliShareState("shareDaily");
         }
         GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_GET_SHARE_DAILY_DATA, data);
+    },
+
+    setSuperRewardData: function (data) {
+        if (data.ErrCode == GameServerProto.PTERR_SUCCESS){
+            self.data.SuperFuli = data.SuperFuli;
+        }
+        GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_GET_SUPER_REWARD_DATA, data);
     },
 });
 

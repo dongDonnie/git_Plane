@@ -50,16 +50,10 @@ cc.Class({
     animePlayCallBack(name) {
         if (name == "Escape") {
             this._super("Escape");
-            if (GlobalVar.getBannerSwitch()){
-                weChatAPI.justShowBanner();
-            }
             GlobalVar.eventManager().removeListenerWithTarget(this);
             WindowManager.getInstance().popView(false, null, false, false);
         } else if (name == "Enter") {
             this._super("Enter");
-            if (GlobalVar.getBannerSwitch()){
-                weChatAPI.justHideBanner();
-            }
             this.registerEvent();
             this.node.getChildByName("nodeSCReward").active = true;
 
@@ -153,6 +147,11 @@ cc.Class({
         }else{
             feedback.getChildByName("btnBuy").active = true;
             feedback.getChildByName("spriteAlreadedGet").active = false;
+            if (GlobalVar.me().diamondCz >= data.dwCondition) {
+                feedback.getChildByName("btnBuy").getChildByName('spriteHot').active = true;
+            } else {
+                feedback.getChildByName("btnBuy").getChildByName('spriteHot').active = false;
+            }
         }
     },
 
@@ -175,13 +174,16 @@ cc.Class({
     onRecvSCFuliBtnClick: function(event) {
         let isFree = 0, ticket = ""
         let curPlayTime = StoreageData.getShareTimesWithKey("ScInvite", 0);
-        if (GlobalVar.me().rechargeData.data.Bag.DiamondCZ > 0){
+        if (GlobalVar.me().diamondCz >= 60){
 
         }else if (curPlayTime > 6){
             isFree = 1;
             // ticket = this.inviteTicket;
         }else{
-
+            if (GlobalVar.me().diamondCz < 60){
+                weChatAPI.androidPayment(6, 3, "60点券", GlobalVar.me().loginData.getLoginReqDataServerID());
+                return;
+            }
         }
         // console.log("isFree:", isFree);
         // console.log("ticket:", ticket);
@@ -200,6 +202,9 @@ cc.Class({
             this.node.getChildByName("spriteAlreadedGet").active = true;     
         }else{
             this.node.getChildByName("btnRecv").active = true;
+            if (GlobalVar.me().statFlags.FuLiCZFlag) {
+                this.node.getChildByName("btnRecv").getChildByName('spriteHot').active = true;
+            }
         }
 
         if (this.isFirstIn){
@@ -279,7 +284,6 @@ cc.Class({
         this.node.getChildByName("spriteAlreadedGet").active = true;     
         CommonWnd.showTreasureExploit(event.Item);
     },
-
 
     onInvitedBtnClick: function(event) {
         if (cc.sys.platform === cc.sys.WECHAT_GAME){

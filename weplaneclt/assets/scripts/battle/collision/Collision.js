@@ -164,6 +164,7 @@ cc.Class({
                 for (let sundries of sundriesList) {
                     if (sundries.objectType != Defines.ObjectType.OBJ_SUNDRIES ||
                         sundries.baseObject == null ||
+                        sundries.active == false ||
                         sundries.isDead) {
                         continue;
                     }
@@ -493,7 +494,7 @@ cc.Class({
 
         dmg *= monster.attackSuppress;
         dmg = Math.ceil(dmg);
-        hero.hitWithDamage(dmg, monster.immediatelyKill);
+        hero.hitWithDamage(dmg, monster.immediatelyKill,tblLvMonster.dwCollisionParam2);
     },
 
     collisionHeroWithBullet(hero, bullet) {

@@ -33,6 +33,7 @@ var LimitStoreData = cc.Class({
         }
         GlobalVar.eventManager().dispatchEvent(EventMsgId.EVENT_LIMIT_STORE_DATA_NTF, this.gift);
         GlobalVar.eventManager().dispatchEvent(EventMsgId.EVENT_LIMIT_STORE_BUY_NTF, msg.data);
+        GlobalVar.eventManager().dispatchEvent(EventMsgId.EVENT_LIMIT_STORE_FLAG_CHANGE);
     },
 
     findFuliGiftById: function (id) {   //找到已经购买过的信息

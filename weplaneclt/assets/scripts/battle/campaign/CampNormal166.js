@@ -6,7 +6,7 @@ CampNormal166.data = {
         ["cx-c","cx-d","cx-e-bossditu"],
     ],
     monsterWaves:[
-        {wave:{groups:[905,559,560],wait:0,delay:[0.2,2.5,2.5]},maps:{mapIndex:[0],mapSpeed:[800],mapScale:[1],mapLoop:[1]}},
+        {wave:{groups:[905,559,560],wait:0,delay:[0.2,2.5,2.5]},maps:{mapIndex:[0],mapSpeed:[600],mapScale:[1],mapLoop:[1]}},
         {wave:{groups:[906,693,694],wait:0,delay:[0,0.5,1]}},{wave:{groups:[908,314],wait:0,delay:[0,1]}},
         {wave:{groups:[908,314],wait:0,delay:[0,1]}},  {wave:{groups:[907,26],wait:0,delay:[0,0]}},
         {wave:{groups:[906,693,694],wait:0,delay:[0,0.5,1]}},

@@ -54,7 +54,7 @@ cc.Class({
     },
 
     ctor: function () {
-        this.guazaiSmeltSlot = [0, 0, 0, 0];
+        this.guazaiSmeltSlot = [-1, -1, -1, -1];
         this.smeltPosClicked = 0;
         this.smeltQuality = 0;
         this.vecSelectedItem = [];
@@ -63,7 +63,7 @@ cc.Class({
     },
 
     initData: function () {
-        this.guazaiSmeltSlot = [0, 0, 0, 0];
+        this.guazaiSmeltSlot = [-1, -1, -1, -1];
         this.smeltPosClicked = 0;
         this.smeltQuality = 0;
         this.vecSelectedItem = [];
@@ -75,6 +75,7 @@ cc.Class({
 
     onLoad: function () {
         this._super();
+        this.typeName = WndTypeDefine.WindowType.E_DT_GUAZAISMELTER_WND;
         this.animeStartParam(0, 0);
     },
 
@@ -86,16 +87,10 @@ cc.Class({
     animePlayCallBack(name) {
         if (name == "Escape") {
             this._super("Escape");
-            if (GlobalVar.getBannerSwitch()){
-                weChatAPI.justShowBanner();
-            }
             GlobalVar.eventManager().removeListenerWithTarget(this);
             WindowManager.getInstance().popView(false, null, false, false);
         } else if (name == "Enter") {
             this._super("Enter");
-            if (GlobalVar.getBannerSwitch()){
-                weChatAPI.justHideBanner();
-            }
             GlobalVar.eventManager().addEventListener(EventMsgId.EVENT_GUAZAI_SMELTER_NTF, this.composeBack, this);
             GlobalVar.eventManager().addEventListener(EventMsgId.EVENT_GUAZAI_REBIRTH_ACK, this.onGuazaiRebirthCallback, this);
             this.initData();
@@ -172,7 +167,7 @@ cc.Class({
         }
 
         let smelters = this.getSmelterNum();
-        if (this.smeltQuality != 0 && this.smeltQuality != item.wQuality && (smelters > 1 || this.guazaiSmeltSlot[pos - 1] == 0)) {
+        if (this.smeltQuality != 0 && this.smeltQuality != item.wQuality && (smelters > 1 || this.guazaiSmeltSlot[pos - 1] == -1)) {
             GlobalVar.comMsg.showMsg("不同品质的挂载不能熔炼");
             return;
         } else {
@@ -186,7 +181,7 @@ cc.Class({
         let smelters = 0;
         for (let i = 0; i < this.guazaiSmeltSlot.length; i++) {
             let smelter = this.guazaiSmeltSlot[i];
-            if (smelter != 0) {
+            if (smelter != -1) {
                 smelters++;
             }
         }
@@ -197,7 +192,7 @@ cc.Class({
         let smelters = this.getSmelterNum();
         for (let j = 0; j < this.guazaiSmeltSlot.length; j++) {
             let slot = this.guazaiSmeltSlot[j];
-            if (slot == 0) continue;
+            if (slot == -1) continue;
 
             let node = this.getNodeByName("nodeItem" + (j + 1));
             let item = node.getChildByName("nodeAdd").getChildByName("ItemObject");
@@ -241,7 +236,7 @@ cc.Class({
     },
 
     onQuickSmeltBtnTouchedCallback: function () {
-        this.guazaiSmeltSlot = [0, 0, 0, 0];
+        this.guazaiSmeltSlot = [-1, -1, -1, -1];
         let canSmelter = false;
         this.smeltQuality = 0;
         let n = 0;
@@ -263,7 +258,7 @@ cc.Class({
                 if (this.getSmelterNum() == 4) { 
                     break;
                 } else {
-                    this.guazaiSmeltSlot = [0, 0, 0, 0];
+                    this.guazaiSmeltSlot = [-1, -1, -1, -1];
                     canSmelter = false;
                     n = 0;
                 }
@@ -338,7 +333,7 @@ cc.Class({
             }
 
             this.seekNodeByName(nodeGetItem, "nodeQuestion").active = false;
-            this.guazaiSmeltSlot = [0, 0, 0, 0];
+            this.guazaiSmeltSlot = [-1, -1, -1, -1];
             this.smeltQuality = 0;
 
             for (let i = 1; i <= 4; i++) {
@@ -471,7 +466,14 @@ cc.Class({
     },
 
     onGuazaiRebirthCallback: function (data) {
-        if (data.IsShow == 0) {
+        if (data.ErrCode == GameServerProto.PTERR_DIAMOND_LACK) {
+            this.rebirthLock = false;
+            CommonWnd.showNormalFreeGetWnd(GameServerProto.PTERR_DIAMOND_LACK);
+            return;
+        }
+        if (data.IsShow == 1) {
+            this.updateGuazaiRebirthGetItemPanel(data.GetItems);
+        } else {
             for (let i = 0; i < this.vecSelectedItemNode.length; i++) {
                 let model = this.vecSelectedItemNode[i];
                 let effect = model.getChildByName("nodeEffect");
@@ -482,17 +484,14 @@ cc.Class({
                     effect.active = false;
                     if (index == 0) {
                         self.rebirthLock = false;
-                        CommonWnd.showTreasureExploit(data.GetItems, 1, () => { 
+                        CommonWnd.showTreasureExploit(data.GetItems, 0, () => {
                             self.updateGuazaiReborn();
                             self.rebirthLock = false;
                         });
                     }
                 })
             }
-        } else if (data.IsShow == 1) {
-            this.updateGuazaiRebirthGetItemPanel(data.GetItems);
         }
-
     },
 
     updateGuazaiRebirthGetItemPanel: function (mapItem) {

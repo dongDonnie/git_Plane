@@ -48,16 +48,10 @@ cc.Class({
     animePlayCallBack(name) {
         if (name == "Escape") {
             this._super("Escape");
-            if (GlobalVar.getBannerSwitch()){
-                weChatAPI.hideBannerAd();
-            }
             GlobalVar.eventManager().removeListenerWithTarget(this);
             WindowManager.getInstance().popView();
         } else if (name == "Enter") {
             this._super("Enter");
-            if (GlobalVar.getBannerSwitch() && !GlobalVar.getNeedGuide()){
-                weChatAPI.showBannerAd();
-            }
             this.initPlayerInfoWnd();
 
             //RENAME
@@ -168,7 +162,7 @@ cc.Class({
         }
     },
     setPlayerAvatar: function (url){
-        if (cc.sys.platform !== cc.sys.WECHAT_GAME && !(window && window["wywGameId"]=="5496")){
+        if (cc.sys.platform !== cc.sys.WECHAT_GAME && !(window && window["wywGameId"]=="5469")){
             return;
         }
         if (url == "") {
@@ -178,8 +172,12 @@ cc.Class({
         let nodeCenter = this.node.getChildByName("nodeCenter");
         let spriteHeader = nodeCenter.getChildByName("spriteHeader");
         
-        url = url + "?aaa=aa.png";
-        cc.loader.load(url, function (err, tex) {
+        if(window && window["wywGameId"]=="5469"){
+            url = "http://mwxsdk.phonecoolgame.com/avatar.php?s=" + encodeURIComponent(url);
+        }
+        url = url + "?aa=aa.png";
+        console.log("avater in playerinfo:", url);
+        cc.loader.load({url:url, type: 'png'}, function (err, tex) {
             if (err) {
                 // cc.error("LoadURLSpriteFrame err." + url);
             }

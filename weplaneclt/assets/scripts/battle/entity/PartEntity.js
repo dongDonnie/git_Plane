@@ -112,7 +112,7 @@ cc.Class({
                     if (self.objectType == Defines.ObjectType.OBJ_HERO && self.showType == 0) {
                         self.addMotionStreak('huoyan');
                     }
-                }else{
+                } else {
                     GlobalVar.comMsg.showMsg(i18n.t('label.4000000'));
                 }
             });
@@ -325,8 +325,9 @@ cc.Class({
         this.magnetTime = time;
     },
 
-    hitWithDamage(dmg, immediately) {
+    hitWithDamage(dmg, immediately, param) {
         immediately = typeof immediately !== 'undefined' ? immediately : 0;
+        param = typeof param !== 'undefined' ? param : 0;
 
         if (!!BattleManager.getInstance().dashMode) {
             return;
@@ -344,6 +345,18 @@ cc.Class({
             dmg = this.maxHp;
         } else if (immediately == 2) {
             dmg = this.maxHp * 0.3;
+            if (BattleManager.getInstance().isCampaignFlag) {
+                let camp = BattleManager.getInstance().getCampName();
+                let index = camp.lastIndexOf('l');
+                if (index != -1) {
+                    index += 1;
+                    camp = camp.substring(index);
+                }
+                let idx = Number(camp);
+                if (idx <= 30 && dmg > param && param != 0) {
+                    dmg = param;
+                }
+            }
         } else if (immediately == 3) {
             dmg = this.maxHp * 0.5;
         }

@@ -9,6 +9,7 @@ const CommonWnd = require("CommonWnd");
 const i18n = require('LanguageData');
 const GlobalFunc = require('GlobalFunctions');
 const weChatAPI = require("weChatAPI");
+const qqPlayAPI = require("qqPlayAPI");
 
 const TAB_NEWTASK = 0, TAB_DAILYMISSION = 1;
 const BUTTON_INACTIVE = 0, BUTTON_ACTIVE = 1;
@@ -92,16 +93,10 @@ cc.Class({
     animePlayCallBack(name) {
         if (name == "Escape") {
             this._super("Escape");
-            if (GlobalVar.getBannerSwitch()){
-                weChatAPI.justShowBanner();
-            }
             GlobalVar.eventManager().removeListenerWithTarget(this);
             WindowManager.getInstance().popView(false, null, false, false);
         } else if (name == "Enter") {
             this._super("Enter");
-            if (GlobalVar.getBannerSwitch()){
-                weChatAPI.justHideBanner();
-            }
             //接到消息后再初始化窗口
             this.recvLock = false;
             this.alreadSaveData = false;
@@ -352,7 +347,7 @@ cc.Class({
 
         let showDataList = [];
         for(let i = 0; i<this.dailyDatas.length; i++){
-            if (!this.checkDelDaily(i)){
+            if (this.checkDelDaily(i) == false){
                 showDataList.push(this.dailyDatas[i]);
             }
         }
@@ -485,10 +480,49 @@ cc.Class({
             condition = false;
             confirmText = "已领取"
         }
-
+        let tblRewardBoxData = GlobalVar.tblApi.getData('TblDailyActive');
+        let rewardBoxs = [];
+        let rewardBoxIndex = 1;
+        for (let i in tblRewardBoxData) {
+            rewardBoxs.push(tblRewardBoxData[i]);
+        }
+        for (let i = 0; i < rewardBoxs.length; i++){
+            if (rewardBoxs[i].nActive == active) {
+                rewardBoxIndex = i + 1;
+                break;
+            }
+        }
+        // let rewardBoxIndex = 1;
+        // for (let i in tblRewardBoxData){
+        //     if (tblRewardBoxData[i].nActive != active){
+        //         rewardBoxIndex += 1; 
+        //     }else{
+        //         break;
+        //     }
+        // }
+        // if (rewardBoxIndex > 4){
+        //     rewardBoxIndex = 1;
+        // }
         // 点击领取发送事件
         let confirm = function () {
-            GlobalVar.handlerManager().dailyHandler.sendDailyActiveRewardReq(active);
+            let platformApi = GlobalVar.getPlatformApi();
+            if ((rewardBoxIndex > 1 && rewardBoxIndex < 4) && platformApi && GlobalVar.me().vipLevel < 3){
+                CommonWnd.showMessage(null, CommonWnd.shareOnly, i18n.t('label.4000216'), i18n.t('label.4000329'), null, function () {
+                    platformApi.shareNormal(0, function () {
+                        GlobalVar.handlerManager().dailyHandler.sendDailyActiveRewardReq(active);
+                    });
+                }, null, "  " + i18n.t('label.4000304'))
+            }else if (rewardBoxIndex >= 4 && platformApi && GlobalVar.me().vipLevel < 3){
+                CommonWnd.showMessage(null, CommonWnd.videoOnly, i18n.t('label.4000216'), i18n.t('label.4000330'), null, function () {
+                    platformApi.showRewardedVideoAd(function () {
+                        GlobalVar.handlerManager().dailyHandler.sendDailyActiveRewardReq(active);
+                    },function () {
+                        GlobalVar.handlerManager().dailyHandler.sendDailyActiveRewardReq(active);
+                    });
+                }, null, "  " + i18n.t('label.4000328'))
+            }else{
+                GlobalVar.handlerManager().dailyHandler.sendDailyActiveRewardReq(active);
+            }
         }
 
         if (rewardBoxData) {
@@ -501,6 +535,11 @@ cc.Class({
         function compare(property1, property2) {
             return function (a, b) {
                 // 按照是否完成排序
+                if (a.wID == GameServerProto.PT_DAILY_TASK_AD){
+                    return -1;
+                }else if (b.wID == GameServerProto.PT_DAILY_TASK_AD){
+                    return 1;
+                }
                 let value1 = a.wID == GameServerProto.PT_DAILY_TASK_VIP_EXP;
                 let value2 = b.wID == GameServerProto.PT_DAILY_TASK_VIP_EXP;
                 let aCurStep = 0;
@@ -664,9 +703,6 @@ cc.Class({
     },
 
     removeListennerAndBanner: function () {
-        if (GlobalVar.getBannerSwitch()){
-            weChatAPI.hideBannerAd();
-        }
         GlobalVar.eventManager().removeListenerWithTarget(this);
     },
 
@@ -810,7 +846,7 @@ cc.Class({
 
     checkDelDaily: function (index) {
         let data = this.dailyDatas[index];
-        if (!data) return;
+        if (!data) return true;
         //当服务器发来的该任务的完成状态为0，意为已经领取，将该任务排除
         let state = GlobalVar.me().dailyData.getDailyStateByID(data.wID);
         if (state == 0) return true;
@@ -827,6 +863,11 @@ cc.Class({
         let vipLevel = GlobalVar.me().vipLevel;
         if (vipLevel == 0 && data.wID == GameServerProto.PT_DAILY_TASK_VIP) {
             return true;
+        }
+        //当视频关闭时，观看视频任务不显示
+        if (data.wID == GameServerProto.PT_DAILY_TASK_AD){
+            return !GlobalVar.getShareSwitch();
+            // return false;
         }
         //当该任务为月卡任务且IOS支付开关未开启时，排除任务
         if (data.wID == GameServerProto.PT_DAILY_TASK_HIGH_MONTHCARD || data.wID == GameServerProto.PT_DAILY_TASK_MONTHCARD || data.wID == GameServerProto.PT_DAILY_TASK_CZ){

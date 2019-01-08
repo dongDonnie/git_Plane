@@ -157,16 +157,27 @@ var DailyObject = cc.Class({
             if (GlobalVar.getShareSwitch()){
                 this.btnRecv.node.getComponent("ButtonObject").fontSize = 24;
                 this.btnRecv.node.getComponent("ButtonObject").setText(i18n.t('label.4000304'));
+            }else if (GlobalVar.getVideoAdSwitch()){
+                this.btnRecv.node.getComponent("ButtonObject").fontSize = 24;
+                this.btnRecv.node.getComponent("ButtonObject").setText(i18n.t('label.4000328'));
             }
             this.btnGo.node.active = false;
             this.btnRecv.node.active = true;
             this.nodeRequire.active = false;
-
         } else {
             let curStep = 0;
             let serverStep = GlobalVar.me().dailyData.getDailyStepsByID(data.wID);
             if (serverStep) {
                 curStep = serverStep;
+            }
+
+            if (data.wID == GameServerProto.PT_DAILY_TASK_AD){
+                this.btnGo.node.getComponent("RemoteSprite").setFrame(0);
+                this.btnGo.node.getComponent("ButtonObject").fontSize = 24;
+                this.btnGo.node.getComponent("ButtonObject").setText(i18n.t('label.4000328'));
+            }else{
+                this.btnGo.node.getComponent("RemoteSprite").setFrame(1);
+                this.btnGo.node.getComponent("ButtonObject").setText("前往");
             }
 
             if (data.nVar <= curStep) {
@@ -205,9 +216,14 @@ var DailyObject = cc.Class({
         let data = this.data;
         // console.log("RecvBtnClick")
         if (GlobalVar.getShareSwitch() && (data.wID == GameServerProto.PT_DAILY_TASK_SP1 || data.wID == GameServerProto.PT_DAILY_TASK_SP2)){
-            weChatAPI.shareNormal(121, function(){
+            let platformApi = GlobalVar.getPlatformApi();
+            if (platformApi){
+                platformApi.shareNormal(121, function(){
+                    GlobalVar.handlerManager().dailyHandler.sendDailyRewardReq(data.wID);
+                });
+            }else if (GlobalVar.configGMSwitch()){
                 GlobalVar.handlerManager().dailyHandler.sendDailyRewardReq(data.wID);
-            });
+            }
         }else{
             GlobalVar.handlerManager().dailyHandler.sendDailyRewardReq(data.wID);
         }
@@ -216,12 +232,24 @@ var DailyObject = cc.Class({
         let data = this.data;
         let windowID = data.wWindowID;
         console.log("goBtnClick = ", windowID);
-        this.goToWnd(windowID);
+        if (data.wID == GameServerProto.PT_DAILY_TASK_AD){
+            let platformApi = GlobalVar.getPlatformApi();
+            if (platformApi){
+                platformApi.showRewardedVideoAd(function(){
+                    GlobalVar.handlerManager().dailyHandler.sendDailyADReq();
+                }, function () {
+                    platformApi.shareNormal(0, function () {
+                        GlobalVar.handlerManager().dailyHandler.sendDailyADReq();
+                    })
+                });
+            }else if (GlobalVar.configGMSwitch()){
+                GlobalVar.handlerManager().dailyHandler.sendDailyADReq();
+            }
+        }else{
+            this.goToWnd(windowID);
+        }
     },
     removeListennerAndBanner: function () {
-        if (GlobalVar.getBannerSwitch()){
-            weChatAPI.hideBannerAd();
-        }
         GlobalVar.eventManager().removeListenerWithTarget(this);
     },
 

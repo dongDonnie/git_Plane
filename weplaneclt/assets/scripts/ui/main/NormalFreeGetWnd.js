@@ -70,9 +70,6 @@ cc.Class({
     animePlayCallBack(name) {
         if (name == "Escape") {
             this._super("Escape");            
-            if (GlobalVar.getBannerSwitch()){
-                weChatAPI.hideBannerAd();
-            }
             GlobalVar.eventManager().removeListenerWithTarget(this);
             let shareType = this._shareType;
             let purchaseMode = this._purchaseMode;
@@ -107,9 +104,6 @@ cc.Class({
             }, false, false);
         } else if (name == "Enter") {
             this._super("Enter");
-            if (GlobalVar.getBannerSwitch() && !GlobalVar.getNeedGuide()){
-                weChatAPI.showBannerAd();
-            }
             GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_GET_FREE_GOLD, this.getFreeGold, this);
             GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_GET_FREE_DIAMOND, this.getFreeDiamond, this);
         }
@@ -150,7 +144,8 @@ cc.Class({
         let title = i18n.t("label.4000216");
         let text = "";
         let leftTimeStr = i18n.t("label.4000306");
-        let shareName = i18n.t("label.4000304");
+        let shareName = "  " + i18n.t("label.4000304");
+        // this.btnShare.node.getComponent("ButtonObject").setText("  " + i18n.t("label.4000328"))
         let purchaseName = i18n.t("label.4000305");
         let curTime = 0;
         let maxTime = 0;
@@ -171,6 +166,15 @@ cc.Class({
             curTime = GlobalVar.me().shareData.getFreeGoldCount();
             maxTime = GlobalVar.tblApi.getDataBySingleKey('TblParam', GameServerProto.PTPARAM_TREASURE_GOLD_FREE_MAX).dValue;
             leftTimeStr = leftTimeStr.replace("%left", maxTime - curTime).replace("%max", maxTime);
+            if (curTime >= 3){
+                shareName = "  " + i18n.t("label.4000328");
+                this.btnShare.node.getChildByName("spriteVideo").active = true;
+                this.btnShare.node.getChildByName("spriteShare").active = false;
+            }else{
+                shareName = "  " + i18n.t("label.4000304");
+                this.btnShare.node.getChildByName("spriteVideo").active = false;
+                this.btnShare.node.getChildByName("spriteShare").active = true;
+            }
             if (GlobalVar.getShareSwitch()){
                 btnType = BUTTON_TYPE_SHARE_PURCHASE;
             }else{
@@ -217,25 +221,44 @@ cc.Class({
         } else if (this._shareType == SHARE_TYPE_DIAMOND) {
             materialID = 115
         }
-
-        let self = this;
-        if (cc.sys.platform == cc.sys.WECHAT_GAME){
-            weChatAPI.shareNormal(materialID, function () {
-                if (self._shareType == SHARE_TYPE_GOLD) {
-                    GlobalVar.handlerManager().shareHandler.sendGetFreeGoldReq();
-                } else if (self._shareType == SHARE_TYPE_DIAMOND) {
-                    GlobalVar.handlerManager().shareHandler.sendGetFreeDiamondReq();
-                }
-            }); 
-        } else if (window && window["wywGameId"]=="5469"){
-
-        } else{
+        let platformApi = GlobalVar.getPlatformApi();
+        if (cc.isValid(platformApi)){
+            let self = this;
+            let curTime = GlobalVar.me().shareData.getFreeGoldCount();
+            //let maxTime = GlobalVar.tblApi.getDataBySingleKey('TblParam', GameServerProto.PTPARAM_TREASURE_GOLD_FREE_MAX).dValue;
+            if (curTime >= 3){
+                platformApi.showRewardedVideoAd(function () {
+                    if (self._shareType == SHARE_TYPE_GOLD) {
+                        GlobalVar.handlerManager().shareHandler.sendGetFreeGoldReq();
+                    } else if (self._shareType == SHARE_TYPE_DIAMOND) {
+                        GlobalVar.handlerManager().shareHandler.sendGetFreeDiamondReq();
+                    }
+                }, function () {
+                    platformApi.shareNormal(materialID, function () {
+                        if (self._shareType == SHARE_TYPE_GOLD) {
+                        GlobalVar.handlerManager().shareHandler.sendGetFreeGoldReq();
+                    } else if (self._shareType == SHARE_TYPE_DIAMOND) {
+                        GlobalVar.handlerManager().shareHandler.sendGetFreeDiamondReq();
+                    }
+                    }); 
+                });
+            }else{
+                platformApi.shareNormal(materialID, function () {
+                    if (self._shareType == SHARE_TYPE_GOLD) {
+                        GlobalVar.handlerManager().shareHandler.sendGetFreeGoldReq();
+                    } else if (self._shareType == SHARE_TYPE_DIAMOND) {
+                        GlobalVar.handlerManager().shareHandler.sendGetFreeDiamondReq();
+                    }
+                }); 
+            }
+        }else if (GlobalVar.configGMSwitch()){
             if (self._shareType == SHARE_TYPE_GOLD) {
                 GlobalVar.handlerManager().shareHandler.sendGetFreeGoldReq();
             } else if (self._shareType == SHARE_TYPE_DIAMOND) {
                 GlobalVar.handlerManager().shareHandler.sendGetFreeDiamondReq();
             }
         }
+        
     },
 
     onBtnPurchaseClick: function (event) {

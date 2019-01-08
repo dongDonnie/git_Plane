@@ -1610,6 +1610,14 @@
         <col name="Icon" type="UINT16" />
         <col name="Comment" type="comment" />
     </table>
+    
+    <table name="TblGuaZaiCom" file="data/guazaicom.tbl" key="GuaZaiID">
+        <col name="GuaZaiID" type="UINT16"/>
+        <col name="Tab" type="UINT8"/>
+        <col name="Item" type="TblItemCount"/>
+        <col name="SpecialItem" type="TblItemCount"/>
+        <col name="Comment" type="comment"/>
+    </table>
 
     <table name="TblMystery" file="data/mystery.tbl" key="ID" serveronly="true">
         <col name="ID" type="UINT16" />
@@ -2198,4 +2206,12 @@
         <col name="Diamond" type="INT32" />
     </table>
 
+    <table name="TblBanner" file="data/banner.tbl" key="WindowID">
+        <col name="WindowID" type="UINT8" />
+        <col name="WindowName" type="string" />
+        <col name="WindowType" type="UINT8" />
+        <col name="Banner" type="UINT8" />
+        <col name="Description" type="comment" />
+    </table>
+    
 </tables>

@@ -3,6 +3,7 @@ const config = require("config");
 const BattleManager = require('BattleManager');
 const Defines = require('BattleDefines');
 const windowmgr = require("windowmgr");
+const commonWnd = require("CommonWnd");
 
 var self = null;
 var buttonArray = [
@@ -127,8 +128,16 @@ const guide = cc.Class({
 
     enter: function () {
         var level = GlobalVar.me().getLevel();
-        if (level > 1 && self.id == 0)
+        if ((level > 1 && self.id == 0) || level > 4) {
             config.NEED_GUIDE = false;
+            cc.find('Canvas/GuideNode').active = false;
+        } else if (level == 1) {
+            config.NEED_GUIDE = true;
+            self.id = 0;
+            self.step = 0;
+            self.mapLoop = false;
+            self.watchBlt = false;
+        }
         if (config.NEED_GUIDE) {
             this.enterMain();
         }
@@ -273,7 +282,7 @@ const guide = cc.Class({
         if (self.step == 39) {
             self.guideNode.active = false;
             config.NEED_GUIDE = false;
-            require("CommonWnd").showEndlessView();
+            commonWnd.showEndlessView();
             return;
         }
         if (self.step == 42) {
@@ -310,13 +319,10 @@ const guide = cc.Class({
         //maskSprite
         if (step == 0) {
             self.maskSprite.opacity = 180;
-        }else if (step == 1) {
+        } else if (step == 1 || step == 5) {
             self.maskSprite.active = true;
             self.maskSprite.opacity = 0;
-        } else if (step == 5) {
-            self.maskSprite.active = true;
-            self.maskSprite.opacity = 0;
-        } else {
+        }else {
             self.maskSprite.active = true;
             self.maskSprite.opacity = 80;
         }
@@ -348,9 +354,11 @@ const guide = cc.Class({
 
         //fingerSprite
         if (step == 5) {
-            self.fingerSprite.getComponent(cc.Animation).play('animeFinger2');
+            self.fingerSprite.getChildByName('finger').getComponent(cc.Animation).play('animeFinger2');
+            self.fingerSprite.children[0].active = false;
         } else {
-            self.fingerSprite.getComponent(cc.Animation).play();
+            self.fingerSprite.getChildByName('finger').getComponent(cc.Animation).play();
+            self.fingerSprite.children[0].active = true;
         }
 
         //continueSprite
@@ -374,8 +382,10 @@ const guide = cc.Class({
             var over = function () {
                 self.guideNode.active = false;
                 config.NEED_GUIDE = false;
-                if (GlobalVar.getShareSwitch()) {
-                    require("CommonWnd").showShareDailyWnd();
+                if (!GlobalVar.srcSwitch()) {
+                    commonWnd.showFeedbackWnd();
+                } else {
+                    commonWnd.showShareDailyWnd();
                 }
             }
             self.maskSprite.once('touchend', over, self);
@@ -410,7 +420,7 @@ const guide = cc.Class({
                 windowmgr.getInstance().popView(false, null, false);
             }
             var callback = function () {
-                require("CommonWnd").showGetNewRareItemWnd(710, 0, 2, RecvCallback);
+                commonWnd.showGetNewRareItemWnd(710, 0, 2, RecvCallback);
                 self.cloneBtn('btnRecv');
             }
             cc.find('Canvas/GuideNode/fighter/btn_active').once('touchend', callback, this);
@@ -438,6 +448,11 @@ const guide = cc.Class({
         self.btnClone = cc.instantiate(btn);
         self.guideNode.addChild(self.btnClone);
         self.btnClone.name = 'btnClone';
+        for (const key in btn) {
+            if (!self.btnClone.hasOwnProperty(key) && btn.hasOwnProperty(key)) {
+                self.btnClone[key] = btn[key];
+            }
+        }
         self.btnClone.active = false;
 
         let delayShow =  function () {
@@ -457,22 +472,7 @@ const guide = cc.Class({
 
         setTimeout(() => {
             delayShow();
-        }, 500);
-
-        for (const key in btn) {
-            if (!self.btnClone.hasOwnProperty(key) && btn.hasOwnProperty(key)) {
-                self.btnClone[key] = btn[key];
-            }
-        }
-
-        if (nodename.indexOf('spritePlanetModel') != -1) {
-            var anime = self.seekNodeByName(self.btnClone, 'nodeSeletedAnimeModel');
-            if (anime) {
-                anime.getChildByName("spriteCircleAnime1").runAction(cc.repeatForever(cc.rotateBy(4, 360)));
-                anime.getChildByName("spriteCircleAnime2").runAction(cc.repeatForever(cc.rotateBy(4, -360)));
-                anime.getChildByName("spriteCircleAnime3").runAction(cc.repeatForever(cc.rotateBy(4, 360)));
-            }
-        }
+        }, 600);
 
         if (self.step == 11) {
             let path = 'cdnRes/itemicon/53/2/32100';
@@ -535,7 +535,8 @@ const guide = cc.Class({
         self.fingerSprite.opacity = 0;
         self.fingerSprite.active = true;
         self.fingerSprite.runAction(cc.sequence(cc.delayTime(0.2), cc.fadeIn(0.3)));
-        self.fingerSprite.getComponent(cc.Animation).play();
+        self.fingerSprite.getChildByName('finger').getComponent(cc.Animation).play();
+        // self.fingerSprite.children[0].active = false;
         self.maskSprite.active = false;
         self.guideNode.on('touchstart', () => {
             self.guideNode.active = false;
@@ -546,6 +547,7 @@ const guide = cc.Class({
     initNode: function () {
         self.guideNode.active = true;
         self.maskSprite.active = true;
+        self.maskSprite.opacity = 0;
         self.fighterSprite.active = false;
         self.dialogueSprite.active = false;
         self.dialogueSprite.opacity = 0;
@@ -555,8 +557,6 @@ const guide = cc.Class({
         if (!!self.introductionSprite) {
             self.introductionSprite.active = false;
         }
-        if (!!this.seekNodeByName('MaskBack'))
-            this.seekNodeByName("MaskBack").active = false;
     },
 
     seekNodeByName: function (root, name) {

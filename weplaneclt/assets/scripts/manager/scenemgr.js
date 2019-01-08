@@ -32,9 +32,16 @@ var SceneManager = cc.Class({
     },
 
     gotoScene: function (nextScene) {
-        if (nextScene === this.currentScene) {
+        if (nextScene === this.currentScene || nextScene === this.nextScene) {
             return;
         }
+
+        let platformApi = GlobalVar.getPlatformApi();
+        if (cc.isValid(platformApi)) {
+            platformApi.hideBannerAdNew();
+        }
+
+        this.nextScene = nextScene;
 
         if (nextScene === SceneDefines.BATTLE_STATE) {
             GlobalVar.windowManager().pauseView();
@@ -43,8 +50,6 @@ var SceneManager = cc.Class({
         if (this.currentScene !== SceneDefines.LOADING_STATE) {
             this.lastScene = this.currentScene;
         }
-
-        this.nextScene = nextScene;
 
         if (nextScene === SceneDefines.MAIN_STATE || nextScene === SceneDefines.BATTLE_STATE) {
             nextScene = SceneDefines.LOADING_STATE;

@@ -3553,7 +3553,7 @@
     "asset": {
       "__uuid__": "831542a9-6ad8-4232-bf30-e0db74711967"
     },
-    "fileId": "c1dgsIeB1B2qpt0UQqeVcb",
+    "fileId": "a22C+zW+FLD5nJXLsT0GTz",
     "sync": false
   },
   {
@@ -3653,7 +3653,7 @@
     "asset": {
       "__uuid__": "831542a9-6ad8-4232-bf30-e0db74711967"
     },
-    "fileId": "14GGG+vpdDKYOJeBDcenRH",
+    "fileId": "0dyKKNvllLvIK1i+TrsM9g",
     "sync": false
   },
   {
@@ -6523,7 +6523,7 @@
     "asset": {
       "__uuid__": "831542a9-6ad8-4232-bf30-e0db74711967"
     },
-    "fileId": "faLpCGqJRA+oC2u65C4Xzf",
+    "fileId": "d3qo2FWAlEwqaQRhqzkmRd",
     "sync": false
   },
   {
@@ -6623,7 +6623,7 @@
     "asset": {
       "__uuid__": "831542a9-6ad8-4232-bf30-e0db74711967"
     },
-    "fileId": "95b29ik5NHJ525hhmtJtc8",
+    "fileId": "52K7RmzvdEI7VKmM82H6ye",
     "sync": false
   },
   {
@@ -9493,7 +9493,7 @@
     "asset": {
       "__uuid__": "831542a9-6ad8-4232-bf30-e0db74711967"
     },
-    "fileId": "4bw7NRAXhB05bW7jwSyjrm",
+    "fileId": "ebNqe9GelBK6+wtdqUc2Zy",
     "sync": false
   },
   {
@@ -9593,7 +9593,7 @@
     "asset": {
       "__uuid__": "831542a9-6ad8-4232-bf30-e0db74711967"
     },
-    "fileId": "325bc6LXhJsrzJbVxuh1Pc",
+    "fileId": "a7z6JiwzxKho37BQkF0Tpz",
     "sync": false
   },
   {
@@ -12463,7 +12463,7 @@
     "asset": {
       "__uuid__": "831542a9-6ad8-4232-bf30-e0db74711967"
     },
-    "fileId": "a700U2A0dJgKT4Oy3Crnyt",
+    "fileId": "deddfxwmZIEYup9vadf5nY",
     "sync": false
   },
   {
@@ -12563,7 +12563,7 @@
     "asset": {
       "__uuid__": "831542a9-6ad8-4232-bf30-e0db74711967"
     },
-    "fileId": "e5YqZTFCZJca5dBYa5+pht",
+    "fileId": "3dqdjs2+BHu6AE0nwPsOy7",
     "sync": false
   },
   {
@@ -15433,7 +15433,7 @@
     "asset": {
       "__uuid__": "831542a9-6ad8-4232-bf30-e0db74711967"
     },
-    "fileId": "b2QbQphrpM9IAA4NtX4XSl",
+    "fileId": "caPlTp4YJETqxv2+xTnEJk",
     "sync": false
   },
   {
@@ -15533,7 +15533,7 @@
     "asset": {
       "__uuid__": "831542a9-6ad8-4232-bf30-e0db74711967"
     },
-    "fileId": "3eGPcW63VP75cVmZo8i0t4",
+    "fileId": "50arYnHBtHqYOTomrZf2Br",
     "sync": false
   },
   {
@@ -18403,7 +18403,7 @@
     "asset": {
       "__uuid__": "831542a9-6ad8-4232-bf30-e0db74711967"
     },
-    "fileId": "f8QM4dvHlDl5fkzxZE9aPo",
+    "fileId": "44aeq67LRO65Tmn1/mNaQI",
     "sync": false
   },
   {
@@ -18503,7 +18503,7 @@
     "asset": {
       "__uuid__": "831542a9-6ad8-4232-bf30-e0db74711967"
     },
-    "fileId": "d37gK3xaNHIZGOd/BuVCeb",
+    "fileId": "73Atwo3EJKqbQcx6l5WThC",
     "sync": false
   },
   {
@@ -21877,7 +21877,7 @@
     "_position": {
       "__type__": "cc.Vec3",
       "x": 0,
-      "y": 83,
+      "y": -9,
       "z": 0
     },
     "_scale": {
@@ -23577,7 +23577,7 @@
     "asset": {
       "__uuid__": "831542a9-6ad8-4232-bf30-e0db74711967"
     },
-    "fileId": "2a0ZqIBO1MsoIzVIBe5g5V",
+    "fileId": "17WgUzOlxH2Kc0446iOt8I",
     "sync": false
   },
   {
@@ -23677,7 +23677,7 @@
     "asset": {
       "__uuid__": "831542a9-6ad8-4232-bf30-e0db74711967"
     },
-    "fileId": "b6o2IlsvFGgJdG0ye+r7UN",
+    "fileId": "93TBlVubVB9aEQ/mIs2sKc",
     "sync": false
   },
   {
@@ -26321,7 +26321,7 @@
     "_alignFlags": 1,
     "_left": 0,
     "_right": 0,
-    "_top": 50,
+    "_top": 142,
     "_bottom": 0,
     "_verticalCenter": 0,
     "_horizontalCenter": 0,
@@ -26416,7 +26416,7 @@
     "_position": {
       "__type__": "cc.Vec3",
       "x": 0,
-      "y": -9,
+      "y": 83,
       "z": 0
     },
     "_scale": {
@@ -28116,7 +28116,7 @@
     "asset": {
       "__uuid__": "831542a9-6ad8-4232-bf30-e0db74711967"
     },
-    "fileId": "c2Vm8FTcFGOKUSaNwISEQE",
+    "fileId": "9aUckyYgxNppTtrXlNxgzr",
     "sync": false
   },
   {
@@ -28216,7 +28216,7 @@
     "asset": {
       "__uuid__": "831542a9-6ad8-4232-bf30-e0db74711967"
     },
-    "fileId": "f66meYaA5ACrKat7zYYmPI",
+    "fileId": "ebPzyt7llNl428tPlG8T9H",
     "sync": false
   },
   {
@@ -30746,7 +30746,7 @@
     "_alignFlags": 1,
     "_left": 0,
     "_right": 0,
-    "_top": 142,
+    "_top": 50,
     "_bottom": 0,
     "_verticalCenter": 0,
     "_horizontalCenter": 0,

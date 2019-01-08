@@ -113,6 +113,7 @@ var rechargeData = cc.Class({
                 GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_SPCHANGE_NTF);
             }
             GlobalVar.me().vipLevel = data.OK.Vip;
+            self.data.Bag.DiamondCZ = data.OK.DiamondCZ;
             self.data.Bag.TimeCard = data.OK.TimeCard;
             let index = self.getRechargeDataIndex(data.OK.RcgRecord.RechargeID);
             if (index == -1){
@@ -135,6 +136,7 @@ var rechargeData = cc.Class({
             GlobalVar.me().setDiamond(data.Diamond);
         }
         GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_GET_VOUCHER_RESULT, data);
+        GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_FULICZ_FLAG_CHANGE);
         // self.setData(data.OK);
     },
 

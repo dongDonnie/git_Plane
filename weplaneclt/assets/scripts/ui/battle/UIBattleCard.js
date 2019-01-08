@@ -100,11 +100,18 @@ cc.Class({
                 GlobalVar.sceneManager().gotoScene(SceneDefines.MAIN_STATE);
             } else if (index == RECV_ALL_REWARD){
                 let self = this;
-                weChatAPI.shareNormal(106, function() {
+                let platformApi = GlobalVar.getPlatformApi();
+                if (cc.isValid(platformApi)){
+                    platformApi.shareNormal(106, function() {
+                        self.canClickedRecvBtn = true;
+                        // console.log("发送freedraw消息");
+                        GlobalVar.handlerManager().campHandler.sendFreeDrawReq();
+                    });
+                }else if (GlobalVar.configGMSwitch()){
                     self.canClickedRecvBtn = true;
                     // console.log("发送freedraw消息");
                     GlobalVar.handlerManager().campHandler.sendFreeDrawReq();
-                });
+                }
             } else if (index == RECV_ALL_REWARD_VIP){
                 if (GlobalVar.me().vipLevel >= RECV_ALL_NEED_VIP_LEVEL){
                     this.canClickedRecvBtn = true;

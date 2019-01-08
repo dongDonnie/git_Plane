@@ -396,7 +396,10 @@ cc.Class({
     },
 
     deleteObject: function () {
-        let size = this.getCollider().size;
+        let size = cc.size(0, 0);
+        if (this.getCollider() != null) {
+            size = this.getCollider().size;
+        }
 
         this._super();
         if (this.tbl.strDieEffect != '' && !this.closeDeathBomb) {

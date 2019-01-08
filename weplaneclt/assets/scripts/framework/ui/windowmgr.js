@@ -96,6 +96,9 @@ var WindowManager = cc.Class({
             this.showLog("push name is " + this.pushName);
         }
 
+        let block = cc.find("Canvas/BlockNode");
+        block.active = true;
+
         if (this.findViewInStack(WndTypeDefine.WindowType.E_DT_MASKBACK_WND) != "") {
             if (needUpMask) {
                 this.mapViewData[WndTypeDefine.WindowType.E_DT_MASKBACK_WND].getComponent(WndTypeDefine.WindowType.E_DT_MASKBACK_WND).enter(true);
@@ -191,6 +194,9 @@ var WindowManager = cc.Class({
         } else {
             this.showLog("AddView: addview can not find wndnode!");
         }
+
+        let block = cc.find("Canvas/BlockNode");
+        block.active = false;
     },
 
     addMaskBack: function (type, nextTpye, callback, param) {
@@ -277,7 +283,6 @@ var WindowManager = cc.Class({
 
             this.vectorViewStack.pop();
 
-
             if (this.vectorViewStack.length > 1 && this.getCeilingViewType() == WndTypeDefine.WindowType.E_DT_MASKBACK_WND) {
                 if (this.vectorViewStack[this.vectorViewStack.length - 2] == WndTypeDefine.WindowType.E_DT_NORMALROOT_WND) {
                     let index = this.findViewIndex(WndTypeDefine.WindowType.E_DT_ROOTBACK_WND);
@@ -328,6 +333,9 @@ var WindowManager = cc.Class({
         } else {
             this.showLog("InsertView: index = " + index);
         }
+
+        let block = cc.find("Canvas/BlockNode");
+        block.active = true;
 
         if (!cc.isValid(this.mapViewData[typeName])) {
             this.setRevertViewStack();
@@ -431,6 +439,8 @@ var WindowManager = cc.Class({
                             wnd.getComponent(type).needShowRecommond();
                             wnd.getComponent(type).needShowTestPlayFinish();
                         });
+                    }else {
+                        this.pushView(this.record);
                     }
                 }
                 this.record = '';
@@ -466,6 +476,8 @@ var WindowManager = cc.Class({
                 topView.getComponent(this.getTopViewType()).enter(true);
             }
         }
+        let block = cc.find("Canvas/BlockNode");
+        block.active = false;
     },
 
     upViewToCeiling: function (typeName, needRefresh, needRefreshCeilingView) {
@@ -577,11 +589,7 @@ var WindowManager = cc.Class({
         //     index = this.findViewIndex(WndTypeDefine.WindowType.E_DT_MASKBACK_WND);
         //     this.vectorViewStack.splice(index, 1);
         // }
-        if (GlobalVar.getBannerSwitch()){
-            require("weChatAPI").cleanBannerCount();
-            require("weChatAPI").hideBannerAd();
-        }
-        
+
         while (this.vectorViewStack.length > 0) {
             let ceilingView = this.getCeilingView();
             if (!!ceilingView && !!ceilingView.getComponent(this.getCeilingViewType()).animeStartParam) {
