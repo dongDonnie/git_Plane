@@ -11,7 +11,7 @@ var Me = cc.Class({
                 Me.instance = new Me();
             }
             return Me.instance;
-        },destroyInstance: function() {
+        }, destroyInstance: function () {
             if (Me.instance != null) {
                 delete Me.instance;
                 Me.instance = null;
@@ -30,8 +30,8 @@ var Me = cc.Class({
         self._registerEvent();
     },
 
-    clearData: function (){
-        for(let i in self._datas){
+    clearData: function () {
+        for (let i in self._datas) {
             self._datas[i] = null;
         }
         self._datas = {};
@@ -54,6 +54,9 @@ var Me = cc.Class({
         self.campData = null;
         self.dailyData = null;
         self.activeData = null;
+        self.signData = null;
+        self.adData = null;
+        self.bannerYdData = null;
 
         self.level = null;
         self.roleID = null;
@@ -83,8 +86,8 @@ var Me = cc.Class({
         return data;
     },
 
-    _registerEvent: function(){
-        
+    _registerEvent: function () {
+
     },
 
     _initDatas: function () {
@@ -109,6 +112,10 @@ var Me = cc.Class({
         self.activeData = self._createData("ActiveData");
         self.mainData = self._createData("MainData");
         self.shareData = self._createData("ShareData");
+        self.signData = self._createData("SignData");
+        self.adData = self._createData("AdData");
+        self.bannerYdData = self._createData("BannerYdData");
+        // self.arenaData = self._createData("ArenaData");
     },
 
     setMyselfData: function (playerData) {
@@ -123,7 +130,7 @@ var Me = cc.Class({
         self.vipExp = playerData.VIPExp;
         self.vipLevel = playerData.VIPLevel;
         self.creatTime = playerData.CreatTime;
-        if (playerData.Avatar != ""){
+        if (playerData.Avatar != "") {
             self.loginData.setLoginReqDataAvatar(playerData.Avatar);
         }
         self.avatar = playerData.Avatar;
@@ -133,6 +140,7 @@ var Me = cc.Class({
         self.oldLastChapterID = null;
         self.defaultCurChapterID = null;
         self.isKickedOut = false;
+        self.fuLiGCBag = playerData.FuLiGCBag;
     },
 
     getGold: function () {
@@ -182,7 +190,7 @@ var Me = cc.Class({
         self.setGold(levelUpData.GoldCur);
         self.level = levelUpData.LevelCur;
         self.spData.data.Sp = levelUpData.SpCur;
-        
+
         GlobalVar.me().guazaiData.updateHotPoint();
         GlobalVar.me().leaderData.updateHotPoint();
         GlobalVar.me().memberData.updateHotPoint();

@@ -160,6 +160,7 @@ cc.Class({
             this.deleteMode = false;
             GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_MEMBER_STANDINGBY_NTF, this.onSetFighter, this);
             GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_MEMBER_ACTIVE_NTF, this.onActiveFighter, this);
+
             if (GlobalFunc.isAllScreen() && !this.fixViewComplete) {
                 this.fixViewComplete = true;
                 this.fixFighter();
@@ -344,5 +345,9 @@ cc.Class({
         }
         this.updateState();
         this.hangarScroll.getComponent("SpecialScroll").updateFighter();
+    },
+
+    onBtnMemberStore: function () {
+        CommonWnd.showMemberStoreWnd();
     },
 });

@@ -157,14 +157,14 @@ cc.Class({
             //     });
             // }, 1000);
             CommonWnd.showMessage(null, CommonWnd.oneConfirm, i18n.t('label.4000216'), i18n.t('label.4000317'), null, function () {
-                weChatAPI.shareNeedClick(121, function () {
+                weChatAPI.shareNeedClick(131, function () {
                     GlobalVar.handlerManager().spHandler.sendSpBuyReq(1);
-                }, null, i18n.t('label.4000304'));
+                });
             });
         }else{
             let platformApi = GlobalVar.getPlatformApi();
             if (cc.isValid(platformApi)){
-                platformApi.shareNormal(121, function () {
+                platformApi.shareNormal(131, function () {
                     GlobalVar.handlerManager().spHandler.sendSpBuyReq(1);
                 });
             }

@@ -55,6 +55,10 @@ BattleDefines.ObjectType = cc.Enum({
     OBJ_EXECUTE: 14,
     OBJ_SUNDRIES: 15,
     OBJ_GOLD: 16,
+    OBJ_SELF: 17,
+    OBJ_RIVAL: 18,
+    OBJ_SELF_BULLET: 19,
+    OBJ_RIVAL_BULLET: 20,
 });
 
 BattleDefines.BulletType = cc.Enum({
@@ -197,6 +201,9 @@ BattleDefines.Assist = {
     CHEST4: 30004,
     CHEST5: 30005,
     CHEST6: 30006,
+    CHEST7: 30007,
+    CHEST8: 30008,
+    CHEST9: 30009,
     STONYSMALL: 40000,
     STONYMIDDLE: 40001,
     STONYBIG: 40002,

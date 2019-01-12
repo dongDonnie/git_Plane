@@ -355,7 +355,7 @@ cc.Class({
         
         let platformApi = GlobalVar.getPlatformApi();
         if (platformApi){
-            platformApi.showRewardedVideoAd(function () {
+            platformApi.showRewardedVideoAd(222, function () {
                 GlobalVar.handlerManager().limitStoreHandler.sendReq(GameServerProto.GMID_FULI_GIFT_BUY_REQ, msg);
             },function () {
                 platformApi.shareNormal(122, function () {
@@ -365,11 +365,11 @@ cc.Class({
         } else {
             GlobalVar.handlerManager().limitStoreHandler.sendReq(GameServerProto.GMID_FULI_GIFT_BUY_REQ, msg);
         }
-        let self = this;
-        this.nodeBlock.enabled = true;
-        setTimeout(function () {
-            self.nodeBlock.enabled = false;
-        }, 1500);
+        // let self = this;
+        // this.nodeBlock.enabled = true;
+        // setTimeout(function () {
+        //     self.nodeBlock.enabled = false;
+        // }, 1500);
 
     },
 

@@ -18,6 +18,7 @@ var LoginData = cc.Class({
         self.loginReqData.serverID = null;
         self.loginReqData.serverName = null;
         self.loginReqData.avatar = null;
+        self.loginReqData.cityFlag = null;
     },
 
     saveLoginReq: function (userID, ticket, serverID, avatar) {
@@ -55,6 +56,12 @@ var LoginData = cc.Class({
     },
     getLoginReqDataServerName: function () {
         return this.loginReqData.serverName;
+    },
+    setLoginReqDataCityFlag: function (cityFlag) {
+        self.loginReqData.cityFlag = cityFlag;
+    },
+    getLoginReqDataCityFlag: function () {
+        return this.loginReqData.cityFlag;
     },
 
     saveData: function (data) {

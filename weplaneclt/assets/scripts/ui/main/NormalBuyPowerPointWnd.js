@@ -156,7 +156,7 @@ cc.Class({
     onBtnShare: function (event) {
         let platformApi = GlobalVar.getPlatformApi();
         if (cc.isValid(platformApi)){
-            platformApi.shareNormal(117, function () {
+            platformApi.shareNormal(129, function () {
                 GlobalVar.handlerManager().endlessHandler.sendEndlessBuyPowerPointReq(1);
             })
         }else if (GlobalVar.configGMSwitch()){
@@ -185,14 +185,19 @@ cc.Class({
 
         let platformApi = GlobalVar.getPlatformApi();
         if (cc.isValid(platformApi)){
-            platformApi.showRewardedVideoAd(function () {
+            platformApi.showRewardedVideoAd(229, function () {
                 GlobalVar.handlerManager().endlessHandler.sendEndlessBuyPowerPointReq(1);
             }, function () {
-                platformApi.shareNormal(117, function () {
+                platformApi.shareNormal(129, function () {
                     GlobalVar.handlerManager().endlessHandler.sendEndlessBuyPowerPointReq(1);
                 }); 
                 // GlobalVar.comMsg.showMsg(i18n.t('label.4000321'));
             });
+            // let self = this;
+            // self.nodeBlock.enabled = true;
+            // setTimeout(function () {
+            //     self.nodeBlock.enabled = false;
+            // }, 1500);
         }else if (GlobalVar.configGMSwitch()){
            GlobalVar.handlerManager().endlessHandler.sendEndlessBuyPowerPointReq(1);
         }

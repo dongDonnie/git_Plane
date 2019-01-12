@@ -1,5 +1,6 @@
 const GlobalVar = require("globalvar");
 const RootBase = require("RootBase");
+const WndTypeDefine = require("wndtypedefine");
 const WindowManager = require("windowmgr");
 var EventMsgID = require("eventmsgid")
 const CommonWnd = require("CommonWnd");

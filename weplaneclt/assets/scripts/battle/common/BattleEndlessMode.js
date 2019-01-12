@@ -238,8 +238,10 @@ const Mode = cc.Class({
         this.animeIndex = 0;
         let endlessModeNum = GlobalVar.me().endlessData.getRankID();
         this.endlessMode = GlobalVar.tblApi.getDataBySingleKey('TblEndlessRank', endlessModeNum);
-        this.defaultLv = typeof this.endlessMode.nMonsterBasisGrade !== 'undefined' ? (this.endlessMode.nMonsterBasisGrade != 0 ? this.endlessMode.nMonsterBasisGrade : 2) : 2;
-        let origin = typeof this.endlessMode.nMonsterBasisFraction !== 'undefined' ? (this.endlessMode.nMonsterBasisFraction != 0 ? this.endlessMode.nMonsterBasisFraction : 1000) : 1000;
+        //this.defaultLv = typeof this.endlessMode.nMonsterBasisGrade !== 'undefined' ? (this.endlessMode.nMonsterBasisGrade != 0 ? this.endlessMode.nMonsterBasisGrade : 2) : 2;
+        this.defaultLv = 2;
+        //let origin = typeof this.endlessMode.nMonsterBasisFraction !== 'undefined' ? (this.endlessMode.nMonsterBasisFraction != 0 ? this.endlessMode.nMonsterBasisFraction : 1000) : 1000;
+        let origin = 1000;
         this.endlessScore = base64.encode(origin.toString());
         this.rushRank = typeof this.endlessMode.nRushRank !== 'undefined' ? this.endlessMode.nRushRank : 0;
         this.killRecord = 0;

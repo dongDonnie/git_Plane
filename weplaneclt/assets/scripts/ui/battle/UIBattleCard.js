@@ -6,6 +6,7 @@ const GameServerProto = require("GameServerProto");
 const SceneDefines = require("scenedefines");
 const weChatAPI = require("weChatAPI");
 const i18n = require('LanguageData');
+const StoreageData = require("storagedata");
 
 const RECV_CUR_REWARD = 0, RECV_ALL_REWARD = 1, RECV_ALL_REWARD_VIP = 2;
 const RECV_ALL_NEED_VIP_LEVEL = 2;
@@ -77,6 +78,14 @@ cc.Class({
             nodeButton.getChildByName("btnRecv").active = true;
             nodeButton.getChildByName("btnRecvNew").active = false;
         }
+
+        if (nodeButton.getChildByName("nodeShare").active){
+            let todayRecvTimes = StoreageData.getShareTimesWithKey("drawCard", 1);
+            if (todayRecvTimes < 2){
+                nodeButton.getChildByName("nodeShare").getChildByName("btnRecvAll").getComponent("ButtonObject").setText("观看视频");
+                nodeButton.getChildByName("nodeShare").getChildByName("label").getComponent(cc.Label).string = "首通视频可全部领取";
+            }
+        }
     },
 
     start:function(){
@@ -101,12 +110,31 @@ cc.Class({
             } else if (index == RECV_ALL_REWARD){
                 let self = this;
                 let platformApi = GlobalVar.getPlatformApi();
-                if (cc.isValid(platformApi)){
-                    platformApi.shareNormal(106, function() {
+                if (platformApi){
+                    let todayRecvTimes = StoreageData.getShareTimesWithKey("drawCard", 1);
+                    if (todayRecvTimes < 2){
+                        platformApi.showRewardedVideoAd(206, function () {
+                            self.canClickedRecvBtn = true;
+                            GlobalVar.handlerManager().campHandler.sendFreeDrawReq();
+                            StoreageData.setShareTimesWithKey("drawCard", 1)
+                            self.nodeBlock && (self.nodeBlock.enabled = true);
+                        }, function () {
+                            platformApi.shareNormal(106, function() {
+                                self.canClickedRecvBtn = true;
+                                GlobalVar.handlerManager().campHandler.sendFreeDrawReq();
+                            }, function () {
+                                self.canClickedRecvBtn = false;
+                            });
+                        }, function () {
+                            self.canClickedRecvBtn = false;
+                        })
                         self.canClickedRecvBtn = true;
-                        // console.log("发送freedraw消息");
-                        GlobalVar.handlerManager().campHandler.sendFreeDrawReq();
-                    });
+                    }else{
+                        platformApi.shareNormal(106, function() {
+                            self.canClickedRecvBtn = true;
+                            GlobalVar.handlerManager().campHandler.sendFreeDrawReq();
+                        });
+                    }
                 }else if (GlobalVar.configGMSwitch()){
                     self.canClickedRecvBtn = true;
                     // console.log("发送freedraw消息");
@@ -141,6 +169,10 @@ cc.Class({
         }
 
         let gameEndData = GlobalVar.me().campData.getGameEndData().Win;
+        if(!gameEndData){
+            this.canDrawCard = true;
+            return;
+        }
         let cardData = gameEndData.DrawItem;
         this.maxDrawCount = gameEndData.Star == 3?2:1;
 

@@ -126,7 +126,8 @@ const guide = cc.Class({
         self.watchBlt = false;
     },
 
-    enter: function () {
+    enter: function (guideOverCallback) {
+        self.guideOverCallback = guideOverCallback;
         var level = GlobalVar.me().getLevel();
         if ((level > 1 && self.id == 0) || level > 4) {
             config.NEED_GUIDE = false;
@@ -225,6 +226,8 @@ const guide = cc.Class({
             setTimeout(() => {
                 cc.director.getScheduler().resumeTarget(self);
             }, 3000);
+            return;
+        } else if (clickBtnName == 'NormalEquipQualityUpWnd'){
             return;
         } else if ((clickBtnName == 'ItemObject' && self.step != 11) || clickBtnName == 'btnoSkill' || clickBtnName =='btnoAssist') return;
 
@@ -353,7 +356,12 @@ const guide = cc.Class({
         }
 
         //fingerSprite
-        if (step == 5) {
+        if (step == 0) {
+            self.fingerSprite.opacity = 0;
+            self.fingerSprite.active = true;
+            self.fingerSprite.runAction(cc.sequence(cc.delayTime(0.2), cc.fadeIn(0.3)));
+            self.fingerSprite.getChildByName('finger').getComponent(cc.Animation).play();
+        }else if (step == 5) {
             self.fingerSprite.getChildByName('finger').getComponent(cc.Animation).play('animeFinger2');
             self.fingerSprite.children[0].active = false;
         } else {
@@ -386,6 +394,9 @@ const guide = cc.Class({
                     commonWnd.showFeedbackWnd();
                 } else {
                     commonWnd.showShareDailyWnd();
+                }
+                if (!!self.guideOverCallback) {
+                    self.guideOverCallback();
                 }
             }
             self.maskSprite.once('touchend', over, self);
@@ -421,6 +432,7 @@ const guide = cc.Class({
             }
             var callback = function () {
                 commonWnd.showGetNewRareItemWnd(710, 0, 2, RecvCallback);
+                self.fingerSprite.active = false;
                 self.cloneBtn('btnRecv');
             }
             cc.find('Canvas/GuideNode/fighter/btn_active').once('touchend', callback, this);

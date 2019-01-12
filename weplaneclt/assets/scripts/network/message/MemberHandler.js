@@ -30,6 +30,23 @@ cc.Class({
         GlobalVar.messageDispatcher.bindMsg(GameServerProto.GMID_LEADEREQUIP_QUALITYUP_ACK, self.recvLeaderEquipQualityUpAck, self);
         GlobalVar.messageDispatcher.bindMsg(GameServerProto.GMID_PLAYER_PROP_NTF, self.recvMemberPropNtf, self);
         GlobalVar.messageDispatcher.bindMsg(GameServerProto.GMID_PLAYER_PROP_ACK, self.recvMemberPropNtf, self);
+
+        GlobalVar.messageDispatcher.bindMsg(GameServerProto.GMID_MEMBER_PIECE_DATA_ACK, self.recvMemberPieceDataAck, self);
+
+    },
+
+    recvMemberPieceDataAck: function (msgId, msg) {
+        if (typeof msg != "object") {
+            return;
+        }
+        GlobalVar.me().memberData.saveMemberPieceData(msg);
+    },
+
+    sendMemberPieceDataReq: function () {
+        let msg = {
+            Reserved: 0,
+        }
+        this.sendMsg(GameServerProto.GMID_MEMBER_PIECE_DATA_REQ, msg);
     },
 
     recvMemberActiveAck: function (msgId, msg) {

@@ -45,4 +45,8 @@ var MainScene = cc.Class({
         // }
     },
 
+    clickMask: function (event) {
+        // event.stopPropagation();
+        cc.log("当前点击为：", event.target.name);
+    },
 });

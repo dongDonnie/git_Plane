@@ -82,6 +82,7 @@ var MailObject = cc.Class({
         var day = Math.floor(time / 86400);
         var hour = Math.floor(time % 86400 / 3600);
         var minute = Math.floor(time % 86400 % 3600 / 60);
+        var second = Math.floor(time % 86400 % 3600 % 60);
         // this.labelLeftTime.string = leftTime;
         if (day !== 0) {
             this.labelLeftTime.string = day + "天前";
@@ -91,7 +92,7 @@ var MailObject = cc.Class({
         else if (minute !== 0) {
             this.labelLeftTime.string = minute + "分钟前";
         } else {
-            this.labelLeftTime.string = "刚刚";
+            this.labelLeftTime.string = second + "秒前";
         }
     },
 

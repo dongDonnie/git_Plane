@@ -188,7 +188,7 @@ module.exports = {
                             self.showToast("网络链接异常, 是否重试", true, true, "确认", null, function () {
                                 self.login(successCallback);
                             }, function () {
-                                cc.game.restart();
+                                cc.game.end();
                             })
                             return;
                         }
@@ -201,7 +201,7 @@ module.exports = {
                         self.showToast("网络链接异常, 是否重试", true, true, "确认", null, function () {
                             self.login(successCallback);
                         }, function () {
-                            cc.game.restart();
+                            cc.game.end();
                         })
                     });
                 }else{
@@ -209,7 +209,7 @@ module.exports = {
                     self.showToast("网络链接异常, 是否重试", true, true, "确认", null, function () {
                         self.login(successCallback);
                     }, function () {
-                        cc.game.restart();
+                        cc.game.end();
                     })
                 }
             });
@@ -1251,225 +1251,6 @@ module.exports = {
         // this._videoAdSuccessCallback = successCallback;
         // this._videoAdCancelCallback = cancelCallback;
         // this._videoAdFailCallback = failCallback;
-    },
-
-    _createBannerAd: function (onResizeCallback) {
-        console.log("创建banner");
-        // let screenHeight = wx.getSystemInfoSync().screenHeight;
-        // let screenWidth = wx.getSystemInfoSync().screenWidth;
-        let pBanner = BK.Advertisement.createBannerAd({
-            viewId: 1003,
-        })
-        let self = this;
-        StoreageData.setLastBannerCreateTime();
-
-        pBanner.onLoad(function () {
-            console.log("Banner广告加载成功, bannerCount:", self._bannerCount);
-            if (self._bannerCount > 0){
-                pBanner.show();
-            }
-        });
-        pBanner.onError(err =>{
-            console.log("Banner广告组件拉取广告异常:", err);
-            GlobalVar.bannerOpen = false;
-        })
-        return pBanner;
-    },
-
-    showBannerAd: function (onResizeCallback) {
-        this._bannerCount++;
-        if (!this._bannerAd){
-            this._bannerAd = this._createBannerAd(onResizeCallback);
-        }else if (StoreageData.needRefreshBanner()) {
-            this._bannerAd.destory();
-            this._bannerAd = this._createBannerAd(onResizeCallback);
-        }else{
-            this._bannerAd.show();
-            // onResizeCallback && onResizeCallback(this._bannerAd.style.realHeight);
-            // onResizeCallback = null;
-        }
-    },
-    hideBannerAd:function () {
-        if (!this._bannerAd){
-            console.log("当前不存在banner组件");
-            return;
-        }
-        this._bannerCount--;
-        console.log("this._bannerCount:", this._bannerCount);
-        if (this._bannerCount <= 0){
-            this._bannerCount = 0;
-            this._bannerAd.hide();
-        }
-    },
-    cleanBannerCount: function () {
-        this._bannerCount = 0;
-    },
-    justHideBanner: function () {
-        if (!this._bannerAd){
-            console.log("当前不存在banner组件");
-            return;
-        }
-        this._bannerAd.hide();
-    },
-    justShowBanner: function () {
-        if (!this._bannerAd){
-            console.log("当前不存在banner组件");
-            return;
-        }
-        if (this._bannerCount > 0){
-            this._bannerAd.show();
-        }
-    },
-
-
-    //download
-    //urlStack: [],
-
-    pushURL: function (ResType, remoteUrl, callback, forceDownload) {
-        let self = this;
-        // if (cc.sys.platform === cc.sys.QQ_PLAY) {
-        //     let index = {
-        //         type: ResType,
-        //         url: remoteUrl,
-        //         cb: callback,
-        //         fd: forceDownload
-        //     };
-        //     this.urlStack.push(index);
-        // } else {
-        self.showLog("The platform is not WECHAT_GAME");
-        // }
-        this.loadUrl(ResType, remoteUrl, callback, forceDownload);
-    },
-
-    activeLoad: function () {
-        cc.log("stack run");
-        let self = this;
-        if (cc.sys.platform === cc.sys.QQ_PLAY) {
-            let index = this.urlStack.shift();
-            if (typeof index !== 'undefined') {
-                this.loadUrl(index.type, index.url, index.cb, index.fd);
-            } else {
-                cc.log("stack is empty");
-            }
-        } else {
-            self.showLog("The platform is not WECHAT_GAME");
-        }
-    },
-
-    loadUrl: function (ResType, remoteUrl, callback, forceDownload) {
-        let self = this;
-        self.showLog("loadURL");
-        forceDownload = typeof forceDownload !== 'undefined' ? forceDownload : false;
-        if (cc.sys.platform === cc.sys.QQ_PLAY) {
-            if (forceDownload) {
-                self.showLog("forceDownload");
-                this.downloadFile(remoteUrl, function (filePath) {
-                    self.resManagerLoad(ResType, filePath, callback);
-                });
-            } else {
-                self.showLog("not forceDownload");
-                this.getSaveFile(remoteUrl, function (filePath) {
-                    if (filePath != "") {
-                        self.showLog("file is existed");
-                        self.resManagerLoad(ResType, filePath, callback);
-                    } else {
-                        self.showLog("download file");
-                        self.downloadFile(remoteUrl, function (filePath) {
-                            self.resManagerLoad(ResType, filePath, callback);
-                        });
-                    }
-                });
-            }
-        } else {
-            self.showLog("The platform is not WECHAT_GAME");
-        }
-    },
-
-    resManagerLoad: function (ResType, filePath, callback) {
-        let self = this;
-        ResManager.getInstance().loadRes(ResType, filePath, function (file) {
-            if (!!callback) {
-                callback(file);
-            }
-            //self.activeLoad();
-        });
-    },
-
-    downloadFile: function (remoteUrl, callback) {
-        if (cc.sys.platform === cc.sys.QQ_PLAY) {
-            let self = this;
-            wx.downloadFile({
-                url: remoteUrl,
-                success: res => {
-                    if (res.statusCode === 200) {
-                        self.showLog("tempFile:" + res.tempFilePath);
-                        self.setSaveFile(remoteUrl, res.tempFilePath, callback);
-                    }
-                },
-                fail: res => {
-                    self.showLog("failed to download file: " + remoteUrl);
-                }
-            });
-        }
-    },
-
-    setSaveFile: function (remoteUrl, filePath, callback) {
-        if (cc.sys.platform === cc.sys.QQ_PLAY) {
-            let self = this;
-            wx.saveFile({
-                tempFilePath: filePath,
-                success: res => {
-                    self.showLog("saveFile:" + res.savedFilePath);
-                    let localFile = cc.sys.localStorage.getItem('localFileMap');
-                    self.showLog(localFile);
-                    let map = {};
-                    if (localFile != "") {
-                        map = JSON.parse(localFile);
-                    }
-                    map[remoteUrl] = res.savedFilePath;
-                    cc.sys.localStorage.setItem('localFileMap', JSON.stringify(map));
-                    //cc.sys.localStorage.setItem(remoteUrl,res.savedFilePath)
-                    if (!!callback) {
-                        callback(res.savedFilePath);
-                    }
-                },
-                fail: res => {
-                    self.showLog("failed to save file: " + filePath);
-                }
-            });
-        }
-    },
-
-    getSaveFile: function (remoteUrl, callback) {
-        if (cc.sys.platform === cc.sys.QQ_PLAY) {
-            let self = this;
-            wx.getSavedFileList({
-                success: res => {
-                    let localFile = cc.sys.localStorage.getItem('localFileMap');
-                    self.showLog(localFile);
-                    var file = "";
-                    if (localFile != "") {
-                        var map = JSON.parse(localFile);
-                        for (let i = 0; i < res.fileList.length; i++) {
-                            if (res.fileList[i].filePath == map[remoteUrl]) {
-                                file = map[remoteUrl];
-                                break;
-                            }
-                            // if(cc.sys.localStorage.getItem(remoteUrl)==res.fileList[i].filePath){
-                            //     file=res.fileList[i].filePath;
-                            //     break;
-                            // }
-                        }
-                    }
-                    if (!!callback) {
-                        callback(file);
-                    }
-                },
-                fail: res => {
-                    self.showLog("failed to get file: " + remoteUrl);
-                }
-            })
-        }
     },
 
     submitUserData: function (keyName, data, successCallback, failCallback) {

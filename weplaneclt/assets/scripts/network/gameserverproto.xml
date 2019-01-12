@@ -215,7 +215,7 @@
 
         <define name="PTERR_ENDLESS_BATTLE_NOTSTART" value="451" />
         <define name="PTERR_ENDLESS_RANK_MAX"   value="452" />
-        <define name="PTERR_ENDLESS_SCORECOUNT_LOW" value="453" />
+        <define name="PTERR_ENDLESS_SCORE_LACK" value="453" />
         <define name="PTERR_ENDLESS_POWER_POINT_FULL" value="454" />
         <define name="PTERR_ENDLESS_POWER_POINT_NO_BUY_COUNT" value="455" />
         <define name="PTERR_ENDLESS_CHAN_ALREADY_HASTASK" value="456" />
@@ -298,6 +298,7 @@
 
         <define name="PTERR_ARENA_DB_RANKINGYESTERDAY_ISNOT_MATCH" value="665" />
         <define name="PTERR_ARENA_DB_CANT_GET_REWARD" value="666" />
+        <define name="PTERR_ARENA_CHALLENGE_COUNT_FREE_BUY_TIMES_GET_LIMIT" value="667" />
 
         <define name="PTERR_FULI_GIFT_LIMIT_MAX" value="670" />
         <define name="PTERR_FULI_NOT_COND" value="671" />
@@ -310,6 +311,9 @@
         <define name="PTERR_FULI_MILLION_LOGIN_HEAP_LACK" value="681" />
         <define name="PTERR_FULI_MILLION_ALREADY_GET" value="682" />
         <define name="PTERR_FULI_SHARE_ALREADY_GET" value="683" />
+        <define name="PTERR_FULI_GC_SUPERREDUCE_COUNTLIMIT" value="684"/>
+        <define name="PTERR_FULI_GC_SUPERINDUCE_VECITEMGET_EMPTY" value="685"/>
+        <define name="PTERR_FULI_GC_OFFICIALACCOUNT_DRAINGET_ALREADY_GET" value="686"/>
 
         <define name="PTERR_MAIL_NO_ATTACHMENT" value="931" />
         <define name="PTERR_MAIL_ATTACHMENT_ALREADYGOT" value="932" />
@@ -759,6 +763,11 @@
         <define name="PTPARAM_TREASURE_NEXTFREETIME_REDUCECOUNTMAX" value="313" />
         <define name="PTPARAM_FULI_SHARE_SUPERFULI_PACKAGE" value="314" />
         <define name="PTPARAM_FULI_GC_TESTPLAY_REWARD_DIAMOND" value="315" />
+        <define name="PTPARAM_FULI_GC_SUPER_INDUCE_DROPPACKAGEID" value="316" />
+        <define name="PTPARAM_FULI_GC_SUPER_INDUCE_MAX_COUNT" value="317" />
+        <define name="PTPARAM_FULI_GC_OFFICIALACCOUNTDRAINGET_DROPPACKAGE" value="318"/>
+        <define name="PTPARAM_ARENA_CHALLENGE_COUNT_FREE_BUY_LIMIT" value="319" />
+      
         <!-- param info -->
         <!-- ###########################################################################################################################-->
         <!-- ###########################################################################################################################-->
@@ -2194,6 +2203,7 @@
             <item name="LikeClicks" type="UINT16" />
             <item name="TotalCount" type="UINT32" />
             <item name="TotalWinCount" type="UINT32" />
+            <item name="FreeGetCount" type="UINT16" />
         </type>
 
         <type name="GMDT_EXT_BAG">
@@ -2359,6 +2369,12 @@
             <item name="FuliMemberTestPlay" type="UINT8"/>
             <item name="SuperFuli" type="UINT8" />
         </type>
+      
+        <type name="GMDT_FULI_GC_BAG">
+            <item name="TestPlayReward" type="vector" member_type="UINT32" max_count="PT_FULI_GC_TESTPLAY_REWARD_MAX" />
+            <item name="SuperInduceCount" type="UINT8" />
+            <item name="OfficialAccountDraingetFlag" type="UINT8" />
+        </type>
         
         <type name="GMDT_PLAYER">
             <item name="RoleID" type="UINT64"/>
@@ -2395,6 +2411,7 @@
             <item name="NewTaskBag" type="GMDT_NEW_TASK_BAG" />
             <item name="FlyingChessBag" type="GMDT_FLYING_CHESS_BAG" />
             <item name="ShareBag" type="GMDT_SHARE_BAG" />
+            <item name="FuLiGCBag" type="GMDT_FULI_GC_BAG" />
         </type>
 
         <type name="GMDT_PLAYER_LESSINFO">
@@ -5132,16 +5149,7 @@
             <item name="FuliShareMemberTestPlay" type="UINT8"/>
             <item name="Item" type="vector" member_type="GMDT_ITEM_COUNT" max_count="PT_BAG_MAX_SIZE"/>
         </type>
-
-        <type name="GMPKG_FULI_GC_DATA_REQ">
-            <item name="Reserved" type="UINT8"/>
-        </type>
-
-        <type name="GMPKG_FULI_GC_DATA_ACK">
-            <item name="ErrCode" type="INT32"/>
-            <item name="TestPlayReward" type="vector" member_type="UINT32" max_count="PT_FULI_GC_TESTPLAY_REWARD_MAX" />
-        </type>
-
+     
         <type name="GMPKG_FULI_GC_TESTPLAY_REWARD_REQ">
             <item name="ID" type="UINT32"/>
         </type>
@@ -5152,6 +5160,35 @@
             <item name="TestPlayReward" type="vector" member_type="UINT32" max_count="PT_FULI_GC_TESTPLAY_REWARD_MAX" />
         </type>
         
+        <type name="GMPKG_FULI_GC_SUPER_INDUCE_REQ">
+            <item name="Reserved" type="UINT8"/>  
+        </type>
+        
+        <type name="GMPKG_FULI_GC_SUPER_INDUCE_ACK">
+            <item name="ErrCode" type="INT32"/>
+            <item name="ItemGet"  type="vector" member_type="GMDT_ITEM_COUNT" max_count="PT_BAG_MAX_SIZE"/>
+        </type>
+      
+        <type name="GMPKG_FULI_GC_SUPER_INDUCE_GET_REQ">
+             <item name="DoubleGetFlag" type="UINT8"/>
+        </type>
+      
+        <type name="GMPKG_FULI_GC_SUPER_INDUCE_GET_ACK">
+             <item name="ErrCode" type="INT32"/>
+             <item name="ItemGet" type="vector" member_type="GMDT_ITEM_COUNT" max_count="PT_BAG_MAX_SIZE"/>
+             <item name="SuperInduceCount" type="UINT8" />
+        </type>
+      
+        <type name="GMPKG_FULI_GC_OFFICIALACCOUNT_DRAINAGE_REQ" >
+             <item name="Reserved" type="UINT8" />
+        </type>  
+        
+        <type name="GMPKG_FULI_GC_OFFICIALACCOUNT_DRAINAGE_ACK">
+             <item name="ErrCode" type="INT32" />
+             <item name="ItemGet" type="vector" member_type="GMDT_ITEM_COUNT" max_count="PT_BAG_MAX_SIZE" />
+             <item name="OfficialAccountDraingetFlag" type="UINT8" />
+        </type>
+      
         <!-- Arena -->
         <type name="GMPKG_ARENA_OPEN_REQ">
             <item name="Reserved" type="UINT8"/>
@@ -5180,6 +5217,7 @@
             <item name="DayRewardGetFlags" type="vector" member_type="UINT8" max_count="PT_ARENA_REWARD_DAYS" />
             <item name="TotalWin" type="UINT32"/>
             <item name="TotalLose" type="UINT32"/>
+            <item name="FreeGetCount" type="UINT16"/>
         </type>
 
         <type name="GMPKG_ARENA_OPEN_ACK">
@@ -5283,7 +5321,7 @@
             <item name="Reserved" type="UINT8"/>
             <item name="TicketCount" type="UINT16"/>
         </type>
-
+`
         <type name="GMDT_ARENA_CHALLENGE_COUNT_BUY_OK">
             <item name="DiamondCur" type="INT32"/>
             <item name="DiamondChange" type="INT32" />
@@ -5293,7 +5331,17 @@
             <item name="ErrCode" type="INT32"/>
             <item name="OK" type="GMDT_ARENA_CHALLENGE_COUNT_BUY_OK" select="ErrCode" id="PTERR_SUCCESS" />
         </type>
+      
+        <type name="GMPKG_ARENA_CHALLENGE_COUNT_FREE_GET_REQ">
+             <item name="Reserved" type="UINT8" />
+        </type>
 
+
+        <type name="GMPKG_ARENA_CHALLENGE_COUNT_FREE_GET_ACK">
+              <item name="ErrCode" type="INT32"/>
+              <item name="FreeGetCount" type="UINT16" />
+        </type>
+      
         <type name="GMPKG_ARENA_POINTS_CHANGE_NTF">
             <item name="PointsChange" type="INT32"/>
             <item name="PointsCur" type="INT32"/>
@@ -8433,6 +8481,9 @@
 
         <type name="DBDT_FULI_GC">
             <item name="TestPlayReward" type="vector" member_type="UINT32" max_count="PT_FULI_GC_TESTPLAY_REWARD_MAX" />
+            <item name="SuperInduceCount" type="UINT8" />
+            <item name="OfficialAccountDraingetFlag" type="UINT8" />
+            
         </type>
 
         <type name="DBDT_FULI_BAG">
@@ -8463,6 +8514,7 @@
             <item name="FreeChallengeCount" type="UINT16" />
             <item name="TotalCount" type="UINT32" />
             <item name="TotalWinCount" type="UINT32" />
+            <item name="FreeGetCount" type="UINT16" />
         </type>
 
         <type name="DBDT_ARENA_USR_DATA">
@@ -11133,11 +11185,15 @@
         <message name="GMID_FULI_SHARE_MEMBER_TESTPLAY_ACK" id="1245" type="GMPKG_FULI_SHARE_MEMBER_TESTPLAY_ACK" />
         <message name="GMID_FULI_SHARE_SUPERFULI_REQ" id="1246" type="GMPKG_FULI_SHARE_SUPERFULI_REQ" />
         <message name="GMID_FULI_SHARE_SUPERFULI_ACK" id="1247" type="GMPKG_FULI_SHARE_SUPERFULI_ACK" />
-
-        <message name="GMID_FULI_GC_DATA_REQ" id="1281" type="GMPKG_FULI_GC_DATA_REQ" />
-        <message name="GMID_FULI_GC_DATA_ACK" id="1282" type="GMPKG_FULI_GC_DATA_ACK" />
-        <message name="GMID_FULI_GC_TESTPLAY_REWARD_REQ" id="1283" type="GMPKG_FULI_GC_TESTPLAY_REWARD_REQ" />
-        <message name="GMID_FULI_GC_TESTPLAY_REWARD_ACK" id="1284" type="GMPKG_FULI_GC_TESTPLAY_REWARD_ACK" />
+      
+        <message name="GMID_FULI_GC_TESTPLAY_REWARD_REQ" id="1280" type="GMPKG_FULI_GC_TESTPLAY_REWARD_REQ" />
+        <message name="GMID_FULI_GC_TESTPLAY_REWARD_ACK" id="1281" type="GMPKG_FULI_GC_TESTPLAY_REWARD_ACK" />
+        <message name="GMID_FULI_GC_SUPER_INDUCE_REQ" id="1282" type="GMPKG_FULI_GC_SUPER_INDUCE_REQ" />
+        <message name="GMID_FULI_GC_SUPER_INDUCE_ACK" id="1283" type="GMPKG_FULI_GC_SUPER_INDUCE_ACK" />
+        <message name="GMID_FULI_GC_SUPER_INDUCE_GET_REQ" id="1284" type="GMPKG_FULI_GC_SUPER_INDUCE_GET_REQ" />
+        <message name="GMID_FULI_GC_SUPER_INDUCE_GET_ACK" id="1285" type="GMPKG_FULI_GC_SUPER_INDUCE_GET_ACK" />
+        <message name="GMID_FULI_GC_OFFICIALACCOUNT_DRAINAGE_REQ" id="1286" type="GMPKG_FULI_GC_OFFICIALACCOUNT_DRAINAGE_REQ" />
+        <message name="GMID_FULI_GC_OFFICIALACCOUNT_DRAINAGE_ACK" id="1287" type="GMPKG_FULI_GC_OFFICIALACCOUNT_DRAINAGE_ACK" />
 
         <message name="GMID_ARENA_OPEN_REQ" id="1251" type="GMPKG_ARENA_OPEN_REQ" />
         <message name="GMID_ARENA_OPEN_ACK" id="1252" type="GMPKG_ARENA_OPEN_ACK" />
@@ -11156,6 +11212,8 @@
         <message name="GMID_ARENA_DAY_REWARD_ACK" id="1265" type="GMPKG_ARENA_DAY_REWARD_ACK"/>
         <message name="GMID_ARENA_SAODANG_REQ" id="1266" type="GMPKG_ARENA_SAODANG_REQ" />
         <message name="GMID_ARENA_SAODANG_ACK" id="1267" type="GMPKG_ARENA_SAODANG_ACK" />
+        <message name="GMID_ARENA_CHALLENGE_COUNT_FREE_GET_REQ" id="1268" type="GMPKG_ARENA_CHALLENGE_COUNT_FREE_GET_REQ" />
+        <message name="GMID_ARENA_CHALLENGE_COUNT_FREE_GET_ACK" id="1269" type="GMPKG_ARENA_CHALLENGE_COUNT_FREE_GET_ACK" />
 
         <message name="GMID_MEMBER_PIECE_DATA_REQ" id="1291" type="GMPKG_MEMBER_PIECE_DATA_REQ" />
         <message name="GMID_MEMBER_PIECE_DATA_ACK" id="1292" type="GMPKG_MEMBER_PIECE_DATA_ACK" />

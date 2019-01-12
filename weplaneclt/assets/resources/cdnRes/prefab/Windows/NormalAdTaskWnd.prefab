@@ -572,6 +572,25 @@
     "_id": ""
   },
   {
+    "__type__": "df2b1o1HxdMYK3G45K++EmQ",
+    "_name": "",
+    "_objFlags": 0,
+    "node": {
+      "__id__": 8
+    },
+    "_enabled": true,
+    "itemDataCount": 0,
+    "createInterval": 0,
+    "pageMaxCount": 0,
+    "startCreateIndex": 0,
+    "curItemIndex": 0,
+    "_createModel": null,
+    "_createItemFunc": null,
+    "_updateItemFunc": null,
+    "_completeFunc": null,
+    "_id": ""
+  },
+  {
     "__type__": "cc.ScrollView",
     "_name": "",
     "_objFlags": 0,
@@ -595,25 +614,6 @@
     },
     "_N$horizontalScrollBar": null,
     "_N$verticalScrollBar": null,
-    "_id": ""
-  },
-  {
-    "__type__": "df2b1o1HxdMYK3G45K++EmQ",
-    "_name": "",
-    "_objFlags": 0,
-    "node": {
-      "__id__": 8
-    },
-    "_enabled": true,
-    "itemDataCount": 0,
-    "createInterval": 0,
-    "pageMaxCount": 0,
-    "startCreateIndex": 0,
-    "curItemIndex": 0,
-    "_createModel": null,
-    "_createItemFunc": null,
-    "_updateItemFunc": null,
-    "_completeFunc": null,
     "_id": ""
   },
   {
@@ -801,7 +801,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "LabelTitle",
+    "_name": "RewardNum",
     "_objFlags": 0,
     "_parent": {
       "__id__": 18
@@ -1019,7 +1019,7 @@
     },
     "_enabled": true,
     "duration": 0.1,
-    "zoomScale": 1.2,
+    "zoomScale": 1.1,
     "clickEvents": [
       {
         "__id__": 29
@@ -1100,7 +1100,7 @@
       "__id__": 1
     },
     "component": "",
-    "_componentId": "cb0b529PuJKaZitzQHgM9tu",
+    "_componentId": "824543HMdJO046ObNQd4QNT",
     "handler": "close",
     "customEventData": ""
   },
@@ -1142,7 +1142,7 @@
       "__id__": 27
     },
     "_enabled": true,
-    "audioType": 7,
+    "audioType": 2,
     "_fontSize": 30,
     "_showShadow": true,
     "btnState": true,
@@ -1304,10 +1304,13 @@
     "typeName": "",
     "deleteMode": false,
     "adTaskScroll": {
-      "__id__": 15
+      "__id__": 16
     },
     "adTaskPrefab": {
       "__uuid__": "3c6dbe31-0c65-454c-8aba-e497bf8463f0"
+    },
+    "rewardNum": {
+      "__id__": 23
     },
     "_id": ""
   },

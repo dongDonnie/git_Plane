@@ -144,7 +144,7 @@ const NetworkManager = cc.Class({
                 console.error('socket error: ', event);
                 if (!self.connectError) {
                     GlobalVar.netWaiting().showWaiting(false);
-                    GlobalVar.netWaiting().showReconnect(true);
+                    GlobalVar.netWaiting().showReconnect();
                     self.reset();
                 }
                 self.connectError = true;
@@ -245,7 +245,7 @@ const NetworkManager = cc.Class({
                     GlobalVar.gameTimer().delTimer(self.connectTimerID);
                     self.connectTimerID = -1;
                     GlobalVar.netWaiting().showWaiting(false);
-                    GlobalVar.netWaiting().showReconnect(true);
+                    GlobalVar.netWaiting().showReconnect();
                 }
             }, 3);
             return false;
@@ -254,14 +254,14 @@ const NetworkManager = cc.Class({
     },
 
     _onNetworkTimeout() {
-        GlobalVar.netWaiting().showReconnect(true);
+        GlobalVar.netWaiting().showReconnect();
     },
 
     _onNetworkDead() {
         var isWaiting = requestService.getInstance().hasWaiting();
 
         if (isWaiting) {
-            GlobalVar.netWaiting().showReconnect(true);
+            GlobalVar.netWaiting().showReconnect();
         } else {
             if (!!this.socket) {
                 this.socket.onclose();

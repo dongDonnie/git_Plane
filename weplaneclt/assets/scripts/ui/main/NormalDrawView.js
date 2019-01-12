@@ -1,4 +1,3 @@
-
 const WindowManager = require("windowmgr");
 const WndTypeDefine = require("wndtypedefine");
 const RootBase = require("RootBase");
@@ -44,7 +43,7 @@ cc.Class({
 
         let nodeBottom = this.node.getChildByName("nodeBottom");
         // if (!GlobalVar.getShareSwitch()){
-        if (true){
+        if (true) {
             nodeBottom.getChildByName("labelFreeDraw").active = false;
             nodeBottom.getChildByName("btnFreeDraw").active = false;
             nodeBottom.getChildByName("btnTenDraw").x = 150;
@@ -54,7 +53,7 @@ cc.Class({
             nodeBottom.getChildByName("spriteTenDrawCost").x = 135;
             nodeBottom.getChildByName("labelTenDrawCost").x = 155;
             nodeBottom.getChildByName("labelFreeTime").x = -150;
-        }else{
+        } else {
             nodeBottom.getChildByName("labelFreeDraw").active = true;
             nodeBottom.getChildByName("btnFreeDraw").active = true;
             nodeBottom.getChildByName("btnTenDraw").x = 200;
@@ -65,7 +64,7 @@ cc.Class({
             nodeBottom.getChildByName("labelTenDrawCost").x = 205;
             nodeBottom.getChildByName("labelFreeTime").x = 0;
         }
-        
+
         this.countDownTimerID = -1;
 
         this.isFirstIn = true;
@@ -79,7 +78,7 @@ cc.Class({
         if (name == "Escape") {
             this._super("Escape");
 
-            if (this.countDownTimerID != -1){
+            if (this.countDownTimerID != -1) {
                 GlobalVar.gameTimer().delTimer(this.countDownTimerID)
                 this.countDownTimerID = -1;
             }
@@ -90,7 +89,7 @@ cc.Class({
                 if (WindowManager.getInstance().findViewIndex(WndTypeDefine.WindowType.E_DT_GUAZAIMAIN_WND) == -1) {
                     let uiNode = cc.find("Canvas/UINode");
                     BattleManager.getInstance().quitOutSide();
-                    BattleManager.getInstance().startOutside(uiNode.getChildByName('UIMain').getChildByName('nodeBottom').getChildByName('planeNode'),GlobalVar.me().memberData.getStandingByFighterID(),true);
+                    BattleManager.getInstance().startOutside(uiNode.getChildByName('UIMain').getChildByName('nodeBottom').getChildByName('planeNode'), GlobalVar.me().memberData.getStandingByFighterID(), true);
                 }
             }
         } else if (name == "Enter") {
@@ -109,7 +108,7 @@ cc.Class({
         if (WindowManager.getInstance().findViewIndex(WndTypeDefine.WindowType.E_DT_GUAZAIMAIN_WND) == -1) {
             BattleManager.getInstance().quitOutSide();
         }
-        if (this.isFirstIn){
+        if (this.isFirstIn) {
             this.isFirstIn = false;
             this.initSpine();
         }
@@ -120,16 +119,16 @@ cc.Class({
 
         // this.node.getChildByName("nodeBlock").active = false;        
         let normalRootWnd = WindowManager.getInstance().findViewInWndNode(WndTypeDefine.WindowType.E_DT_NORMALROOT_WND);
-        if (normalRootWnd){
+        if (normalRootWnd) {
             this.normalRootReturnBtn = normalRootWnd.getComponent(WndTypeDefine.WindowType.E_DT_NORMALROOT_WND).btnReturn;
         }
 
-        
+
         this.setCountDown();
     },
 
     setCountDown: function () {
-        if (this.countDownTimerID == -1){
+        if (this.countDownTimerID == -1) {
             let self = this;
             this.countDownTimerID = GlobalVar.gameTimer().startTimer(function () {
                 self.showFreeDrawTime();
@@ -140,20 +139,20 @@ cc.Class({
 
     showFreeDrawTime: function () {
         let nextFreeTime = GlobalVar.me().drawData.getNextFreeTime();
-        if (nextFreeTime <= GlobalVar.me().serverTime){
+        if (nextFreeTime <= GlobalVar.me().serverTime) {
             // this.labelFreeTime.active = false;
             this.labelFreeTime.string = i18n.t('label.4000325');
             this.labelFreeTime.node.y = 20;
             this.node.getChildByName("nodeBottom").getChildByName("spriteSingleDrawCost").active = false;
             this.node.getChildByName("nodeBottom").getChildByName("labelSingleDrawCost").active = false;
-        }else{
+        } else {
             let leftTime = nextFreeTime - GlobalVar.me().serverTime;
-            let hour = parseInt(leftTime/3600);
-            let min = parseInt((leftTime - hour*3600)/60);
-            let sec = parseInt(leftTime - hour*3600 - min*60);
-            if (hour){
+            let hour = parseInt(leftTime / 3600);
+            let min = parseInt((leftTime - hour * 3600) / 60);
+            let sec = parseInt(leftTime - hour * 3600 - min * 60);
+            if (hour) {
                 this.labelFreeTime.string = i18n.t('label.4000323').replace('%hour', hour).replace('%min', min);
-            }else{
+            } else {
                 this.labelFreeTime.string = i18n.t('label.4000324').replace('%min', min).replace('%sec', sec);
             }
             this.labelFreeTime.node.y = -90;
@@ -180,8 +179,8 @@ cc.Class({
         }
     },
 
-    onBtnReturn: function (){
-        if (this.animePlaying){
+    onBtnReturn: function () {
+        if (this.animePlaying) {
             return;
         }
         this.close();
@@ -227,12 +226,12 @@ cc.Class({
             GlobalVar.comMsg.errorWarning(event.ErrCode);
             // let normalRootView = WindowManager.getInstance().getCeilingView();
             // let btnReturn = normalRootView.getComponent(WindowManager.getInstance().getCeilingViewTypeName()).btnReturn;
-            if (this.normalRootReturnBtn){
+            if (this.normalRootReturnBtn) {
                 this.normalRootReturnBtn.interactable = true;
             }
             this.animePlaying = false;
         } else {
-            if (event.Type != GameServerProto.PT_TREASURE_WARM && event.Type != GameServerProto.PT_TREASURE_HOT){
+            if (event.Type != GameServerProto.PT_TREASURE_WARM && event.Type != GameServerProto.PT_TREASURE_HOT) {
                 return;
             }
             this.showFreeDrawTime();
@@ -243,7 +242,7 @@ cc.Class({
             let oneFreeMax = GlobalVar.tblApi.getDataBySingleKey('TblParam', GameServerProto.PTPARAM_TREASURE_ONE_FREE_MAX).dValue;
             self.node.getChildByName("nodeBottom").getChildByName("labelFreeDraw").getComponent(cc.Label).string = oneFreeCount + "/" + oneFreeMax;
 
-            
+
             let items = event.Item;
             let MODE_DRAW = 1
             this.playTreasureBoxAnime(0);
@@ -251,7 +250,7 @@ cc.Class({
 
                 // let normalRootView = WindowManager.getInstance().getCeilingView();
                 // let btnReturn = normalRootView.getComponent(WindowManager.getInstance().getCeilingViewTypeName()).btnReturn;
-                if (self.normalRootReturnBtn){
+                if (self.normalRootReturnBtn) {
                     self.normalRootReturnBtn.interactable = true;
                 }
                 self.animePlaying = false;
@@ -266,11 +265,35 @@ cc.Class({
     },
 
     playTreasureBoxAnime: function (trackNumber) {
+        let block = cc.find("Canvas/BlockNode");
+        if (cc.isValid(block)) {
+            block.active = true;
+        }
+        this.spineTreasureBox.setCompleteListener((trackEntry, loopCount) => {
+            var animationName = trackEntry.animation ? trackEntry.animation.name : "";
+            if (animationName === 'animation2') {
+                if (cc.isValid(block)) {
+                    block.active = false;
+                }
+            }
+        });
         this.spineTreasureBox.setAnimation(0, 'animation2', false);
         this.spineTreasureBox.addAnimation(0, 'animation3', true, 0);
     },
 
     playBoxCloseAnime: function (event) {
+        let block = cc.find("Canvas/BlockNode");
+        if (cc.isValid(block)) {
+            block.active = true;
+        }
+        this.spineTreasureBox.setCompleteListener((trackEntry, loopCount) => {
+            var animationName = trackEntry.animation ? trackEntry.animation.name : "";
+            if (animationName === 'animation4') {
+                if (cc.isValid(block)) {
+                    block.active = false;
+                }
+            }
+        });
         this.spineTreasureBox.setAnimation(0, 'animation4', false);
         this.spineTreasureBox.addAnimation(0, 'animation', true, 0);
     },
@@ -282,7 +305,8 @@ cc.Class({
         // console.log("预览宝箱");
         let showItemData = GlobalVar.tblApi.getDataBySingleKey("TblTreasure", GameServerProto.PT_TREASURE_HOT).oVecShowDropItem;
 
-        let itemMustIDVec = [], itemProbIDVec = [];
+        let itemMustIDVec = [],
+            itemProbIDVec = [];
         for (let i = 0; i < showItemData.length; i++) {
             if (showItemData[i].nCount == 1) {
                 itemMustIDVec.push(showItemData[i].wItemID);
@@ -301,37 +325,43 @@ cc.Class({
 
         // let normalRootView = WindowManager.getInstance().getCeilingView();
         // let btnReturn = normalRootView.getComponent(WindowManager.getInstance().getCeilingViewTypeName()).btnReturn;
-        if (this.normalRootReturnBtn){
+        if (this.normalRootReturnBtn) {
             this.normalRootReturnBtn.interactable = false;
         }
         this.animePlaying = true;
         let self = this;
         let funCancle = function () {
             self.animePlaying = false;
-            if (self.normalRootReturnBtn){
+            if (self.normalRootReturnBtn) {
                 self.normalRootReturnBtn.interactable = true;
             }
         };
         let funClose = funCancle;
 
         count = parseInt(count);
-        let SINGLE_DRAW = 1, TEN_DRAW = 10, TICKET_ICON_ID = 75, SINGLE_DRAW_DIAMOND_COST = 188, TEN_DRAW_DIAMOND_COST = 1680;
-        let funConfirm = null, diamondCost = 0, ticketsEnough = false;
+        let SINGLE_DRAW = 1,
+            TEN_DRAW = 10,
+            TICKET_ICON_ID = 75,
+            SINGLE_DRAW_DIAMOND_COST = 188,
+            TEN_DRAW_DIAMOND_COST = 1680;
+        let funConfirm = null,
+            diamondCost = 0,
+            ticketsEnough = false;
         let ticketsCost = count;
         ticketsEnough = GlobalVar.me().bagData.getItemCountById(TICKET_ICON_ID) > ticketsCost;
 
         if (count == SINGLE_DRAW) {
             let nextFreeTime = GlobalVar.me().drawData.getNextFreeTime();
-            if (nextFreeTime<= GlobalVar.me().serverTime){
+            if (nextFreeTime <= GlobalVar.me().serverTime) {
                 GlobalVar.handlerManager().drawHandler.sendSingleDrawReq(1);
                 return;
             }
-            funConfirm = function(){
+            funConfirm = function () {
                 GlobalVar.handlerManager().drawHandler.sendSingleDrawReq(0);
             };
             diamondCost = SINGLE_DRAW_DIAMOND_COST;
         } else if (count == TEN_DRAW) {
-            funConfirm = function(){
+            funConfirm = function () {
                 GlobalVar.handlerManager().drawHandler.sendTenDrawReq(0);
             };
             diamondCost = TEN_DRAW_DIAMOND_COST;
@@ -344,7 +374,7 @@ cc.Class({
                 funCancle();
             };
         }
-        
+
         let title = ticketsEnough ? i18n.t('label.4000245') : i18n.t('label.4000246')
         let text = ticketsEnough ? i18n.t('label.4000247') : i18n.t('label.4000248')
         CommonWnd.showTreasureTipWnd(title, text, count, ticketsEnough, diamondEnough, funCancle, funConfirm, funClose);
@@ -352,7 +382,7 @@ cc.Class({
 
     onDestroy: function () {
         GlobalVar.eventManager().removeListenerWithTarget(this);
-        if (this.countDownTimerID != -1){
+        if (this.countDownTimerID != -1) {
             GlobalVar.gameTimer().delTimer(this.countDownTimerID)
             this.countDownTimerID = -1;
         }

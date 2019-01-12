@@ -31,6 +31,13 @@ var SceneManager = cc.Class({
         }
     },
 
+    reset: function () {
+        this.currentScene = -1;
+        this.nextScene = -1;
+        this.lastScene = -1;
+        this.curScene = null;
+    },
+
     gotoScene: function (nextScene) {
         if (nextScene === this.currentScene || nextScene === this.nextScene) {
             return;
@@ -62,6 +69,7 @@ var SceneManager = cc.Class({
         let sceneName = this.getSceneName(nextScene);
         if (sceneName !== "") {
             var self = this;
+
             //cc.director.preloadScene(sceneName, function () {
             cc.director.loadScene(sceneName);
             self.curScene = cc.director.getScene();
@@ -96,14 +104,19 @@ var SceneManager = cc.Class({
         this.gotoScene(SceneDefines.LOGIN_STATE);
     },
 
-    resetOpen: function () {
-        //this.gotoScene(SceneDefines.LOGIN_STATE);
-        // if(this.currentScene==SceneDefines.INIT_STATE){
-        //     this.gotoScene(SceneDefines.LOGIN_STATE);
-        // }else if(this.currentScene==SceneDefines.LOGIN_STATE){
-        //     this.gotoScene(SceneDefines.INIT_STATE);
-        // }
-        //
+    reStart: function () {
+        if (this.currentScene == SceneDefines.MAIN_STATE) {
+            require('BattleManager').getInstance().quitOutSide();
+        } else if (this.currentScene == SceneDefines.BATTLE_STATE) {
+            require('BattleManager').getInstance().release();
+            require('BattleManager').destroyInstance();
+        }
+        this.reset();
+        this.gotoScene(SceneDefines.INIT_STATE);
+    },
+
+    setCurrentSceneType(sceneType) {
+        this.currentScene = typeof sceneType !== 'undefined' ? sceneType : -1;
     },
 
     getCurrentScene: function () {

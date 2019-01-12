@@ -566,55 +566,70 @@ cc.Class({
 
     onBtnChapterRewardBox: function (event, index) {
         let self = this;
-        let receiveReward = function () { 
-            let str = "oVecChest" + index;
-            let chapterData = GlobalVar.tblApi.getDataBySingleKey('TblChapter', self.chapterType)[self.curChapterIndex];
+        // let receiveReward = function () { 
+        let str = "oVecChest" + index;
+        let chapterData = GlobalVar.tblApi.getDataBySingleKey('TblChapter', self.chapterType)[self.curChapterIndex];
 
-            let condition = false;
-            let curStarsCount = GlobalVar.me().campData.getChapterStarCount(self.chapterType, self.curChapterIndex + 1);
-            let goalStarsCount = chapterData.oVecReward[index - 1].wStars
-            // console.log("curStarsCount = ", curStarsCount, "  goalStarsCount = ", goalStarsCount);
-            if (curStarsCount >= goalStarsCount) {
-                condition = true;
-            }
-
-
-
-            let campType = self.chapterType;
-            let chapterId = self.curChapterIndex + 1;
-            let pos = parseInt(index);
-
-            // 判断关卡宝箱是否已领取
-            let confirmText = "领取";
-            if (GlobalVar.me().campData.isChapterRewardReceived(campType, chapterId, pos)) {
-                condition = false;
-                confirmText = "已领取"
-            }
-
-            let confirm = function () {
-                GlobalVar.handlerManager().campHandler.sendGetCampChapterRewardReq(campType, chapterId, pos - 1);
-            };
-
-            CommonWnd.showRewardBoxWnd(null, i18n.t('label.4000240'), condition, chapterData[str], null, confirm, null, confirmText);
+        let condition = false;
+        let curStarsCount = GlobalVar.me().campData.getChapterStarCount(self.chapterType, self.curChapterIndex + 1);
+        let goalStarsCount = chapterData.oVecReward[index - 1].wStars
+        // console.log("curStarsCount = ", curStarsCount, "  goalStarsCount = ", goalStarsCount);
+        if (curStarsCount >= goalStarsCount) {
+            condition = true;
         }
+
+        let campType = self.chapterType;
+        let chapterId = self.curChapterIndex + 1;
+        let pos = parseInt(index);
+
+        // 判断关卡宝箱是否已领取
+        let confirmText = "领取";
+        let mode = 0;
+
+        let confirm = function () {
+            GlobalVar.handlerManager().campHandler.sendGetCampChapterRewardReq(campType, chapterId, pos - 1);
+        };
+
         let platformApi = GlobalVar.getPlatformApi();
         if ((index == 1 || index == 2) && platformApi && GlobalVar.me().vipLevel < 3) {
-            CommonWnd.showMessage(null, CommonWnd.shareOnly, i18n.t('label.4000216'), i18n.t('label.4000329'), null, function () {
-                platformApi.shareNormal(0, function () {
-                    receiveReward()
-                });
-            }, null, "  " + i18n.t('label.4000304'))
+            confirmText = i18n.t('label.4000304');
+            mode = 1;
+            confirm = function () {
+                platformApi.shareNormal(126, function () {
+                    GlobalVar.handlerManager().campHandler.sendGetCampChapterRewardReq(campType, chapterId, pos - 1);
+                })
+            };
         } else if (index == 3 && platformApi && GlobalVar.me().vipLevel < 3) {
-            CommonWnd.showMessage(null, CommonWnd.videoOnly, i18n.t('label.4000216'), i18n.t('label.4000330'), null, function () {
-                platformApi.showRewardedVideoAd(function () {
-                    receiveReward()
+            confirmText = i18n.t('label.4000328');
+            mode = 2;
+            confirm = function () {
+                platformApi.showRewardedVideoAd(226, function () {
+                    GlobalVar.handlerManager().campHandler.sendGetCampChapterRewardReq(campType, chapterId, pos - 1);
                 }, function () {
-                    receiveReward()
-                });
-            }, null, "  " + i18n.t('label.4000328'))
-        } else {
-            receiveReward();
+                    platformApi.shareNormal(126, function () {
+                        GlobalVar.handlerManager().campHandler.sendGetCampChapterRewardReq(campType, chapterId, pos - 1);
+                    })
+                })
+                // self.nodeBlock.enabled = true;
+                // setTimeout(function () {
+                //     self.nodeBlock.enabled = false;
+                // }, 1500);
+            };
         }
+        if (!GlobalVar.getShareSwitch()){
+            confirm = function () {
+                GlobalVar.handlerManager().campHandler.sendGetCampChapterRewardReq(campType, chapterId, pos - 1);
+            };
+            mode = 0;
+            confirmText = "领取";
+        }
+
+        if (GlobalVar.me().campData.isChapterRewardReceived(campType, chapterId, pos)) {
+            condition = false;
+            mode = 0;
+            confirmText = "已领取"
+        }
+        CommonWnd.showRewardBoxWnd(null, mode, i18n.t('label.4000240'), condition, chapterData[str], confirm, confirmText);
     },
 
 
@@ -655,6 +670,7 @@ cc.Class({
             let nowTime = (new Date()).getTime();
             if (windView != this.typeName) {
                 this.curTime = nowTime;
+                cc.find('Canvas/GuideNode').active = false;
                 return;
             }
             if (nowTime - this.curTime > 3000) {

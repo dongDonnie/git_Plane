@@ -130,11 +130,17 @@ cc.Class({
         // 约定不修改服务器存储的用户头像
         avatar && (avatar = avatar.trim());
         if (cc.sys.platform === cc.sys.WECHAT_GAME || (window && window["wywGameId"]=="5469")) {
+            let fromOpenID = "";
+            if (cc.sys.platform == cc.sys.WECHAT_GAME) {
+                let launchInfo = wx.getLaunchOptionsSync();
+                fromOpenID = launchInfo.query.from_openid || "";
+            }
             let msg = {
                 Icon: 40000,
                 Avatar: avatar || "",
                 MemberID: 40000,
                 RoleName: RoleName || "",
+                FromOpenid: fromOpenID,
             }
             console.log("发送的创建角色申请消息为: ", msg);
             this.sendMsg(GameServerProto.GMID_CREATE_ROLE_REQ, msg);
@@ -147,7 +153,6 @@ cc.Class({
             };
             this.sendMsg(GameServerProto.GMID_CREATE_ROLE_REQ, msg);
         }
-
     },
 
     sendLogOutReq: function () {

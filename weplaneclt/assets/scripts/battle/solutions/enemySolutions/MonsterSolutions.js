@@ -3254,7 +3254,7 @@ const MonsterSolutions = cc.Class({
                 }
                 if (idx == 4) {
                     this.setTimer(5, 0.8, 5, 0);
-                    this.setTimer(6, 1.5, 3, 0);
+                    //this.setTimer(6, 1.5, 3, 0);
                 }
                 if (idx == 5) {
                     let Info_2 = {
@@ -3587,6 +3587,311 @@ const MonsterSolutions = cc.Class({
             entity.setTimer(9,3,1,0);
             return entity;
         },
+        solution_44: function (info, skills) {
+            //xuzhouqishi
+            //attacktime,attack2time,skill1-8,time1-8,circletime1-2,circleskill1-2,circleskilltime1-2
+            let ai = require('AIInterface');
+            let entity = ai.createMonster(info);
+            var cb = function (actName) {
+                if (actName == 'bianxing') {
+                    entity.setTimer(11, 2, 1, 0);
+                }
+            }
+            entity.setTimerHandler(function (idx) {
+                if(idx == 0){
+                    ai.setMonsterLoopAction(this,'start');
+                    this.setDefend(true);
+                    let destination = ai.posTransfer(cc.v3(0.5,0.65));
+                    this.shiftToStandby(destination, 2, 30, 0);
+                    this.setMovementType(4);
+                    this.setTimer(1,2,1,0);
+                }
+                if(idx == 1){
+                    ai.playAction(this,'attack',1);
+                    this.setTimer(2,1.5,1,0);
+                }
+                if(idx == 2){
+                    this.setDefend(false);
+                    ai.useSkill(this,968);
+                    this.setTimer(3,2,1,0);
+                }
+                if(idx == 3){
+                    let destination = ai.posTransfer(cc.v3(0.4,0.75));
+                    this.shiftToStandby(destination, 1, 10, 0);
+                    this.setMovementType(4);
+                    this.setTimer(4,1.5,1,0);
+                }
+                if(idx == 4){
+                    ai.useSkill(this,970);
+                    this.setTimer(5,1.6,1,0);
+                }
+                if(idx == 5){
+                    let T1 = 3;
+                    let pos = this.getPosition();
+                    let circlePos = ai.posTransfer(cc.v3(0.5,0.65));
+                    let R = pos.sub(circlePos);
+                    this.setEntityAutoCircle(circlePos, R, 270/T1, T1, 0, 0, 0);
+                    this.setMovementType(1);
+                    this.setTimer(6,T1,1,0);
+                    this.setTimer(22,0.5,1,0);
+                }
+                if(idx == 6){
+                    this.setSpeed(cc.v3(0,0));
+                    this.setMovementType(0);
+                    ai.useSkill(this,970);
+                    this.setTimer(7,1.6,1,0);
+                }
+                if(idx == 7){
+                    let destination = ai.posTransfer(cc.v3(0.5,0.65));
+                    this.shiftToStandby(destination, 1, 10, 0);
+                    this.setMovementType(4);
+                    this.setTimer(1,1,1,0);
+                }
+                if(idx == 8){
+                    let hp = this.getCurHpPer();
+                    if (hp < 50) {
+                        this.setTimer(9, 0, 1, 0);
+                        for (let i = 1; i < 8; i++) {
+                            this.delTimer(i);
+                        }
+                        this.delTimer(8);
+                        this.delTimer(22);
+                    }
+                }
+                if(idx == 9){
+                    let destination = ai.posTransfer(cc.v3(0.5,0.65));
+                    this.shiftToStandby(destination, 1, 10, 0);
+                    this.setMovementType(4);
+                    this.setTimer(10,1,1,0);
+                }
+                if(idx == 10){
+                    this.setDefend(true);
+                    ai.setMonsterLoopAction(this,'idle');
+                    ai.playAction(this,'bianxing',1,cb);
+                }
+                if(idx == 11){
+                    this.setDefend(false);
+                    ai.playAction(this,'attack2',1);
+                    this.setTimer(12,1,1,0);
+                }
+                if(idx == 12){
+                    ai.useSkill(this,971);
+                    this.setTimer(13,2,1,0);
+                }
+                if(idx == 13){
+                    let destination = ai.posTransfer(cc.v3(0.4,0.55));
+                    this.shiftToStandby(destination, 1, 10, 0);
+                    this.setMovementType(4);
+                    this.setTimer(14,2,1,0);
+                }
+                if(idx == 14){
+                    ai.useSkill(this,973);
+                    this.setTimer(15,1.5,1,0);
+                }
+                if(idx == 15){
+                    let T2 = 3;
+                    let pos = this.getPosition();
+                    let circlePos = ai.posTransfer(cc.v3(0.5,0.65));
+                    let R = pos.sub(circlePos);
+                    this.setEntityAutoCircle(circlePos, R, 90/T2, T2, 0, 0, 0);
+                    this.setMovementType(1);
+                    this.setTimer(16,T2,1,0);
+                    this.setTimer(23,1.5,1,0);
+                }
+                if(idx == 16){
+                    this.setSpeed(cc.v3(0,0));
+                    this.setMovementType(0);
+                    ai.useSkill(this,973);
+                    this.setTimer(17,1.5,1,0);
+                }
+                if(idx == 17){
+                    let destination = ai.posTransfer(cc.v3(0.5,0.65));
+                    this.shiftToStandby(destination, 1, 10, 0);
+                    this.setMovementType(4);
+                    this.setTimer(18,2,1,0);
+                }
+                if(idx == 18){
+                    ai.useSkill(this,971);
+                    this.setTimer(19,2,1,0);
+                }
+                if(idx == 19){
+                    let destination = ai.posTransfer(cc.v3(0.5,0.55));
+                    this.shiftToStandby(destination, 1, 10, 0);
+                    this.setMovementType(4);
+                    this.setTimer(20,1,1,0);
+                }
+                if(idx == 20){
+                    ai.useSkill(this,974);
+                    this.setTimer(21,2,1,0);
+                }
+                if(idx == 21){
+                    let destination = ai.posTransfer(cc.v3(0.5,0.65));
+                    this.shiftToStandby(destination, 1, 10, 0);
+                    this.setMovementType(4);
+                    this.setTimer(11,1.5,1,0);
+                }
+                if(idx == 22){
+                    ai.useSkill(this,969);
+                }
+                if(idx == 23){
+                    ai.useSkill(this,972);
+                }
+            });
+            entity.setTimer(0, 0, 1, 0);
+            entity.setTimer(8,0.016,9999,1);
+            return entity;
+        },
+        // solution_44: function (info, skills) {
+        //     //xuzhouqishi
+        //     //attacktimem,attack2time,skill1-8,time1-8,circletime1-2,circleskill1-2,circleskilltime1-2
+        //     let ai = require('AIInterface');
+        //     let entity = ai.createMonster(info);
+        //     var cb = function (actName) {
+        //         if (actName == 'bianxing') {
+        //             entity.setTimer(11, 2, 1, 0);
+        //         }
+        //     }
+        //     entity.setTimerHandler(function (idx) {
+        //         if(idx == 0){
+        //             ai.setMonsterLoopAction(this,'start');
+        //             this.setDefend(true);
+        //             let destination = ai.posTransfer(cc.v3(0.5,0.65));
+        //             this.shiftToStandby(destination, 2, 30, 0);
+        //             this.setMovementType(4);
+        //             this.setTimer(1,2,1,0);
+        //         }
+        //         if(idx == 1){
+        //             ai.playAction(this,'attack',1);
+        //             this.setTimer(2,attacktime,1,0);
+        //         }
+        //         if(idx == 2){
+        //             this.setDefend(false);
+        //             ai.useSkill(this,skill1);
+        //             this.setTimer(3,time1,1,0);
+        //         }
+        //         if(idx == 3){
+        //             let destination = ai.posTransfer(cc.v3(0.4,0.75));
+        //             this.shiftToStandby(destination, 1, 10, 0);
+        //             this.setMovementType(4);
+        //             this.setTimer(4,1,1,0);
+        //         }
+        //         if(idx == 4){
+        //             ai.useSkill(this,skill2);
+        //             this.setTimer(5,time2,1,0);
+        //         }
+        //         if(idx == 5){
+        //             let T1 = circletime1;
+        //             let pos = this.getPosition();
+        //             let circlePos = ai.posTransfer(cc.v3(0.5,0.65));
+        //             let R = pos.sub(circlePos);
+        //             this.setEntityAutoCircle(circlePos, R, 270/T1, T1, 0, 0, 0);
+        //             this.setMovementType(1);
+        //             this.setTimer(6,T1,1,0);
+        //             this.setTimer(22,circleskilltime1,1,0);
+        //         }
+        //         if(idx == 6){
+        //             this.resetEntityAutoCircle();
+        //             ai.useSkill(this,skill3);
+        //             this.setTimer(7,time3,1,0);
+        //         }
+        //         if(idx == 7){
+        //             let destination = ai.posTransfer(cc.v3(0.5,0.65));
+        //             this.shiftToStandby(destination, 1, 10, 0);
+        //             this.setMovementType(4);
+        //             this.setTimer(1,1,1,0);
+        //         }
+        //         if(idx == 8){
+        //             let hp = this.getCurHpPer();
+        //             if (hp < 50) {
+        //                 this.setTimer(9, 0, 1, 0);
+        //                 for (let i = 1; i < 8; i++) {
+        //                     this.delTimer(i);
+        //                 }
+        //                 this.delTimer(8);
+        //                 this.delTimer(22);
+        //             }
+        //         }
+        //         if(idx == 9){
+        //             this.resetEntityAutoCircle();
+        //             let destination = ai.posTransfer(cc.v3(0.5,0.65));
+        //             this.shiftToStandby(destination, 1, 10, 0);
+        //             this.setMovementType(4);
+        //             this.setTimer(10,1,1,0);
+        //         }
+        //         if(idx == 10){
+        //             ai.setMonsterLoopAction(this,'idle');
+        //             ai.playAction(this,'bianxing',1,cb);
+        //         }
+        //         if(idx == 11){
+        //             ai.playAction(this,'attack2',1);
+        //             this.setTimer(12,attack2time,1,0);
+        //         }
+        //         if(idx == 12){
+        //             ai.useSkill(this,skill4);
+        //             this.setTimer(13,time4,1,0);
+        //         }
+        //         if(idx == 13){
+        //             let destination = ai.posTransfer(cc.v3(0.4,0.55));
+        //             this.shiftToStandby(destination, 1, 10, 0);
+        //             this.setMovementType(4);
+        //             this.setTimer(14,1,1,0);
+        //         }
+        //         if(idx == 14){
+        //             ai.useSkill(this,skill5);
+        //             this.setTimer(15,time5,1,0);
+        //         }
+        //         if(idx == 14){
+        //             let T2 = circletime2;
+        //             let pos = this.getPosition();
+        //             let circlePos = ai.posTransfer(cc.v3(0.5,0.65));
+        //             let R = pos.sub(circlePos);
+        //             this.setEntityAutoCircle(circlePos, R, 90/T2, T2, 0, 0, 0);
+        //             this.setMovementType(1);
+        //             this.setTimer(16,T2,1,0);
+        //             this.setTimer(23,circleskilltime2,1,0);
+        //         }
+        //         if(idx == 16){
+        //             this.resetEntityAutoCircle();
+        //             ai.useSkill(this,skill6);
+        //             this.setTimer(17,time6,1,0);
+        //         }
+        //         if(idx == 17){
+        //             let destination = ai.posTransfer(cc.v3(0.5,0.65));
+        //             this.shiftToStandby(destination, 1, 10, 0);
+        //             this.setMovementType(4);
+        //             this.setTimer(18,1,1,0);
+        //         }
+        //         if(idx == 18){
+        //             ai.useSkill(this,skill7);
+        //             this.setTimer(19,time7,1,0);
+        //         }
+        //         if(idx == 19){
+        //             let destination = ai.posTransfer(cc.v3(0.5,0.55));
+        //             this.shiftToStandby(destination, 1, 10, 0);
+        //             this.setMovementType(4);
+        //             this.setTimer(20,1,1,0);
+        //         }
+        //         if(idx == 20){
+        //             ai.useSkill(this,skill8);
+        //             this.setTimer(21,time8,1,0);
+        //         }
+        //         if(idx == 21){
+        //             let destination = ai.posTransfer(cc.v3(0.5,0.65));
+        //             this.shiftToStandby(destination, 1, 10, 0);
+        //             this.setMovementType(4);
+        //             this.setTimer(11,1,1,0);
+        //         }
+        //         if(idx == 22){
+        //             ai.useSkill(this,circleskill1);
+        //         }
+        //         if(idx == 23){
+        //             ai.useSkill(this,circleskill2);
+        //         }
+        //     });
+        //     entity.setTimer(0, 0, 1, 0);
+        //     entity.setTimer(8,0.016,9999,1);
+        //     return entity;
+        // },
         solution_61: function (info, runtime, autoskilldelay) {
             //渐隐出现——左右摆动
             let ai = require('AIInterface');
@@ -3613,6 +3918,7 @@ const MonsterSolutions = cc.Class({
             entity.setTimer(0, 0, 1, 0);
             return entity;
         },
+        
         solution_62: function (info, runtime_1, runtime_2, autoskilldelay, cd, count) {
             //出现-消失
             let ai = require('AIInterface');

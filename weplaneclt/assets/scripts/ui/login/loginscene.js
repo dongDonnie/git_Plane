@@ -25,6 +25,7 @@ var LoginScene = cc.Class({
 
     onLoad: function () {
         GlobalVar.netWaiting().init();
+        GlobalVar.windowManager().clearRecordView();
 
         this.sceneName="LoginScene";
         this.uiNode = cc.find("Canvas/UINode");
@@ -69,8 +70,24 @@ var LoginScene = cc.Class({
                 GlobalVar.IosRechargeLock = !!state;
             });
             platformApi.requestShareOpenState(GlobalVar.tblApi.getData('TblVersion')[1].strVersion, function (state) {
-                GlobalVar.shareOpen = !!parseInt(state);
-                console.log("get shareOpen:", state, GlobalVar.shareOpen);
+                GlobalVar.shareOpen = !!parseInt(state.showyd);
+                GlobalVar.shareControl = parseInt(state.showyd);
+                GlobalVar.cityFlagSwitch = !!parseInt(state.cityFlag);
+                switch (parseInt(state.showyd)) {
+                    case 0:
+                        GlobalVar.shareOpen = false;
+                        GlobalVar.videoAdOpen = false;
+                        break;
+                    case 1:
+                        GlobalVar.shareOpen = true;
+                        GlobalVar.videoAdOpen = true;
+                    case 6:
+                        GlobalVar.shareOpen = true;
+                        GlobalVar.videoAdOpen = true;
+                    default:
+                        break;
+                }
+                console.log("get shareSwitchSetting:", state);
             })
         }
         GlobalVar.handlerManager().noticeHandler.sendGetNoticeReq();

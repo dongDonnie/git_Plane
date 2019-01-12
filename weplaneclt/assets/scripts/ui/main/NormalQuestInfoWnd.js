@@ -98,6 +98,12 @@ cc.Class({
                 this.setQuestTropyh(this.tblData, this.campData);
             }
             this.nodeQuestInfo.active = true;
+
+            let hasBoss = (this.tblData.wIconID - 1) === 0 ? false : true;
+            let platformApi = GlobalVar.getPlatformApi();
+            if (platformApi && hasBoss) {
+                platformApi.hideBannerAdNew();
+            }
         }
     },
 
@@ -277,7 +283,7 @@ cc.Class({
     },
 
     checkCombatEnough: function () {
-        if (!this.checkFullStarClear() && GlobalVar.me().combatPoint * 1.25 < this.tblData.nFightingLeast){
+        if (!this.checkFullStarClear() && GlobalVar.me().combatPoint * 1.3 < this.tblData.nFightingLeast){
             return false;
         }
         return true;
@@ -423,14 +429,23 @@ cc.Class({
             this.btnStartBattle.interactable = false;
             GlobalVar.handlerManager().campHandler.sendCampBeginReq(this.tblData.byChapterID, this.tblData.wCampaignID);
         }else{
-            CommonWnd.showMessage(null, CommonWnd.bothConfirmAndCancel, i18n.t('label.4000216'), i18n.t('label.4000268'), null, function(){
-                self.btnStartBattle.interactable = false;
-                GlobalVar.handlerManager().campHandler.sendCampBeginReq(self.tblData.byChapterID, self.tblData.wCampaignID);
-            }, function () {
-                WindowManager.getInstance().popToRoot(false, function () {
-                    CommonWnd.showNormalEquipment(GlobalVar.me().memberData.getStandingByFighterID());
-                });
-            }, i18n.t('label.4000267'), i18n.t('label.4000266'));
+            // CommonWnd.showMessage(null, CommonWnd.bothConfirmAndCancel, i18n.t('label.4000216'), i18n.t('label.4000268'), null, function(){
+            //     self.btnStartBattle.interactable = false;
+            //     GlobalVar.handlerManager().campHandler.sendCampBeginReq(self.tblData.byChapterID, self.tblData.wCampaignID);
+            // }, function () {
+            //     WindowManager.getInstance().popToRoot(false, function () {
+            //         CommonWnd.showNormalEquipment(GlobalVar.me().memberData.getStandingByFighterID());
+            //     });
+            // }, i18n.t('label.4000267'), i18n.t('label.4000266'));
+            CommonWnd.showCombatSuppressWnd(GlobalVar.me().combatPoint, this.tblData.nFightingLeast,
+                function () {
+                    self.btnStartBattle.interactable = false;
+                    GlobalVar.handlerManager().campHandler.sendCampBeginReq(self.tblData.byChapterID, self.tblData.wCampaignID);
+                }, function () {
+                    WindowManager.getInstance().popToRoot(false, function () {
+                        CommonWnd.showNormalEquipment(GlobalVar.me().memberData.getStandingByFighterID());
+                    });
+                })
         }
 
         // GlobalVar.handlerManager().campHandler.sendCampBeginReq(this.tblData.byChapterID, this.tblData.wCampaignID)

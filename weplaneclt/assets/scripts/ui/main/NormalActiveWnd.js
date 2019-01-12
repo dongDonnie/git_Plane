@@ -796,9 +796,13 @@ cc.Class({
                 };
                 let platformApi = GlobalVar.getPlatformApi();
                 if (platformApi) {
-                    platformApi.showRewardedVideoAd(shareSuccessFunc, function (data) {
+                    platformApi.showRewardedVideoAd(213, shareSuccessFunc, function (data) {
                         platformApi.shareNormal(113, shareSuccessFunc);
                     });
+                    // self.nodeBlock.enabled = true;
+                    // setTimeout(function () {
+                    //     self.nodeBlock.enabled = false;
+                    // }, 1500);
                 }
             }
         } else {
@@ -862,9 +866,13 @@ cc.Class({
                 };
                 let platformApi = GlobalVar.getPlatformApi();
                 if (platformApi) {
-                    platformApi.showRewardedVideoAd(shareSuccessFunc, function (data) {
+                    platformApi.showRewardedVideoAd(213, shareSuccessFunc, function (data) {
                         platformApi.shareNormal(113, shareSuccessFunc);
                     });
+                    // self.nodeBlock.enabled = true;
+                    // setTimeout(function () {
+                    //     self.nodeBlock.enabled = false;
+                    // }, 1500);
                 }
             }
         } else {

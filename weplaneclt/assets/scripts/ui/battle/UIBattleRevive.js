@@ -82,9 +82,9 @@ cc.Class({
 
             let materialID = 0;
             if (BattleManager.getInstance().isEndlessFlag){
-                materialID = 102;
+                materialID = 103;
             }else{
-                materialID = 101;
+                materialID = 102;
             }
 
             let platformApi = GlobalVar.getPlatformApi();

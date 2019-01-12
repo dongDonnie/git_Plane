@@ -47,10 +47,18 @@ cc.Class({
     animePlayCallBack(name) {
         if (name == "Escape") {
             this._super("Escape");
+            let platformApi = GlobalVar.getPlatformApi();
+            if (platformApi){
+                platformApi.setOffShowListener(this.refreshWnd.bind(this));
+            }
             GlobalVar.eventManager().removeListenerWithTarget(this);
             WindowManager.getInstance().popView();
         } else if (name == "Enter") {
             this._super("Enter");
+            let platformApi = GlobalVar.getPlatformApi();
+            if (platformApi){
+                platformApi.setOnShowListener(this.refreshWnd.bind(this));
+            }
             GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_GET_SUPER_REWARD_DATA, this.getSuperRewardData, this);
 
             this.initSuperRewardWnd();

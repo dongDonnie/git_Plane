@@ -227,7 +227,7 @@ cc.Class({
             let curTime = GlobalVar.me().shareData.getFreeGoldCount();
             //let maxTime = GlobalVar.tblApi.getDataBySingleKey('TblParam', GameServerProto.PTPARAM_TREASURE_GOLD_FREE_MAX).dValue;
             if (curTime >= 3){
-                platformApi.showRewardedVideoAd(function () {
+                platformApi.showRewardedVideoAd(materialID + 100, function () {
                     if (self._shareType == SHARE_TYPE_GOLD) {
                         GlobalVar.handlerManager().shareHandler.sendGetFreeGoldReq();
                     } else if (self._shareType == SHARE_TYPE_DIAMOND) {
@@ -242,6 +242,10 @@ cc.Class({
                     }
                     }); 
                 });
+                // self.nodeBlock.enabled = true;
+                // setTimeout(function () {
+                //     self.nodeBlock.enabled = false;
+                // }, 1500);
             }else{
                 platformApi.shareNormal(materialID, function () {
                     if (self._shareType == SHARE_TYPE_GOLD) {

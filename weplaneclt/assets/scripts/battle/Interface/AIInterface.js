@@ -8,8 +8,12 @@ var AIInterface = cc.Class({
 
         createBullet: function (id, owner, pos_plus) {
             let bullet = Factory.getInstance().produceBullet(id, owner, pos_plus);
-            EntityManager.getInstance().entityNewList.push(bullet);
-            bullet.entityId = EntityManager.getInstance().getEntityId();
+            if(!BattleManager.getInstance().isArenaFlag){
+                EntityManager.getInstance().entityNewList.push(bullet);
+                bullet.entityId = EntityManager.getInstance().getEntityId();
+            }else{
+                BattleManager.getInstance().arenaPrime(bullet);
+            }
             return bullet;
         },
 

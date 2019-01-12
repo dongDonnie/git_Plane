@@ -202,7 +202,7 @@ cc.Class({
     },
 
     onClickOpenGM: function (event, index) {
-        return;
+        //return;
         if (Math.abs(this.clickGMTimes % 2) == index) {
             if (!config.GM_SWITCH) {
                 this.clickGMTimes++;

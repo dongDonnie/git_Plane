@@ -136,7 +136,7 @@ cc.Class({
         let self = this;
         let platformApi = GlobalVar.getPlatformApi();
         if (cc.isValid(platformApi)){
-            platformApi.showRewardedVideoAd(function () {
+            platformApi.showRewardedVideoAd(223, function () {
                 let typeID = self.tblData.byTypeID;
                 let chapterID = self.tblData.byChapterID;
                 let campaignID = self.tblData.wCampaignID;
@@ -151,6 +151,10 @@ cc.Class({
                     self.close();
                 }); 
             });
+            // self.nodeBlock.enabled = true;
+            // setTimeout(function () {
+            //     self.nodeBlock.enabled = false;
+            // }, 1500);
         }else if (GlobalVar.configGMSwitch()){
             let typeID = self.tblData.byTypeID;
             let chapterID = self.tblData.byChapterID;
@@ -159,10 +163,10 @@ cc.Class({
             self.close();
         }
 
-        this.nodeBlock.enabled = true;
-        setTimeout(function () {
-            self.nodeBlock.enabled = false;
-        }, 1500);
+        // this.nodeBlock.enabled = true;
+        // setTimeout(function () {
+        //     self.nodeBlock.enabled = false;
+        // }, 1500);
     },
 
     onBtnClose: function (event) {

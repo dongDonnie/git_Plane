@@ -36,10 +36,11 @@ var UIServerSel = cc.Class({
 
         let platformApi = GlobalVar.getPlatformApi();
         if (platformApi){
-            platformApi.login(function (user_id, ticket, avatar) {
+            platformApi.login(function (user_id, ticket, avatar, cityFlag) {
                 GlobalVar.me().loginData.setLoginReqDataAccount(user_id);
                 GlobalVar.me().loginData.setLoginReqDataSdkTicket(ticket);
                 GlobalVar.me().loginData.setLoginReqDataAvatar(avatar);
+                GlobalVar.me().loginData.setLoginReqDataCityFlag(cityFlag);
                 // console.log("get data for login, userID:" + user_id + " ticket:" + ticket + " avatar:" + avatar);
                 platformApi.getServerList(GlobalVar.tblApi.getData('TblVersion')[1].strVersion, GlobalVar.me().loginData.getLoginReqDataAccount(), function (data) {
                     self.serverList = data.serverList;

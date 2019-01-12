@@ -475,11 +475,7 @@ cc.Class({
         let rewardBoxData = event.target.parent.rewardData;
 
         let confirmText = "领取";
-        // 判断活跃宝箱是否已领取
-        if (GlobalVar.me().dailyData.isActiveRewardReceived(active)) {
-            condition = false;
-            confirmText = "已领取"
-        }
+        
         let tblRewardBoxData = GlobalVar.tblApi.getData('TblDailyActive');
         let rewardBoxs = [];
         let rewardBoxIndex = 1;
@@ -504,29 +500,56 @@ cc.Class({
         //     rewardBoxIndex = 1;
         // }
         // 点击领取发送事件
+        let mode = 0;
         let confirm = function () {
-            let platformApi = GlobalVar.getPlatformApi();
-            if ((rewardBoxIndex > 1 && rewardBoxIndex < 4) && platformApi && GlobalVar.me().vipLevel < 3){
-                CommonWnd.showMessage(null, CommonWnd.shareOnly, i18n.t('label.4000216'), i18n.t('label.4000329'), null, function () {
-                    platformApi.shareNormal(0, function () {
+            GlobalVar.handlerManager().dailyHandler.sendDailyActiveRewardReq(active);
+        };
+
+        let platformApi = GlobalVar.getPlatformApi();
+        if ((rewardBoxIndex > 1 && rewardBoxIndex < 4) && platformApi && GlobalVar.me().vipLevel < 3) {
+            confirmText = i18n.t('label.4000304');
+            mode = 1;
+            confirm = function () {
+                platformApi.shareNormal(125, function () {
+                    GlobalVar.handlerManager().dailyHandler.sendDailyActiveRewardReq(active);
+                })
+            };
+        } else if (rewardBoxIndex >= 4 && platformApi && GlobalVar.me().vipLevel < 3) {
+            confirmText = i18n.t('label.4000328');
+            mode = 2;
+            confirm = function () {
+                platformApi.showRewardedVideoAd(225, function () {
+                    GlobalVar.handlerManager().dailyHandler.sendDailyActiveRewardReq(active);
+                }, function () {
+                    platformApi.shareNormal(125, function () {
                         GlobalVar.handlerManager().dailyHandler.sendDailyActiveRewardReq(active);
-                    });
-                }, null, "  " + i18n.t('label.4000304'))
-            }else if (rewardBoxIndex >= 4 && platformApi && GlobalVar.me().vipLevel < 3){
-                CommonWnd.showMessage(null, CommonWnd.videoOnly, i18n.t('label.4000216'), i18n.t('label.4000330'), null, function () {
-                    platformApi.showRewardedVideoAd(function () {
-                        GlobalVar.handlerManager().dailyHandler.sendDailyActiveRewardReq(active);
-                    },function () {
-                        GlobalVar.handlerManager().dailyHandler.sendDailyActiveRewardReq(active);
-                    });
-                }, null, "  " + i18n.t('label.4000328'))
-            }else{
+                    })
+                })
+                // let self = this;
+                // self.nodeBlock.enabled = true;
+                // setTimeout(function () {
+                //     self.nodeBlock.enabled = false;
+                // }, 1500);
+            };
+        }
+
+        if (!GlobalVar.getShareSwitch()){
+            confirm = function () {
                 GlobalVar.handlerManager().dailyHandler.sendDailyActiveRewardReq(active);
-            }
+            };
+            mode = 0;
+            confirmText = "领取";
+        }
+
+
+        if (GlobalVar.me().dailyData.isActiveRewardReceived(active)) {
+            condition = false;
+            mode = 0;
+            confirmText = "已领取"
         }
 
         if (rewardBoxData) {
-            CommonWnd.showRewardBoxWnd(null, "活跃宝箱", condition, rewardBoxData, null, confirm, null, confirmText);
+            CommonWnd.showRewardBoxWnd(null, mode, "活跃宝箱", condition, rewardBoxData, confirm, confirmText);
         }
     },
 

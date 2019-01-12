@@ -1,9 +1,9 @@
-const Defines = require('BattleDefines')
-const GlobalVar = require('globalvar')
-const ResMapping = require('resmapping')
-const GlobalFunc = require('GlobalFunctions')
-const GameServerProto = require("GameServerProto")
-const base64 = require("base64")
+const Defines = require('BattleDefines');
+const GlobalVar = require('globalvar');
+const ResMapping = require('resmapping');
+const GlobalFunc = require('GlobalFunctions');
+const GameServerProto = require("GameServerProto");
+const base64 = require("base64");
 
 const BattleManager = cc.Class({
     extends: cc.Component,
@@ -27,12 +27,15 @@ const BattleManager = cc.Class({
         managers: [],
         rootNode: null,
         displayContainer: null,
+        arenaSelfDisplay: null,
+        arenaRivalDisPlay: null,
         currentTime: 0,
         ///////////////////////////////////////////////////////////
         isEditorFlag: false,
         isCampaignFlag: false,
         isEndlessFlag: false,
         isShowFlag: false,
+        isArenaFlag: false,
         campName: "",
         isDemo: false,
         timerId: 0,
@@ -124,11 +127,30 @@ const BattleManager = cc.Class({
         }
     },
 
-    openShader: function (open) {
-        this.managers[Defines.MgrType.HERO].openShader(open);
+    startArena(rootNode, self, rival, dc) {
+        this.allScreen = GlobalFunc.isAllScreen();
+
+        this.rootNode = rootNode;
+        this.arenaSelfDisplay = self;
+        this.arenaRivalDisPlay = rival;
+        this.displayContainer = dc;
+
+        let pos = this.arenaRivalDisPlay.getPosition();
+        this.arenaRivalDisPlay.setPosition(-pos.x, -pos.y);
+        this.arenaRivalDisPlay.angle = 180;
+
+        this.managers[Defines.MgrType.SCENARIO] = this.scenarioManager.getInstance();
     },
 
-    startOutside(dc, id, full,callback) {
+    updateArena(dt){
+
+    },
+
+    arenaPrime(bullet) {
+        this.scenarioManager.getInstance().prime(bullet);
+    },
+
+    startOutside(dc, id, full, callback) {
         dc.removeAllChildren(false);
         var self = this;
         this.isDemo = true;
@@ -175,8 +197,8 @@ const BattleManager = cc.Class({
             } else if (complete) {
                 self.show = 2;
             }
-            if(!!callback){
-                callback(); 
+            if (!!callback) {
+                callback();
             }
         });
     },
@@ -231,6 +253,10 @@ const BattleManager = cc.Class({
         }
         this.release();
         BattleManager.destroyInstance();
+    },
+
+    openShader: function (open) {
+        this.managers[Defines.MgrType.HERO].openShader(open);
     },
 
     update(dt) {
@@ -764,8 +790,7 @@ const BattleManager = cc.Class({
                                 warning.destroy();
                             }
                         });
-                        // let dbArmature = dragonbone.armature();
-                        // dbArmature.animation.play('animation', 1);
+                        dragonbone.playAnimation('animation', 1);
                     }
                     GlobalVar.soundManager().playEffect('cdnRes/audio/battle/effect/boss_come');
                 }
@@ -799,8 +824,7 @@ const BattleManager = cc.Class({
                                 victory.destroy();
                             }
                         });
-                        // let dbArmature = dragonbone.armature();
-                        // dbArmature.animation.play('animation', 1);
+                        dragonbone.playAnimation('animation', 1);
                     }
                     self.displayContainer.addChild(victory, Defines.Z.WARNING, '9000');
                     victory.setPosition(0.5 * cc.view.getDesignResolutionSize().width, self.displayContainer.getContentSize().height * 0.618);

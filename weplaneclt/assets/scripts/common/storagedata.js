@@ -358,3 +358,8 @@ StoredData.getBannerTimeCount = function () {
 StoredData.setResFileMap = function (map) {
     StoredData.setItem(StoredData.Type.ResFileMap, map);
 };
+
+StoredData.getResFileMap = function () {
+    let data = StoredData.getItem(StoredData.Type.ResFileMap);
+    if (data) return JSON.parse(data);
+};

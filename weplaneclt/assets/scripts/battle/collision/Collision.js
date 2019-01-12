@@ -442,7 +442,7 @@ cc.Class({
             hero.addCrystal(3);
         } else if (buff.objectID == Defines.Assist.GOLD) {
             hero.addGold(buff.objectID);
-        } else if (buff.objectID >= Defines.Assist.CHEST1 && buff.objectID <= Defines.Assist.CHEST6) {
+        } else if (buff.objectID >= Defines.Assist.CHEST1 && buff.objectID <= Defines.Assist.CHEST9) {
             hero.addChest(buff.objectID);
         }
     },

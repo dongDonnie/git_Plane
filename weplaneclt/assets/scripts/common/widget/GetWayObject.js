@@ -101,7 +101,8 @@ var GetWayObject = cc.Class({
         this._jumpGoCallback = callback;
     },
     removeListennerAndBanner: function () {
-        GlobalVar.eventManager().removeListenerWithTarget(this);
+        let getwayWnd = WindowManager.getInstance().findViewInWndNode(WndTypeDefine.WindowType.E_DT_NORMALITEMGETWAY);
+        getwayWnd && GlobalVar.eventManager().removeListenerWithTarget(getwayWnd.getComponent(WndTypeDefine.WindowType.E_DT_NORMALITEMGETWAY));
     },
     jumpGo: function () {
         let self = this;

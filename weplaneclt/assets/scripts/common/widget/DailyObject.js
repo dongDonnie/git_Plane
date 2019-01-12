@@ -9,6 +9,7 @@ const CommonWnd = require("CommonWnd");
 const WindowManager = require("windowmgr");
 const i18n = require('LanguageData');
 const weChatAPI = require("weChatAPI");
+const StoreageData = require("storagedata");
 
 
 var DailyObject = cc.Class({
@@ -174,7 +175,11 @@ var DailyObject = cc.Class({
             if (data.wID == GameServerProto.PT_DAILY_TASK_AD){
                 this.btnGo.node.getComponent("RemoteSprite").setFrame(0);
                 this.btnGo.node.getComponent("ButtonObject").fontSize = 24;
-                this.btnGo.node.getComponent("ButtonObject").setText(i18n.t('label.4000328'));
+                if (!StoreageData.getShareTimesWithKey("rewardedVideoLimit", 1)){
+                    this.btnGo.node.getComponent("ButtonObject").setText(i18n.t('label.4000328'));
+                }else{
+                    this.btnGo.node.getComponent("ButtonObject").setText(i18n.t('label.4000304'));
+                }
             }else{
                 this.btnGo.node.getComponent("RemoteSprite").setFrame(1);
                 this.btnGo.node.getComponent("ButtonObject").setText("前往");
@@ -235,13 +240,21 @@ var DailyObject = cc.Class({
         if (data.wID == GameServerProto.PT_DAILY_TASK_AD){
             let platformApi = GlobalVar.getPlatformApi();
             if (platformApi){
-                platformApi.showRewardedVideoAd(function(){
+                platformApi.showRewardedVideoAd(230, function(){
                     GlobalVar.handlerManager().dailyHandler.sendDailyADReq();
                 }, function () {
-                    platformApi.shareNormal(0, function () {
+                    platformApi.shareNormal(130, function () {
                         GlobalVar.handlerManager().dailyHandler.sendDailyADReq();
                     })
                 });
+            // let dailyMissionNode = WindowManager.getInstance().findViewInWndNode(WndTypeDefine.WindowType.E_DT_NORMAL_DAILY_MISSION_WND);
+            // if (dailyMissionNode){
+            //     let component = dailyMissionNode.getComponent(WndTypeDefine.WindowType.E_DT_NORMAL_DAILY_MISSION_WND);
+            //     component.nodeBlock.enabled = true;
+            //     setTimeout(function () {
+            //         component.nodeBlock.enabled = false;
+            //     }, 1500);
+            // }
             }else if (GlobalVar.configGMSwitch()){
                 GlobalVar.handlerManager().dailyHandler.sendDailyADReq();
             }
@@ -250,7 +263,8 @@ var DailyObject = cc.Class({
         }
     },
     removeListennerAndBanner: function () {
-        GlobalVar.eventManager().removeListenerWithTarget(this);
+        let dailyMissionNode = WindowManager.getInstance().findViewInWndNode(WndTypeDefine.WindowType.E_DT_NORMAL_DAILY_MISSION_WND);
+        dailyMissionNode && GlobalVar.eventManager().removeListenerWithTarget(dailyMissionNode.getComponent(WndTypeDefine.WindowType.E_DT_NORMAL_DAILY_MISSION_WND));
     },
 
     goToWnd: function (windowID) {

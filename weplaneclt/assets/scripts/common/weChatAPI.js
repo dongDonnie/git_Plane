@@ -5,7 +5,8 @@ const StoreageData = require("storagedata");
 const i18n = require('LanguageData');
 const GlobalFunc = require('GlobalFunctions');
 const CommonWnd = require("CommonWnd");
-const SceneDefines = require("scenedefines")
+const SceneDefines = require("scenedefines");
+const GameServerProto = require("GameServerProto");
 
 const GAME_ID = 7002;
 const APP_ID = "wxa60dbd8655a13c00";
@@ -22,6 +23,11 @@ const GET_HEADER = {
 const OPENLOG = false;
 const VIDEOUNIT_ID = "adunit-ba7f540156b29839";
 const BANNERUNIT_ID = "adunit-038a09ed24b46354";
+const BANNERUNIT_ID_LIST = [
+    "adunit-038a09ed24b46354",
+    "adunit-b45a3dc79d07f7b2",
+    "adunit-797165613e57d67a",
+];
 
 const URL_LOGIN = "https://mwxsdk.phonecoolgame.com/login.php";
 const URL_SHARE = "https://mwxsdk.phonecoolgame.com/share.php";
@@ -34,6 +40,8 @@ const URL_GET_PAYINFO = "https://cpgc.phonecoolgame.com/appPay/getAppPayInfo?pay
 const URL_GET_MATERIALS = "https://cpgc.phonecoolgame.com/material/getMaterials?appid=%d";
 const URL_REPORT_SHARE = "https://cpgc.phonecoolgame.com/material/reportShare?appid=%d&materialID=%d";
 const URL_REPORT_CLICK = "https://cpgc.phonecoolgame.com/material/reportClick?appid=%d&materialID=%d";
+const URL_REPORT_VIDEO_START = "https://cpgc.phonecoolgame.com/material/reportVideoStart?appid=" + APP_ID + "&videoPointID=%d";
+const URL_REPORT_VIDEO_END = "https://cpgc.phonecoolgame.com/material/reportVideoEnd?appid=" + APP_ID + "&videoPointID=%d";
 const URL_GET_MORE_INFO = "https://cpgc.phonecoolgame.com/adc/getMoreInfo?appid=%d&ptform=%d";
 const URL_SERVER_LIST = "https://wepup.phonecoolgame.com/json.php?_c=server&_f=plist&opid=" + OP_ID + "&gameopid=" + GAME_OP_ID + "&ver=%d&userid=%d";
 const URL_REPROT_SERVER_LOGIN = "https://wepup.phonecoolgame.com/json.php?_c=server&_f=in&userid=%d&server_id=%d&time=%d&sign=%sign";
@@ -46,7 +54,9 @@ const URL_GET_LAUNCH_NOTICE = "https://wepup.phonecoolgame.com/json.php?_c=start
 
 const URL_GET_MY_SERVER = "https://wepup.phonecoolgame.com/json.php?_c=server&_f=my&opid=" + OP_ID + "&gameopid=" + GAME_OP_ID + "&ver=%d&userid=%d";
 
-const URL_GET_ADC = "https://gamecenter.phonecoolgame.com/adc/getAdFrame";
+const URL_GET_ADC_Frame = "https://cpgc.phonecoolgame.com/adc/getAdFrame";
+const URL_GET_ADC_EXP = "https://cpgc.phonecoolgame.com/adc/getAdexpInfo";
+const URL_GET_ADC_Task = "https://cpgc.phonecoolgame.com/adc/getTaskWallInfo";
 
 module.exports = {
 
@@ -65,6 +75,9 @@ module.exports = {
         shareGapGrowStartTimes: 5, // 增加分享时间间隔的起始分享次数
         shareNeedDiffGroup: true,
         shareNeedClickLoseEffect: 30000,
+        superBannerProb: 0,
+        // 超级诱导每日上限，默认为Param表配的值
+        superBannerMax: 0,
     },
     shareMessageFlag: false,
 
@@ -75,6 +88,7 @@ module.exports = {
     _onShowTime: 0,
     _shareNeedClickTime: 0,
 
+    _currentVideoPointID: 0,
     _rewardedVideoAd: null,
     _videoAdSuccessCallback: null,
     _videoAdCancelCallback: null,
@@ -85,11 +99,9 @@ module.exports = {
     _bannerTimeCount: 0,
     _bannerExchangeTime: 120,
 
-    _framesAd: [],  //悬浮广告
-    _bigFramesAd: [], // 大的序列帧动画
-    _frameIdx: 0,
-    _spriteFrameMap: {},//key:url, value: cc.spriteFrame
-    _resFileMap: null,
+    _bannerAdList: [],
+    _alternateIndex: 0,
+    _bannerShowState: false,
 
     getShareSuccess: function () {
         let shareSuccess = false;
@@ -131,6 +143,7 @@ module.exports = {
             // setting.shareTimes++;
             StoreageData.setTotalShareTimes();
             setting.shareLowestGap = setting.shareDefaultGap;
+            setting.shareGap = setting.shareLowestGap;
         }
         setting.shareTimes++;
 
@@ -140,6 +153,7 @@ module.exports = {
     getShareConfig: function () {
         let self = this;
         let setting = this.shareSetting;
+        setting.superBannerMax = GlobalVar.tblApi.getDataBySingleKey('TblParam', GameServerProto.PTPARAM_FULI_GC_SUPER_INDUCE_MAX_COUNT).dValue
         this.request(URL_SHARE_CONFIG, null, function (data) {
             data.shareMinTime && (setting.shareDefaultGap = parseInt(data.shareMinTime));
             (data.sharefailprob > -1) && (setting.shareFailProb = parseInt(data.sharefailprob));
@@ -153,6 +167,8 @@ module.exports = {
             data.bannerRefreshTime && (self._bannerExchangeTime = parseInt(data.bannerRefreshTime));
             console.log("bannerRefreshTime:", self._bannerExchangeTime);
             console.log("get share config success, new config:", setting);
+            setting.superBannerProb = data.superBannerProb;
+            setting.superBannerMax = data.superBannerMax;
         }, null, GET_METHOD, GET_HEADER);
     },
 
@@ -160,7 +176,7 @@ module.exports = {
         let url = URL_SHARE_SWITCH.replace("%d", version);
         this.request(url, null, function (data) {
             if (!!successCallback) {
-                successCallback(data.showyd);
+                successCallback(data);
             }
         }, null, GET_METHOD, GET_HEADER);
     },
@@ -183,7 +199,6 @@ module.exports = {
             } else if (launchInfo.scene == 1007 || launchInfo.scene == 1008 || launchInfo.scene == 1044 || launchInfo.scene == 1096) {
                 channelID = "share";
             }
-            // console.log("wryyyyyyyyyyyyyyyyyyy")
             wx.login({
                 success: function (res) {
                     if (res.code) { //用wx.login返回的Code作为登陆所需参数，向服务器请求登陆
@@ -192,14 +207,13 @@ module.exports = {
                             code: res.code,
                             channel_id: channelID,
                         };
-                        // console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@")
                         self.request(URL_LOGIN, loginData, function (data) {
                             // 向服务器请求登陆，保存服务器传过来的openid和ticket;
                             if (data.ret !== 0) {
-                                self.showToast("网络链接异常, 是否重试", true, true, "确认", null, function () {
+                                self.showToast("网络链接异常, 是否重试", true, false, "确认", null, function () {
                                     self.login(successCallback);
                                 }, function () {
-                                    cc.game.restart();
+                                    cc.game.end();
                                 })
                                 return;
                             }
@@ -208,42 +222,43 @@ module.exports = {
                             // wx.setStorageSync('ticket', data.data.ticket);
                             let user_id = data.data.user_id;
                             let ticket = data.data.ticket;
+                            let cityFlag = data.data.cityFlag;
                             self.getUserInfo(function (userInfo) {
                                 // 从微信侧获得玩家的头像地址
                                 self.showLog(userInfo);
                                 // console.log("获取用户数据成功");
                                 let avatarUrl = userInfo.avatarUrl
                                 if (!!successCallback) {
-                                    successCallback(user_id, ticket, avatarUrl);
+                                    successCallback(user_id, ticket, avatarUrl, cityFlag);
                                 }
                             }, function (res) {
                                 // console.log("请求登陆失败");
                                 if (!!successCallback) {
-                                    successCallback(user_id, ticket, "");
+                                    successCallback(user_id, ticket, "", cityFlag);
                                 }
                             });
                         }, function (data) {
-                            self.showToast("网络链接异常, 是否重试", true, true, "确认", null, function () {
+                            self.showToast("网络链接异常, 是否重试", true, false, "确认", null, function () {
                                 self.login(successCallback);
                             }, function () {
-                                cc.game.restart();
+                                cc.game.end();
                             })
                         });
                     } else {
                         self.showLog('get login code failed！');
-                        self.showToast("网络链接异常, 是否重试", true, true, "确认", null, function () {
+                        self.showToast("网络链接异常, 是否重试", true, false, "确认", null, function () {
                             self.login(successCallback);
                         }, function () {
-                            cc.game.restart();
+                            cc.game.end();
                         })
                     }
                 },
                 fail: function () {
                     self.showLog('login error!');
-                    self.showToast("网络链接异常, 是否重试", true, true, "确认", null, function () {
+                    self.showToast("网络链接异常, 是否重试", true, false, "确认", null, function () {
                         self.login(successCallback);
                     }, function () {
-                        cc.game.restart();
+                        cc.game.end();
                     })
                 }
             });
@@ -369,7 +384,7 @@ module.exports = {
             return;
         }
         if (GlobalVar.getShareControl() == 6) {
-            this.showRewardedVideoAd(successCallback, failCallback);
+            this.showRewardedVideoAd(index + 100, successCallback, failCallback);
             return;
         }
 
@@ -412,9 +427,9 @@ module.exports = {
                         self.shareNormal(index, successCallback, failCallback, successTips, failTips)
                     });
                 } else {
-                    CommonWnd.showMessage(null, CommonWnd.oneConfirm, i18n.t('label.4000216'), i18n.t('label.4000310'), null, function () {
+                    CommonWnd.showMessage(null, CommonWnd.shareOnly, i18n.t('label.4000216'), i18n.t('label.4000310'), null, function () {
                         self.shareNormal(index, successCallback, failCallback, successTips, failTips)
-                    }, null, i18n.t('label.4000304'));
+                    }, null, "  " + i18n.t('label.4000304'));
                 }
             }
             self.setOffShowListener(onShowFunc);
@@ -436,7 +451,7 @@ module.exports = {
         }
 
         if (GlobalVar.getShareControl() == 6) {
-            this.showRewardedVideoAd(successCallback, failCallback);
+            this.showRewardedVideoAd(index + 100, successCallback, failCallback);
             return;
         }
 
@@ -463,7 +478,7 @@ module.exports = {
             if (res.query['share_time'] == time) {
                 if (!res.shareTicket) {
                     console.log("沒有分享到群");
-                    self.showToast(notShareInGropTips || i18n.t('label.4000316'), true, true, "分享", "取消", function () {
+                    self.showToast(notShareInGropTips || i18n.t('label.4000320'), true, true, "分享", "取消", function () {
                         self.shareNeedClick(index, successCallback, failCallback, strTips, successTips, failTips, notShareInGropTips)
                     });
                     self.setOffShowListener(onShowFunc);
@@ -482,7 +497,9 @@ module.exports = {
                             self.setOffShowListener(onShowFunc);
                             self.curShowFunc = null;
                             failCallback && failCallback();
-                            self.showToast(failTips || i18n.t('label.4000310'), true, false, "知道了");
+                            self.showToast(failTips || i18n.t('label.4000310'), true, false, "知道了", null, function () {
+                                self.shareNeedClick(index, successCallback, failCallback, strTips, successTips, failTips, notShareInGropTips)
+                            });
                         }
                         if (!needDiffGroup || (data.ret == 0 && !!parseInt(data.data.diffGId))) {
                             if (!!successCallback) {
@@ -497,7 +514,7 @@ module.exports = {
                         }
                     })
                 })
-            } else if (!alreadShowTips && strTips) {
+            } else if (!alreadShowTips) {
                 self.showToast(strTips || i18n.t('label.4000311'));
                 alreadShowTips = true;
             }
@@ -855,10 +872,10 @@ module.exports = {
         let self = this;
         let url = URL_GET_MATERIALS.replace("%d", APP_ID);
         this._defaultMaterial = [{
-                cdnurl: "https://cdn.phonecoolgame.com/wxgame/hezi/back/wpjz-003.jpg",
-                content: "超经典飞行射击游戏，王牌出击等你来战！",
-                materialID: "138",
-            }, ],
+            cdnurl: "https://cdn.phonecoolgame.com/wxgame/hezi/back/wpjz-003.jpg",
+            content: "超经典飞行射击游戏，王牌出击等你来战！",
+            materialID: "138",
+        },],
             self.request(url, null, function (data) {
                 if (data.ecode !== 0) {
                     self.showLog("getMaterials error, ecode = ", data.ecode);
@@ -879,13 +896,16 @@ module.exports = {
         return materials[ranNum] || materials[0];
     },
 
-    reportShareMaterial: function (materialID, successCallback) {
+    reportShareMaterial: function (materialID, successCallback, needReportUid = true) {
         // 上报分享的文案
         if (cc.sys.platform !== cc.sys.WECHAT_GAME) {
             return;
         }
         let self = this;
         let url = URL_REPORT_SHARE.replace("%d", APP_ID).replace("%d", materialID);
+        if (needReportUid) {
+            url = url + "&uid=" + GlobalVar.me().loginData.getLoginReqDataAccount();
+        }
         self.request(url, null, function (data) {
             if (data.ecode !== 0) {
                 self.showLog("reportShare error, ecode = ", data.ecode);
@@ -917,6 +937,40 @@ module.exports = {
                 successCallback(data.data);
             }
         }, null, GET_METHOD, GET_HEADER)
+    },
+    reportVideoStart: function (videoPointID, needReportUid = false) {
+        if (cc.sys.platform !== cc.sys.WECHAT_GAME) {
+            return;
+        }
+        let self = this;
+        let url = URL_REPORT_VIDEO_START.replace("%d", videoPointID);
+        if (needReportUid) {
+            url = url + "&uid=" + GlobalVar.me().loginData.getLoginReqDataAccount();
+        }
+        self.request(url, null, function (data) {
+            if (data.ecode !== 0) {
+                console.log("videoPoint:" + videoPointID + " start report fail: ecode =", data.ecode);
+                return;
+            }
+            console.log("videoPoint:" + videoPointID + " start report success")
+        }, null, GET_METHOD, GET_HEADER);
+    },
+    reportVideoEnd: function (videoPointID, needReportUid = false) {
+        if (cc.sys.platform !== cc.sys.WECHAT_GAME) {
+            return;
+        }
+        let self = this;
+        let url = URL_REPORT_VIDEO_END.replace("%d", videoPointID);
+        if (needReportUid) {
+            url = url + "&uid=" + GlobalVar.me().loginData.getLoginReqDataAccount();
+        }
+        self.request(url, null, function (data) {
+            if (data.ecode !== 0) {
+                console.log("videoPoint:" + videoPointID + " end report fail: ecode =", data.ecode);
+                return;
+            }
+            console.log("videoPoint:" + videoPointID + " end report success")
+        }, null, GET_METHOD, GET_HEADER);
     },
 
     getServerList: function (version, userID, successCallback, notFirst) {
@@ -1088,11 +1142,12 @@ module.exports = {
         this._rewardedVideoAd.onClose(res => {
             // 用户点击了【关闭广告】按钮
             // 小于 2.1.0 的基础库版本，res 是一个 undefined
+            StoreageData.cleanShareTimesWithKey("rewardedVideoLimit", 1);
             GlobalVar.soundManager().resumeBGM();
             if (res && res.isEnded || res === undefined) {
                 console.log("看广告成功，获得奖励");
                 self._videoAdSuccessCallback && self._videoAdSuccessCallback();
-                StoreageData.cleanShareTimesWithKey("rewardedVideoLimit", 1);
+                self.reportVideoEnd(self._currentVideoPointID);
             } else {
                 // 播放中途退出
                 console.log("退出广告播放，无奖励");
@@ -1108,7 +1163,7 @@ module.exports = {
         })
     },
 
-    showRewardedVideoAd: function (successCallback, failCallback, cancelCallback) {
+    showRewardedVideoAd: function (videoPointID, successCallback, failCallback, cancelCallback) {
         if (cc.sys.platform != cc.sys.WECHAT_GAME) {
             return;
         }
@@ -1128,17 +1183,36 @@ module.exports = {
         //     failCallback && failCallback();
         //     return;
         // }
+        let ceilView = GlobalVar.windowManager().getCeilingView();
+        if (ceilView) {
+            let ceilViewType = GlobalVar.windowManager().getCeilingViewType()
+            if (ceilViewType) {
+                let nodeBlock = ceilView.getComponent(ceilViewType).nodeBlock;
+                if (nodeBlock) {
+                    console.log("禁止点击", ceilViewType, "3秒");
+                    nodeBlock.enabled = true;
+                    setTimeout(function () {
+                        nodeBlock.enabled = false;
+                    }, 3000);
+                }
+            }
+        }
+
+
         let videoAd = this._rewardedVideoAd;
         this._videoAdSuccessCallback = successCallback;
         this._videoAdCancelCallback = cancelCallback;
         // this._videoAdFailCallback = failCallback;
+        let self = this;
         videoAd.load()
             .then(() => {
+                self.reportVideoStart(videoPointID);
+                self._currentVideoPointID = videoPointID;
                 GlobalVar.soundManager().pauseBGM();
-                videoAd.show()
+                videoAd.show();
             })
             .catch(err => {
-                console.log("拉取广告失败：", err.errMsg);
+                console.log("拉取广告失败：", err);
                 StoreageData.setShareTimesWithKey("rewardedVideoLimit", 1);
                 failCallback && failCallback();
             });
@@ -1150,9 +1224,12 @@ module.exports = {
             GlobalVar.bannerOpen = false;
             return;
         }
+        if (this._bannerAdList.length > 0) {
+            return;
+        }
         let arrBannerIDList = BANNERUNIT_ID_LIST;
         let systemInfo = wx.getSystemInfoSync();
-        for (let i = 0; i< arrBannerIDList.length; i++){
+        for (let i = 0; i < arrBannerIDList.length; i++) {
             let pBanner = wx.createBannerAd({
                 adUnitId: arrBannerIDList[i],
                 style: {
@@ -1180,15 +1257,15 @@ module.exports = {
             GlobalVar.bannerOpen = false;
             return;
         }
-        if (this._bannerAdList.length == 0){
+        if (this._bannerAdList.length == 0) {
             console.log("没有创建成功的banner");
             return;
         }
-        if (this._bannerShowState){
+        if (this._bannerShowState) {
             return;
         }
         this._bannerShowState = true;
-        if (this._alternateIndex >= this._bannerAdList.length){
+        if (this._alternateIndex >= this._bannerAdList.length) {
             this._alternateIndex = 0;
             this._bannerAdList.sort(function (a, b) {
                 return Math.random() - 0.5;
@@ -1196,7 +1273,7 @@ module.exports = {
         }
 
         let pBanner = this._bannerAdList[this._alternateIndex];
-        pBanner.show().catch(err =>{
+        pBanner.show().catch(err => {
             console.log("banner展示出现异常:", err)
         });
         console.log("banner index:", this._alternateIndex);
@@ -1204,285 +1281,17 @@ module.exports = {
     },
 
     hideBannerAdNew: function () {
-        if (this._bannerAdList.length == 0){
+        if (this._bannerAdList.length == 0) {
             console.log("没有创建成功的banner");
             return;
         }
-        if (!this._bannerShowState){
+        if (!this._bannerShowState) {
             return;
         }
         let pBanner = this._bannerAdList[this._alternateIndex];
         pBanner.hide();
         this._alternateIndex++;
         this._bannerShowState = false;
-    },
-
-    _createBannerAd: function (onResizeCallback) {
-        let screenHeight = wx.getSystemInfoSync().screenHeight;
-        let screenWidth = wx.getSystemInfoSync().screenWidth;
-        let self = this;
-        let pBanner = wx.createBannerAd({
-            adUnitId: BANNERUNIT_ID,
-            style: {
-                left: 0,
-                top: screenHeight,
-                width: screenWidth,
-            }
-        });
-        pBanner.onResize(function () {
-            pBanner.style.top = screenHeight - pBanner.style.realHeight - ((GlobalVar.isIOS && GlobalFunc.isAllScreen()) ? 30 : 0);
-            console.log("bannerTop:", pBanner.style.top);
-            if (self._bannerCount > 0) {
-                StoreageData.setLastBannerShowTime();
-                pBanner.show().catch(err => {
-                    self._bannerCount--;
-                    StoreageData.resetLastBannerShowTime();
-                    console.log("banner展示出现异常:", err)
-                })
-            }
-            onResizeCallback && onResizeCallback(pBanner.style.realHeight + ((GlobalVar.isIOS && GlobalFunc.isAllScreen()) ? 30 : 0));
-            onResizeCallback = null;
-        });
-        pBanner.onError(res => {
-            console.log("Banner广告组件拉取广告异常:", res);
-        })
-        return pBanner;
-    },
-
-    showBannerAd: function (onResizeCallback) {
-        if (cc.sys.platform != cc.sys.WECHAT_GAME) {
-            return;
-        }
-        this._bannerCount++;
-        let self = this;
-        if (this.wxBversionLess("2.0.4")) {
-            console.log("版本库低于2.0.4，不能创建Banner组件");
-            GlobalVar.bannerOpen = false;
-            return;
-        }
-        if (!this._bannerAd) {
-            this._bannerAd = this._createBannerAd(onResizeCallback);
-        } else if (this._bannerExchangeTime < this._bannerTimeCount) {
-            this._bannerTimeCount = 0;
-            this._bannerAd.destroy();
-            this._bannerAd = this._createBannerAd(onResizeCallback);
-        } else {
-            StoreageData.setLastBannerShowTime();
-            this._bannerAd.show().catch(err => {
-                StoreageData.resetLastBannerShowTime();
-                self._bannerCount--;
-                console.log("banner展示出现异常:", err)
-            })
-            onResizeCallback && onResizeCallback(this._bannerAd.style.realHeight + ((GlobalVar.isIOS && GlobalFunc.isAllScreen()) ? 30 : 0));
-            onResizeCallback = null;
-        }
-    },
-    hideBannerAd: function () {
-        if (cc.sys.platform != cc.sys.WECHAT_GAME) {
-            return;
-        }
-        if (this.wxBversionLess("2.0.4")) {
-            console.log("版本库低于2.0.4，没有创建Banner组件");
-            return;
-        }
-        if (!this._bannerAd) {
-            console.log("当前不存在banner组件");
-            return;
-        }
-        this._bannerCount--;
-        if (this._bannerCount <= 0) {
-            this._bannerCount = 0;
-            this._bannerAd.hide();
-            this._bannerTimeCount += StoreageData.getBannerTimeCount()
-        }
-    },
-    destoryBanner: function () {
-        this.cleanBannerCount();
-        this.hideBannerAd();
-    },
-    cleanBannerCount: function () {
-        if (cc.sys.platform != cc.sys.WECHAT_GAME) {
-            return;
-        }
-        this._bannerCount = 0;
-    },
-    justHideBanner: function () {
-        if (cc.sys.platform != cc.sys.WECHAT_GAME) {
-            return;
-        }
-        if (!this._bannerAd) {
-            console.log("当前不存在banner组件");
-            return;
-        }
-        this._bannerAd.hide();
-        this._bannerTimeCount += StoreageData.getBannerTimeCount()
-    },
-    justShowBanner: function () {
-        if (cc.sys.platform != cc.sys.WECHAT_GAME) {
-            return;
-        }
-        if (!this._bannerAd) {
-            console.log("当前不存在banner组件");
-            return;
-        }
-        if (this._bannerCount > 0) {
-            StoreageData.setLastBannerShowTime();
-            this._bannerAd.show().catch(err => {
-                StoreageData.resetLastBannerShowTime();
-                console.log("banner展示出现异常:", err)
-            });
-        }
-    },
-
-
-    //download
-    //urlStack: [],
-
-    pushURL: function (ResType, remoteUrl, callback, forceDownload) {
-        let self = this;
-        // if (cc.sys.platform === cc.sys.WECHAT_GAME) {
-        //     let index = {
-        //         type: ResType,
-        //         url: remoteUrl,
-        //         cb: callback,
-        //         fd: forceDownload
-        //     };
-        //     this.urlStack.push(index);
-        // } else {
-        self.showLog("The platform is not WECHAT_GAME");
-        // }
-        this.loadUrl(ResType, remoteUrl, callback, forceDownload);
-    },
-
-    activeLoad: function () {
-        cc.log("stack run");
-        let self = this;
-        if (cc.sys.platform === cc.sys.WECHAT_GAME) {
-            let index = this.urlStack.shift();
-            if (typeof index !== 'undefined') {
-                this.loadUrl(index.type, index.url, index.cb, index.fd);
-            } else {
-                cc.log("stack is empty");
-            }
-        } else {
-            self.showLog("The platform is not WECHAT_GAME");
-        }
-    },
-
-    loadUrl: function (ResType, remoteUrl, callback, forceDownload) {
-        let self = this;
-        self.showLog("loadURL");
-        forceDownload = typeof forceDownload !== 'undefined' ? forceDownload : false;
-        if (cc.sys.platform === cc.sys.WECHAT_GAME) {
-            if (forceDownload) {
-                self.showLog("forceDownload");
-                this.downloadFile(remoteUrl, function (filePath) {
-                    self.resManagerLoad(ResType, filePath, callback);
-                });
-            } else {
-                self.showLog("not forceDownload");
-                this.getSaveFile(remoteUrl, function (filePath) {
-                    if (filePath != "") {
-                        self.showLog("file is existed");
-                        self.resManagerLoad(ResType, filePath, callback);
-                    } else {
-                        self.showLog("download file");
-                        self.downloadFile(remoteUrl, function (filePath) {
-                            self.resManagerLoad(ResType, filePath, callback);
-                        });
-                    }
-                });
-            }
-        } else {
-            self.showLog("The platform is not WECHAT_GAME");
-        }
-    },
-
-    resManagerLoad: function (ResType, filePath, callback) {
-        let self = this;
-        ResManager.getInstance().loadRes(ResType, filePath, function (file) {
-            if (!!callback) {
-                callback(file);
-            }
-            //self.activeLoad();
-        });
-    },
-
-    downloadFile: function (remoteUrl, callback) {
-        if (cc.sys.platform === cc.sys.WECHAT_GAME) {
-            let self = this;
-            wx.downloadFile({
-                url: remoteUrl,
-                success: res => {
-                    if (res.statusCode === 200) {
-                        self.showLog("tempFile:" + res.tempFilePath);
-                        self.setSaveFile(remoteUrl, res.tempFilePath, callback);
-                    }
-                },
-                fail: res => {
-                    self.showLog("failed to download file: " + remoteUrl);
-                }
-            });
-        }
-    },
-
-    setSaveFile: function (remoteUrl, filePath, callback) {
-        if (cc.sys.platform === cc.sys.WECHAT_GAME) {
-            let self = this;
-            wx.saveFile({
-                tempFilePath: filePath,
-                success: res => {
-                    self.showLog("saveFile:" + res.savedFilePath);
-                    let localFile = cc.sys.localStorage.getItem('localFileMap');
-                    self.showLog(localFile);
-                    let map = {};
-                    if (localFile != "") {
-                        map = JSON.parse(localFile);
-                    }
-                    map[remoteUrl] = res.savedFilePath;
-                    cc.sys.localStorage.setItem('localFileMap', JSON.stringify(map));
-                    //cc.sys.localStorage.setItem(remoteUrl,res.savedFilePath)
-                    if (!!callback) {
-                        callback(res.savedFilePath);
-                    }
-                },
-                fail: res => {
-                    self.showLog("failed to save file: " + filePath);
-                }
-            });
-        }
-    },
-
-    getSaveFile: function (remoteUrl, callback) {
-        if (cc.sys.platform === cc.sys.WECHAT_GAME) {
-            let self = this;
-            wx.getSavedFileList({
-                success: res => {
-                    let localFile = cc.sys.localStorage.getItem('localFileMap');
-                    self.showLog(localFile);
-                    var file = "";
-                    if (localFile != "") {
-                        var map = JSON.parse(localFile);
-                        for (let i = 0; i < res.fileList.length; i++) {
-                            if (res.fileList[i].filePath == map[remoteUrl]) {
-                                file = map[remoteUrl];
-                                break;
-                            }
-                            // if(cc.sys.localStorage.getItem(remoteUrl)==res.fileList[i].filePath){
-                            //     file=res.fileList[i].filePath;
-                            //     break;
-                            // }
-                        }
-                    }
-                    if (!!callback) {
-                        callback(file);
-                    }
-                },
-                fail: res => {
-                    self.showLog("failed to get file: " + remoteUrl);
-                }
-            })
-        }
     },
 
     submitUserData: function (keyName, data, successCallback, failCallback) {
@@ -1583,12 +1392,31 @@ module.exports = {
         }
     },
 
+    getNetWorkStatus: function (callback) {
+        if (cc.sys.platform === cc.sys.WECHAT_GAME) {
+            wx.getNetworkType({
+                success: res => {
+                    let networkType = res.networkType;
+                    if (!!callback) {
+                        callback(networkType);
+                    }
+                },
+                fail: res => {
+                    if (!!callback) {
+                        callback('none');
+                    }
+                }
+            })
+        } else {
+            if (!!callback) {
+                callback('none');
+            }
+        }
+    },
+
     feedBack: function (left, top, width, height) {
         if (cc.sys.platform === cc.sys.WECHAT_GAME) {
             if (!this.checkWeChatAPI(0, '2.1.2')) {
-                return;
-            }
-            if (!this.checkWeChatAPI(1, 'wx.createFeedbackButton')) {
                 return;
             }
 
@@ -1677,9 +1505,6 @@ module.exports = {
                             if (!this.checkWeChatAPI(0, '1.9.90')) {
                                 return;
                             }
-                            if (!this.checkWeChatAPI(1, 'wx.getUpdateManager')) {
-                                return;
-                            }
                             let updateManager = wx.getUpdateManager();
                             updateManager.applyUpdate();
                         }
@@ -1696,10 +1521,6 @@ module.exports = {
             if (!this.checkWeChatAPI(0, '1.9.90')) {
                 return;
             }
-            if (!this.checkWeChatAPI(1, 'wx.getUpdateManager')) {
-                return;
-            }
-
 
             let updateManager = wx.getUpdateManager();
 
@@ -1769,7 +1590,7 @@ module.exports = {
     checkWeChatAPI: function (type, api) {
         if (cc.sys.platform === cc.sys.WECHAT_GAME) {
             let version = wx.getSystemInfoSync().SDKVersion;
-            if (compareVersion(version, '1.1.1') < 0) {
+            if (this.compareVersion(version, '1.1.1') < 0) {
                 wx.showModal({
                     title: '提示',
                     content: '当前微信版本过低，请升级到最新微信版本'
@@ -1779,19 +1600,19 @@ module.exports = {
             let complete = true;
             switch (type) {
                 case 0:
-                    if (compareVersion(version, api) >= 0) {
+                    if (this.compareVersion(version, api) >= 0) {
                         complete = true;
                     } else {
                         complete = false;
                     }
                     break;
-                case 1:
-                    if (wx.canIUse(api)) {
-                        complete = true;
-                    } else {
-                        complete = false;
-                    }
-                    break;
+                // case 1:
+                //     if (wx.canIUse(api)) {
+                //         complete = true;
+                //     } else {
+                //         complete = false;
+                //     }
+                //     break;
                 default:
                     complete = false;
                     break;
@@ -1809,89 +1630,40 @@ module.exports = {
         return false;
     },
 
-    wxLoadRes: function (url, cb) {
+    pullAdcInfo: function (url, successCallback, failCallback) {
         if (cc.sys.platform !== cc.sys.WECHAT_GAME) return;
-        let downloadUrl = () => {
-            wx.downloadFile({
-                url: url,
-                success: (res) => {
-                    console.log(res);
-                    if (res.statusCode === 200) {
-                        mapResFile(url, { "path": res.tempFilePath });
-                        cc.loader.load(res.tempFilePath, (err, texture) => {
-                            cb(new cc.SpriteFrame(texture));
-                        })
-                    }
-                }
-            });
-        }
-        let temp = getResFileMap(url);
-        let localFilePath = temp['path'];
-        if (checkPath(localFilePath)) {
-            wx.getFileSystemManager().access({
-                path: localFilePath,
-                success: () => cc.loader.load(localFilePath, (err, texture) => {
-                    if (!err)
-                        cb(new cc.SpriteFrame(texture));
-                }), 
-                fail: downloadUrl,
-            });
-        } else {
-            downloadUrl();
-        }
-    },
-
-    pullAdcInfo: function (successCallback, failCallback) {
-        let param = {
+        let data = {
             appid: APP_ID,
             logintype: "wx",
             noncestr: GlobalFunc.getRandomString(),
             sex: 0,
             ptform: GlobalFunc.iosOrAndr(),
         }
-        console.log("pullAdcInfo", param);
-        wx.request({
-            url: URL_GET_ADC,
-            data: param,
-            method: 'POST',
-            success: successCallback,
-            fail: failCallback,
-        });
+        console.log("pullAdcInfo data", data);
+        this.request(url, data, successCallback, failCallback, 'POST');
     },
 
-    pullRemoteRes: function (url) {
-        if (!this._spriteFrameMap[url]) {
-            this.wxLoadRes(url, (sf) => this.updateSpriteFrameMap(url, sf))
+    pullAdcExpInfo: function (successCallback, failCallback) {
+        this.pullAdcInfo(URL_GET_ADC_EXP, successCallback, failCallback);
+    },
+
+    pullAdcFrameInfo: function (successCallback, failCallback) {
+        this.pullAdcInfo(URL_GET_ADC_Frame, successCallback, failCallback);
+    },
+
+    pullAdcTaskInfo: function (successCallback, failCallback) {
+        let data = {
+            appid: APP_ID
         }
+        this.request(URL_GET_ADC_Task, data, successCallback, failCallback);
     },
 
-    updateSpriteFrameMap: function (key, val) {
-        this._spriteFrameMap[key] = val;
-    },
-
-    getRemoteSpFrameAd: function (isNew) {
-        if (isNew) {
-            let successCallback = (res) => {
-                let data = res.data;
-                this._framesAd = (data && Array.isArray(data.adFrames)) ? data.adFrames : this._framesAd;
-                console.log("adFrames res:", this._framesAd, data);
-                this._bigFramesAd = (data && Array.isArray(data.adSequences)) ? data.adSequences : this._bigFramesAd;
-                this._framesAd.map((adFrame) => {
-                    if (GlobalFunc.checkLink(adFrame.url)) this.pullRemoteRes(adFrame.url);
-                })
-                this._bigFramesAd.map((adFrame) => {
-                    if (GlobalFunc.checkLink(adFrame.url)) this.pullRemoteRes(adFrame.url);
-                })
-            }
-            let failCallback = (res) => {
-                console.log(res);
-            }
-            this.pullAdcInfo(successCallback, failCallback);
-        }
-        let len = this._framesAd.length;
-        let idx = this._frameIdx % (len > 0 ? len : 1);
-        this._frameIdx += 1;
-        let ans = (typeof this._framesAd[idx] == "object") ? this._framesAd[idx] : {};
-        return ans;
+    previewUrlImage: function (url) {
+        if (cc.sys.platform !== cc.sys.WECHAT_GAME) return;
+        var temp = [url]; //切换为[url]
+        wx.previewImage({
+            // current: this.data.imgalist, // 当前显示图片的http链接    
+            urls: temp // 需要预览的图片http链接列表   
+        })
     },
 };

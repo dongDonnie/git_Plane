@@ -1,6 +1,7 @@
 const ResMapping = require("resmapping");
 const SceneDefines = require('scenedefines');
 const GlobalVar = require("globalvar");
+const config = require("config");
 
 var ResManager = cc.Class({
     extends: cc.Component,
@@ -9,13 +10,7 @@ var ResManager = cc.Class({
         for (let i in ResMapping.ResType) {
             this.cache[ResMapping.ResType[i]] = {};
         }
-        this.resDocument = [];
-        for (let i = SceneDefines.INIT_STATE; i < SceneDefines.STATECOUNT; i++) {
-            this.resDocument[i] = [];
-        }
-        this.initResDocument();
-        this.loadCallBack = null;
-        this.loadStep = 0;
+        this.resDeepArray = [];
     },
 
     statics: {
@@ -30,20 +25,6 @@ var ResManager = cc.Class({
             if (ResManager.instance != null) {
                 delete ResManager.instance;
                 ResManager.instance = null;
-            }
-        }
-    },
-
-    loadResArray: function (array, callback) {
-        if (typeof array !== 'undefined') {
-            let sum = array.length;
-            for (let i = 0; i < array.length; i++) {
-                this.loadRes(array[i].type, array[i].url, function (obj) {
-                    sum--;
-                    if (sum <= 0 && !!callback) {
-                        callback();
-                    }
-                })
             }
         }
     },
@@ -268,11 +249,7 @@ var ResManager = cc.Class({
     },
 
     initDeepPreLoadRes: function (scene) {
-        if (typeof this.resDeepArray !== 'undefined') {
-            this.resDeepArray.splice(0, this.resDeepArray.length);
-        } else {
-            this.resDeepArray = [];
-        }
+        this.resDeepArray.splice(0, this.resDeepArray.length);
         if (scene == SceneDefines.BATTLE_STATE) {
             this.pushDeep('cdnRes/battlemodel/prefab/effect/EnemyIncoming', ResMapping.ResType.Prefab);
             this.pushDeep('cdnRes/battlemodel/prefab/effect/GetBuff', ResMapping.ResType.Prefab);
@@ -325,17 +302,18 @@ var ResManager = cc.Class({
             this.pushDeep('cdnRes/battle/treasure_box_4', ResMapping.ResType.SpriteFrame);
             this.pushDeep('cdnRes/battle/treasure_box_5', ResMapping.ResType.SpriteFrame);
             this.pushDeep('cdnRes/battle/treasure_box_6', ResMapping.ResType.SpriteFrame);
+            this.pushDeep('cdnRes/battle/treasure_box_7', ResMapping.ResType.SpriteFrame);
+            this.pushDeep('cdnRes/battle/treasure_box_8', ResMapping.ResType.SpriteFrame);
+            this.pushDeep('cdnRes/battle/treasure_box_9', ResMapping.ResType.SpriteFrame);
 
             this.pushDeep('cdnRes/audio/battle/effect/boss_come', ResMapping.ResType.AudioClip);
             this.pushDeep('cdnRes/audio/battle/music/Boss_Room', ResMapping.ResType.AudioClip);
 
+            this.pushDeep('cdnRes/prefab/BattleScene/UIBattle', ResMapping.ResType.Prefab);
             this.pushDeep('cdnRes/prefab/BattleScene/UIBattlePause', ResMapping.ResType.Prefab);
             this.pushDeep('cdnRes/prefab/BattleScene/UIBattleCharge', ResMapping.ResType.Prefab);
             this.pushDeep('cdnRes/prefab/BattleScene/UIBattleRevive', ResMapping.ResType.Prefab);
             this.pushDeep('cdnRes/prefab/BattleScene/UIBattleAssist', ResMapping.ResType.Prefab);
-            // this.pushDeep('cdnRes/prefab/BattleScene/UIBattleEnd', ResMapping.ResType.Prefab);
-            // this.pushDeep('cdnRes/prefab/BattleScene/UIBattleCount', ResMapping.ResType.Prefab);
-            // this.pushDeep('cdnRes/prefab/BattleScene/UIBattleCard', ResMapping.ResType.Prefab);
 
             let memberID = GlobalVar.me().memberData.getStandingByFighterID();
             let memberArray = this.resSliceArray[memberID];
@@ -356,33 +334,7 @@ var ResManager = cc.Class({
             let battleManager = require('BattleManager').getInstance();
             let campName = battleManager.getCampName();
             if (campName != '') {
-                if (campName == 'CampEditor') {
-                    this.resDocument[SceneDefines.BATTLE_STATE].push({
-                        url: "cdnRes/battlemap",
-                        type: ResMapping.ResType.SpriteFrame
-                    });
-                    this.resDocument[SceneDefines.BATTLE_STATE].push({
-                        url: "cdnRes/bullets",
-                        type: ResMapping.ResType.SpriteFrame
-                    });
-                    this.resDocument[SceneDefines.BATTLE_STATE].push({
-                        url: "cdnRes/battlemodel/prefab/Monster",
-                        type: ResMapping.ResType.Prefab
-                    });
-                } else if (campName == 'CampDemo') {
-                    this.resDocument[SceneDefines.BATTLE_STATE].push({
-                        url: "cdnRes/battlemap",
-                        type: ResMapping.ResType.SpriteFrame
-                    });
-                    this.resDocument[SceneDefines.BATTLE_STATE].push({
-                        url: "cdnRes/battlemodel/prefab/Monster",
-                        type: ResMapping.ResType.Prefab
-                    });
-                    this.resDocument[SceneDefines.BATTLE_STATE].push({
-                        url: "cdnRes/bullets",
-                        type: ResMapping.ResType.SpriteFrame
-                    });
-                } else if (campName == 'CampEndless') {
+                if (campName == 'CampEndless') {
                     let assistID = GlobalVar.me().memberData.getAssistFighterID();
                     if (assistID != 0) {
                         let assistArray = this.resSliceArray[assistID];
@@ -437,41 +389,20 @@ var ResManager = cc.Class({
                 }
             }
         } else if (scene == SceneDefines.MAIN_STATE) {
+            this.pushDeep('cdnRes/prefab/MainScene/UIMain', ResMapping.ResType.Prefab);
             this.pushDeep('cdnRes/prefab/Common/ComMsgNode', ResMapping.ResType.Prefab);
             this.pushDeep('cdnRes/prefab/Windows/NormalRoot', ResMapping.ResType.Prefab);
             this.pushDeep('cdnRes/prefab/Windows/MaskBack', ResMapping.ResType.Prefab);
             this.pushDeep('cdnRes/prefab/Windows/RootBack', ResMapping.ResType.Prefab);
-            this.pushDeep('cdnRes/prefab/Windows/NormalDailyMissionWnd', ResMapping.ResType.Prefab);
-            this.pushDeep('cdnRes/prefab/Windows/NormalQuestListView', ResMapping.ResType.Prefab);
             this.pushDeep('cdnRes/prefab/Windows/NormalNoticeView', ResMapping.ResType.Prefab);
-            // this.pushDeep('cdnRes/prefab/Windows/EndlessChallengeView', ResMapping.ResType.Prefab);
-            // this.pushDeep('cdnRes/prefab/Windows/NormalPlane', ResMapping.ResType.Prefab);
-            // this.pushDeep('cdnRes/prefab/Windows/NormalImprovement', ResMapping.ResType.Prefab);
-            // this.pushDeep('cdnRes/prefab/Windows/GuazaiMain', ResMapping.ResType.Prefab);
-            // this.pushDeep('cdnRes/prefab/Windows/NormalBag', ResMapping.ResType.Prefab);
-            // this.pushDeep('cdnRes/prefab/Windows/NormalDrawView', ResMapping.ResType.Prefab);
-        }
-        return this.resDeepArray.length;
-    },
-
-    deepPreLoadRes: function (callback) {
-        if (typeof this.resDeepArray !== 'undefined') {
-            var self = this;
-            for (let deep in this.resDeepArray) {
-                this.loadRes(this.resDeepArray[deep].type, this.resDeepArray[deep].url, callback, function (completeCount, totalCount, item) {
-                    // console.log("completeCount: "+completeCount);
-                    // console.log("totalCount: "+totalCount);
-                    // console.log("item: ",item);
-                });
-                //     ,function (type, path) {
-                //     self.loadRes(type, path, callback, function (errorType, errorPath) {
-                //         if (!!callback) {
-                //             callback(null, errorType, errorPath);
-                //         }
-                //     });
-                // });
+            if (!!config.NEED_GUIDE) {
+                this.pushDeep('cdnRes/prefab/Windows/NormalPlane', ResMapping.ResType.Prefab);
+                this.pushDeep('cdnRes/prefab/Windows/NormalEquipment', ResMapping.ResType.Prefab);
+                this.pushDeep('cdnRes/prefab/Windows/NormalImprovement', ResMapping.ResType.Prefab);
+                this.pushDeep('cdnRes/prefab/Windows/NormalGetNewItemWnd', ResMapping.ResType.Prefab);
             }
         }
+        return this.resDeepArray.length;
     },
 
     checkPreLoadComplete: function () {
@@ -485,110 +416,17 @@ var ResManager = cc.Class({
         return true;
     },
 
-    initResDocument: function () {
-        // this.resDocument[SceneDefines.BATTLE_STATE].push({
-        //     url: "cdnRes/battle",
-        //     type: ResMapping.ResType.SpriteFrame
-        // });
-        // this.resDocument[SceneDefines.BATTLE_STATE].push({
-        //     url: "cdnRes/battlemodel/prefab/effect",
-        //     type: ResMapping.ResType.Prefab
-        // });
-    },
-
-    totalPreLoad: function (sceneState) {
-        this.loadStep = 0;
-
-        for (let i = 0; i < this.resDocument[sceneState].length; i++) {
-            this.loadResDir(this.resDocument[sceneState][i].url, this.resDocument[sceneState][i].type);
+    totalPreLoad: function (callback) {
+        if (typeof this.resDeepArray !== 'undefined') {
+            for (let deep in this.resDeepArray) {
+                this.loadRes(this.resDeepArray[deep].type, this.resDeepArray[deep].url, callback);
+            }
         }
-
-        var self = this;
-        this.deepPreLoadRes(function (obj, type, path) {
-            self.loadCompleteNotify(obj, type, path);
-        });
     },
 
-    setPreLoad: function (sceneState, callback) {
-        this.loadCallBack = callback;
-
-        // if (this.resDocument[sceneState].length == 0) {
-        //     if (!!this.loadCallBack) {
-        //         this.loadCallBack(-1);
-        //     }
-        //     return 0;
-        // }
-
+    setPreLoad: function (sceneState) {
         let sum = this.initDeepPreLoadRes(sceneState);
-        return this.resDocument[sceneState].length + sum;
-    },
-
-    loadCompleteNotify: function (obj, type, path) {
-        this.loadStep++;
-        if (!!this.loadCallBack) {
-            this.loadCallBack(this.loadStep, obj, type, path);
-        }
-    },
-
-    loadResDir: function (documentName, resType) {
-        var self = this;
-        if (resType == ResMapping.ResType.SpriteFrame) {
-            cc.loader.loadResDir(documentName, cc.SpriteFrame, (err, assets) => {
-                if (err) {
-                    // cc.error("LoadResDir err." + documentName);
-                    return;
-                }
-                for (let i = 0; i < assets.length; i++) {
-                    let loadPath = documentName + '/' + assets[i]._name;
-                    if (!self.cache[resType][loadPath]) {
-                        self.cache[resType][loadPath] = assets[i];
-                    }
-                }
-                self.loadCompleteNotify();
-            });
-        } else if (resType == ResMapping.ResType.Prefab) {
-            cc.loader.loadResDir(documentName, cc.Prefab, (err, assets) => {
-                if (err) {
-                    // cc.error("LoadResDir err." + documentName);
-                    return;
-                }
-                for (let i = 0; i < assets.length; i++) {
-                    let loadPath = documentName + '/' + assets[i]._name;
-                    if (!self.cache[resType][loadPath]) {
-                        self.cache[resType][loadPath] = assets[i];
-                    }
-                }
-                self.loadCompleteNotify();
-            });
-        } else if (resType === ResMapping.ResType.AudioClip) {
-            cc.loader.loadResDir(documentName, (err, assets) => {
-                if (err) {
-                    // cc.error("LoadResDir err." + documentName);
-                    return;
-                }
-                for (let i = 0; i < assets.length; i++) {
-                    let loadPath = documentName + '/' + assets[i]._name;
-                    if (!self.cache[resType][loadPath]) {
-                        self.cache[resType][loadPath] = assets[i];
-                    }
-                }
-                self.loadCompleteNotify();
-            });
-        } else if (resType === ResMapping.ResType.LabelAtlas) {
-            cc.loader.loadResDir(documentName, (err, assets) => {
-                if (err) {
-                    // cc.error("LoadResDir err." + documentName);
-                    return;
-                }
-                for (let i = 0; i < assets.length; i++) {
-                    let loadPath = documentName + '/' + assets[i]._name;
-                    if (!self.cache[resType][loadPath]) {
-                        self.cache[resType][loadPath] = assets[i];
-                    }
-                }
-                self.loadCompleteNotify();
-            });
-        }
+        return sum;
     },
 
     loadRes: function (resType, path, callback, errorCB) {
@@ -726,23 +564,11 @@ var ResManager = cc.Class({
                 if (i == ResMapping.ResType.SpriteFrame) {
                     cc.loader.release(this.cache[i][key]);
                 }
-                // cc.log('@@@')
-                // cc.log(this.cache[i][key])
-                // cc.log(deps);
-                // cc.log('###')
                 cc.loader.release(deps);
                 delete this.cache[i][key];
             };
         }
-        // cc.log('$$$')
-        // cc.log(this.cache);
-        // cc.log('&&&')
     },
-
-    // releaseCache: function (resType, path) {
-    //     this.cache[resType][path]
-    //     cc.loader.release(path);
-    // },
 
     getCacheRes: function (resType, path) {
         let resObj = this.cache[resType][path];

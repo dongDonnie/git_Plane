@@ -23,15 +23,15 @@ var BattleScene = cc.Class({
         this.battleManager = BattleManager.getInstance();
         this.uiNode = cc.find("Canvas/UINode");
         this.openScene();
-        this.battleManager.start(this.node, cc.find('Canvas/GameNode'));
+        if (this.battleManager.isArenaFlag) {
+            this.battleManager.startArena(this.node, cc.find('Canvas/ArenaSelfNode'), cc.find('Canvas/ArenaRivalNode'), cc.find('Canvas/GameNode'));
+        } else {
+            this.battleManager.start(this.node, cc.find('Canvas/GameNode'));
+        }
+
         if (this.battleManager.getMusic() != null) {
             GlobalVar.soundManager().playBGM("cdnRes/" + this.battleManager.getMusic());
         }
-        // if (this.battleManager.isEditorFlag) {
-        //     this.loadPrefab("UIBattleEditor")
-        // } else {
-        //     this.loadPrefab("UIBattle");
-        // }
     },
 
     start: function () {
@@ -48,28 +48,32 @@ var BattleScene = cc.Class({
     },
 
     update: function (dt) {
-        this.battleManager.update(dt);
-        if (this.battleManager.gameState == BattleDefines.GameResult.INTERRUPT) {
-            this.showPauseWnd();
-            this.battleManager.gameState = BattleDefines.GameResult.PAUSE;
-        } else if (this.battleManager.gameState == BattleDefines.GameResult.END) {
-            this.showEndWnd();
-            this.battleManager.gameState = BattleDefines.GameResult.NONE;
-        } else if (this.battleManager.gameState == BattleDefines.GameResult.PREPARE) {
-            this.showCountWnd();
-            this.battleManager.gameState = BattleDefines.GameResult.PAUSE;
-        } else if (this.battleManager.gameState == BattleDefines.GameResult.CARD) {
-            this.showDrawRewardWnd();
-            this.battleManager.gameState = BattleDefines.GameResult.NONE;
-        } else if (this.battleManager.gameState == BattleDefines.GameResult.WAITREVIVE) {
-            this.showReviveWnd();
-            this.battleManager.gameState = BattleDefines.GameResult.PAUSE;
-        } else if (this.battleManager.gameState == BattleDefines.GameResult.DASHOPEN) {
-            this.showChargeWnd();
-            this.battleManager.gameState = BattleDefines.GameResult.SHOW;
-        } else if (this.battleManager.gameState == BattleDefines.GameResult.GETASSIST) {
-            this.showGetAssistWnd();
-            this.battleManager.gameState = BattleDefines.GameResult.PAUSE;
+        if (this.battleManager.isArenaFlag) {
+
+        } else {
+            this.battleManager.update(dt);
+            if (this.battleManager.gameState == BattleDefines.GameResult.INTERRUPT) {
+                this.showPauseWnd();
+                this.battleManager.gameState = BattleDefines.GameResult.PAUSE;
+            } else if (this.battleManager.gameState == BattleDefines.GameResult.END) {
+                this.showEndWnd();
+                this.battleManager.gameState = BattleDefines.GameResult.NONE;
+            } else if (this.battleManager.gameState == BattleDefines.GameResult.PREPARE) {
+                this.showCountWnd();
+                this.battleManager.gameState = BattleDefines.GameResult.PAUSE;
+            } else if (this.battleManager.gameState == BattleDefines.GameResult.CARD) {
+                this.showDrawRewardWnd();
+                this.battleManager.gameState = BattleDefines.GameResult.NONE;
+            } else if (this.battleManager.gameState == BattleDefines.GameResult.WAITREVIVE) {
+                this.showReviveWnd();
+                this.battleManager.gameState = BattleDefines.GameResult.PAUSE;
+            } else if (this.battleManager.gameState == BattleDefines.GameResult.DASHOPEN) {
+                this.showChargeWnd();
+                this.battleManager.gameState = BattleDefines.GameResult.SHOW;
+            } else if (this.battleManager.gameState == BattleDefines.GameResult.GETASSIST) {
+                this.showGetAssistWnd();
+                this.battleManager.gameState = BattleDefines.GameResult.PAUSE;
+            }
         }
     },
 

@@ -3,6 +3,7 @@ const ResMapping = require('resmapping')
 const Defines = require('BattleDefines')
 const BattleEndlessMode = require('BattleEndlessMode')
 const BattleCampaignMode = require('BattleCampaignMode')
+const BattleArenaMode = require('BattleArenaMode')
 
 var ScenarioManager = cc.Class({
     statics: {
@@ -27,9 +28,6 @@ var ScenarioManager = cc.Class({
 
     start(mgr) {
         this.battleManager = require('BattleManager').getInstance();
-        // if (this.battleManager.isDemo) {
-        //     return;
-        // }
     },
 
     update(dt,count) {
@@ -55,9 +53,9 @@ var ScenarioManager = cc.Class({
             }
         }
 
-        // if (this.battleManager.isEditorFlag && !!this.battleEditorMode) {
-        //     this.battleEditorMode.update(dt);
-        // }
+        if (this.battleManager.isArenaFlag && !!this.battleArenaMode) {
+            this.battleArenaMode.update(dt);
+        }
 
         this.comboKillCurTime += dt;
         if (this.comboKillCurTime >= this.comboKillHoldTime) {
@@ -104,10 +102,10 @@ var ScenarioManager = cc.Class({
             this.battleCampaignMode.init(mapName);
         }
 
-        // if (this.battleManager.isEditorFlag) {
-        //     this.battleEditorMode = new BattleCampaignMode();
-        //     this.battleEditorMode.init(mapName);
-        // }
+        if (this.battleManager.isArenaFlag) {
+            this.battleArenaMode = new BattleArenaMode();
+            this.battleArenaMode.init();
+        }
 
         this.comboKillHoldTime = 1.6;
         this.comboKillCurTime = 0;
@@ -116,6 +114,12 @@ var ScenarioManager = cc.Class({
 
         this.end = false;
         return;
+    },
+
+    prime:function(bullet){
+        if (this.battleManager.isArenaFlag && !!this.battleArenaMode) {
+            this.battleArenaMode.primeBullet(bullet);
+        }
     },
 
     kill: function (entity) {

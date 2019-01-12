@@ -70,7 +70,8 @@ cc.Class({
     showFreeDrawTime: function () {
         let nextFreeTime = GlobalVar.me().drawData.getNextFreeTime();
         if (nextFreeTime <= GlobalVar.me().serverTime){
-            this.labelLeftTime.active = false;
+            this.labelLeftTime.node.active = false;
+            this.close();
         }else{
             let leftTime = nextFreeTime - GlobalVar.me().serverTime;
             let hour = parseInt(leftTime/3600);
@@ -82,7 +83,7 @@ cc.Class({
                 this.labelLeftTime.string = i18n.t('label.4000324').replace('%min', min).replace('%sec', sec);
             }
             // this.labelLeftTime.string = i18n.t('label.4000326').replace('%hour', hour).replace('%min', min).replace('%sec', sec);
-            this.labelLeftTime.active = true;
+            this.labelLeftTime.node.active = true;
         }
     },
 
@@ -114,13 +115,18 @@ cc.Class({
         }else{
             let platformApi = GlobalVar.getPlatformApi();
             if (platformApi){
-                platformApi.showRewardedVideoAd(function () {
+                platformApi.showRewardedVideoAd(204, function () {
                     GlobalVar.handlerManager().drawHandler.sendTreasureTimeReduceReq();
                 }, function () {
-                    platformApi.shareNormal(0, function () {
+                    platformApi.shareNormal(104, function () {
                         GlobalVar.handlerManager().drawHandler.sendTreasureTimeReduceReq();
                     })
                 });
+                // let self = this;
+                // self.nodeBlock.enabled = true;
+                // setTimeout(function () {
+                //     self.nodeBlock.enabled = false;
+                // }, 1500);
             }else if (GlobalVar.configGMSwitch()){
                 GlobalVar.handlerManager().drawHandler.sendTreasureTimeReduceReq();
             }

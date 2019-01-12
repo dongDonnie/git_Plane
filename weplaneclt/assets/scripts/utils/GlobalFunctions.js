@@ -124,11 +124,18 @@ gf.interceptStr = function (str, lens, strEnd) {
 };
 
 gf.playDragonBonesAnimation = function (node, callback, ani, playtimes) {
+    let block = cc.find("Canvas/BlockNode");
+    if(cc.isValid(block)){
+        block.active = true;
+    }
     node.active = true;
     ani = ani == undefined ? 'animation' : ani;
     playtimes = playtimes == undefined ? 1 : playtimes;
     node.getComponent(dragonBones.ArmatureDisplay).playAnimation(ani, playtimes);
     let complete = function (event) {
+        if(cc.isValid(block)){
+            block.active = false;
+        }
         var animationName = event.animationState ? event.animationState.name : "";
         if (animationName == ani && !!callback) {
             callback();
@@ -186,4 +193,8 @@ gf.iosOrAndr = function () {
 
 gf.checkLink = function (link) {
     return (typeof link == "string") && link != "";
+};
+
+gf.getGender = function () {
+    return 0;
 };

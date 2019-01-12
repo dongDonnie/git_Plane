@@ -1,0 +1,38 @@
+{
+  "__type__": "cc.AnimationClip",
+  "_name": "animeFinger3",
+  "_objFlags": 0,
+  "_native": "",
+  "_duration": 0.11666666666666667,
+  "sample": 60,
+  "speed": 0.2,
+  "wrapMode": "54",
+  "curveData": {
+    "props": {
+      "position": [
+        {
+          "frame": 0,
+          "value": [
+            170,
+            -490
+          ]
+        },
+        {
+          "frame": 0.08333333333333333,
+          "value": [
+            0,
+            -410
+          ]
+        },
+        {
+          "frame": 0.11666666666666667,
+          "value": [
+            0,
+            -410
+          ]
+        }
+      ]
+    }
+  },
+  "events": []
+}

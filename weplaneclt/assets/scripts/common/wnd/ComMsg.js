@@ -415,7 +415,7 @@ var ComMsg = cc.Class({
         if (errMsg) {
             this.showMsg(errMsg.strString);
         } else {
-            console.log("errCode:" + errCode + " string can not find");
+            this.showMsg("异常错误（" + errCode + ")");
         }
     },
 });

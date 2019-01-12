@@ -220,6 +220,9 @@ var UIBattle = cc.Class({
 
     setTopScore: function (num) {
         num = typeof num !== 'undefined' ? num : 0;
+        if (num > 999999){
+            num = parseInt(num / 10000) + ";<";
+        }
         this.getNodeByName("labelTopScoreNum").getComponent(cc.Label).string = num;
     },
 

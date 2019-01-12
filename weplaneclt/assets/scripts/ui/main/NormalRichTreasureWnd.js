@@ -158,7 +158,7 @@ cc.Class({
         let confirmText = this.boxStatus[num] == 2 ? "已领取" :"领取";
         let condition = this.boxStatus[num] == 1 ? true : false;
         let content = [GlobalVar.tblApi.getDataBySingleKey('TblTreasureGoldReward', this.times[times]).stItem];
-        CommonWnd.showRewardBoxWnd(null, i18n.t('label.4000255'), condition, content, null, confirm, null, confirmText);
+        CommonWnd.showRewardBoxWnd(null, 0, i18n.t('label.4000255'), condition, content, confirm, confirmText);
     },
 
     enter: function (isRefresh) {

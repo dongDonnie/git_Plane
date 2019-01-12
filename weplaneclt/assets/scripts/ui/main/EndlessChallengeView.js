@@ -19,6 +19,8 @@ const MODE_COLOR = [
     [236, 82, 255],
     [251, 209, 60],
     [255, 73, 43],
+    [255, 73, 43],
+    [255, 73, 43],
     [255, 233, 43],
 ]
 
@@ -117,7 +119,6 @@ cc.Class({
             this._super("Enter");
             this.deleteMode = false;
             BattleManager.getInstance().quitOutSide();
-            this.deleteMode = false;
             this.registerEvent();
 
 
@@ -373,7 +374,7 @@ cc.Class({
             }
             let self = this;
             let platformApi = GlobalVar.getPlatformApi();
-            if (cc.isValid(platformApi)){
+            if (platformApi){
                 platformApi.shareNormal(plus.data.byStatusID + 107, function () {
                     self.canBuyBless = false;
                     GlobalVar.handlerManager().endlessHandler.sendEndlessBuyBlessReq(1);
@@ -381,7 +382,7 @@ cc.Class({
             }
         } else{
             let platformApi = GlobalVar.getPlatformApi();
-            if (cc.isValid(platformApi)){
+            if (platformApi){
                 platformApi.shareNormal(plus.data.byStatusID + 107, function () {
                     GlobalVar.handlerManager().endlessHandler.sendEndlessBuyStatusReq(plus.data.byStatusID, 1);
                 });
@@ -393,8 +394,8 @@ cc.Class({
         let btnShare = event.target;
         let plus = btnShare.parent;
         let platformApi = GlobalVar.getPlatformApi();
-        if (cc.isValid(platformApi)){
-            platformApi.showRewardedVideoAd(function () {
+        if (platformApi){
+            platformApi.showRewardedVideoAd(plus.data.byStatusID + 207,function () {
                 GlobalVar.handlerManager().endlessHandler.sendEndlessBuyStatusReq(plus.data.byStatusID, 1);
             }, function () {
                 platformApi.shareNormal(plus.data.byStatusID + 107, function () {
@@ -403,14 +404,14 @@ cc.Class({
             });
         }
 
-        let normalRootWnd = WindowManager.getInstance().findViewInWndNode(WndTypeDefine.WindowType.E_DT_NORMALROOT_WND);
-        if (normalRootWnd){
-            let normalRootWndScript = normalRootWnd.getComponent(WndTypeDefine.WindowType.E_DT_NORMALROOT_WND)
-            normalRootWndScript.nodeBlock.enabled = true;
-            setTimeout(function () {
-                normalRootWndScript.nodeBlock.enabled = false;
-            }, 1500);
-        }
+        // let normalRootWnd = WindowManager.getInstance().findViewInWndNode(WndTypeDefine.WindowType.E_DT_NORMALROOT_WND);
+        // if (normalRootWnd){
+        //     let normalRootWndScript = normalRootWnd.getComponent(WndTypeDefine.WindowType.E_DT_NORMALROOT_WND)
+        //     normalRootWndScript.nodeBlock.enabled = true;
+        //     setTimeout(function () {
+        //         normalRootWndScript.nodeBlock.enabled = false;
+        //     }, 1500);
+        // }
     },
 
     onBuyPowerPointButtonClick: function () {
@@ -488,6 +489,27 @@ cc.Class({
         itemObj.node.active = true;
 
         this.setCountDown();
+
+        if (this.judgeCanUpgrade()) {
+            this.getNodeByName('btnChangeMode').getChildByName('spriteHotPoint').active = true;
+        } else {
+            this.getNodeByName('btnChangeMode').getChildByName('spriteHotPoint').active = false;
+        }
+    },
+
+    judgeCanUpgrade: function () {
+        let curMaxScore = GlobalVar.me().endlessData.getHistoryMaxScore();
+        let curRankLevel = GlobalVar.me().endlessData.getRankID();
+        let endlessNextRankData = GlobalVar.tblApi.getDataBySingleKey('TblEndlessRank', curRankLevel + 1);
+        if (!endlessNextRankData) return false;
+        let scoreReq = endlessNextRankData.nScoreReq;
+        let levelReq = endlessNextRankData.wLevelReq;
+
+        if (GlobalVar.me().level >= levelReq && curMaxScore >= scoreReq) {
+            return true;
+        } else {
+            return false;
+        }
     },
 
     showBlessDesc: function (event) {

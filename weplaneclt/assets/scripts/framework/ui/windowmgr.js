@@ -439,13 +439,21 @@ var WindowManager = cc.Class({
                             wnd.getComponent(type).needShowRecommond();
                             wnd.getComponent(type).needShowTestPlayFinish();
                         });
-                    }else {
+                    } else {
                         this.pushView(this.record);
                     }
                 }
                 this.record = '';
             }
         }
+    },
+
+    changeRecordView: function (record) {
+        this.record = typeof record !== 'undefined' ? record : '';
+    },
+
+    clearRecordView: function () {
+        this.record = '';
     },
 
     setRevertViewStack: function () {

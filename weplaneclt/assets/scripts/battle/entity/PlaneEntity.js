@@ -115,12 +115,7 @@ cc.Class({
         this.prop[Defines.PropName.Life] *= (1.0 + this.prop[Defines.PropName.LifeGrow] / 10000.0);
         this.prop[Defines.PropName.Attack] *= (1.0 + this.prop[Defines.PropName.AttackGrow] / 10000.0);
         this.prop[Defines.PropName.Defense] *= (1.0 + this.prop[Defines.PropName.DefenseGrow] / 10000.0);
-        // this.prop[Defines.PropName.PetAttack] = this.prop[Defines.PropName.Attack] * 0.6;
-        // this.prop[Defines.PropName.AssistAttack] = this.prop[Defines.PropName.Attack] * 0.4;
-        // this.prop[Defines.PropName.MissileAttack] = this.prop[Defines.PropName.Attack] * 0.8;
-        // this.prop[Defines.PropName.SkillAttack] = this.prop[Defines.PropName.Attack] * 10;
-
-        //this.prop[Defines.PropName.Life]+=this.prop[Defines.PropName.Defense]*5;
+        
         this.hp = this.maxHp = this.prop[Defines.PropName.Life] + this.prop[Defines.PropName.Defense] * 5;
 
         var member = GlobalVar.me().memberData.getMemberByID(id);
@@ -431,7 +426,7 @@ cc.Class({
                 animeName = "Tx_GetBuff_Hf";
             } else if (type == Defines.Assist.HP) {
                 animeName = "Tx_GetBuff_Hf";
-            } else if (type >= Defines.Assist.CHEST1 && type <= Defines.Assist.CHEST6) {
+            } else if (type >= Defines.Assist.CHEST1 && type <= Defines.Assist.CHEST9) {
                 animeName = "Tx_GetBuff_Bx";
             }
             if (animeName != '') {

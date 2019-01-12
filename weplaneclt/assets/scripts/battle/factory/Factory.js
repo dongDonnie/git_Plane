@@ -258,6 +258,10 @@ var Factory = cc.Class({
         } else if (owner.objectType == Defines.ObjectType.OBJ_MONSTER) {
             type = Defines.ObjectType.OBJ_MONSTER_BULLET;
             bullet.setZ(Defines.Z.MONSTERBULLET);
+        } else if (owner.objectType == Defines.ObjectType.OBJ_SELF) {
+            type = Defines.ObjectType.OBJ_SELF_BULLET;
+        } else if (owner.objectType == Defines.ObjectType.OBJ_RIVAL) {
+            type = Defines.ObjectType.OBJ_RIVAL_BULLET;
         }
 
         bullet.setObjectData(type, id);

@@ -1259,7 +1259,7 @@
         <col name="Desc" type="comment"/>
     </table>
 
-    <table name="TblMemberPieceCrystal" file="data/memberpiececrystal.tbl" key="ItemID" serveronly="true">
+    <table name="TblMemberPieceCrystal" file="data/memberpiececrystal.tbl" key="ItemID">
         <col name="ItemID" type="UINT16"/>
         <col name="Crystal" type="INT32"/>
         <col name="ItemDesc" type="string"/>
@@ -1781,7 +1781,7 @@
         <col name="Comment" type="comment" />
     </table>
 
-    <table name="TblRankStore" file="data/rankstore.tbl" setkey="StoreID" serveronly="true">
+    <table name="TblRankStore" file="data/rankstore.tbl" setkey="StoreID">
         <col name="StoreID" type="UINT16" />
         <col name="ID" type="UINT16" />
         <col name="Goods" type="TblItemCount" vector="true" />

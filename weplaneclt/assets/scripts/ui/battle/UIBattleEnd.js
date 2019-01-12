@@ -9,6 +9,8 @@ const md5 = require("md5");
 const i18n = require('LanguageData');
 const base64 = require("base64");
 const WndTypeDefine = require("wndtypedefine");
+const weChatAPI = require("weChatAPI");
+const config = require("config");
 
 const RECV_ALL_NEED_VIP_LEVEL = 3;
 
@@ -122,7 +124,7 @@ cc.Class({
             let token = md5.MD5(tokenStr);
             GlobalVar.handlerManager().endlessHandler.sendEndlessEndBattleReq(endlessScore, 0, bmgr.endlessGetChsetCount, token);
             let platformApi = GlobalVar.getPlatformApi();
-            if (platformApi){
+            if (platformApi) {
                 let historyMaxScore = GlobalVar.me().endlessData.getHistoryMaxScore();
                 console.log("my history max score:", historyMaxScore, "  cur round score: ", endlessScore);
                 if (endlessScore >= historyMaxScore) {
@@ -260,6 +262,7 @@ cc.Class({
                 }
 
                 this.nodeGetItem.getComponent(cc.Layout).updateLayout();
+                this.showSuperInduce();
             }
         } else {
             GlobalVar.comMsg.errorWarning(event.ErrCode);
@@ -459,7 +462,7 @@ cc.Class({
             getGold = parseInt(this.labelFiveGetGold.string);
 
             let platformApi = GlobalVar.getPlatformApi();
-            if (cc.isValid(platformApi)){
+            if (cc.isValid(platformApi)) {
                 platformApi.shareNormal(107, function () {
                     self.alreadRecvGoldBtnClick = true;
                     nodeEndless.getChildByName("nodeRecvGold").active = false;
@@ -470,7 +473,7 @@ cc.Class({
                     GlobalVar.handlerManager().endlessHandler.sendEndlessGetGoldReq(getGold);
                     // GlobalVar.sceneManager().gotoScene(SceneDefines.MAIN_STATE);
                 });
-            }else if (GlobalVar.configGMSwitch()){                
+            } else if (GlobalVar.configGMSwitch()) {
                 this.alreadRecvGoldBtnClick = true;
                 nodeEndless.getChildByName("nodeRecvGold").active = false;
                 nodeEndless.getChildByName("nodeGet").getChildByName("labelGetValue").getComponent(cc.Label).string = getGold;
@@ -516,8 +519,31 @@ cc.Class({
         GlobalVar.sceneManager().gotoScene(SceneDefines.MAIN_STATE);
     },
 
-    updateScore: function (targetData) {
+    showSuperInduce: function () {
+        let superInduceCount = GlobalVar.me().fuLiGCBag.SuperInduceCount;
+        let random = Math.random() * 100;
+        let cityFlagSwitch = GlobalVar.getCityFlagSwitch();
+        let cityFlag = GlobalVar.me().loginData.getLoginReqDataCityFlag();
+        console.log("-------------SuperInduce-------------");
+        console.log("guide =" +config.NEED_GUIDE );
+        console.log("ShareSwitch =" +GlobalVar.getShareSwitch() );    
+        console.log("cityFlag=" +GlobalVar.me().loginData.getLoginReqDataCityFlag());
+        console.log("random = " + random);
+        console.log("superBannerProb" + weChatAPI.shareSetting.superBannerProb);
+        console.log("SuperInduceCount=" +superInduceCount );
+        
+        if (!config.NEED_GUIDE &&
+            GlobalVar.getShareSwitch() &&
+            (cityFlagSwitch == 0 || cityFlag == 0) &&
+            random < weChatAPI.shareSetting.superBannerProb &&
+            superInduceCount < weChatAPI.shareSetting.superBannerMax) 
+        {
+            GlobalVar.windowManager().record = WndTypeDefine.WindowType.E_DT_NORMAL_BANNER_YD_WND;
+        }
+        
+    },
 
+    updateScore: function (targetData) {
         if (typeof targetData.plusScore == 'undefined') {
             targetData.plusScore = Math.ceil((targetData.targetScore - targetData.startScore) / (1 / BattleDefines.BATTLE_FRAME_SECOND));
             targetData.curScore = 0;

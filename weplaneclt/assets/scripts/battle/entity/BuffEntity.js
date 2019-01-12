@@ -53,6 +53,12 @@ cc.Class({
                 resName = "cdnRes/battle/treasure_box_5";
             } else if (this.objectID == Defines.Assist.CHEST6) {
                 resName = "cdnRes/battle/treasure_box_6";
+            } else if (this.objectID == Defines.Assist.CHEST7) {
+                resName = "cdnRes/battle/treasure_box_7";
+            } else if (this.objectID == Defines.Assist.CHEST8) {
+                resName = "cdnRes/battle/treasure_box_8";
+            } else if (this.objectID == Defines.Assist.CHEST9) {
+                resName = "cdnRes/battle/treasure_box_9";
             } else {
                 resName = "cdnRes/battle/gold";
             }

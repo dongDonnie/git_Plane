@@ -1,0 +1,94 @@
+{
+  "__type__": "cc.AnimationClip",
+  "_name": "animeTreasureShake",
+  "_objFlags": 0,
+  "_native": "",
+  "_duration": 0.8333333333333334,
+  "sample": 60,
+  "speed": 0.75,
+  "wrapMode": "54",
+  "curveData": {
+    "props": {
+      "position": [
+        {
+          "frame": 0,
+          "value": [
+            0,
+            0
+          ]
+        },
+        {
+          "frame": 0.06666666666666667,
+          "value": [
+            10,
+            5
+          ]
+        },
+        {
+          "frame": 0.13333333333333333,
+          "value": [
+            -5,
+            -10
+          ]
+        },
+        {
+          "frame": 0.2,
+          "value": [
+            -10,
+            5
+          ]
+        },
+        {
+          "frame": 0.25,
+          "value": [
+            5,
+            -10
+          ]
+        },
+        {
+          "frame": 0.3,
+          "value": [
+            0,
+            0
+          ]
+        },
+        {
+          "frame": 0.35,
+          "value": [
+            -5,
+            -10
+          ]
+        },
+        {
+          "frame": 0.4,
+          "value": [
+            -10,
+            5
+          ]
+        },
+        {
+          "frame": 0.45,
+          "value": [
+            5,
+            10
+          ]
+        },
+        {
+          "frame": 0.5,
+          "value": [
+            0,
+            0
+          ]
+        },
+        {
+          "frame": 0.8333333333333334,
+          "value": [
+            0,
+            0
+          ]
+        }
+      ]
+    }
+  },
+  "events": []
+}

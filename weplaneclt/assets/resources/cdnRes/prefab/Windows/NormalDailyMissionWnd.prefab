@@ -4795,8 +4795,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 230.4,
-      "height": 22
+      "width": 251.34,
+      "height": 26
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -4844,8 +4844,8 @@
     "_useOriginalSize": false,
     "_string": "通关主线第14章第10关",
     "_N$string": "通关主线第14章第10关",
-    "_fontSize": 22,
-    "_lineHeight": 22,
+    "_fontSize": 24,
+    "_lineHeight": 26,
     "_enableWrapText": true,
     "_N$file": {
       "__uuid__": "4ad6af19-80c7-4c8f-ad73-b023fe3bc1f0"
@@ -4913,7 +4913,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 126.94999999999999,
+      "width": 155.16000000000003,
       "height": 18
     },
     "_anchorPoint": {
@@ -4977,8 +4977,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 45,
-      "height": 18
+      "width": 55,
+      "height": 24
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -4987,7 +4987,7 @@
     },
     "_position": {
       "__type__": "cc.Vec3",
-      "x": -40.974999999999994,
+      "x": -50.08000000000001,
       "y": 0,
       "z": 0
     },
@@ -5026,8 +5026,8 @@
     "_useOriginalSize": false,
     "_string": "进度 ",
     "_N$string": "进度 ",
-    "_fontSize": 18,
-    "_lineHeight": 18,
+    "_fontSize": 22,
+    "_lineHeight": 24,
     "_enableWrapText": true,
     "_N$file": {
       "__uuid__": "4ad6af19-80c7-4c8f-ad73-b023fe3bc1f0"
@@ -5079,8 +5079,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 35.79,
-      "height": 18
+      "width": 43.74,
+      "height": 24
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -5089,7 +5089,7 @@
     },
     "_position": {
       "__type__": "cc.Vec3",
-      "x": 17.315000000000005,
+      "x": 21.15999999999999,
       "y": 0,
       "z": 0
     },
@@ -5128,8 +5128,8 @@
     "_useOriginalSize": false,
     "_string": "130",
     "_N$string": "130",
-    "_fontSize": 18,
-    "_lineHeight": 18,
+    "_fontSize": 22,
+    "_lineHeight": 24,
     "_enableWrapText": true,
     "_N$file": {
       "__uuid__": "4ad6af19-80c7-4c8f-ad73-b023fe3bc1f0"
@@ -5181,8 +5181,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 10.37,
-      "height": 18
+      "width": 12.68,
+      "height": 24
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -5191,7 +5191,7 @@
     },
     "_position": {
       "__type__": "cc.Vec3",
-      "x": 22.500000000000004,
+      "x": 27.49999999999999,
       "y": 0,
       "z": 0
     },
@@ -5230,8 +5230,8 @@
     "_useOriginalSize": false,
     "_string": "/",
     "_N$string": "/",
-    "_fontSize": 18,
-    "_lineHeight": 18,
+    "_fontSize": 22,
+    "_lineHeight": 24,
     "_enableWrapText": true,
     "_N$file": {
       "__uuid__": "4ad6af19-80c7-4c8f-ad73-b023fe3bc1f0"
@@ -5283,8 +5283,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 35.79,
-      "height": 18
+      "width": 43.74,
+      "height": 24
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -5293,7 +5293,7 @@
     },
     "_position": {
       "__type__": "cc.Vec3",
-      "x": 27.685000000000002,
+      "x": 33.83999999999999,
       "y": 0,
       "z": 0
     },
@@ -5332,8 +5332,8 @@
     "_useOriginalSize": false,
     "_string": "140",
     "_N$string": "140",
-    "_fontSize": 18,
-    "_lineHeight": 18,
+    "_fontSize": 22,
+    "_lineHeight": 24,
     "_enableWrapText": true,
     "_N$file": {
       "__uuid__": "4ad6af19-80c7-4c8f-ad73-b023fe3bc1f0"
@@ -5394,7 +5394,7 @@
     "_enabled": true,
     "_layoutSize": {
       "__type__": "cc.Size",
-      "width": 126.94999999999999,
+      "width": 155.16000000000003,
       "height": 18
     },
     "_resize": 1,
@@ -6454,8 +6454,8 @@
     "target": {
       "__id__": 1
     },
-    "component": "NormalDailyMissionWnd",
-    "_componentId": "",
+    "component": "",
+    "_componentId": "fad72yHFTNCg4Yxn7WcMPi8",
     "handler": "onNewTaskBtnRecvClick",
     "customEventData": ""
   },

@@ -104,6 +104,16 @@ GlobalVar.getShareSwitch = function () {
     }
     return true;
 },
+GlobalVar.cityFlagSwitch = false;
+GlobalVar.getCityFlagSwitch = function () {
+    if (cc.sys.platform == cc.sys.WECHAT_GAME){
+        return GlobalVar.cityFlagSwitch;
+    }else if (window && window["wywGameId"]=="5469"){
+        return false;
+    }
+    return true;
+},
+
 GlobalVar.videoAdOpen = false;
 GlobalVar.getVideoAdSwitch = function () {
     if (cc.sys.platform == cc.sys.WECHAT_GAME){
@@ -133,6 +143,7 @@ GlobalVar.configGMSwitch = function () {
 
 GlobalVar.firstTimeLaunch = true;
 GlobalVar.showAuthorization = true;
+GlobalVar.showSignView = false;
 
 GlobalVar.cleanAllMgr = function () {
     // ResManager.getInstance().clearCache();

@@ -133,13 +133,18 @@ cc.Class({
         }else{
             let platformApi = GlobalVar.getPlatformApi();
             if (cc.isValid(platformApi)){
-                platformApi.showRewardedVideoAd(function () {
+                platformApi.showRewardedVideoAd(215, function () {
                     GlobalVar.handlerManager().shareHandler.sendGetFreeDiamondReq();
                 }, function () {
                     platformApi.shareNormal(115, function () {
                         GlobalVar.handlerManager().shareHandler.sendGetFreeDiamondReq();
                     }); 
                 });
+                // let self = this;
+                // self.nodeBlock.enabled = true;
+                // setTimeout(function () {
+                //     self.nodeBlock.enabled = false;
+                // }, 1500);
             }else if (GlobalVar.configGMSwitch()){
                 GlobalVar.handlerManager().shareHandler.sendGetFreeDiamondReq();
             }

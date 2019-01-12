@@ -156,6 +156,7 @@ cc.Class({
             spriteTip.active = true;
             GlobalVar.me().setLevelUpFlag();
             this.openNewFunction();
+            cc.find('Canvas/UINode/UIMain').getComponent('UIMain').onGuideNeed();
         }
     },
 
@@ -164,7 +165,7 @@ cc.Class({
         let tblSystem = GlobalVar.tblApi.getData('TblSystem');
         let systems = [];
         for (let key in tblSystem) {
-            if (tblSystem[key].wOpenLevel != 1 && tblSystem[key].byLevelUpShow == 1) {
+            if (tblSystem[key].wOpenLevel != 1 && tblSystem[key].wOpenLevel != 999 && tblSystem[key].byLevelUpShow == 1) {
                 systems.push(tblSystem[key]);
             }
         }
@@ -180,19 +181,19 @@ cc.Class({
             }
         }
 
-        let chapterDataList = GlobalVar.tblApi.getDataBySingleKey('TblChapter', 1);
-        for (let i = 0; i < chapterDataList.length; i++){
-            if (level >= chapterDataList[i].wOpenLv && this.levelOld < chapterDataList[i].wOpenLv) {
-                let str = '第' + (i + 1) + '章  ' + chapterDataList[i].strChapterName + '  开启';
-                let model = cc.instantiate(this.openModel);
-                model.active = true;
-                model.getChildByName('labelOpenTecName').getComponent(cc.Label).string = "主线关卡";
-                model.getChildByName('labelOpenTecDesc').getComponent(cc.Label).string = str;
-                model.getChildByName('spriteOpenIcon').active = false;
-                model.getChildByName('btnGo').active = true;
-                this.nodeOpenSystem.addChild(model);
-            }
-        }
+        // let chapterDataList = GlobalVar.tblApi.getDataBySingleKey('TblChapter', 1);
+        // for (let i = 0; i < chapterDataList.length; i++){
+        //     if (level >= chapterDataList[i].wOpenLv && this.levelOld < chapterDataList[i].wOpenLv) {
+        //         let str = '第' + (i + 1) + '章  ' + chapterDataList[i].strChapterName + '  开启';
+        //         let model = cc.instantiate(this.openModel);
+        //         model.active = true;
+        //         model.getChildByName('labelOpenTecName').getComponent(cc.Label).string = "主线关卡";
+        //         model.getChildByName('labelOpenTecDesc').getComponent(cc.Label).string = str;
+        //         model.getChildByName('spriteOpenIcon').active = false;
+        //         model.getChildByName('btnGo').active = true;
+        //         this.nodeOpenSystem.addChild(model);
+        //     }
+        // }
     },
 
     goToChapterView: function () {

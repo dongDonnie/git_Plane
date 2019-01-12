@@ -107,21 +107,28 @@ cc.Class({
             let curMaxScore = GlobalVar.me().endlessData.getHistoryMaxScore();
             let curRankLevel = GlobalVar.me().endlessData.getRankID();
             let endlessNextRankData = GlobalVar.tblApi.getDataBySingleKey('TblEndlessRank', curRankLevel + 1);
-            let scoreReq = endlessNextRankData.nScoreReq;
-            let levelReq = endlessNextRankData.wLevelReq;
-
-            if (GlobalVar.me().level >= levelReq && curMaxScore >= scoreReq) {
-                this.node.getChildByName('tips').active = true;
-                this.node.getChildByName('btnoUpgrade').active = true;
-                this.node.getChildByName('btnoNoUpgrade').active = true;
-                let tip = this.node.getChildByName('tips').getChildByName('tipLabel').getComponent(cc.Label);
-                tip.string = "已达到晋级条件，是否晋级为" + endlessNextRankData.strRankName + "，\n并升级军衔宝箱";
-                this.canUpGrade = true;
-            } else {
+            if (!endlessNextRankData) {
                 this.node.getChildByName('tips').active = false;
                 this.node.getChildByName('btnoUpgrade').active = false;
                 this.node.getChildByName('btnoNoUpgrade').active = false;
                 this.canUpGrade = false;
+            } else {
+                let scoreReq = endlessNextRankData.nScoreReq;
+                let levelReq = endlessNextRankData.wLevelReq;
+    
+                if (GlobalVar.me().level >= levelReq && curMaxScore >= scoreReq) {
+                    this.node.getChildByName('tips').active = true;
+                    this.node.getChildByName('btnoUpgrade').active = true;
+                    this.node.getChildByName('btnoNoUpgrade').active = true;
+                    let tip = this.node.getChildByName('tips').getChildByName('tipLabel').getComponent(cc.Label);
+                    tip.string = "已达到晋级条件，是否晋级为" + endlessNextRankData.strRankName + "，\n并升级军衔宝箱";
+                    this.canUpGrade = true;
+                } else {
+                    this.node.getChildByName('tips').active = false;
+                    this.node.getChildByName('btnoUpgrade').active = false;
+                    this.node.getChildByName('btnoNoUpgrade').active = false;
+                    this.canUpGrade = false;
+                }
             }
         }
     },
@@ -129,7 +136,11 @@ cc.Class({
     updateMode: function(model, index){
         // model.getChildByName("spriteModeText").getComponent("RemoteSprite").setFrame(index);
         // model.getChildByName("btnoSelect").getComponent(cc.Button).clickEvents[0].customEventData = index;
-
+        if (index > 5) {
+            model.getChildByName("spriteIcon").y = 80;
+        } else {
+            model.getChildByName("spriteIcon").y = 70;
+        }
         model.getChildByName("spriteIcon").getComponent("RemoteSprite").setFrame(index);
         model.getChildByName("labelLevelLimitDesc").active = true;
         model.getChildByName("spriteTextBg").active = true;
@@ -184,31 +195,6 @@ cc.Class({
         model.getChildByName("itemRankBox").getComponent("ItemObject").updateItem(modeData.wRewardItem);
         model.getChildByName("itemRankBox").getComponent("ItemObject").setSpriteEdgeVisible(false);
         model.getChildByName("itemRankBox").opacity = 255;
-
-        // if (GlobalVar.me().endlessData.getRankID() == index + 1){
-        //     strDesc = i18n.t('label.4000260');
-        //     // model.getChildByName("labelDesc").color = cc.color(255, 166, 51);
-        //     model.getChildByName("spriteTextBg").active = true;
-        // }else {
-        //     strDesc = i18n.t('label.4000261').replace("%d", scoreReq/10000);
-        // }
-        //     // model.getChildByName("labelDesc").color = cc.color(255, 166, 51);
-        //     model.getChildByName("spriteTextBg").active = true;
-        //     if (GlobalVar.me().level < levelReq){
-        //         model.getChildByName("labelLevelLimitDesc").getComponent(cc.Label).string = i18n.t('label.4000265').replace("%level", levelReq);
-        //         model.getChildByName("labelLevelLimitDesc").active = true;
-        //     }
-            
-        // // }else{
-        // //     model.getChildByName("spriteTextBg").active = false;
-        // // }
-        // model.getChildByName("labelDesc").getComponent(cc.Label).string = strDesc;
-        // let rankID = GlobalVar.me().endlessData.getRankID();
-        // if (rankID<index + 1){
-        //     model.getChildByName("btnoSelect").getComponent(cc.Button).interactable = false;
-        // }else{
-        //     model.getChildByName("btnoSelect").getComponent(cc.Button).interactable = true;
-        // }
     },
 
     enter: function (isRefresh) {
@@ -225,6 +211,13 @@ cc.Class({
         } else {
             this._super(false);
         }
+    },
+
+    close: function () {
+        this.node.getChildByName('tips').active = false;
+        this.node.getChildByName('btnoUpgrade').active = false;
+        this.node.getChildByName('btnoNoUpgrade').active = false;
+        this._super();
     },
 
     onBtnUpGrade: function () {

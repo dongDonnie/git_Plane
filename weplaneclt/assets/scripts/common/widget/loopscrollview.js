@@ -5,6 +5,10 @@
 cc.Class({
     extends: cc.Component,
 
+    editor: {
+        requireComponent: cc.ScrollView,
+        menu: 'i18n:MAIN_MENU.component.ui/LoopScrollview'  
+    },
     properties: {
 
         itemDataCount: {
@@ -349,6 +353,9 @@ cc.Class({
         this.pageMaxCount = rowNeedCount * colNeedCount;
 
         this.createItems();
+        if (this.intervalIndex != -1) {
+            clearInterval(this.intervalIndex);
+        }
         this.intervalIndex = setInterval(this.createItems.bind(this), this.createInterval);
     },
 

@@ -75,7 +75,9 @@ var SceneBase = cc.Class({
             return;
         }
         let block = cc.find("Canvas/BlockNode");
-        block.active = true;
+        if (cc.isValid(block)) {
+            block.active = true;
+        }
         var self = this;
         GlobalVar.resManager().loadRes(ResMapping.ResType.Prefab, "cdnRes/prefab/" + this.sceneName + "/" + prefabName, function (prefab) {
             if (prefab != null) {
@@ -84,7 +86,9 @@ var SceneBase = cc.Class({
                 if (!!callback) {
                     callback();
                 }
-                block.active = false;
+                if (cc.isValid(block)) {
+                    block.active = false;
+                }
             } else {
                 GlobalVar.comMsg.showMsg(i18n.t('label.4000003'));
                 self.reLoadPrefab(prefabName, callback);
@@ -103,7 +107,9 @@ var SceneBase = cc.Class({
                     callback();
                 }
                 let block = cc.find("Canvas/BlockNode");
-                block.active = false;
+                if(isValid(block)){
+                    block.active = false;
+                }
             } else {
                 self.reLoadPrefab(prefabName, callback);
             }

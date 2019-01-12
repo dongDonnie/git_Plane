@@ -10,6 +10,7 @@ var TblApi = cc.Class({
             // console.log("load tblall.json start, current time:", new Date().getTime());
             if (err) {
                 console.error(err);
+                if (!!cb) cb(false);
             } else {
                 var tbldata = JSON.parse(JSON.stringify(res.json));
                 // console.log("go through tblall to save data, current time:", new Date().getTime());
@@ -24,7 +25,7 @@ var TblApi = cc.Class({
                     }
                 }
 
-                if (!!cb) cb();
+                if (!!cb) cb(true);
             }
             // console.log("load tblall.json end, current time:", new Date().getTime());
         });

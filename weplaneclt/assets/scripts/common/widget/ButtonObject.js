@@ -105,28 +105,25 @@ var ButtonObject = cc.Class({
     },
 
     onTouchStart: function (event) {
-        if (!ButtonObject.isPress) {
+        if (!cc.isValid(ButtonObject.isPress)) {
             this.playAudio();
             ButtonObject.isPress = event.target;
         }
     },
     onTouchEnd: function (event) {
-        if (!!ButtonObject.isPress) {
+        if (cc.isValid(ButtonObject.isPress)) {
             if (cc.isValid(event.target)) {
                 if (ButtonObject.isPress.uuid != event.target.uuid) {
                     event.target.getComponent(cc.Button)._pressed = false;
                 } else {
                     ButtonObject.isPress = null;
                 }
-            } else {
-                ButtonObject.isPress = null;
             }
         } else {
             if (cc.isValid(event.target)) {
                 event.target.getComponent(cc.Button)._pressed = false;
-            }else{
-                ButtonObject.isPress = null;
             }
+            ButtonObject.isPress = null;
         }
 
         if (config.NEED_GUIDE) {

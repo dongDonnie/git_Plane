@@ -140,7 +140,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 635,
-      "height": 840
+      "height": 800
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -230,7 +230,7 @@
     "_position": {
       "__type__": "cc.Vec3",
       "x": 0,
-      "y": 270,
+      "y": 250,
       "z": 0
     },
     "_scale": {
@@ -1593,7 +1593,7 @@
     "_position": {
       "__type__": "cc.Vec3",
       "x": 0,
-      "y": -116,
+      "y": -98,
       "z": 0
     },
     "_scale": {
@@ -2453,7 +2453,7 @@
     "_alignFlags": 1,
     "_left": 0,
     "_right": 0,
-    "_top": 96,
+    "_top": 78,
     "_bottom": 0,
     "_verticalCenter": 0,
     "_horizontalCenter": 0,
@@ -2571,7 +2571,7 @@
     "_position": {
       "__type__": "cc.Vec3",
       "x": 288,
-      "y": 369.5,
+      "y": 349.5,
       "z": 0
     },
     "_scale": {
@@ -3008,7 +3008,7 @@
     "_position": {
       "__type__": "cc.Vec3",
       "x": 0,
-      "y": 98,
+      "y": 78,
       "z": 0
     },
     "_scale": {
@@ -3091,7 +3091,7 @@
     "_position": {
       "__type__": "cc.Vec3",
       "x": -196,
-      "y": -28.5,
+      "y": 11.5,
       "z": 0
     },
     "_scale": {
@@ -3578,7 +3578,7 @@
     "_alignFlags": 9,
     "_left": -281,
     "_right": 0,
-    "_top": -0.5,
+    "_top": -40.5,
     "_bottom": 0,
     "_verticalCenter": 0,
     "_horizontalCenter": 0,
@@ -3661,7 +3661,7 @@
     "_position": {
       "__type__": "cc.Vec3",
       "x": -16,
-      "y": -28.5,
+      "y": 11.5,
       "z": 0
     },
     "_scale": {
@@ -4148,7 +4148,7 @@
     "_alignFlags": 9,
     "_left": -100,
     "_right": 0,
-    "_top": 0,
+    "_top": -40,
     "_bottom": 0,
     "_verticalCenter": 0,
     "_horizontalCenter": 0,
@@ -4272,7 +4272,7 @@
     "_position": {
       "__type__": "cc.Vec3",
       "x": 0,
-      "y": -160,
+      "y": -140,
       "z": 0
     },
     "_scale": {
@@ -9609,7 +9609,7 @@
     "asset": {
       "__uuid__": "36e89db5-12e2-4ff0-a430-1c5c03b21514"
     },
-    "fileId": "f1f8Av1+FOoYPE4mFHbGnE",
+    "fileId": "9eBQ8O9L9CHqnwHkVCe8So",
     "sync": false
   },
   {
@@ -9709,7 +9709,7 @@
     "asset": {
       "__uuid__": "36e89db5-12e2-4ff0-a430-1c5c03b21514"
     },
-    "fileId": "f27pJm5cxHma9ysd1voVt2",
+    "fileId": "c1e5BQx0xGrpo3NH6gWZZw",
     "sync": false
   },
   {
@@ -12248,7 +12248,7 @@
     "asset": {
       "__uuid__": "36e89db5-12e2-4ff0-a430-1c5c03b21514"
     },
-    "fileId": "d8VIwAAONGo5l3P37sC/Qb",
+    "fileId": "dfP0iIaaRLc7UEl4jch3vT",
     "sync": false
   },
   {
@@ -12348,7 +12348,7 @@
     "asset": {
       "__uuid__": "36e89db5-12e2-4ff0-a430-1c5c03b21514"
     },
-    "fileId": "0f8o88TxlAs5WOvMw8mlD1",
+    "fileId": "ac2m9WKKZHApnrVq+r4ATF",
     "sync": false
   },
   {
@@ -14887,7 +14887,7 @@
     "asset": {
       "__uuid__": "36e89db5-12e2-4ff0-a430-1c5c03b21514"
     },
-    "fileId": "ba0llpZ+hBNZWppttLUejm",
+    "fileId": "36Nl20wFNG/L5hafO2YvJ6",
     "sync": false
   },
   {
@@ -14987,7 +14987,7 @@
     "asset": {
       "__uuid__": "36e89db5-12e2-4ff0-a430-1c5c03b21514"
     },
-    "fileId": "8fnWXVnNZOlL5bW2Z4AeFB",
+    "fileId": "7aoUgS2dxMua6B/E1+ktv5",
     "sync": false
   },
   {
@@ -17526,7 +17526,7 @@
     "asset": {
       "__uuid__": "36e89db5-12e2-4ff0-a430-1c5c03b21514"
     },
-    "fileId": "d6/72ZtZBOjZuLGNBhx+Xa",
+    "fileId": "22NhY1GUhB67slu3vUDCAE",
     "sync": false
   },
   {
@@ -17626,7 +17626,7 @@
     "asset": {
       "__uuid__": "36e89db5-12e2-4ff0-a430-1c5c03b21514"
     },
-    "fileId": "efxmw04yhK7p83OoYKuyke",
+    "fileId": "25pJ49tUVOuJ+tR3Fk/xUg",
     "sync": false
   },
   {
@@ -20165,7 +20165,7 @@
     "asset": {
       "__uuid__": "36e89db5-12e2-4ff0-a430-1c5c03b21514"
     },
-    "fileId": "3e+4U4CW9C04yGO+QJjsa0",
+    "fileId": "a7ZAb1wbJEsIHiOvgPuFKB",
     "sync": false
   },
   {
@@ -20265,7 +20265,7 @@
     "asset": {
       "__uuid__": "36e89db5-12e2-4ff0-a430-1c5c03b21514"
     },
-    "fileId": "5d9elUlclJRryNm9ctLymx",
+    "fileId": "f6JGi43MdNFLDF37ZIXpUN",
     "sync": false
   },
   {
@@ -23171,7 +23171,7 @@
     "_position": {
       "__type__": "cc.Vec3",
       "x": 0,
-      "y": 372,
+      "y": 352,
       "z": 0
     },
     "_scale": {
