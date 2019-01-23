@@ -1,13 +1,10 @@
 const RootBase = require("RootBase");
 const WindowManager = require("windowmgr");
-const StoreData = require("StoreData");
 const GlobalVar = require("globalvar");
 const EventMsgId = require("eventmsgid");
 const GameServerProto = require("GameServerProto");
-const GlobalFunctions = require("GlobalFunctions");
 const CommonWnd = require("CommonWnd");
 const StoreageData = require("storagedata");
-const weChatAPI = require("weChatAPI");
 
 const DIAMOND_ID = 3;
 
@@ -365,11 +362,6 @@ cc.Class({
         } else {
             GlobalVar.handlerManager().limitStoreHandler.sendReq(GameServerProto.GMID_FULI_GIFT_BUY_REQ, msg);
         }
-        // let self = this;
-        // this.nodeBlock.enabled = true;
-        // setTimeout(function () {
-        //     self.nodeBlock.enabled = false;
-        // }, 1500);
 
     },
 

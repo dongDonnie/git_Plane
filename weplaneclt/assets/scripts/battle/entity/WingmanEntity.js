@@ -1,5 +1,6 @@
 const Defines = require('BattleDefines');
 const PartEntity = require('PartEntity');
+const BattleManager = require('BattleManager');
 
 cc.Class({
     extends: PartEntity,
@@ -83,8 +84,12 @@ cc.Class({
     },
 
     update(dt) {
-        this._super(dt);
         this.chaseFighter(dt);
+        if(!!BattleManager.getInstance().bossAppear){
+            return;
+        }
+
+        this._super(dt);
 
         if (this.showType == 1) {
             if (this.lastSkillTime <= 0) {

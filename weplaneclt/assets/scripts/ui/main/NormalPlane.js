@@ -4,7 +4,6 @@ const WindowManager = require("windowmgr");
 const RootBase = require("RootBase");
 const WndTypeDefine = require("wndtypedefine");
 const CommonWnd = require("CommonWnd");
-const i18n = require('LanguageData');
 const GlobalFunc = require('GlobalFunctions');
 const BattleManager = require('BattleManager');
 const GameServerProto = require("GameServerProto");
@@ -105,6 +104,10 @@ cc.Class({
             default: true,
             visible: false
         },
+        hotMixDrive: {
+            default: null,
+            type: cc.Node,
+        }
     },
 
     onLoad: function () {
@@ -146,10 +149,19 @@ cc.Class({
             this.hangarScroll.getComponent("SpecialScroll").cleanAllFighter();
             if (!this.deleteMode) {
                 var self = this;
-                WindowManager.getInstance().insertView(WndTypeDefine.WindowType.E_DT_NORMALEQUIPMENT_WND, WndTypeDefine.WindowType.E_DT_NORMALROOT_WND, function (wnd, name, type) {
-                    let member = GlobalVar.me().memberData.getMemberByID(self.memberID);
-                    wnd.getComponent(type).updataFighter(member.MemberID, member.Quality, member.Level);
-                }, true, false);
+                if (this.nextWndFlag == 1) {
+                    WindowManager.getInstance().insertView(WndTypeDefine.WindowType.E_DT_NORMALEQUIPMENT_WND, WndTypeDefine.WindowType.E_DT_NORMALROOT_WND, function (wnd, name, type) {
+                        let member = GlobalVar.me().memberData.getMemberByID(self.memberID);
+                        wnd.getComponent(type).updataFighter(member.MemberID, member.Quality, member.Level);
+                    }, true, false);
+                } else if (this.nextWndFlag == 2) {
+                    WindowManager.getInstance().insertView(WndTypeDefine.WindowType.E_DT_NORMAL_MIXDRIVE_WND, WndTypeDefine.WindowType.E_DT_NORMALROOT_WND, function (wnd, name, type) {
+                        let id = GlobalVar.me().memberData.getStandingByFighterID();
+                        let member = GlobalVar.me().memberData.getMemberByID(id);
+                        wnd.getComponent(type).updataFighter(member.MemberID, member.Quality);
+                        wnd.getComponent(type).updateDriveCardShow();
+                    }, true, false);
+                }
             } else {
                 let uiNode = cc.find("Canvas/UINode");
                 BattleManager.getInstance().quitOutSide();
@@ -158,9 +170,10 @@ cc.Class({
         } else if (name == "Enter") {
             this._super("Enter");
             this.deleteMode = false;
+            this.curShowFighter = null;
             GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_MEMBER_STANDINGBY_NTF, this.onSetFighter, this);
             GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_MEMBER_ACTIVE_NTF, this.onActiveFighter, this);
-
+            GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_MEMBER_PIECE_CHANGE_NTF, this.onMemberPieceChange, this);
             if (GlobalFunc.isAllScreen() && !this.fixViewComplete) {
                 this.fixViewComplete = true;
                 this.fixFighter();
@@ -180,6 +193,14 @@ cc.Class({
             let id = GlobalVar.me().memberData.getStandingByFighterID();
             let member = GlobalVar.me().memberData.getMemberByID(id);
             this.updataFighter(member.MemberID, member.Quality, member.Level);
+
+            let level = GlobalVar.me().getLevel();
+            let openLevel = GlobalVar.tblApi.getDataBySingleKey('TblSystem', GameServerProto.PT_SYSTEM_MEMBER_STORE).wOpenLevel;
+            this.getNodeByName('btnMemberStore').active = level >= openLevel;
+
+            openLevel = GlobalVar.tblApi.getDataBySingleKey('TblSystem', GameServerProto.PT_SYSTEM_MIXPLANES).wOpenLevel;
+            this.getNodeByName('btnMixDrive').active = level >= openLevel;
+            level >= openLevel && (this.hotMixDrive.active = GlobalVar.me().memberData.getMixDriveHotFlag());
         }
     },
 
@@ -196,6 +217,16 @@ cc.Class({
             this._super(true);
         } else {
             this._super(false);
+        }
+    },
+
+    onMemberPieceChange: function () {
+        let id = this.curShowFighter || 710;
+        let member = GlobalVar.me().memberData.getMemberByID(id);
+        if (member != null) {
+            this.updataFighter(member.MemberID, member.Quality, member.Level);
+        } else {
+            this.updataFighter(id, 100, 1);
         }
     },
 
@@ -296,6 +327,7 @@ cc.Class({
         if (data == this.memberID) {
             return;
         }
+        this.curShowFighter = data;
         if (member != null) {
             this.updataFighter(member.MemberID, member.Quality, member.Level);
         } else {
@@ -305,6 +337,7 @@ cc.Class({
 
     advanceFighter: function () {
         this.deleteMode = false;
+        this.nextWndFlag = 1;
         this.animePlay(0);
     },
 
@@ -336,7 +369,17 @@ cc.Class({
 
     setFighter: function () {
         let conf = GlobalVar.me().memberData.getStandingByFighterConf();
-        GlobalVar.handlerManager().memberHandler.sendStandingByReq(this.memberID, conf.MixMember1ID, conf.MixMember2ID, conf.MixMember3ID, conf.MixMember4ID, conf.MysteryID);
+        let mixIdx = GlobalVar.me().memberData.isMemberInMix(this.memberID);
+        if (mixIdx > -1) {  // 当前飞机处于合体驱动状态
+            let self = this;
+            CommonWnd.showMessage(null, 1, '提示', '该战机处于合体驱动状态，是否确认\n出战此战机', null, function () {
+                let confEdit = JSON.parse(JSON.stringify(conf));
+                confEdit['MixMember' + (mixIdx + 1) + 'ID'] = 0;
+                GlobalVar.handlerManager().memberHandler.sendStandingByReq(self.memberID, confEdit.MixMember1ID, confEdit.MixMember2ID, confEdit.MixMember3ID, confEdit.MixMember4ID, confEdit.MysteryID);
+            }, null, '确认', '');
+        } else {
+            GlobalVar.handlerManager().memberHandler.sendStandingByReq(this.memberID, conf.MixMember1ID, conf.MixMember2ID, conf.MixMember3ID, conf.MixMember4ID, conf.MysteryID);
+        }
     },
 
     onSetFighter: function (msg) {
@@ -345,6 +388,12 @@ cc.Class({
         }
         this.updateState();
         this.hangarScroll.getComponent("SpecialScroll").updateFighter();
+    },
+
+    showMixDrive: function () {
+        this.deleteMode = false;
+        this.nextWndFlag = 2;
+        this.animePlay(0);
     },
 
     onBtnMemberStore: function () {

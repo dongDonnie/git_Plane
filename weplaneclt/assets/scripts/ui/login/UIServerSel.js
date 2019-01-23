@@ -1,9 +1,6 @@
 const UIBase = require("uibase");
 const GlobalVar = require("globalvar");
-const weChatAPI = require("weChatAPI");
-const CommonWnd = require("CommonWnd");
 const EventMsgID = require("eventmsgid");
-const NetworkManager = require("networkmgr");
 
 var UIServerSel = cc.Class({
     extends: UIBase,

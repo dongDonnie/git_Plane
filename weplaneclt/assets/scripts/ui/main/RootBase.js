@@ -3,6 +3,7 @@ const WindowManager = require("windowmgr");
 const WndTypeDefine = require("wndtypedefine");
 const UIBase = require("uibase");
 const GlobalFunc = require('GlobalFunctions');
+const ButtonObject = require('ButtonObject');
 
 cc.Class({
     extends: UIBase,
@@ -64,8 +65,10 @@ cc.Class({
     },
 
     animePlay: function (mode) {
-
-        this.nodeBlock && (this.nodeBlock.enabled = true);
+        let block = cc.find("Canvas/BlockNode");
+        if (cc.isValid(block)) {
+            block.active = true;
+        }
         if (this.selfAnimeName != "") {
             switch (mode) {
                 case 0:
@@ -88,7 +91,10 @@ cc.Class({
     },
 
     animePlayCallBack(name) {
-        this.nodeBlock && (this.nodeBlock.enabled = false);
+        let block = cc.find("Canvas/BlockNode");
+        if (cc.isValid(block)) {
+            block.active = false;
+        }
         if (name == "Escape") {
             if (this.deleteMode) {
                 if (!this.needPopNormalRoot()) {
@@ -106,11 +112,12 @@ cc.Class({
         } else if (name == "Enter") {
             if (this.openType == 1) {
                 let uiNode = cc.find("Canvas/UINode");
-                if (uiNode != null) {
+                if (cc.isValid(uiNode)) {
                     uiNode.active = false;
                 }
             }
         }
+        ButtonObject.isPress = null;
     },
 
     touchMain: function () {
@@ -197,7 +204,7 @@ cc.Class({
     },
 
     showBannnerCallback: function () {
-        
+
     },
 
 });

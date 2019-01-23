@@ -63,7 +63,6 @@ cc.Class({
 
     onLoad: function () {
         this._super();
-        i18n.init('zh');
         this.typeName = WndTypeDefine.WindowType.E_DT_NORMALEQUIPMENT_WND;
         this.animeStartParam(0);
         if (GlobalFunc.isAllScreen() && !this.fixViewComplete) {
@@ -242,14 +241,6 @@ cc.Class({
         });
     },
 
-    onEnable: function () {
-        // cc.log("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
-    },
-
-    onDisable: function () {
-        // cc.log("******************************************");
-    },
-
     LOADING_ACTION_STYLE_SEQ_WITH_EASEOUT: function (duration, from, to, callback) {
         let lvTab = this.getNodeByName("spriteLevelUp");
         let bar = lvTab.getChildByName("barExpPercent");
@@ -264,26 +255,26 @@ cc.Class({
         }
     },
 
-    test: function () {
-        // cc.log("$");
-        let lvTab = this.getNodeByName("spriteLevelUp");
-        let bar = lvTab.getChildByName("barExpPercent").getComponent(cc.ProgressBar);
-        this.LOADING_ACTION_STYLE_SEQ_WITH_EASEOUT(0.2, bar.progress, 0.2);
-        this.schedule(this.test5, 0.5);
-    },
+    // test: function () {
+    //     // cc.log("$");
+    //     let lvTab = this.getNodeByName("spriteLevelUp");
+    //     let bar = lvTab.getChildByName("barExpPercent").getComponent(cc.ProgressBar);
+    //     this.LOADING_ACTION_STYLE_SEQ_WITH_EASEOUT(0.2, bar.progress, 0.2);
+    //     this.schedule(this.test5, 0.5);
+    // },
 
-    test1: function () {
-        // cc.log("&");
-        this.unschedule(this.test5);
-    },
+    // test1: function () {
+    //     // cc.log("&");
+    //     this.unschedule(this.test5);
+    // },
 
-    test2: function () {
-        this.test4();
-    },
+    // test2: function () {
+    //     this.test4();
+    // },
 
-    test4: function () {
-        // cc.log("@@@@@@@@@@@@@@")
-    },
+    // test4: function () {
+    //     // cc.log("@@@@@@@@@@@@@@")
+    // },
 
     test3: function (event, index) {
         this.deleteMode = false;
@@ -293,12 +284,12 @@ cc.Class({
         }
     },
 
-    test5: function () {
-        let lvTab = this.getNodeByName("spriteLevelUp");
-        let bar = lvTab.getChildByName("barExpPercent").getComponent(cc.ProgressBar);
-        //this.LOADING_ACTION_STYLE_SEQ_WITH_EASEOUT(0.3,bar.progress,Math.floor(Math.random()*10)/10);
-        this.LOADING_ACTION_STYLE_SEQ_WITH_EASEOUT(0.2, bar.progress, 0.3);
-    },
+    // test5: function () {
+    //     let lvTab = this.getNodeByName("spriteLevelUp");
+    //     let bar = lvTab.getChildByName("barExpPercent").getComponent(cc.ProgressBar);
+    //     //this.LOADING_ACTION_STYLE_SEQ_WITH_EASEOUT(0.3,bar.progress,Math.floor(Math.random()*10)/10);
+    //     this.LOADING_ACTION_STYLE_SEQ_WITH_EASEOUT(0.2, bar.progress, 0.3);
+    // },
 
     fixView: function () {
         let bottomWidget = this.node.getChildByName("spriteBottom").getComponent(cc.Widget);

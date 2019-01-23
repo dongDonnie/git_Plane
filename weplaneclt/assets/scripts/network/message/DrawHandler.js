@@ -6,7 +6,6 @@
 
 var HandlerBase = require("handlerbase");
 var GlobalVar = require('globalvar');
-var EventMsgID = require("eventmsgid");
 var GameServerProto = require("GameServerProto");
 
 var self = null;
@@ -18,7 +17,6 @@ cc.Class({
     },
 
     initHandler: function (handlerMgr) {
-        // handlerMgr.setKey(GameServerProto.GMID_TREASURE_MINING_ACK,GameServerProto.GMID_TREASURE_MINING_REQ);
         
         GlobalVar.messageDispatcher.bindMsg(GameServerProto.GMID_TREASURE_MINING_ACK, self._recvDrawAck, self);
         GlobalVar.messageDispatcher.bindMsg(GameServerProto.GMID_TREASURE_DATA_ACK, self._recvTreasureDataAck, self);

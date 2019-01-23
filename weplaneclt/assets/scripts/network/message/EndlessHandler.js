@@ -2,7 +2,6 @@
 
 var HandlerBase = require("handlerbase")
 var GlobalVar = require('globalvar')
-var EventMsgID = require("eventmsgid")
 const GameServerProto = require("GameServerProto");
 
 var self = null;
@@ -15,14 +14,6 @@ cc.Class({
     },
 
     initHandler: function (handlerMgr) {
-        // handlerMgr.setKey(GameServerProto.GMID_ENDLESS_BAG_ACK, GameServerProto.GMID_ENDLESS_BAG_REQ);
-        // handlerMgr.setKey(GameServerProto.GMID_ENDLESS_RANKUP_ACK, GameServerProto.GMID_ENDLESS_RANKUP_REQ);
-        // handlerMgr.setKey(GameServerProto.GMID_ENDLESS_STARTBATTLE_ACK, GameServerProto.GMID_ENDLESS_STARTBATTLE_REQ);
-        // handlerMgr.setKey(GameServerProto.GMID_ENDLESS_ENDBATTLE_ACK, GameServerProto.GMID_ENDLESS_ENDBATTLE_REQ);
-        // handlerMgr.setKey(GameServerProto.GMID_ENDLESS_QUITBATTLE_ACK, GameServerProto.GMID_ENDLESS_QUITBATTLE_REQ);
-        // handlerMgr.setKey(GameServerProto.GMID_ENDLESS_BUYBLESS_ACK, GameServerProto.GMID_ENDLESS_BUYBLESS_REQ);
-        // handlerMgr.setKey(GameServerProto.GMID_ENDLESS_BUYSTATUS_ACK, GameServerProto.GMID_ENDLESS_BUYSTATUS_REQ);
-        // handlerMgr.setKey(GameServerProto.GMID_ENDLESS_BUY_POWERPOINT_ACK, GameServerProto.GMID_ENDLESS_BUY_POWERPOINT_REQ);
 
         GlobalVar.messageDispatcher.bindMsg(GameServerProto.GMID_ENDLESS_BAG_ACK, self._recvEndlessGetBagAck, self);
         GlobalVar.messageDispatcher.bindMsg(GameServerProto.GMID_ENDLESS_RANKUP_ACK, self._recvEndlessRankUpAck, self);
@@ -38,6 +29,7 @@ cc.Class({
         GlobalVar.messageDispatcher.bindMsg(GameServerProto.GMID_ENDLESS_GETGOLD_ACK, self._recvEndlessGetGoldAck, self);
         GlobalVar.messageDispatcher.bindMsg(GameServerProto.GMID_ENDLESS_POWERPOINT_NTF, self._recvEndlessPowerPointNtf, self);
         GlobalVar.messageDispatcher.bindMsg(GameServerProto.GMID_ENDLESS_CHARGE_REWARD_ACK, self._recvEndlessChargeRewardAck, self);
+        GlobalVar.messageDispatcher.bindMsg(GameServerProto.GMID_RANK_ACK, self._recvRankWorldAck, self);
     },
 
     checkMsg(msg) {
@@ -126,6 +118,12 @@ cc.Class({
         if (!self.checkMsg(msg)) return;
         
         GlobalVar.me().endlessData.setEndlessChargeData(msg.data);
+    },
+
+    _recvRankWorldAck: function (msgId, msg) {
+        if (!self.checkMsg(msg)) return;
+
+        GlobalVar.me().endlessData.setRankWorldData(msg.data);
     },
 
 
@@ -272,6 +270,13 @@ cc.Class({
         };
 
         self.sendMsg(GameServerProto.GMID_ENDLESS_CHARGE_REWARD_REQ, msg);
+    },
+
+    sendEndlessRankWorldReq: function () {
+        let msg = {
+            Type: GameServerProto.PT_RANKTYPE_ENDLESS
+        }
+        this.sendMsg(GameServerProto.GMID_RANK_REQ, msg);
     },
 
 });

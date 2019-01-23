@@ -1,5 +1,6 @@
 
 const StoreageData = require("storagedata");
+const GlobalVar = require("globalvar");
 var gf = module.exports;
 
 gf.LabelColor = {
@@ -197,4 +198,12 @@ gf.checkLink = function (link) {
 
 gf.getGender = function () {
     return 0;
+};
+
+gf.getDayPass = function (dayTime, now) {
+    dayTime = dayTime ? dayTime : GlobalVar.me().createTime;
+    now = now ? now : GlobalVar.me().serverTime;
+    let a = parseInt((dayTime - 5 * 3600 + 8 * 3600) / (3600 * 24));
+    let b = parseInt((now - 5 * 3600 + 8 * 3600) / (3600 * 24));
+    return b - a + 1;
 };

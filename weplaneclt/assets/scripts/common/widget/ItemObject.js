@@ -1,8 +1,5 @@
 const UIBase = require("uibase");
 const GlobalVar = require("globalvar")
-const CommonDefine = require("define");
-const ResMapping = require("resmapping");
-const ResManager = require("ResManager");
 const WindowManager = require("windowmgr");
 const WndTypeDefine = require("wndtypedefine");
 const i18n = require('LanguageData');
@@ -103,15 +100,14 @@ var ItemObject = cc.Class({
     },
 
     onLoad: function () {
-        i18n.init('zh');
         //this.node.on("touchstart", this.onTouchStart, this);
         //this.node.on("touchend", this.onTouchEnd, this);
     },
 
-    onTouchStart: function(){
+    onTouchStart: function () {
 
     },
-    onTouchEnd: function(){
+    onTouchEnd: function () {
 
     },
 
@@ -193,31 +189,31 @@ var ItemObject = cc.Class({
             if (!!this.closeTarget) {
                 this.closeTarget();
             }
-        }else{
+        } else {
 
         }
     },
 
-    setSpriteItemIconData: function (icon,color) {
+    setSpriteItemIconData: function (icon, color) {
         this.setSpriteItemIconVisible(true);
         //let path = 'cdnRes/itemicon/'+icon;
-        if(this.itemData!=null){
-            let path='';
-            if(this.itemData.byType!=53){
-                path = 'cdnRes/itemicon/'+this.itemData.byType+'/'+icon;
-            }else{
-                if(this.itemData.byColor!=6){
-                    path='cdnRes/itemicon/'+this.itemData.byType+'/'+this.itemData.byColor+'/'+icon;
-                }else{
-                    path='cdnRes/itemicon/'+this.itemData.byType+'/5/'+icon;
+        if (this.itemData != null) {
+            let path = '';
+            if (this.itemData.byType != 53 && this.itemData.byType != 59) {
+                path = 'cdnRes/itemicon/' + this.itemData.byType + '/' + icon;
+            } else {
+                if (this.itemData.byColor != 6) {
+                    path = 'cdnRes/itemicon/' + '53' + '/' + this.itemData.byColor + '/' + icon;
+                } else {
+                    path = 'cdnRes/itemicon/' + '53' + '/5/' + icon;
                 }
             }
-            if(path!=''){
+            if (path != '') {
                 this.spriteItemIcon.getComponent("RemoteSprite").loadFrameFromLocalRes(path);
             }
-        }else{
-            if(typeof color !=='undefined'){
-                let path='cdnRes/itemicon/53/'+(color+1)+'/'+icon;
+        } else {
+            if (typeof color !== 'undefined') {
+                let path = 'cdnRes/itemicon/53/' + (color + 1) + '/' + icon;
                 this.spriteItemIcon.getComponent("RemoteSprite").loadFrameFromLocalRes(path);
             }
         }
@@ -242,7 +238,7 @@ var ItemObject = cc.Class({
     },
 
     setSpritePieceData: function (type) {
-        if (type == 30) {
+        if (type == 30 || type == 59) {
             this.setSpritePieceVisible(true);
         } else {
             this.setSpritePieceVisible(false);
@@ -313,7 +309,7 @@ var ItemObject = cc.Class({
         }
 
         this.spriteHotPoint.node.stopAllActions();
-        if (type == 0){
+        if (type == 0) {
             this.spriteHotPoint.node.runAction(cc.repeatForever(cc.sequence(cc.fadeOut(1), cc.fadeIn(1))));
         } else {
             this.spriteHotPoint.node.opacity = 255;
@@ -326,14 +322,14 @@ var ItemObject = cc.Class({
 
     setSpriteLevelBgVisible: function (visible) {
         visible = typeof visible !== 'undefined' ? visible : true;
-        if (this.spriteLevelBg){
+        if (this.spriteLevelBg) {
             this.spriteLevelBg.node.active = visible;
         }
     },
 
     setLabelLevelData: function (level) {
         level = typeof level !== 'undefined' ? level : 0;
-        level = level.toString().replace(/[^0-9]/ig,"");;
+        level = level.toString().replace(/[^0-9]/ig, "");;
         if (level != 0) {
             this.setLabelLevelDataVisible(true);
             this.setSpriteLevelBgVisible(true);
@@ -370,13 +366,13 @@ var ItemObject = cc.Class({
             this.labelNumber.string = 0;
         } else {
             this.setLabelNumberVisible(true);
-            if (this.itemID == 2){
-                num = num*10000;
+            if (this.itemID == 2) {
+                num = num * 10000;
             }
             if (this.itemData.byType != GameServerProto.PT_ITEMTYPE_VALUE && num > this.itemData.wOverlap && !canOverLap) {
                 this.labelNumber.string = this.itemData.wOverlap;
             } else {
-                if (num > 99999){
+                if (num > 99999) {
                     num = Math.floor(num / 10000);
                     num += "万";
                 }
@@ -460,5 +456,6 @@ var ItemObject = cc.Class({
         this.setRichtextNumberVisible(isVisible);
         this.setSpriteChoosingVisible(isVisible);
         this.setNodeAddVisible(isVisible);
+        this.setSpriteEdgeVisible(isVisible);
     },
 });

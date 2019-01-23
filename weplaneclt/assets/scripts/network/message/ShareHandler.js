@@ -1,7 +1,6 @@
 
 var HandlerBase = require("handlerbase")
 var GlobalVar = require('globalvar')
-var EventMsgID = require("eventmsgid")
 var GameServerProto = require("GameServerProto");
 
 var self = null;
@@ -20,6 +19,8 @@ cc.Class({
         GlobalVar.messageDispatcher.bindMsg(GameServerProto.GMID_FULI_SHARE_MEMBER_TESTPLAY_ACK, self._recvMemberTestPlayAck, self);
         GlobalVar.messageDispatcher.bindMsg(GameServerProto.GMID_FULI_SHARE_DAILY_ACK, self._recvShareDailyAck, self);
         GlobalVar.messageDispatcher.bindMsg(GameServerProto.GMID_FULI_SHARE_SUPERFULI_ACK, self._recvSuperRewardAck, self);
+        GlobalVar.messageDispatcher.bindMsg(GameServerProto.GMID_FULI_SHARE_INVITE_GIFTBAG_ACK, self._recvInviteGiftBagAck, self);
+        GlobalVar.messageDispatcher.bindMsg(GameServerProto.GMID_FULI_SHARE_GUAZAI_JINHUA_ACK, self._recvGuazaiJinHuaAck, self);
     },
 
     _recvGetFreeDiamondAck: function (msgId, msg) {
@@ -30,7 +31,7 @@ cc.Class({
         GlobalVar.me().shareData.setFreeDiamondCount(msg.data);
     },
     _recvGetFreeGoldAck: function (msgId, msg) {
-        if (typeof msg != "object"){
+        if (typeof msg != "object") {
             return;
         }
 
@@ -55,7 +56,7 @@ cc.Class({
 
 
     _recvRecommandAck: function (msgId, msg) {
-        if (typeof msg != "object"){
+        if (typeof msg != "object") {
             return;
         }
 
@@ -70,14 +71,14 @@ cc.Class({
     },
 
     _recvMemberTestPlayAck: function (msgId, msg) {
-        if (typeof msg != "object"){
+        if (typeof msg != "object") {
             return;
         }
 
         GlobalVar.me().shareData.setMemberTestPlayData(msg.data);
     },
     sendMemberTestPlayReq: function (memberID) {
-        if (!memberID){
+        if (!memberID) {
             console.log("memberID error");
         }
         let msg = {
@@ -87,10 +88,10 @@ cc.Class({
     },
 
     _recvShareDailyAck: function (msgId, msg) {
-        if (typeof msg != "object"){
+        if (typeof msg != "object") {
             return;
         }
-        
+
         GlobalVar.me().shareData.setShareDailyData(msg.data);
     },
     sendShareDailyReq: function (reserved) {
@@ -102,7 +103,7 @@ cc.Class({
     },
 
     _recvSuperRewardAck: function (msgId, msg) {
-        if (typeof msg != "object"){
+        if (typeof msg != "object") {
             return;
         }
 
@@ -111,8 +112,39 @@ cc.Class({
 
     sendSuperRewardReq: function (reserved) {
         let msg = {
-            Reserved: reserved||0,
+            Reserved: reserved || 0,
         };
         self.sendMsg(GameServerProto.GMID_FULI_SHARE_SUPERFULI_REQ, msg);
+    },
+
+    _recvInviteGiftBagAck: function (msgId, msg) {
+        if (typeof msg != "object") {
+            return;
+        }
+
+        GlobalVar.me().shareData.setInviteGiftBagData(msg.data);
+    },
+
+    _recvGuazaiJinHuaAck: function (msgId, msg) {
+        if (typeof msg != "object") {
+            return;
+        }
+
+        GlobalVar.me().shareData.setGuazaiJinHuaData(msg.data);
+    },
+
+    sendInviteGiftBagReq: function (ticket) {
+        let msg = {
+            Ticket: ticket,
+        };
+        self.sendMsg(GameServerProto.GMID_FULI_SHARE_INVITE_GIFTBAG_REQ);
+    },
+
+    sendGetFreeJinHuaReq: function (reserved) {
+        reserved = reserved ? reserved : 1;
+        let msg = {
+            Reserved: reserved,
+        };
+        self.sendMsg(GameServerProto.GMID_FULI_SHARE_GUAZAI_JINHUA_REQ, msg);
     },
 });

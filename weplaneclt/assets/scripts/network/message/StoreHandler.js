@@ -1,6 +1,5 @@
 var HandlerBase = require("handlerbase")
 var GlobalVar = require('globalvar')
-var EventMsgID = require("eventmsgid")
 var GameServerProto = require("GameServerProto");
 
 var self = null;
@@ -13,9 +12,6 @@ cc.Class({
 
     initHandler: function(handlerMgr) {
         this.handlerMgr = handlerMgr;
-        // handlerMgr.setKey(GameServerProto.GMID_STORE_DATA_ACK,GameServerProto.GMID_STORE_DATA_REQ);
-        // handlerMgr.setKey(GameServerProto.GMID_STORE_BUY_ACK,GameServerProto.GMID_STORE_BUY_REQ);
-        // handlerMgr.setKey(GameServerProto.GMID_STORE_REFRESH_ACK,GameServerProto.GMID_STORE_REFRESH_REQ);
 
         GlobalVar.messageDispatcher.bindMsg(GameServerProto.GMID_STORE_DATA_ACK, self._recvStoreAck, self);
         // GlobalVar.messageDispatcher.bindMsg(GameServerProto.GMID_MIBAO_STORE_DATA_ACK, self._recvStoreAck, self); //原来飞机2的很多不同商店
@@ -43,7 +39,6 @@ cc.Class({
         if (typeof msg != "object") { 
             return; 
         }
-
         GlobalVar.me().storeData.saveData(msgId,msg);
     },
 
@@ -51,7 +46,6 @@ cc.Class({
         if (typeof msg != "object") { 
             return; 
         }
-
         GlobalVar.me().storeData.saveBuyData(msgId,msg);
     },
 

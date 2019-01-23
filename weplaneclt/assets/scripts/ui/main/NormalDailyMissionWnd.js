@@ -8,8 +8,6 @@ const GameServerProto = require("GameServerProto");
 const CommonWnd = require("CommonWnd");
 const i18n = require('LanguageData');
 const GlobalFunc = require('GlobalFunctions');
-const weChatAPI = require("weChatAPI");
-const qqPlayAPI = require("qqPlayAPI");
 
 const TAB_NEWTASK = 0, TAB_DAILYMISSION = 1;
 const BUTTON_INACTIVE = 0, BUTTON_ACTIVE = 1;
@@ -72,7 +70,6 @@ cc.Class({
 
     onLoad: function () {
         this._super();
-        i18n.init('zh');
         this.typeName = WndTypeDefine.WindowType.E_DT_NORMAL_DAILY_MISSION_WND;
 
         this.animeStartParam(0, 0);
@@ -276,11 +273,21 @@ cc.Class({
 
                 // 按钮
                 if (curRate == maxRate) {
-                    nodeChallenge.getChildByName("btnRecv").active = true;
+                    if (newTaskRate.TaskID % 3 == 0) {
+                        nodeChallenge.getChildByName("btnRecv").active = false;
+                        nodeChallenge.getChildByName("btnWatchVideo").active = true;
+                        nodeChallenge.getChildByName("btnRecvText").active = true;
+                    } else {
+                        nodeChallenge.getChildByName("btnRecv").active = true;
+                        nodeChallenge.getChildByName("btnWatchVideo").active = false;
+                        nodeChallenge.getChildByName("btnRecvText").active = false;
+                    }
                     nodeChallenge.getChildByName("btnGo").active = false;
                 } else {
                     nodeChallenge.getChildByName("btnRecv").active = false;
                     nodeChallenge.getChildByName("btnGo").active = true;
+                    nodeChallenge.getChildByName("btnRecvText").active = false;
+                    nodeChallenge.getChildByName("btnWatchVideo").active = false;
                 }
                 nodeRate.opacity = 255;
                 nodeRate.getChildByName("labelMaxRate").getComponent(cc.Label).string = maxRate;
@@ -525,11 +532,6 @@ cc.Class({
                         GlobalVar.handlerManager().dailyHandler.sendDailyActiveRewardReq(active);
                     })
                 })
-                // let self = this;
-                // self.nodeBlock.enabled = true;
-                // setTimeout(function () {
-                //     self.nodeBlock.enabled = false;
-                // }, 1500);
             };
         }
 
@@ -713,9 +715,24 @@ cc.Class({
         this.initChallengeTab();
     },
 
-    onNewTaskBtnRecvClick: function (event) {
+    onNewTaskBtnRecvClick: function (event, customEventData) {
+        let platformApi = GlobalVar.getPlatformApi();
         let newTaskRate = GlobalVar.me().dailyData.getNewTaskData();
-        GlobalVar.handlerManager().dailyHandler.sendNewTaskRewardReq(newTaskRate.TaskID);
+        if (customEventData == 0) {
+            GlobalVar.handlerManager().dailyHandler.sendNewTaskRewardReq(newTaskRate.TaskID);
+        } else {
+            if (platformApi) {
+                platformApi.showRewardedVideoAd(234, function () {
+                    GlobalVar.handlerManager().dailyHandler.sendNewTaskRewardReq(newTaskRate.TaskID, 1);
+                }, function () {
+                    platformApi.shareNormal(134, function () {
+                        GlobalVar.handlerManager().dailyHandler.sendNewTaskRewardReq(newTaskRate.TaskID, 1);
+                    });
+                })
+            } else {
+                GlobalVar.handlerManager().dailyHandler.sendNewTaskRewardReq(newTaskRate.TaskID, 1);
+            }
+        }
     },
     onNewTaskBtnGoClick: function (event) {
         let newTaskRate = GlobalVar.me().dailyData.getNewTaskData();
@@ -726,6 +743,7 @@ cc.Class({
     },
 
     removeListennerAndBanner: function () {
+        this.dailyScroll.loopScroll && this.dailyScroll.loopScroll.releaseViewItems();
         GlobalVar.eventManager().removeListenerWithTarget(this);
     },
 
@@ -811,62 +829,6 @@ cc.Class({
         }
     },
 
-    // addDaily: function (index) {
-    //     if (index >= this.dailyDatas.length) {
-    //         return;
-    //     }
-    //     if ((index + 1) >= this.dailyDatas.length) {
-    //         this.complete = true;
-    //     }
-    //     if (this.checkDelDaily(index)) {
-    //         this.count += 10;
-    //         this.addDaily(this.count / 10);
-    //         return;
-    //     }
-
-    //     let nodeDaily = this.nodeTabContent[TAB_DAILYMISSION];
-    //     let content = nodeDaily.getChildByName("nodeMisstion").getChildByName("scrollviewDaily").getComponent(cc.ScrollView).content;
-
-    //     let isUpdateDailyModel = false;
-    //     if (content.children[this.dailyCount]) {
-    //         this.updateDaily(content.children[this.dailyCount], this.dailyDatas[index]);
-    //         isUpdateDailyModel = true;
-    //     }
-    //     else {
-    //         let daily = cc.instantiate(this.nodeDailyModel);
-    //         daily.opacity = 255;
-    //         content.addChild(daily);
-    //         this.updateDaily(daily, this.dailyDatas[index])
-    //         daily.x = -1000;
-    //         let self = this;
-    //         daily.runAction(cc.sequence(cc.moveBy(1 / 4, 1000, 0), cc.callFunc(() => {
-    //             self.count += 10;
-    //             self.addDaily(self.count / 10);
-    //         })));
-    //     }
-
-    //     this.dailyCount += 1;
-    //     if (this.complete) {
-    //         // nodeDaily.getChildByName("nodeMisstion").getChildByName("scrollviewDaily").getComponent(cc.ScrollView).scrollToTop();
-    //         if (content.children.length == 0) {
-    //             // 没有任务加载到content中说明能做的任务已经全部完成了
-    //             nodeDaily.getChildByName("nodeMisstion").active = false;
-    //             nodeDaily.getChildByName("nodeComplete").active = true;
-    //         } else {
-    //             if (content.children.length > this.dailyCount) {
-    //                 content.children[content.children.length - 1].destroy();
-    //             }
-    //         }
-    //         content.getComponent(cc.Layout).updateLayout();
-    //         this.dirty = false;
-    //     }
-
-    //     if (isUpdateDailyModel) {
-    //         this.count += 10;
-    //         this.addDaily(this.count / 10);
-    //     }
-    // },
-
     checkDelDaily: function (index) {
         let data = this.dailyDatas[index];
         if (!data) return true;
@@ -887,9 +849,9 @@ cc.Class({
         if (vipLevel == 0 && data.wID == GameServerProto.PT_DAILY_TASK_VIP) {
             return true;
         }
-        //当视频关闭时，观看视频任务不显示
+        //当视频或分享关闭时，观看视频任务不显示
         if (data.wID == GameServerProto.PT_DAILY_TASK_AD){
-            return !GlobalVar.getShareSwitch();
+            return !GlobalVar.getShareSwitch() || !GlobalVar.getVideoAdSwitch();
             // return false;
         }
         //当该任务为月卡任务且IOS支付开关未开启时，排除任务

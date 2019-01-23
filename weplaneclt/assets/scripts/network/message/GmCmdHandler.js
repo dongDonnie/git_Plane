@@ -1,9 +1,5 @@
 var HandlerBase = require("handlerbase")
-var GlobalVar = require('globalvar')
-var EventMsgID = require("eventmsgid")
-var GameServerProto = require("GameServerProto");
 
-var self = null;
 cc.Class({
     extends: HandlerBase,
 

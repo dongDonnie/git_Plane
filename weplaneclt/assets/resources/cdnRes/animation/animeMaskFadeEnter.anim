@@ -33,7 +33,7 @@
       "frame": 0.25,
       "func": "animePlayCallBack",
       "params": [
-        "animeMaskFadeEnter"
+        "Enter"
       ]
     }
   ]

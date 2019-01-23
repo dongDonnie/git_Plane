@@ -11,6 +11,7 @@ const BattleManager = require('BattleManager');
 const config = require("config");
 const Guide = require('Guide');
 const WindowManager = require("windowmgr");
+const StoreageData = require("storagedata");
 
 cc.Class({
     extends: RootBase,
@@ -64,7 +65,6 @@ cc.Class({
 
     onLoad: function () {
         this._super();
-        i18n.init('zh');
         this.typeName = WndTypeDefine.WindowType.E_DT_NORMAL_QUESTLIST_VIEW;
         this.animeStartParam(0);
         if (GlobalFunc.isAllScreen() && !this.fixViewComplete) {
@@ -522,46 +522,46 @@ cc.Class({
     onBtnPlanet(event) {
         if (!this.canClickPlanet){
             return;
-        }        
+        }
 
         let planet = event.target;
         // CommonWnd.showQuestInfoWnd(planet.data, planet.planetData);
-        let chapterID = planet.planetData.byChapterID;
-        let campaignIndex = ((planet.planetData.wCampaignID -1) % 10) + 1;
+        // let chapterID = planet.planetData.byChapterID;
+        // let campaignIndex = ((planet.planetData.wCampaignID -1) % 10) + 1;
         
-        let testPlayMemberID = -1;
-        if (chapterID == 1 && campaignIndex == 7){
-            testPlayMemberID = 740;
-        }else if (chapterID == 1 && campaignIndex == 10){
-            testPlayMemberID = 760;
-        }else if (campaignIndex == 10){
-            let totalMemberData = GlobalVar.tblApi.getData('TblMember');
-            let ids = [];
-            for (let i in totalMemberData){
-                if (totalMemberData[i].byGetType == 1 && totalMemberData[i].stPingJia.byStarNum >= 3){
-                    ids.push(parseInt(i));
-                }
-            }
-    
-            for (let i = 0; i<ids.length;i++){
-                let memberData = GlobalVar.me().memberData.getMemberByID(ids[i]);
-                if (memberData || GlobalVar.me().memberData.unLockHotFlag[ids[i]]){
-                    ids.splice(i, 1);
-                    i -= 1;
-                }
-            }
+        // let testPlayMemberID = -1;
+        // // let testTimes = StoreageData.getShareTimesWithKey("testPlayMemberNormal", 1);
+        // if (!config.NEED_GUIDE && planet.planetData.wIconID != 1 && planet.data.Played == 0 && GlobalVar.getShareSwitch()) {
+        //     let totalMemberData = GlobalVar.tblApi.getData('TblMember');
+        //     let ids = [];
+        //     for (let i in totalMemberData) {
+        //         if (totalMemberData[i].byGetType == 1 && totalMemberData[i].stPingJia.byStarNum >= 3) {
+        //             ids.push(parseInt(i));
+        //         }
+        //     }
+        //     for (let i = 0; i < ids.length; i++) {
+        //         let memberData = GlobalVar.me().memberData.getMemberByID(ids[i]);
+        //         if (memberData) {
+        //             ids.splice(i, 1);
+        //             i -= 1;
+        //         }
+        //     }
 
-            let randomID = ids[parseInt(Math.random() * ids.length)] || -1;
-            testPlayMemberID = randomID;
-        }
+        //     let randomID = ids[parseInt(Math.random() * ids.length)] || -1;
+        //     testPlayMemberID = randomID;
+        // }
 
-        if (false && testPlayMemberID != -1){
-            CommonWnd.showShareMemberTestPlayWnd(testPlayMemberID, function () {
-                CommonWnd.showQuestInfoWnd(planet.data, planet.planetData);
-            });
-        }else{
-            CommonWnd.showQuestInfoWnd(planet.data, planet.planetData);
-        }
+        // GlobalVar.me().shareData.testPlayMemberID = 0;
+        // if (testPlayMemberID != -1){
+        //     CommonWnd.showShareMemberTestPlayWnd(testPlayMemberID, function () {
+        //         // StoreageData.setShareTimesWithKey("testPlayMemberNormal", 1);
+        //         CommonWnd.showQuestInfoWnd(planet.data, planet.planetData);
+        //     }, function () { 
+        //         CommonWnd.showQuestInfoWnd(planet.data, planet.planetData);
+        //     });
+        // } else {
+        CommonWnd.showQuestInfoWnd(planet.data, planet.planetData);
+        // }
     },
 
     onBtnChapterRewardBox: function (event, index) {
@@ -610,10 +610,6 @@ cc.Class({
                         GlobalVar.handlerManager().campHandler.sendGetCampChapterRewardReq(campType, chapterId, pos - 1);
                     })
                 })
-                // self.nodeBlock.enabled = true;
-                // setTimeout(function () {
-                //     self.nodeBlock.enabled = false;
-                // }, 1500);
             };
         }
         if (!GlobalVar.getShareSwitch()){

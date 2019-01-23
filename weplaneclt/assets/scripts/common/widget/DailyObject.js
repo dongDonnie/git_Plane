@@ -4,11 +4,9 @@ const UIBase = require("uibase");
 const GameServerProto = require("GameServerProto");
 const GlobalVar = require('globalvar')
 const WndTypeDefine = require("wndtypedefine");
-const EventMsgID = require("eventmsgid");
 const CommonWnd = require("CommonWnd");
 const WindowManager = require("windowmgr");
 const i18n = require('LanguageData');
-const weChatAPI = require("weChatAPI");
 const StoreageData = require("storagedata");
 
 
@@ -63,7 +61,7 @@ var DailyObject = cc.Class({
     },
 
     onLoad() {
-        i18n.init('zh');
+        
     },
 
     updateDaily: function (data) {
@@ -141,6 +139,11 @@ var DailyObject = cc.Class({
         // 日常任务的完成状态显示
         this.btnRecv.node.getComponent("ButtonObject").setText(i18n.t('label.4000241'));
         this.btnRecv.node.getComponent("ButtonObject").fontSize = 28;
+        this.btnGo.node.getComponent("ButtonObject").fontSize = 28;
+        this.btnRecv.node.getChildByName("spriteVideo").active = false;
+        this.btnRecv.node.getChildByName("spriteShare").active = false;
+        this.btnGo.node.getChildByName("spriteVideo").active = false;
+        this.btnGo.node.getChildByName("spriteShare").active = false;
         if (data.wID == GameServerProto.PT_DAILY_TASK_VIP_EXP) {
             this.btnGo.node.active = false;
             this.btnRecv.node.active = true;
@@ -157,10 +160,12 @@ var DailyObject = cc.Class({
             }
             if (GlobalVar.getShareSwitch()){
                 this.btnRecv.node.getComponent("ButtonObject").fontSize = 24;
-                this.btnRecv.node.getComponent("ButtonObject").setText(i18n.t('label.4000304'));
+                this.btnRecv.node.getComponent("ButtonObject").setText("  " + i18n.t('label.4000304'));
+                this.btnRecv.node.getChildByName("spriteShare").active = true;
             }else if (GlobalVar.getVideoAdSwitch()){
                 this.btnRecv.node.getComponent("ButtonObject").fontSize = 24;
-                this.btnRecv.node.getComponent("ButtonObject").setText(i18n.t('label.4000328'));
+                this.btnRecv.node.getComponent("ButtonObject").setText("  " + i18n.t('label.4000328'));
+                this.btnRecv.node.getChildByName("spriteVideo").active = true;
             }
             this.btnGo.node.active = false;
             this.btnRecv.node.active = true;
@@ -175,10 +180,12 @@ var DailyObject = cc.Class({
             if (data.wID == GameServerProto.PT_DAILY_TASK_AD){
                 this.btnGo.node.getComponent("RemoteSprite").setFrame(0);
                 this.btnGo.node.getComponent("ButtonObject").fontSize = 24;
-                if (!StoreageData.getShareTimesWithKey("rewardedVideoLimit", 1)){
-                    this.btnGo.node.getComponent("ButtonObject").setText(i18n.t('label.4000328'));
-                }else{
-                    this.btnGo.node.getComponent("ButtonObject").setText(i18n.t('label.4000304'));
+                if (!StoreageData.getShareTimesWithKey("rewardedVideoLimit", 1) && GlobalVar.getVideoAdSwitch()){
+                    this.btnGo.node.getComponent("ButtonObject").setText("  " + i18n.t('label.4000328'));
+                    this.btnGo.node.getChildByName("spriteVideo").active = true;
+                }else {
+                    this.btnGo.node.getComponent("ButtonObject").setText("  " + i18n.t('label.4000304'));
+                    this.btnGo.node.getChildByName("spriteShare").active = true;
                 }
             }else{
                 this.btnGo.node.getComponent("RemoteSprite").setFrame(1);
@@ -247,14 +254,6 @@ var DailyObject = cc.Class({
                         GlobalVar.handlerManager().dailyHandler.sendDailyADReq();
                     })
                 });
-            // let dailyMissionNode = WindowManager.getInstance().findViewInWndNode(WndTypeDefine.WindowType.E_DT_NORMAL_DAILY_MISSION_WND);
-            // if (dailyMissionNode){
-            //     let component = dailyMissionNode.getComponent(WndTypeDefine.WindowType.E_DT_NORMAL_DAILY_MISSION_WND);
-            //     component.nodeBlock.enabled = true;
-            //     setTimeout(function () {
-            //         component.nodeBlock.enabled = false;
-            //     }, 1500);
-            // }
             }else if (GlobalVar.configGMSwitch()){
                 GlobalVar.handlerManager().dailyHandler.sendDailyADReq();
             }
@@ -263,8 +262,11 @@ var DailyObject = cc.Class({
         }
     },
     removeListennerAndBanner: function () {
-        let dailyMissionNode = WindowManager.getInstance().findViewInWndNode(WndTypeDefine.WindowType.E_DT_NORMAL_DAILY_MISSION_WND);
-        dailyMissionNode && GlobalVar.eventManager().removeListenerWithTarget(dailyMissionNode.getComponent(WndTypeDefine.WindowType.E_DT_NORMAL_DAILY_MISSION_WND));
+        let wndType = WndTypeDefine.WindowType.E_DT_NORMAL_DAILY_MISSION_WND;
+        let dailyMissionNode = WindowManager.getInstance().findViewInWndNode(wndType);
+        dailyMissionNode && GlobalVar.eventManager().removeListenerWithTarget(dailyMissionNode.getComponent(wndType));
+        dailyMissionNode.getComponent(wndType).dailyScroll.loopScroll.releaseViewItems();
+
     },
 
     goToWnd: function (windowID) {

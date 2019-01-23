@@ -3,7 +3,6 @@ const GlobalVar = require('globalvar');
 const ResMapping = require("resmapping");
 const PartEntity = require('PartEntity');
 const BattleManager = require('BattleManager');
-const HeroManager = require('HeroManager');
 const base64 = require("base64");
 
 cc.Class({
@@ -143,7 +142,7 @@ cc.Class({
     },
 
     update: function (dt) {
-        if (this.hp <= 0) {
+        if (this.hp <= 0 || !!BattleManager.getInstance().bossAppear) {
             return;
         }
 

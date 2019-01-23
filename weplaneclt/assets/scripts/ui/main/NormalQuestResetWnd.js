@@ -1,13 +1,9 @@
 const WndTypeDefine = require("wndtypedefine");
 const RootBase = require("RootBase");
 const GlobalVar = require('globalvar')
-const EventMsgID = require("eventmsgid");
-const GlobalFunc = require('GlobalFunctions');
 const i18n = require('LanguageData');
 const CommonWnd = require("CommonWnd");
-const ButtonObject = require("ButtonObject");
 const GameServerProto = require("GameServerProto");
-const weChatAPI = require("weChatAPI");
 const WindowManager = require("windowmgr");
 const StoreageData = require("storagedata");
 
@@ -40,7 +36,6 @@ cc.Class({
 
     onLoad: function () {
         this._super();
-        i18n.init('zh');
         this.typeName = WndTypeDefine.WindowType.E_DT_NORMAL_QUEST_RESET_WND;
         this.animeStartParam(0, 0);
 
@@ -151,10 +146,6 @@ cc.Class({
                     self.close();
                 }); 
             });
-            // self.nodeBlock.enabled = true;
-            // setTimeout(function () {
-            //     self.nodeBlock.enabled = false;
-            // }, 1500);
         }else if (GlobalVar.configGMSwitch()){
             let typeID = self.tblData.byTypeID;
             let chapterID = self.tblData.byChapterID;
@@ -162,11 +153,6 @@ cc.Class({
             GlobalVar.handlerManager().campHandler.sendCampBuyCountReq(typeID, chapterID, campaignID, 1);
             self.close();
         }
-
-        // this.nodeBlock.enabled = true;
-        // setTimeout(function () {
-        //     self.nodeBlock.enabled = false;
-        // }, 1500);
     },
 
     onBtnClose: function (event) {

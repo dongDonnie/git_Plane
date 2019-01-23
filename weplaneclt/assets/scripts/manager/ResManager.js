@@ -178,7 +178,7 @@ var ResManager = cc.Class({
         for (let res in this.preLoadArray) {
             this.loadRes(this.preLoadArray[res].type, this.preLoadArray[res].url, function (obj, type, path) {
                 if (path.indexOf('Fighter') != -1 && !!callback) {
-                    callback(false);
+                    callback(0);
                 }
                 for (let key in self.preLoadArray) {
                     if (self.preLoadArray[key].type == type && self.getPathName(self.preLoadArray[key].url) == path) {
@@ -187,8 +187,20 @@ var ResManager = cc.Class({
                     }
                 }
                 if (ready >= self.preLoadArray.length && !!callback) {
+                    let error = false;
+                    for (let comp in self.preLoadArray) {
+                        let cRes = self.getCacheRes(self.preLoadArray[comp].type, self.getPathName(self.preLoadArray[comp].url));
+                        if (!cc.isValid(cRes)) {
+                            error = true;
+                            break;
+                        }
+                    }
                     self.preLoadArray.splice(0, self.preLoadArray.length);
-                    callback(true);
+                    if (error) {
+                        callback(-1);
+                    } else {
+                        callback(1);
+                    }
                 }
             })
         }
@@ -251,33 +263,85 @@ var ResManager = cc.Class({
     initDeepPreLoadRes: function (scene) {
         this.resDeepArray.splice(0, this.resDeepArray.length);
         if (scene == SceneDefines.BATTLE_STATE) {
-            this.pushDeep('cdnRes/battlemodel/prefab/effect/EnemyIncoming', ResMapping.ResType.Prefab);
-            this.pushDeep('cdnRes/battlemodel/prefab/effect/GetBuff', ResMapping.ResType.Prefab);
-            this.pushDeep('cdnRes/battlemodel/prefab/effect/HeroBulletHit', ResMapping.ResType.Prefab);
-            this.pushDeep('cdnRes/battlemodel/prefab/effect/MonsterBulletClear', ResMapping.ResType.Prefab);
-            this.pushDeep('cdnRes/battlemodel/prefab/effect/MonsterHp', ResMapping.ResType.Prefab);
-            this.pushDeep('cdnRes/battlemodel/prefab/effect/Shadow', ResMapping.ResType.Prefab);
-            this.pushDeep('cdnRes/battlemodel/prefab/effect/Shield', ResMapping.ResType.Prefab);
+            let battleManager = require('BattleManager').getInstance();
+            if (!!battleManager.isArenaFlag) {
+                this.pushDeep('cdnRes/prefab/BattleScene/UIBattleArena', ResMapping.ResType.Prefab);
+                this.pushDeep('cdnRes/prefab/BattleScene/UIBattleCount', ResMapping.ResType.Prefab);
+                this.pushDeep('cdnRes/battlemodel/prefab/effect/Barrier', ResMapping.ResType.Prefab);
+
+                if (!!battleManager.battleMsg) {
+                    let memberID = battleManager.battleMsg.OpponentEquip.MemberID;
+                    let memberArray = this.resSliceArray[memberID];
+                    for (let mindex in memberArray) {
+                        this.pushDeep(memberArray[mindex].url, memberArray[mindex].type);
+                    }
+                    for (let index in battleManager.battleMsg.OpponentEquip.GuaZaiItemID) {
+                        let wear = battleManager.battleMsg.OpponentEquip.GuaZaiItemID[index];
+                        if (wear == 0) {
+                            continue;
+                        }
+                        let array = this.resSliceArray[wear];
+                        for (let gindex in array) {
+                            this.pushDeep(array[gindex].url, array[gindex].type);
+                        }
+                    }
+                }
+            } else {
+                this.pushDeep('cdnRes/prefab/BattleScene/UIBattlePause', ResMapping.ResType.Prefab);
+                this.pushDeep('cdnRes/prefab/BattleScene/UIBattleCharge', ResMapping.ResType.Prefab);
+                this.pushDeep('cdnRes/prefab/BattleScene/UIBattleRevive', ResMapping.ResType.Prefab);
+                this.pushDeep('cdnRes/prefab/BattleScene/UIBattleAssist', ResMapping.ResType.Prefab);
+                this.pushDeep('cdnRes/battlemodel/prefab/effect/EnemyIncoming', ResMapping.ResType.Prefab);
+                this.pushDeep('cdnRes/battlemodel/prefab/effect/GetBuff', ResMapping.ResType.Prefab);
+                this.pushDeep('cdnRes/battlemodel/prefab/effect/MonsterBulletClear', ResMapping.ResType.Prefab);
+                this.pushDeep('cdnRes/battlemodel/prefab/effect/MonsterHp', ResMapping.ResType.Prefab);
+                this.pushDeep('cdnRes/battlemodel/prefab/effect/Shadow', ResMapping.ResType.Prefab);
+                this.pushDeep('cdnRes/battlemodel/prefab/effect/Shield', ResMapping.ResType.Prefab);
+                this.pushDeep('cdnRes/battlemodel/prefab/effect/LaserBeam', ResMapping.ResType.Prefab);
+                this.pushDeep('cdnRes/battlemodel/prefab/effect/HyperBazooka', ResMapping.ResType.Prefab);
+                this.pushDeep('cdnRes/battlemodel/prefab/effect/QuantumBrust', ResMapping.ResType.Prefab);
+                this.pushDeep('cdnRes/battlemodel/prefab/effect/UnDefeat', ResMapping.ResType.Prefab);
+                this.pushDeep('cdnRes/battlemodel/prefab/effect/Warning', ResMapping.ResType.Prefab);
+                this.pushDeep('cdnRes/battlemodel/prefab/effect/bBomb', ResMapping.ResType.Prefab);
+                this.pushDeep('cdnRes/battlemodel/prefab/effect/bugBomb', ResMapping.ResType.Prefab);
+                this.pushDeep('cdnRes/battlemodel/prefab/effect/miBomb', ResMapping.ResType.Prefab);
+                this.pushDeep('cdnRes/battlemodel/prefab/effect/FlyDamageMsg', ResMapping.ResType.Prefab);
+                this.pushDeep('cdnRes/battlemodel/prefab/effect/FlyDamageMsgCritical', ResMapping.ResType.Prefab);
+                this.pushDeep('cdnRes/battlemodel/prefab/effect/WeaponUp', ResMapping.ResType.Prefab);
+                this.pushDeep('cdnRes/battlemodel/prefab/effect/Super', ResMapping.ResType.Prefab);
+                this.pushDeep('cdnRes/battlemodel/prefab/effect/Protect', ResMapping.ResType.Prefab);
+                this.pushDeep('cdnRes/battlemodel/prefab/effect/Hp', ResMapping.ResType.Prefab);
+                this.pushDeep('cdnRes/battlemodel/prefab/effect/Mp', ResMapping.ResType.Prefab);
+                this.pushDeep('cdnRes/battlemodel/prefab/effect/Magnet', ResMapping.ResType.Prefab);
+                this.pushDeep('cdnRes/battlemodel/prefab/effect/Dash', ResMapping.ResType.Prefab);
+                this.pushDeep('cdnRes/battlemodel/prefab/effect/Accel', ResMapping.ResType.Prefab);
+
+                this.pushDeep('cdnRes/battle/gold', ResMapping.ResType.SpriteFrame);
+                this.pushDeep('cdnRes/battle/stone_01', ResMapping.ResType.SpriteFrame);
+                this.pushDeep('cdnRes/battle/stone_02', ResMapping.ResType.SpriteFrame);
+                this.pushDeep('cdnRes/battle/stone_03', ResMapping.ResType.SpriteFrame);
+                this.pushDeep('cdnRes/battle/battle_wall_dark', ResMapping.ResType.SpriteFrame);
+                this.pushDeep('cdnRes/battle/battle_wall_nebula', ResMapping.ResType.SpriteFrame);
+                this.pushDeep('cdnRes/battle/battle_wall_light', ResMapping.ResType.SpriteFrame);
+                this.pushDeep('cdnRes/battlemodel/hit/heroHit', ResMapping.ResType.SpriteFrame);
+                this.pushDeep('cdnRes/battle/treasure_box_1', ResMapping.ResType.SpriteFrame);
+                this.pushDeep('cdnRes/battle/treasure_box_2', ResMapping.ResType.SpriteFrame);
+                this.pushDeep('cdnRes/battle/treasure_box_3', ResMapping.ResType.SpriteFrame);
+                this.pushDeep('cdnRes/battle/treasure_box_4', ResMapping.ResType.SpriteFrame);
+                this.pushDeep('cdnRes/battle/treasure_box_5', ResMapping.ResType.SpriteFrame);
+                this.pushDeep('cdnRes/battle/treasure_box_6', ResMapping.ResType.SpriteFrame);
+                this.pushDeep('cdnRes/battle/treasure_box_7', ResMapping.ResType.SpriteFrame);
+                this.pushDeep('cdnRes/battle/treasure_box_8', ResMapping.ResType.SpriteFrame);
+                this.pushDeep('cdnRes/battle/treasure_box_9', ResMapping.ResType.SpriteFrame);
+
+                this.pushDeep('cdnRes/audio/battle/effect/boss_come', ResMapping.ResType.AudioClip);
+            }
+
+            this.pushDeep('cdnRes/audio/battle/music/Boss_Room', ResMapping.ResType.AudioClip);
+
             this.pushDeep('cdnRes/battlemodel/prefab/effect/Success', ResMapping.ResType.Prefab);
-            this.pushDeep('cdnRes/battlemodel/prefab/effect/LaserBeam', ResMapping.ResType.Prefab);
-            this.pushDeep('cdnRes/battlemodel/prefab/effect/HyperBazooka', ResMapping.ResType.Prefab);
-            this.pushDeep('cdnRes/battlemodel/prefab/effect/QuantumBrust', ResMapping.ResType.Prefab);
-            this.pushDeep('cdnRes/battlemodel/prefab/effect/UnDefeat', ResMapping.ResType.Prefab);
-            this.pushDeep('cdnRes/battlemodel/prefab/effect/Warning', ResMapping.ResType.Prefab);
-            this.pushDeep('cdnRes/battlemodel/prefab/effect/bBomb', ResMapping.ResType.Prefab);
-            this.pushDeep('cdnRes/battlemodel/prefab/effect/bugBomb', ResMapping.ResType.Prefab);
+            this.pushDeep('cdnRes/battlemodel/prefab/effect/HeroBulletHit', ResMapping.ResType.Prefab);
             this.pushDeep('cdnRes/battlemodel/prefab/effect/lBomb', ResMapping.ResType.Prefab);
-            this.pushDeep('cdnRes/battlemodel/prefab/effect/miBomb', ResMapping.ResType.Prefab);
-            this.pushDeep('cdnRes/battlemodel/prefab/effect/FlyDamageMsg', ResMapping.ResType.Prefab);
-            this.pushDeep('cdnRes/battlemodel/prefab/effect/FlyDamageMsgCritical', ResMapping.ResType.Prefab);
-            this.pushDeep('cdnRes/battlemodel/prefab/effect/WeaponUp', ResMapping.ResType.Prefab);
-            this.pushDeep('cdnRes/battlemodel/prefab/effect/Super', ResMapping.ResType.Prefab);
-            this.pushDeep('cdnRes/battlemodel/prefab/effect/Protect', ResMapping.ResType.Prefab);
-            this.pushDeep('cdnRes/battlemodel/prefab/effect/Hp', ResMapping.ResType.Prefab);
-            this.pushDeep('cdnRes/battlemodel/prefab/effect/Mp', ResMapping.ResType.Prefab);
-            this.pushDeep('cdnRes/battlemodel/prefab/effect/Magnet', ResMapping.ResType.Prefab);
-            this.pushDeep('cdnRes/battlemodel/prefab/effect/Dash', ResMapping.ResType.Prefab);
-            this.pushDeep('cdnRes/battlemodel/prefab/effect/Accel', ResMapping.ResType.Prefab);
 
             this.pushDeep('cdnRes/battlemodel/motionstreak/huoyan_lan', ResMapping.ResType.Texture2D);
             this.pushDeep('cdnRes/battlemodel/motionstreak/huoyan_lv', ResMapping.ResType.Texture2D);
@@ -285,35 +349,13 @@ var ResManager = cc.Class({
             this.pushDeep('cdnRes/battlemodel/motionstreak/huoyan_jin', ResMapping.ResType.Texture2D);
             this.pushDeep('cdnRes/battlemodel/motionstreak/huoyan', ResMapping.ResType.Texture2D);
 
-            this.pushDeep('cdnRes/battle/gold', ResMapping.ResType.SpriteFrame);
-            this.pushDeep('cdnRes/battle/stone_01', ResMapping.ResType.SpriteFrame);
-            this.pushDeep('cdnRes/battle/stone_02', ResMapping.ResType.SpriteFrame);
-            this.pushDeep('cdnRes/battle/stone_03', ResMapping.ResType.SpriteFrame);
-            this.pushDeep('cdnRes/battle/battle_wall_dark', ResMapping.ResType.SpriteFrame);
-            this.pushDeep('cdnRes/battle/battle_wall_nebula', ResMapping.ResType.SpriteFrame);
-            this.pushDeep('cdnRes/battle/battle_wall_light', ResMapping.ResType.SpriteFrame);
-            this.pushDeep('cdnRes/battlemodel/hit/heroHit', ResMapping.ResType.SpriteFrame);
             this.pushDeep('cdnRes/battle/_text_resist', ResMapping.ResType.SpriteFrame);
             this.pushDeep('cdnRes/battle/_text_miss', ResMapping.ResType.SpriteFrame);
             this.pushDeep('cdnRes/battle/_text_baoji', ResMapping.ResType.SpriteFrame);
-            this.pushDeep('cdnRes/battle/treasure_box_1', ResMapping.ResType.SpriteFrame);
-            this.pushDeep('cdnRes/battle/treasure_box_2', ResMapping.ResType.SpriteFrame);
-            this.pushDeep('cdnRes/battle/treasure_box_3', ResMapping.ResType.SpriteFrame);
-            this.pushDeep('cdnRes/battle/treasure_box_4', ResMapping.ResType.SpriteFrame);
-            this.pushDeep('cdnRes/battle/treasure_box_5', ResMapping.ResType.SpriteFrame);
-            this.pushDeep('cdnRes/battle/treasure_box_6', ResMapping.ResType.SpriteFrame);
-            this.pushDeep('cdnRes/battle/treasure_box_7', ResMapping.ResType.SpriteFrame);
-            this.pushDeep('cdnRes/battle/treasure_box_8', ResMapping.ResType.SpriteFrame);
-            this.pushDeep('cdnRes/battle/treasure_box_9', ResMapping.ResType.SpriteFrame);
-
-            this.pushDeep('cdnRes/audio/battle/effect/boss_come', ResMapping.ResType.AudioClip);
-            this.pushDeep('cdnRes/audio/battle/music/Boss_Room', ResMapping.ResType.AudioClip);
 
             this.pushDeep('cdnRes/prefab/BattleScene/UIBattle', ResMapping.ResType.Prefab);
-            this.pushDeep('cdnRes/prefab/BattleScene/UIBattlePause', ResMapping.ResType.Prefab);
-            this.pushDeep('cdnRes/prefab/BattleScene/UIBattleCharge', ResMapping.ResType.Prefab);
-            this.pushDeep('cdnRes/prefab/BattleScene/UIBattleRevive', ResMapping.ResType.Prefab);
-            this.pushDeep('cdnRes/prefab/BattleScene/UIBattleAssist', ResMapping.ResType.Prefab);
+
+            this.pushDeep('cdnRes/audio/battle/effect/explode_boss', ResMapping.ResType.AudioClip);
 
             let memberID = GlobalVar.me().memberData.getStandingByFighterID();
             let memberArray = this.resSliceArray[memberID];
@@ -331,10 +373,13 @@ var ResManager = cc.Class({
                 }
             }
 
-            let battleManager = require('BattleManager').getInstance();
+
             let campName = battleManager.getCampName();
             if (campName != '') {
-                if (campName == 'CampEndless') {
+                if (campName == 'CampDemo') {
+                    let path = 'cdnRes/battlemap/tk-e-ditu';
+                    this.pushDeep(path, ResMapping.ResType.SpriteFrame);
+                } else if (campName == 'CampEndless') {
                     let assistID = GlobalVar.me().memberData.getAssistFighterID();
                     if (assistID != 0) {
                         let assistArray = this.resSliceArray[assistID];

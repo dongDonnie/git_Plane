@@ -1,0 +1,23 @@
+{
+    "deviceOrientation": "portrait",
+    "openDataContext": "src/myOpenDataContext",
+    "networkTimeout": {
+        "request": 10000,
+        "connectSocket": 10000,
+        "uploadFile": 10000,
+        "downloadFile": 10000
+    },
+    "subpackages": [],
+    "navigateToMiniProgramAppIdList": [
+        "wxc1aac55713b44003",
+        "wxa9acba8442721574",
+        "wx92d297e67aa6a8c8",
+        "wx73abab89c857c2d5",
+        "wxb2644b7adc2de213",
+        "wxe57bfaaa884daed6",
+        "wx3d2e2fa8c4ca3eaf",
+        "wxe25d44ba94aae196",
+        "wx845a2f34af2f4235",
+        "wxa852938478e5a9ce"
+    ]
+}

@@ -4,6 +4,7 @@ const ResMapping = require('resmapping');
 const GlobalFunc = require('GlobalFunctions');
 const GameServerProto = require("GameServerProto");
 const base64 = require("base64");
+const StoreageData = require("storagedata");
 
 const BattleManager = cc.Class({
     extends: cc.Component,
@@ -28,7 +29,7 @@ const BattleManager = cc.Class({
         rootNode: null,
         displayContainer: null,
         arenaSelfDisplay: null,
-        arenaRivalDisPlay: null,
+        arenaRivalDisplay: null,
         currentTime: 0,
         ///////////////////////////////////////////////////////////
         isEditorFlag: false,
@@ -69,6 +70,8 @@ const BattleManager = cc.Class({
         forceDash: false,
 
         sBombPlayArray: [],
+
+        bossAppear: false,
     },
 
     ctor() {
@@ -132,22 +135,48 @@ const BattleManager = cc.Class({
 
         this.rootNode = rootNode;
         this.arenaSelfDisplay = self;
-        this.arenaRivalDisPlay = rival;
+        this.arenaRivalDisplay = rival;
         this.displayContainer = dc;
 
-        let pos = this.arenaRivalDisPlay.getPosition();
-        this.arenaRivalDisPlay.setPosition(-pos.x, -pos.y);
-        this.arenaRivalDisPlay.angle = 180;
-
-        this.managers[Defines.MgrType.SCENARIO] = this.scenarioManager.getInstance();
+        this.factory.getInstance().start(this);
+        this.scenarioManager.getInstance().start(this);
+        this.scenarioManager.getInstance().initScenario();
     },
 
-    updateArena(dt){
+    updateArena(dt) {
+        this.currentTime += Defines.BATTLE_FRAME_SECOND;
+        if (this.gameState == Defines.GameResult.START) {
 
+        } else if (this.gameState == Defines.GameResult.PREPARE) {
+
+        } else if (this.gameState == Defines.GameResult.COUNT) {
+
+        } else if (this.gameState == Defines.GameResult.SHOW) {
+
+        } else if (this.gameState == Defines.GameResult.RUNNING) {
+            this.factory.getInstance().update(dt);
+        } else if (this.gameState == Defines.GameResult.END) {
+
+        } else if (this.gameState == Defines.GameResult.SUCCESS) {
+            var self = this;
+            this.success(function () {
+                self.gameState = Defines.GameResult.FLYOUT;
+            })
+            this.gameState = Defines.GameResult.NONE;
+        } else if (this.gameState == Defines.GameResult.FLYOUT) {
+
+        } else if (this.gameState == Defines.GameResult.NONE) {
+
+        }
+        this.scenarioManager.getInstance().update(dt);
     },
 
     arenaPrime(bullet) {
         this.scenarioManager.getInstance().prime(bullet);
+    },
+
+    getArenaPlane(side) {
+        return this.scenarioManager.getInstance().getArenaPlane(side);
     },
 
     startOutside(dc, id, full, callback) {
@@ -180,7 +209,7 @@ const BattleManager = cc.Class({
         }
 
         GlobalVar.resManager().preLoadHero(function (complete) {
-            if (!complete) {
+            if (complete == 0) {
                 self.currentTime = 0;
                 self.showDC.removeAllChildren(false);
                 let sz = self.showDC.getContentSize();
@@ -194,8 +223,11 @@ const BattleManager = cc.Class({
                 }, 300);
                 //planeEntity.openShader(true);
                 self.show = 1;
-            } else if (complete) {
+            } else if (complete == 1) {
                 self.show = 2;
+            } else {
+                cc.log('load bullet error');
+                self.show = -1;
             }
             if (!!callback) {
                 callback();
@@ -228,7 +260,7 @@ const BattleManager = cc.Class({
 
         }
 
-        if (this.show == 3) {
+        if (this.show == 3 && cc.isValid(this.managers[Defines.MgrType.HERO].planeEntity)) {
             this.currentTime += Defines.BATTLE_FRAME_SECOND;
             this.managers[Defines.MgrType.FACTORY].update(Defines.BATTLE_FRAME_SECOND);
             this.managers[Defines.MgrType.ENTITY].update(Defines.BATTLE_FRAME_SECOND);
@@ -654,6 +686,9 @@ const BattleManager = cc.Class({
     },
 
     screenShake: function (type) {
+        if (!StoreageData.getVibrateSwitch()) {
+            return;
+        }
         type = typeof type !== 'undefined' ? type : 0;
         this.displayContainer.stopAllActions();
         let size = this.displayContainer.getContentSize();

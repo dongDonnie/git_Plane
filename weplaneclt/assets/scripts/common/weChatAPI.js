@@ -1,4 +1,3 @@
-const ResManager = require("ResManager");
 const GlobalVar = require('globalvar')
 const md5 = require("md5");
 const StoreageData = require("storagedata");
@@ -57,6 +56,8 @@ const URL_GET_MY_SERVER = "https://wepup.phonecoolgame.com/json.php?_c=server&_f
 const URL_GET_ADC_Frame = "https://cpgc.phonecoolgame.com/adc/getAdFrame";
 const URL_GET_ADC_EXP = "https://cpgc.phonecoolgame.com/adc/getAdexpInfo";
 const URL_GET_ADC_Task = "https://cpgc.phonecoolgame.com/adc/getTaskWallInfo";
+const URL_GET_ADC_Task_COMPLETE = "https://cpgc.phonecoolgame.com/adc/completeTask";
+const URL_GET_ADC_Task_LIST = "https://cpgc.phonecoolgame.com/adc/getTaskList";
 
 module.exports = {
 
@@ -87,6 +88,7 @@ module.exports = {
     _onHideTime: 0,
     _onShowTime: 0,
     _shareNeedClickTime: 0,
+    _onShowListener: [],
 
     _currentVideoPointID: 0,
     _rewardedVideoAd: null,
@@ -100,6 +102,7 @@ module.exports = {
     _bannerExchangeTime: 120,
 
     _bannerAdList: [],
+    _bannerTimeCounts: {},
     _alternateIndex: 0,
     _bannerShowState: false,
 
@@ -378,13 +381,16 @@ module.exports = {
     },
 
     //share
-    shareNormal: function (index, successCallback, failCallback, successTips, failTips) {
+    shareNormal: function (index, successCallback, failCallback, successTips, failTips, inviteParam) {
         // 普通分享，判断模拟点击
         if (cc.sys.platform !== cc.sys.WECHAT_GAME) {
             return;
         }
-        if (GlobalVar.getShareControl() == 6) {
-            this.showRewardedVideoAd(index + 100, successCallback, failCallback);
+
+        if (!GlobalVar.getShareSwitch()){
+            if (!inviteParam && GlobalVar.getVideoAdSwitch()){
+                this.showRewardedVideoAd(index + 100, successCallback, failCallback);
+            }
             return;
         }
 
@@ -401,9 +407,18 @@ module.exports = {
         let self = this;
         let str = "materialID=" + material.materialID;
         str += "&from_openid=" + GlobalVar.me().loginData.getLoginReqDataAccount();
+        if (inviteParam){
+            str += inviteParam;
+            wx.shareAppMessage({
+                title: material.content,
+                imageUrl: material.cdnurl,
+                query: str,
+            });
+            return;
+        }
 
         let CC_GMAE_ONSHOW_OPEN = this.shareSetting.share;
-        if (this.wxBversionLess(this.shareVersion)) {
+        if (this.wxBversionLess(this.shareVersion)) {zh
             CC_GMAE_ONSHOW_OPEN = 0;
         }
 
@@ -798,7 +813,7 @@ module.exports = {
         let self = this;
         let launchInfo = wx.getLaunchOptionsSync();
         // self.showLog("launcinfo", launchInfo);
-        console.log("launcinfo", launchInfo);
+        console.log("判断邀请！", launchInfo);
         if (launchInfo) {
             // 判断启动参数, 启动参数有form_serverid、from_openid、和from_btn
             // 就是点了别人的邀请进来的，上报邀请信息
@@ -814,7 +829,7 @@ module.exports = {
                     from_openid: launchInfo.query['from_openid'],
                     from_btn: launchInfo.query['from_btn'],
                 };
-                // console.log("发送消息:", inviteData);
+                console.log("向服务器上报邀请消息:", inviteData);
                 self.request(URL_INVITE, inviteData, function (data) {
                     if (data.ret !== 0) return;
                     if (!!successCallback) {
@@ -872,10 +887,10 @@ module.exports = {
         let self = this;
         let url = URL_GET_MATERIALS.replace("%d", APP_ID);
         this._defaultMaterial = [{
-            cdnurl: "https://cdn.phonecoolgame.com/wxgame/hezi/back/wpjz-003.jpg",
-            content: "超经典飞行射击游戏，王牌出击等你来战！",
-            materialID: "138",
-        },],
+                cdnurl: "https://cdn.phonecoolgame.com/wxgame/hezi/back/wpjz-003.jpg",
+                content: "超经典飞行射击游戏，王牌出击等你来战！",
+                materialID: "138",
+            }, ],
             self.request(url, null, function (data) {
                 if (data.ecode !== 0) {
                     self.showLog("getMaterials error, ecode = ", data.ecode);
@@ -1178,26 +1193,20 @@ module.exports = {
             failCallback && failCallback();
             return;
         }
-        // if (!!StoreageData.getShareTimesWithKey("rewardedVideoLimit", 1)) {
-        //     console.log("因为拉取视频失败而认为今日视频已达到上限");
-        //     failCallback && failCallback();
-        //     return;
-        // }
-        let ceilView = GlobalVar.windowManager().getCeilingView();
-        if (ceilView) {
-            let ceilViewType = GlobalVar.windowManager().getCeilingViewType()
-            if (ceilViewType) {
-                let nodeBlock = ceilView.getComponent(ceilViewType).nodeBlock;
-                if (nodeBlock) {
-                    console.log("禁止点击", ceilViewType, "3秒");
-                    nodeBlock.enabled = true;
-                    setTimeout(function () {
-                        nodeBlock.enabled = false;
-                    }, 3000);
-                }
-            }
+        if (!!StoreageData.getShareTimesWithKey("rewardedVideoLimit", 1)) {
+            console.log("因为拉取视频失败而认为今日视频已达到上限");
+            failCallback && failCallback();
+            return;
         }
 
+        let block = cc.find("Canvas/BlockNode");
+        if (cc.isValid(block)) {
+            console.log("禁止点击3秒");
+            block.active = true;
+            setTimeout(function () {
+                block.active = false;
+            }, 3000);
+        }
 
         let videoAd = this._rewardedVideoAd;
         this._videoAdSuccessCallback = successCallback;
@@ -1218,6 +1227,25 @@ module.exports = {
             });
     },
 
+    createBannerAd: function (id) {
+        let systemInfo = wx.getSystemInfoSync();
+        let banner = wx.createBannerAd({
+            adUnitId: id,
+            style: {
+                left: 0,
+                top: systemInfo.screenHeight,
+                width: systemInfo.screenWidth,
+            }
+        })
+        banner.onResize(function () {
+            banner.style.top = systemInfo.screenHeight - banner.style.realHeight - ((GlobalVar.isIOS && GlobalFunc.isAllScreen()) ? 30 : 0);
+        });
+        banner.onError(res => {
+            console.log("Banner广告组件拉取广告异常:", res);
+        })
+        return banner;
+    },
+
     createBannerAdList: function () {
         if (this.wxBversionLess("2.0.4")) {
             console.log("版本库低于2.0.4，不能创建Banner组件");
@@ -1228,23 +1256,25 @@ module.exports = {
             return;
         }
         let arrBannerIDList = BANNERUNIT_ID_LIST;
-        let systemInfo = wx.getSystemInfoSync();
+        // let systemInfo = wx.getSystemInfoSync();
         for (let i = 0; i < arrBannerIDList.length; i++) {
-            let pBanner = wx.createBannerAd({
-                adUnitId: arrBannerIDList[i],
-                style: {
-                    left: 0,
-                    top: systemInfo.screenHeight,
-                    width: systemInfo.screenWidth,
-                }
-            });
-            pBanner.onResize(function () {
-                pBanner.style.top = systemInfo.screenHeight - pBanner.style.realHeight - ((GlobalVar.isIOS && GlobalFunc.isAllScreen()) ? 30 : 0);
-            });
-            pBanner.onError(res => {
-                console.log("Banner广告组件拉取广告异常:", res);
-            })
+            let pBanner = this.createBannerAd(arrBannerIDList[i]);
+            // wx.createBannerAd({
+            //     adUnitId: arrBannerIDList[i],
+            //     style: {
+            //         left: 0,
+            //         top: systemInfo.screenHeight,
+            //         width: systemInfo.screenWidth,
+            //     }
+            // });
+            // pBanner.onResize(function () {
+            //     pBanner.style.top = systemInfo.screenHeight - pBanner.style.realHeight - ((GlobalVar.isIOS && GlobalFunc.isAllScreen()) ? 30 : 0);
+            // });
+            // pBanner.onError(res => {
+            //     console.log("Banner广告组件拉取广告异常:", res);
+            // })
             this._bannerAdList.push(pBanner);
+            this._bannerTimeCounts[pBanner.adUnitId] = 0;
         }
         this._bannerAdList.sort(function (a, b) {
             return Math.random() - 0.5;
@@ -1273,10 +1303,13 @@ module.exports = {
         }
 
         let pBanner = this._bannerAdList[this._alternateIndex];
+
+        StoreageData.setLastBannerShowTime();
         pBanner.show().catch(err => {
             console.log("banner展示出现异常:", err)
+            StoreageData.resetLastBannerShowTime()
         });
-        console.log("banner index:", this._alternateIndex);
+        console.log("show banner:", pBanner.adUnitId);
         onResizeCallback && onResizeCallback(pBanner.style.realHeight + ((GlobalVar.isIOS && GlobalFunc.isAllScreen()) ? 30 : 0));
     },
 
@@ -1290,6 +1323,18 @@ module.exports = {
         }
         let pBanner = this._bannerAdList[this._alternateIndex];
         pBanner.hide();
+        let showTime = StoreageData.getBannerTimeCount();
+        this._bannerTimeCounts[pBanner.adUnitId] += showTime;
+        console.log("banner" + pBanner.adUnitId +"总展示时间：", this._bannerTimeCounts[pBanner.adUnitId]);
+
+        if (this._bannerTimeCounts[pBanner.adUnitId] >= this._bannerExchangeTime){
+            this._bannerAdList[this._alternateIndex] = this.createBannerAd(pBanner.adUnitId);
+            this._bannerTimeCounts[pBanner.adUnitId] = 0;
+            pBanner.destroy();
+            pBanner = this._bannerAdList[this._alternateIndex];
+            console.log("刷新banner:", pBanner.adUnitId);
+        }
+
         this._alternateIndex++;
         this._bannerShowState = false;
     },
@@ -1333,14 +1378,12 @@ module.exports = {
             self.showLog("not in wechat");
             return;
         }
-
-
     },
 
     deviceShock: function () {
         var self = this;
-        if (cc.sys.platform !== cc.sys.WECHAT_GAME) {
-            this.showLog('platform is not wechat, can not shock device');
+        if (cc.sys.platform !== cc.sys.WECHAT_GAME || !StoreageData.getVibrateSwitch()) {
+            //this.showLog('platform is not wechat, can not shock device');
             return;
         } else {
             wx.vibrateShort({
@@ -1429,7 +1472,7 @@ module.exports = {
                     width: width,
                     height: height,
                     lineHeight: 0,
-                    backgroundColor: '',
+                    backgroundColor: '#333333',
                     color: '#ffffff',
                     textAlign: 'center',
                     fontSize: 16,
@@ -1488,12 +1531,12 @@ module.exports = {
         });
     },
 
-    loadingClearCache: function (callback) {
+    loadingClearCache: function (callback, showTitle) {
         if (cc.sys.platform === cc.sys.WECHAT_GAME) {
             let self = this;
             console.log('clear cache');
             wx.showLoading({
-                title: '正在清理旧版本',
+                title: showTitle || '正在清理旧版本',
                 mask: true,
                 complete() {
                     self.wxApiCleanAllAssets(function () {
@@ -1535,6 +1578,7 @@ module.exports = {
                 wx.showModal({
                     title: '更新提示',
                     content: '新版本已经准备好，是否重启应用？',
+                    showCancel: false,
                     success(res) {
                         if (res.confirm) {
                             // 新的版本已经下载好，调用 applyUpdate 应用新版本并重启
@@ -1552,6 +1596,7 @@ module.exports = {
                 wx.showModal({
                     title: '更新提示',
                     content: '新版本下载失败，请检查当前网络设置',
+                    showCancel: false,
                     success(res) {
                         if (res.confirm) {
                             updateManager.applyUpdate();
@@ -1606,13 +1651,13 @@ module.exports = {
                         complete = false;
                     }
                     break;
-                // case 1:
-                //     if (wx.canIUse(api)) {
-                //         complete = true;
-                //     } else {
-                //         complete = false;
-                //     }
-                //     break;
+                    // case 1:
+                    //     if (wx.canIUse(api)) {
+                    //         complete = true;
+                    //     } else {
+                    //         complete = false;
+                    //     }
+                    //     break;
                 default:
                     complete = false;
                     break;
@@ -1639,7 +1684,6 @@ module.exports = {
             sex: 0,
             ptform: GlobalFunc.iosOrAndr(),
         }
-        console.log("pullAdcInfo data", data);
         this.request(url, data, successCallback, failCallback, 'POST');
     },
 
@@ -1658,12 +1702,45 @@ module.exports = {
         this.request(URL_GET_ADC_Task, data, successCallback, failCallback);
     },
 
-    previewUrlImage: function (url) {
+    pullAdcTaskCompleteList: function (successCallback, failCallback) {
+        let userID = GlobalVar.me().loginData.getLoginReqDataAccount();
+        let data = {
+            appid: APP_ID,
+            uid: userID,
+        }
+        this.request(URL_GET_ADC_Task_LIST, data, successCallback, failCallback);
+    },
+
+    pushAdcTaskCompleteInfo: function (taskId, successCallback, failCallback) {
+        let userID = GlobalVar.me().loginData.getLoginReqDataAccount();
+        let data = {
+            srcid: APP_ID,
+            suid: userID,
+            tskid: taskId,
+        }
+        this.request(URL_GET_ADC_Task_COMPLETE, data, successCallback, failCallback);
+    },
+
+    taskGoToMiniProgram: function (appid, parm, tskid, successCB, failCB, completeCB) {
+        let userID = GlobalVar.me().loginData.getLoginReqDataAccount();
+        parm = parm.indexOf('gender') > 0 ? parm : parm + '&gender=' + GlobalFunc.getGender();
+        parm = parm.indexOf('tskid') > 0 ? parm : parm + '&tskid=' + tskid;
+        parm = parm.indexOf('suid') > 0 ? parm : parm + '&suid=' + userID;
+        parm = parm.indexOf('srcid') > 0 ? parm : parm + '&srcid=' + APP_ID;
+        if (appid && !this.wxBversionLess("2.2.0")) {
+            this.navigateToMiniProgram(appid, parm, null, successCB, failCB, completeCB);
+        }
+    },
+
+    previewUrlImage: function (url, successCB, failCB, completeCB) {
         if (cc.sys.platform !== cc.sys.WECHAT_GAME) return;
-        var temp = [url]; //切换为[url]
+        let temp = [url];
         wx.previewImage({
             // current: this.data.imgalist, // 当前显示图片的http链接    
-            urls: temp // 需要预览的图片http链接列表   
+            urls: temp, // 需要预览的图片http链接列表   
+            success: successCB,
+            fail: failCB,
+            complete: completeCB,
         })
     },
 };

@@ -4,7 +4,6 @@ const GlobalVar = require('globalvar')
 const EventMsgID = require("eventmsgid");
 const GameServerProto = require("GameServerProto");
 const SceneDefines = require("scenedefines");
-const weChatAPI = require("weChatAPI");
 const i18n = require('LanguageData');
 const StoreageData = require("storagedata");
 
@@ -93,6 +92,7 @@ cc.Class({
         GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_CAMP_FREEDRAW_NTF, this.getFreeDrawCardNtf, this);
         this.node.getChildByName("nodeBottom").getChildByName("nodeButton").active = false;
         this.initCardRewardView();
+        this.touchRandom = false;
         require('Guide').getInstance().showRecv(this);
     },
 
@@ -117,7 +117,6 @@ cc.Class({
                             self.canClickedRecvBtn = true;
                             GlobalVar.handlerManager().campHandler.sendFreeDrawReq();
                             StoreageData.setShareTimesWithKey("drawCard", 1)
-                            self.nodeBlock && (self.nodeBlock.enabled = true);
                         }, function () {
                             platformApi.shareNormal(106, function() {
                                 self.canClickedRecvBtn = true;
@@ -151,12 +150,13 @@ cc.Class({
                     GlobalVar.comMsg.showMsg(str);
                 }
             }
-        }else{
+        } else {
             this.touchRandomCard();
         }
     },
     
     touchRandomCard: function () {
+        this.touchRandom = true;
         this.clickCardSprite(null, Math.floor(Math.random() * 6));
     },
 
@@ -208,19 +208,24 @@ cc.Class({
             return;
         }
         this.curDrawCount = data.OK.DrawCount;
-
+        let speed = 0.125;
         if (this.curDrawCount < this.maxDrawCount){
             GlobalVar.soundManager().playEffect('cdnRes/audio/battle/effect/turn_card');
             let self = this;
-            let scale1 = cc.scaleTo(0.25, 0, 1);
+            let scale1 = cc.scaleTo(speed, 0, 1);
             let index = self.clickIndex;
             let callFun = cc.callFunc(() => {
                 self.spriteNodeList[index].getChildByName("spriteCard").getComponent("RemoteSprite").setFrame(0);
                 self.spriteNodeList[index].getChildByName("ItemObject").active = true;
                 self.spriteNodeList[index].getChildByName("labelItemName").active = true;
             })
-            let scale2 = cc.scaleTo(0.25, 1, 1);
-            this.spriteNodeList[index].runAction(cc.sequence(scale1, callFun, scale2));
+            let scale2 = cc.scaleTo(speed, 1, 1);
+            let callFun2 = cc.callFunc(() => {
+                if (self.touchRandom) {
+                    self.touchRandomCard();
+                }
+            })
+            this.spriteNodeList[index].runAction(cc.sequence(scale1, callFun, scale2, callFun2));
             this.canDrawCard = true;
             this.cardDrawState[index] = true;
         } else if (this.curDrawCount == this.maxDrawCount){
@@ -229,31 +234,35 @@ cc.Class({
             for (let i = 0; i < this.cardDrawState.length; i++) {
                 let index = i;
                 if (index == this.clickIndex){
-                    let scale1 = cc.scaleTo(0.25, 0, 1);
+                    let scale1 = cc.scaleTo(speed, 0, 1);
                     let callFun = cc.callFunc(() => {
                         self.spriteNodeList[index].getChildByName("spriteCard").getComponent("RemoteSprite").setFrame(0)
                         self.spriteNodeList[index].getChildByName("ItemObject").active = true;
                         self.spriteNodeList[index].getChildByName("labelItemName").active = true;
                     });
-                    let scale2 = cc.scaleTo(0.25, 1, 1);
-                    this.spriteNodeList[index].runAction(cc.sequence(scale1, callFun, scale2));
+                    let callFun2 = cc.callFunc(() => {
+                        this.node.getChildByName("nodeBottom").getChildByName("nodeButton").active = true;
+                        this.node.getChildByName("nodeBottom").getChildByName("labelDrawCardTip").active = false;
+                    })
+                    let scale2 = cc.scaleTo(speed, 1, 1);
+                    this.spriteNodeList[index].runAction(cc.sequence(scale1, callFun, scale2, callFun2));
                     this.cardDrawState[index] = true;
                 }else if (!this.cardDrawState[index]){
-                    let scale1 = cc.scaleTo(0.25, 0, 1);
+                    let scale1 = cc.scaleTo(speed, 0, 1);
                     let callFun = cc.callFunc(() => {
                         self.spriteNodeList[index].getChildByName("spriteCard").getComponent("RemoteSprite").setFrame(1)
                         self.spriteNodeList[index].getChildByName("ItemObject").active = true;
                         self.spriteNodeList[index].getChildByName("labelItemName").active = true;
                     });
-                    let scale2 = cc.scaleTo(0.25, 1, 1);
+                    let scale2 = cc.scaleTo(speed, 1, 1);
                     let delay = cc.delayTime(0.5);
                     this.spriteNodeList[index].runAction(cc.sequence(delay, scale1, callFun, scale2));
                 }
             }
 
             this.canQuitUIBattleCard = true;
-            this.node.getChildByName("nodeBottom").getChildByName("nodeButton").active = true;
-            this.node.getChildByName("nodeBottom").getChildByName("labelDrawCardTip").active = false;
+            // this.node.getChildByName("nodeBottom").getChildByName("nodeButton").active = true;
+            // this.node.getChildByName("nodeBottom").getChildByName("labelDrawCardTip").active = false;
         }
     },
 
@@ -262,10 +271,11 @@ cc.Class({
         // let curReapeatTime = 0;
         console.log("收到freedraw消息");
         let self = this;
+        let speed = 0.125;
         for (let i = 0; i < this.cardDrawState.length; i++) {
             let index = i;
             if (!this.cardDrawState[index]){
-                let scale1 = cc.scaleTo(0.25, 0, 1);
+                let scale1 = cc.scaleTo(speed, 0, 1);
                 let callFun = cc.callFunc(() => {
                     self.spriteNodeList[index].getChildByName("spriteCard").getComponent("RemoteSprite").setFrame(0)
                 });
@@ -274,7 +284,7 @@ cc.Class({
                 //     self.spriteNodeList[index].getChildByName("ItemObject").active = false;
                 //     self.spriteNodeList[index].getChildByName("labelItemName").active = false;
                 // })
-                let scale2 = cc.scaleTo(0.25, 1, 1);
+                let scale2 = cc.scaleTo(speed, 1, 1);
                 let delay = cc.delayTime(0.5);
                 this.spriteNodeList[index].runAction(cc.sequence(delay, scale1, callFun, scale2).easing(cc.easeSineOut()));
             }

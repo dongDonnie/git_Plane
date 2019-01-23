@@ -1,10 +1,7 @@
-const ResMapping = require("resmapping");
-const ResManager = require("ResManager");
 const WindowManager = require("windowmgr");
 const WndTypeDefine = require("wndtypedefine");
 const GlobalVar = require("globalvar");
 const GameServerProto = require("GameServerProto");
-const GlobalFunc = require('GlobalFunctions')
 module.exports = {
 
     onlyClose: 0,
@@ -22,15 +19,6 @@ module.exports = {
         });
     },
 
-    showMessageWithPrefab: function (callback, mode, prefabName, title, rstrMsg, pFunCloseCallback, pFunConfirmCallback, pFunCancelCallback, confirmName, cancelName) {
-        // WindowManager.getInstance().pushView(WndTypeDefine.WindowType.E_DT_COMMON_WND, function (wnd, name, type) {
-        //     wnd.getComponent(WndTypeDefine.WindowType.E_DT_COMMON_WND).setContent(mode, name, type, title, rstrMsg, pFunCloseCallback, pFunConfirmCallback, pFunCancelCallback, prefabName, confirmName, cancelName);
-        //     if (callback) {
-        //         callback(wnd, name, type);
-        //     }
-        // });
-    },
-
     showTreasureTipWnd: function (title, text, drawMode, ticketsEnough, diamondEnough, pFunCloseCallback, pFunConfirmCallback, pFunCancelCallback) {
         WindowManager.getInstance().pushView(WndTypeDefine.WindowType.E_DT_NORMAL_TREASURE_TIP_WND, function (wnd, name, type) {
             wnd.getComponent(type).initTreasureTipWnd(title, text, drawMode, ticketsEnough, diamondEnough, pFunCloseCallback, pFunConfirmCallback, pFunCancelCallback)
@@ -41,13 +29,6 @@ module.exports = {
     },
 
     showDrawBoxPreview: function (itemMustIDVec, itemProbIDVec, callback) {
-        // WindowManager.getInstance().pushView(WndTypeDefine.WindowType.E_DT_COMMON_WND, function (wnd, name, type) {
-        //     wnd.getComponent(type).setDrawBoxPreviewContent(name, type, title, pFunCloseCallback, pFunConfirmCallback, pFunCancelCallback);
-        //     wnd.getComponent(type).setItemShowVec(itemMustIDVec, itemProbIDVec);
-        //     if (callback) {
-        //         callback(wnd, name, type);
-        //     }
-        // });
         WindowManager.getInstance().pushView(WndTypeDefine.WindowType.E_DT_NORMALDRAW_PREVIEW_WND, function (wnd, name, type) {
             wnd.getComponent(type).setItemShowVec(itemMustIDVec, itemProbIDVec);
             if (callback) {
@@ -187,9 +168,19 @@ module.exports = {
         WindowManager.getInstance().pushView(WndTypeDefine.WindowType.E_DT_GUAZAISMELTER_WND);
     },
 
+    showGuazaiChip: function () {
+        WindowManager.getInstance().pushView(WndTypeDefine.WindowType.E_DT_GUAZAICHIP_WND);
+    },
+
     showBuySpWnd: function () {
         WindowManager.getInstance().pushView(WndTypeDefine.WindowType.E_DT_NORMAL_BUY_SP_WND, function (wnd, name, type) {
             wnd.getComponent(type).initBuySpWnd();
+        });
+    },
+
+    showBuyJinhuaWnd: function () {
+        WindowManager.getInstance().pushView(WndTypeDefine.WindowType.E_DT_NORMAL_BUY_JINHUA_WND, function (wnd, name, type) {
+            wnd.getComponent(type).refreshJinHuaWndUI();
         });
     },
 
@@ -360,7 +351,9 @@ module.exports = {
                 this.showRechargeWnd();
                 completeCallback && completeCallback();
                 return;
-            } else {
+            } else if (!isActive) {
+                GlobalVar.comMsg.errorWarning(errCode);
+            } else if (isActive) {
                 GlobalVar.comMsg.errorWarning(GameServerProto.PTERR_RCG_FREE_DIAMOND_LACK);
             }
             completeCallback && completeCallback();
@@ -408,10 +401,10 @@ module.exports = {
     showSuperRewardWnd: function () {
         WindowManager.getInstance().pushView(WndTypeDefine.WindowType.E_DT_NORMAL_SUPER_REWARD_WND);
     },
-    showShareMemberTestPlayWnd: function (testPlayMemberID, callback) {
+    showShareMemberTestPlayWnd: function (testPlayMemberID, callback, closeCallback) {
         WindowManager.getInstance().pushView(WndTypeDefine.WindowType.E_DT_NORMAL_SHARETESTPLAY_WND, function (wnd, name, type) {
             wnd.getComponent(type).setTestPlayMemberID(testPlayMemberID);
-            wnd.getComponent(type).setCallback(callback);
+            wnd.getComponent(type).setCallback(callback, closeCallback);
         });
     },
     showShareTestPlayFinishWnd: function () {
@@ -435,6 +428,10 @@ module.exports = {
         WindowManager.getInstance().pushView(WndTypeDefine.WindowType.E_DT_NORMAL_AD_EXP_WND);
     },
 
+    showAdTask: function () {
+        WindowManager.getInstance().pushView(WndTypeDefine.WindowType.E_DT_NORMAL_AD_TASK_WND);
+    },
+
     showArenaMainWnd: function () {
         WindowManager.getInstance().pushView(WndTypeDefine.WindowType.E_DT_NORMAL_ARENA_MAIN_WND);
     },
@@ -447,11 +444,57 @@ module.exports = {
             // wnd.getComponent(type).setRankingType(TYPE_RANKING_ENDLESS);
         }, true, false);
     },
-    showArenaStoreWnd: function (data) {
+    showArenaStoreWnd: function () {
         WindowManager.getInstance().pushView(WndTypeDefine.WindowType.E_DT_NORMAL_ARENA_STORE_WND);
+    },
+
+    showArenaRewardWnd: function () {
+        WindowManager.getInstance().pushView(WndTypeDefine.WindowType.E_DT_NORMAL_ARENA_REWARD_WND);
+    },
+
+    showArenaPlayTipWnd: function () {
+        WindowManager.getInstance().pushView(WndTypeDefine.WindowType.E_DT_NORMAL_ARENA_PLAY_TIP_WND);
+    },
+
+    showArenaGetFreeTicketWnd: function () {
+        WindowManager.getInstance().pushView(WndTypeDefine.WindowType.E_DT_NORMAL_ARENA_GET_FREE_TICKET_WND);
+    },
+
+    showFollowRewardWnd: function (data) {
+        WindowManager.getInstance().pushView(WndTypeDefine.WindowType.E_DT_NORMAL_FOLLOW_REWARD_WND);
     },
 
     showMemberStoreWnd: function () {
         WindowManager.getInstance().pushView(WndTypeDefine.WindowType.E_DT_NORMAL_MEMBER_STORE_WND);
+    },
+
+    showNormalPieceWnd: function (item, mode) {
+        WindowManager.getInstance().pushView(WndTypeDefine.WindowType.E_DT_NORMAL_PIECE_WND, function (wnd, name, type) {
+            wnd.getComponent(type).initPanel(item, mode);
+        });
+    },
+
+    showBoxRewardWnd: function (data) {
+        WindowManager.getInstance().pushView(WndTypeDefine.WindowType.E_DT_NORMAL_BOX_REWARD_WND);
+    },
+
+    showNormalMixDriveTechWnd: function (data) {
+        WindowManager.getInstance().pushView(WndTypeDefine.WindowType.E_DT_NORMAL_MIXDRIVE_TECH_WND);
+    },
+
+    showNormalMixDriveListWnd: function (data) {
+        WindowManager.getInstance().pushView(WndTypeDefine.WindowType.E_DT_NORMAL_MIXDRIVE_LIST_WND, function (wnd, name, type) {
+            wnd.getComponent(type).initView(data);
+        });
+    },
+
+    showNormalMixLevelUpWnd: function (mixLevelData) {
+        WindowManager.getInstance().pushView(WndTypeDefine.WindowType.E_DT_NORMAL_MIXLEVEL_UP_WND, function (wnd, name, type) {
+            wnd.getComponent(type).initMixLevelUpWnd(mixLevelData);
+        });
+    },
+
+    showInviteRewardWnd: function () {
+        WindowManager.getInstance().pushView(WndTypeDefine.WindowType.E_DT_NORMAL_INVITE_REWARD_WND);
     },
 };

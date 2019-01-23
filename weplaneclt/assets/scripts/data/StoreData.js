@@ -98,16 +98,30 @@ var StoreData = cc.Class({
         if (data.data.ErrCode !== GameServerProto.PTERR_SUCCESS)
             return;
 
-        switch (msgId) {
-            case GameServerProto.GMID_STORE_DATA_ACK:
+        if (msgId == GameServerProto.GMID_STORE_DATA_ACK) {
+            if (data.data.Type == GameServerProto.PT_STORE_NORMAL) {
                 this.setDataByGMID_STORE_DATA_ACK(msgId, data.data);
-                break;
-
-            case GameServerProto.GMID_STORE_REFRESH_ACK:
-                break;
-            default: break;
+            } else if (data.data.Type == GameServerProto.PT_STORE_MEMBER) {
+                this.storeData.type = GameServerProto.PT_STORE_MEMBER;
+                GlobalVar.handlerManager().memberHandler.recvMemberStoreData(msgId, data);
+                return
+            } else if (data.data.Type == GameServerProto.PT_STORE_ARENA) {
+                this.storeData.type = GameServerProto.PT_STORE_ARENA;
+                GlobalVar.handlerManager().arenaHandler._recvArenaStoreAck(msgId, data);
+                return;
+            }
         }
         GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_STORE_DATA_NTF, this.storeData);
+        // switch (msgId) {
+        //     case GameServerProto.GMID_STORE_DATA_ACK:
+        //         this.setDataByGMID_STORE_DATA_ACK(msgId, data.data);
+        //         break;
+
+        //     case GameServerProto.GMID_STORE_REFRESH_ACK:
+        //         break;
+        //     default: break;
+        // }
+        // GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_STORE_DATA_NTF, this.storeData);
     },
 
     saveBuyData: function (msgId, data) {
@@ -115,17 +129,25 @@ var StoreData = cc.Class({
         {
             if (data.data.ErrCode == GameServerProto.PTERR_DIAMOND_LACK){
                 CommonWnd.showNormalFreeGetWnd(data.data.ErrCode);
+            } else if (data.data.ErrCode == GameServerProto.PTERR_PIECE_CRYSTAL_LACK) { 
+                GlobalVar.handlerManager().memberHandler.recvBuyAck(msgId, data);
             }else{
-                GlobalVar.comMsg.errorWarning(data.ErrCode);
+                GlobalVar.comMsg.errorWarning(data.data.ErrCode);
             }
             return;
         }
 
-        switch (msgId) {
-            case GameServerProto.GMID_STORE_BUY_ACK:
+        if (msgId == GameServerProto.GMID_STORE_BUY_ACK) {
+            if (data.data.Type == GameServerProto.PT_STORE_NORMAL) {
                 this.setDataByGMID_STORE_BUY_ACK(msgId, data.data);
-                break;
-            default: break;
+            } else if (data.data.Type == GameServerProto.PT_STORE_MEMBER) {
+                GlobalVar.handlerManager().memberHandler.recvBuyAck(msgId, data);
+                return;
+            } else if (data.data.Type == GameServerProto.PT_STORE_ARENA) {
+                this.storeData.type = GameServerProto.PT_STORE_ARENA;
+                GlobalVar.handlerManager().arenaHandler._recvArenaStoreBuyAck(msgId, data);
+                return;
+            }
         }
         GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_STORE_BUY_NTF, this.storeBuyData);
     },
@@ -135,9 +157,16 @@ var StoreData = cc.Class({
         {
             if (data.data.ErrCode == GameServerProto.PTERR_DIAMOND_LACK){
                 CommonWnd.showNormalFreeGetWnd(data.data.ErrCode);
-            }else{
-                GlobalVar.comMsg.errorWarning(data.ErrCode);
+            }else {
+                GlobalVar.comMsg.errorWarning(data.data.ErrCode);
             }
+            return;
+        }
+        if (data.data.Type == GameServerProto.PT_STORE_MEMBER) {
+            GlobalVar.handlerManager().memberHandler.recvFreshAck(msgId, data);
+            return;
+        }else if (data.data.Type == GameServerProto.PT_STORE_ARENA) {
+            GlobalVar.handlerManager().arenaHandler._recvArenaStoreRefreshAck(msgId, data);
             return;
         }
         var ack=data.data;
@@ -151,6 +180,7 @@ var StoreData = cc.Class({
             item.state = ack.Items[i].State;
 
             item.costNum = ack.Items[i].Cost;
+            item.costType = ack.Items[i].Type;
             switch (ack.Items[i].Type) {
                 case GameServerProto.PT_MONEY_GOLD:
                     item.costId = GOLD_ID;
@@ -186,6 +216,7 @@ var StoreData = cc.Class({
             item.state = ack.Items[i].State;
 
             item.costNum = ack.Items[i].Cost;
+            item.costType = ack.Items[i].Type;
             switch (ack.Items[i].Type) {
                 case GameServerProto.PT_MONEY_GOLD:
                     item.costId = GOLD_ID;
@@ -247,7 +278,7 @@ var StoreData = cc.Class({
         var refresh = GlobalVar.tblApi.getDataBySingleKey('TblStoreLevel', this.storeData.type);
         var refreshType;
         for (let i = 0; i < refresh.length; i++) {
-            if (GlobalVar.me().level >= refresh[i].wMinLevel && GlobalVar.me().level >= refresh[i].wMinLevel <= refresh[i].wMaxLevel)
+            if (GlobalVar.me().level >= refresh[i].wMinLevel && GlobalVar.me().level <= refresh[i].wMaxLevel)
                 refreshType = refresh[i];
         }
         var refreshPlan = GlobalVar.tblApi.getDataByMultiKey('TblRefresh', refreshType.wRefreshType, 0);

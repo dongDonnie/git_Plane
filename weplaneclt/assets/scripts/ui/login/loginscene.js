@@ -2,7 +2,6 @@ const SceneDefines = require("scenedefines");
 const SceneBase = require("scenebase");
 const GlobalVar = require("globalvar")
 const EventMsgID = require("eventmsgid")
-const weChatAPI = require("weChatAPI");
 const GameServerProto = require("GameServerProto");
 
 var LoginScene = cc.Class({
@@ -66,7 +65,7 @@ var LoginScene = cc.Class({
         
         let platformApi = GlobalVar.getPlatformApi();
         if (platformApi){
-            platformApi.requestIosRechageLockState(GlobalVar.me().level, GlobalVar.me().combatPoint, GlobalVar.me().creatTime, function (state) {
+            platformApi.requestIosRechageLockState(GlobalVar.me().level, GlobalVar.me().combatPoint, GlobalVar.me().createTime, function (state) {
                 GlobalVar.IosRechargeLock = !!state;
             });
             platformApi.requestShareOpenState(GlobalVar.tblApi.getData('TblVersion')[1].strVersion, function (state) {
@@ -88,7 +87,7 @@ var LoginScene = cc.Class({
                         break;
                 }
                 console.log("get shareSwitchSetting:", state);
-            })
+            });
         }
         GlobalVar.handlerManager().noticeHandler.sendGetNoticeReq();
         GlobalVar.handlerManager().drawHandler.sendTreasureData();

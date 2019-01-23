@@ -8,7 +8,6 @@ const GlobalFunc = require('GlobalFunctions');
 const i18n = require('LanguageData');
 const GameServerProto = require("GameServerProto");
 const BattleManager = require('BattleManager');
-const weChatAPI = require("weChatAPI");
 
 const AUDIO_SHILIANCHOU = 'cdnRes/audio/main/effect/shilianchou';
 
@@ -33,7 +32,6 @@ cc.Class({
 
     onLoad: function () {
         this._super();
-        i18n.init('zh');
         this.typeName = WndTypeDefine.WindowType.E_DT_NORMALDRAW_VIEW;
         this.animeStartParam(0);
         if (GlobalFunc.isAllScreen() && !this.fixViewComplete) {
@@ -83,7 +81,6 @@ cc.Class({
                 this.countDownTimerID = -1;
             }
 
-            // this.node.getChildByName("nodeBlock").active = true;
             GlobalVar.eventManager().removeListenerWithTarget(this);
             if (this.deleteMode) {
                 if (WindowManager.getInstance().findViewIndex(WndTypeDefine.WindowType.E_DT_GUAZAIMAIN_WND) == -1) {
@@ -116,8 +113,7 @@ cc.Class({
         let oneFreeCount = GlobalVar.me().drawData.getOneFreeCount();
         let oneFreeMax = GlobalVar.tblApi.getDataBySingleKey('TblParam', GameServerProto.PTPARAM_TREASURE_ONE_FREE_MAX).dValue;
         this.node.getChildByName("nodeBottom").getChildByName("labelFreeDraw").getComponent(cc.Label).string = oneFreeCount + "/" + oneFreeMax;
-
-        // this.node.getChildByName("nodeBlock").active = false;        
+    
         let normalRootWnd = WindowManager.getInstance().findViewInWndNode(WndTypeDefine.WindowType.E_DT_NORMALROOT_WND);
         if (normalRootWnd) {
             this.normalRootReturnBtn = normalRootWnd.getComponent(WndTypeDefine.WindowType.E_DT_NORMALROOT_WND).btnReturn;

@@ -1,7 +1,5 @@
-var config = require('config');
 const ResMapping = require("resmapping");
 const ResManager = require("ResManager");
-const weChatAPI = require("weChatAPI");
 
 const resPath = cc.Class({
     name: 'resPath',
@@ -20,7 +18,7 @@ var RemoteSprite = cc.Class({
         inspector: 'packages://rSprite/rSpriteInspector.js',
     },
 
-    ctor:function(){
+    ctor: function () {
         this.setFrame();
     },
 
@@ -45,55 +43,36 @@ var RemoteSprite = cc.Class({
     },
 
     setFrame: function (index) {
-        var self = this;
-        if (0) {
-            if (typeof index !== 'undefined') {
-                if (this.frameList.length > 0 && index < this.frameList.length && index>=0) {
-                    weChatAPI.pushURL(ResMapping.ResType.SpriteFrame, frameList[index].url, function (frame) {
-                        // console.log("get frame");
-                        self.spriteFrame = frame;
-                    });
-                }
-            } else {
-                if (this.defaultURL != "") {
-                    weChatAPI.pushURL(ResMapping.ResType.SpriteFrame, this.defaultURL, function (frame) {
-                        // console.log("get frame");
-                        self.spriteFrame = frame;
-                    });
-                }
-            }
-        } else {
-            index = typeof index !== 'undefined' ? (index > this.frameList.length || index < 0 ? 0 : index) : 0;
-            if (this.frameList.length > 0 && index < this.frameList.length) {
-                this.spriteFrame = this.frameList[index].local;
-            }
+        index = typeof index !== 'undefined' ? (index > this.frameList.length || index < 0 ? 0 : index) : 0;
+        if (this.frameList.length > 0 && index < this.frameList.length) {
+            this.spriteFrame = this.frameList[index].local;
         }
     },
 
-    loadFrame:function(param){
-        if (cc.sys.platform === cc.sys.WECHAT_GAME) {
-            this.loadFrameFromURL(param);
-        }else{
-            this.loadFrameFromLocalRes(param);
-        }
-    },
+    // loadFrame: function (param) {
+    //     if (cc.sys.platform === cc.sys.WECHAT_GAME) {
+    //         //this.loadFrameFromURL(param);
+    //     } else {
+    //         this.loadFrameFromLocalRes(param);
+    //     }
+    // },
 
     loadFrameFromLocalRes: function (path) {
         var self = this;
         ResManager.getInstance().loadRes(ResMapping.ResType.SpriteFrame, path, function (frame) {
-            if(cc.isValid(self)){
+            if (cc.isValid(self)) {
                 self.spriteFrame = frame;
             }
         });
     },
 
-    loadFrameFromURL: function (url) {
-        var self = this;
-        weChatAPI.pushURL(ResMapping.ResType.SpriteFrame, url, function (frame) {
-            // console.log("get frame");
-            self.spriteFrame = frame;
-        });
-    }
+    // loadFrameFromURL: function (url) {
+    //     var self = this;
+    //     weChatAPI.pushURL(ResMapping.ResType.SpriteFrame, url, function (frame) {
+    //         // console.log("get frame");
+    //         self.spriteFrame = frame;
+    //     });
+    // }
 });
 
 cc.RemoteSprite = module.exports = RemoteSprite;

@@ -1,14 +1,12 @@
-
-const WindowManager = require("windowmgr");
 const WndTypeDefine = require("wndtypedefine");
 const RootBase = require("RootBase");
 const GlobalVar = require('globalvar')
 const EventMsgID = require("eventmsgid");
-const CommonWnd = require("CommonWnd");
 const GlobalFunc = require('GlobalFunctions')
 const ResMapping = require("resmapping");
 const weChatAPI = require("weChatAPI");
 const StoreageData = require("storagedata");
+const GameServerProto = require("GameServerProto");
 
 const TYPE_RANKING_QUEST = 0, TYPE_RANKING_ENDLESS = 1;
 const POWER_RANKING = 0, QUEST_RANKING = 1, ENDLESS_RANKING = 2, FRIENDS_RANKING = 3, WORLD_RANKING = 4;
@@ -92,7 +90,8 @@ cc.Class({
 
             // this.setRankingType(TYPE_RANKING_ENDLESS);
         } else if (name == "Enter") {
-            this._super("Enter")
+            this._super("Enter");
+            GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_RANK_WORLD_DATA, this.getRankWorldData, this);
             this.showRanking();
             this.createAuthorizeBtn(this.btnWorldRankiong.node);
         }
@@ -246,7 +245,11 @@ cc.Class({
             case WORLD_RANKING:
                 this.spriteRankingContent.node.active = false;
                 this.rankingDataContent.active = true;
-                platformApi.requestEndlessWorldRanking(GlobalVar.me().loginData.getLoginReqDataServerID(), GlobalVar.me().roleID, pageIndex, pageCount, this.setRankingData.bind(this));
+                let msg = {
+                    Type: GameServerProto.PT_RANKTYPE_ENDLESS
+                }
+                GlobalVar.handlerManager().endlessHandler.sendMsg(GameServerProto.GMID_RANK_REQ, msg);
+                // platformApi.requestEndlessWorldRanking(GlobalVar.me().loginData.getLoginReqDataServerID(), GlobalVar.me().roleID, pageIndex, pageCount, this.setRankingData.bind(this));
                 break;
             default:
                 // console.log("error, please check rankingListView");
@@ -256,14 +259,32 @@ cc.Class({
         // console.log("send getRankingList req success");
     },
 
+    getRankWorldData: function () {
+        let data = GlobalVar.me().endlessData.rankWorldData;
+        let rankData = {};
+        rankData.list = [];
+        rankData.my = data.OK.MySelf;
+        let firstIndex = (this.pageIndex - 1) * this.pageCount;
+        for (let i = firstIndex; i < firstIndex + this.pageCount && i < data.OK.Members.length; i++) {
+            rankData.list.push(data.OK.Members[i]);
+        }
+        this.setRankingData(rankData);
+    },
+
     setRankingData: function (data) {
         console.log("get the world rankingList data:", data);
-        if (data.list.length == 0){
+        let rankDatas = [];
+        for (let i = 0; i<data.list.length; i++){
+            if (data.list[i].EndlessMaxScore > 0){
+                rankDatas.push(data.list[i]);
+            }
+        }
+        if (rankDatas.length == 0){
             console.log("该页没有数据！lastPage:", this.lastPage, "  pageindex:", this.pageIndex);
             this.pageIndex = this.lastPage;
             return;
         }
-        for (let i = 0; i < data.list.length; i++) {
+        for (let i = 0; i < rankDatas.length; i++) {
             let model = null;
             if (this.rankingDataContent.children[i]){
                 model = this.rankingDataContent.children[i];
@@ -274,12 +295,12 @@ cc.Class({
             model.x = 0;
             model.active = true;
             // model.x = (-1000);
-            this.updateRank(model, data.list[i]);
+            this.updateRank(model, rankDatas[i]);
             // model.runAction(cc.sequence(cc.delayTime(0.05 * i), cc.moveBy(0.15, 1100, 0), cc.moveBy(0.05, -100, 0)));
         }
 
-        if (data.list.length < this.pageCount){
-            for (let i = data.list.length; i< this.pageCount; i++){
+        if (rankDatas.length < this.pageCount){
+            for (let i = rankDatas.length; i< this.pageCount; i++){
                 if (this.rankingDataContent.children[i]){
                     this.rankingDataContent.children[i].active = false;
                 }
@@ -290,7 +311,14 @@ cc.Class({
             this.nodeMyWorldRanking.active = true;
         }
     },
+
     updateRank: function (model, data) {
+        if (this.curRankingType == WORLD_RANKING) {
+            data.role_name = data.RoleName;
+            data.score = data.EndlessMaxScore;
+            data.avatar = data.Avatar;
+            data.rank = data.Rank + 1;
+        }
         model.getChildByName("labelName").getComponent(cc.Label).string = GlobalFunc.interceptStr(data['role_name'], 12, "...");
         model.getChildByName("labelScore").getComponent(cc.Label).string = data['score'];
         let score = parseInt(data['score']);
@@ -413,7 +441,8 @@ cc.Class({
         if (curPage != this.pageIndex) {
             this.lastPage = this.pageIndex;
             this.pageIndex = curPage;
-            this.sendGetRankingListReq(curPage, this.pageCount)
+            // this.sendGetRankingListReq(curPage, this.pageCount)
+            this.getRankWorldData();
         }
 
         // console.log("send changePage req success");

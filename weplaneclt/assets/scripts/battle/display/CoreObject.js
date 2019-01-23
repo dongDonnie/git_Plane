@@ -1,5 +1,4 @@
 const Defines = require('BattleDefines');
-var ShaderUtils = require("ShaderUtils");
 
 var CoreObject=cc.Class({
     extends: cc.Component,
@@ -53,28 +52,28 @@ var CoreObject=cc.Class({
         //cc.director.getCollisionManager().enabledDrawBoundingBox = true;
     },
 
-    _setMix(anim1, anim2) {
-        if (this.spine != null) {
-            this.spine.setMix(anim1, anim2, this.mixTime);
-            this.spine.setMix(anim2, anim1, this.mixTime);
-        }
-    },
+    // _setMix(anim1, anim2) {
+    //     if (this.spine != null) {
+    //         this.spine.setMix(anim1, anim2, this.mixTime);
+    //         this.spine.setMix(anim2, anim1, this.mixTime);
+    //     }
+    // },
 
-    onCollisionEnter: function (other, self) {
-        // cc.log(other);
-        // cc.log(self);
-        // this.node.color = cc.Color.RED;
-    },
+    // onCollisionEnter: function (other, self) {
+    //     // cc.log(other);
+    //     // cc.log(self);
+    //     // this.node.color = cc.Color.RED;
+    // },
 
-    onCollisionStay: function (other, self) {
-        // console.log('on collision stay');
-        //cc.log(other);
-        //cc.log(self);
-    },
+    // onCollisionStay: function (other, self) {
+    //     // console.log('on collision stay');
+    //     //cc.log(other);
+    //     //cc.log(self);
+    // },
 
-    onCollisionExit: function () {
-        //this.node.color = cc.Color.WHITE;
-    },
+    // onCollisionExit: function () {
+    //     //this.node.color = cc.Color.WHITE;
+    // },
 
     setObjectType: function (type) {
         this.objectType = type;
@@ -138,25 +137,25 @@ var CoreObject=cc.Class({
 
     },
 
-    toggleDebugSlots() {
-        if (this.spine != null) {
-            this.spine.debugSlots = !this.spine.debugSlots;
-        }
-    },
+    // toggleDebugSlots() {
+    //     if (this.spine != null) {
+    //         this.spine.debugSlots = !this.spine.debugSlots;
+    //     }
+    // },
 
-    toggleDebugBones() {
-        if (this.spine != null) {
-            this.spine.debugBones = !this.spine.debugBones;
-        }
-    },
+    // toggleDebugBones() {
+    //     if (this.spine != null) {
+    //         this.spine.debugBones = !this.spine.debugBones;
+    //     }
+    // },
 
-    toggleTimeScale() {
-        if (this.spine != null) {
-            if (this.spine.timeScale === 1.0) {
-                this.spine.timeScale = 0.3;
-            } else {
-                this.spine.timeScale = 1.0;
-            }
-        }
-    },
+    // toggleTimeScale() {
+    //     if (this.spine != null) {
+    //         if (this.spine.timeScale === 1.0) {
+    //             this.spine.timeScale = 0.3;
+    //         } else {
+    //             this.spine.timeScale = 1.0;
+    //         }
+    //     }
+    // },
 });

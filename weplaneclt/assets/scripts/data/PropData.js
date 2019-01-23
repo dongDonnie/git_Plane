@@ -11,7 +11,6 @@
 ////###
 
 const GlobalVar = require('globalvar');
-const EventMsgID = require("eventmsgid");
 const GameServerProto = require("GameServerProto");
 
 

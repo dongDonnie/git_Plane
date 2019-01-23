@@ -4,11 +4,8 @@ const WndTypeDefine = require("wndtypedefine");
 const RootBase = require("RootBase");
 const GlobalFunc = require('GlobalFunctions');
 const CommonWnd = require("CommonWnd");
-const i18n = require('LanguageData');
-const weChatAPI = require("weChatAPI");
+const i18n = require('LanguageData');;
 ////###
-
-
 
 cc.Class({
     extends: RootBase,
@@ -18,25 +15,25 @@ cc.Class({
             default: null,
             type: cc.Button
         },
-        itemPrefab:{
-            default:null,
-            type:cc.Prefab
+        itemPrefab: {
+            default: null,
+            type: cc.Prefab
         },
-        getwayPrefab:{
-            default:null,
-            type:cc.Prefab
+        getwayPrefab: {
+            default: null,
+            type: cc.Prefab
         },
         labelTitle: {
             default: null,
             type: cc.Label
         },
-        btnClose:{
-            default:null,
-            type:cc.Button
+        btnClose: {
+            default: null,
+            type: cc.Button
         },
-        nodeIcon:{
-            default:null,
-            type:cc.Node
+        nodeIcon: {
+            default: null,
+            type: cc.Node
         },
         labelIconName: {
             default: null,
@@ -46,44 +43,43 @@ cc.Class({
             default: null,
             type: cc.Label
         },
-        labelNumber:{
-            default:null,
-            type:cc.Label
+        labelNumber: {
+            default: null,
+            type: cc.Label
         },
-        btnSell:{
-            default:null,
-            type:cc.Button
+        btnSell: {
+            default: null,
+            type: cc.Button
         },
-        labelItemAttribute:{
-            default:null,
-            type:cc.Label
+        labelItemAttribute: {
+            default: null,
+            type: cc.Label
         },
-        scrollviewGetWay:{
-            default:null,
-            type:cc.ScrollView
+        scrollviewGetWay: {
+            default: null,
+            type: cc.ScrollView
         },
-        getwayStack:{
-            default:[],
-            visible:false,
+        getwayStack: {
+            default: [],
+            visible: false,
         },
-        itemID:{
-            default:0,
-            visible:false,
+        itemID: {
+            default: 0,
+            visible: false,
         },
-        slot:{
-            default:-1,
-            visible:false,
+        slot: {
+            default: -1,
+            visible: false,
         },
-        sellMode:{
-            default:false,
-            visible:false,
+        sellMode: {
+            default: false,
+            visible: false,
         },
     },
 
-    onLoad () {
+    onLoad() {
         this._super();
-        i18n.init('zh');
-        this.typeName=WndTypeDefine.WindowType.E_DT_NORMALITEMGETWAY;
+        this.typeName = WndTypeDefine.WindowType.E_DT_NORMALITEMGETWAY;
         this.animeStartParam(0, 0);
         this.canClose = true;
         this.isFirstIn = true;
@@ -97,22 +93,23 @@ cc.Class({
     animePlayCallBack(name) {
         if (name == "Escape") {
             this._super("Escape");
-            if(this.sellMode){
-                this.sellMode=false;
-                var param=this.slot;
+            if (this.sellMode) {
+                this.sellMode = false;
+                var param = this.slot;
                 // WindowManager.getInstance().popView(true,function(){
                 //     GlobalVar.handlerManager.bagHandler.sendItemSellReq(param,1);
                 // });
-                WindowManager.getInstance().pushView(WndTypeDefine.WindowType.E_DT_SELLITEM_WND,function (wnd, name, type){
+                WindowManager.getInstance().pushView(WndTypeDefine.WindowType.E_DT_SELLITEM_WND, function (wnd, name, type) {
                     wnd.getComponent(type).updateInfo(param);
                 });
-            }else{
-                WindowManager.getInstance().popView(false,null,false);
+            } else {
+                WindowManager.getInstance().popView(false, null, false);
             }
+            this.resetInfo();
         } else if (name == "Enter") {
             this._super("Enter");
-            let itemData=GlobalVar.tblApi.getDataBySingleKey('TblItem', this.itemID);
-            if (!itemData){
+            let itemData = GlobalVar.tblApi.getDataBySingleKey('TblItem', this.itemID);
+            if (!itemData) {
                 GlobalVar.comMsg.showMsg("道具信息错误");
                 return;
             }
@@ -120,31 +117,31 @@ cc.Class({
         }
     },
 
-    updateInfo: function (id,num,level,slot) {
+    updateInfo: function (id, num, level, slot) {
         id = typeof id !== 'undefined' ? id : 1;
         slot = typeof slot !== 'undefined' ? slot : -1;
-        this.itemID=id;
-        let item=this.addItem(id);
-        let itemData=item.getComponent("ItemObject").updateItem(id);
-        this.setName(itemData.strName,itemData.wQuality);
+        this.itemID = id;
+        let item = this.addItem(id);
+        let itemData = item.getComponent("ItemObject").updateItem(id);
+        this.setName(itemData.strName, itemData.wQuality);
         this.setDescription(itemData.strItemDesc);
         this.setLabelNumberData(num);
         // this.clearGetWay();
-        this.slot=slot;
-        if(slot==-1){
+        this.slot = slot;
+        if (slot == -1) {
             this.setBtnSellVisible(false);
         }
     },
 
-    addItem:function(id){
+    addItem: function (id) {
         this.nodeIcon.removeAllChildren();
-        let item=cc.instantiate(this.itemPrefab);
+        let item = cc.instantiate(this.itemPrefab);
         this.nodeIcon.addChild(item);
         return item;
     },
 
-    clearGetWay:function(){
-        for (let i = this.getwayStack.length-1; i >=0 ; i--) {
+    clearGetWay: function () {
+        for (let i = this.getwayStack.length - 1; i >= 0; i--) {
             this.getwayStack[i].destroy();
             this.getwayStack.pop();
         }
@@ -162,25 +159,25 @@ cc.Class({
         //     },)
         //     this.getwayStack.push(getway);
         // }
-        if (this.isFirstIn){
+        if (this.isFirstIn) {
             this.isFirstIn = false;
             this.scrollviewGetWay.loopScroll.setGapDisY(5);
             this.scrollviewGetWay.loopScroll.setCreateModel(this.getwayPrefab);
-            this.scrollviewGetWay.loopScroll.registerCompleteFunc(function(){
+            this.scrollviewGetWay.loopScroll.registerCompleteFunc(function () {
                 self.canClose = true;
             })
         }
         this.scrollviewGetWay.loopScroll.setTotalNum(way.length);
-        this.scrollviewGetWay.loopScroll.registerUpdateItemFunc(function(getway, index){
+        this.scrollviewGetWay.loopScroll.registerUpdateItemFunc(function (getway, index) {
             getway.getComponent("GetWayObject").updateGetWay(way[index].wSystemID, way[index].nParam1, way[index].nParam2);
             getway.getComponent("GetWayObject").setJumpCallback(function () {
                 self.close();
-            },)
+            })
         });
         this.scrollviewGetWay.loopScroll.resetView();
 
 
-        if(way.length==0){
+        if (way.length == 0) {
             let getway = this.addGetWay();
             getway.getComponent("GetWayObject").updateGetWay();
             this.getwayStack.push(getway);
@@ -194,27 +191,27 @@ cc.Class({
         return getway;
     },
 
-    sellSelf:function(){
-        if(this.slot!=-1){
+    sellSelf: function () {
+        if (this.slot != -1) {
             let itemData = GlobalVar.tblApi.getDataBySingleKey('TblItem', this.itemID);
             if (itemData != null) {
-                if(itemData.bySellType!=1 || itemData.nSellPrice==0){
+                if (itemData.bySellType != 1 || itemData.nSellPrice == 0) {
                     CommonWnd.showMessage(null, CommonWnd.oneConfirm, i18n.t('label.4000216'), i18n.t('label.4000219'));
-                }else{
-                    this.sellMode=true; 
+                } else {
+                    this.sellMode = true;
                     this.close();
                 }
             }
         }
     },
-    
+
     setTitle: function (text) {
         this.labelTitle.string = text;
     },
 
-    setName: function (text,quality) {
+    setName: function (text, quality) {
         this.labelIconName.string = text;
-        this.labelIconName.node.color=GlobalFunc.getCCColorByQuality(quality);
+        this.labelIconName.node.color = GlobalFunc.getCCColorByQuality(quality);
     },
 
     setSubTitle: function (text) {
@@ -225,11 +222,11 @@ cc.Class({
         this.labelItemDescription.string = text;
     },
 
-    setLabelNumberData:function(text){
-        this.labelNumber.string=text;
+    setLabelNumberData: function (text) {
+        this.labelNumber.string = text;
     },
 
-    setBtnSellVisible:function(visible){
+    setBtnSellVisible: function (visible) {
         visible = typeof visible !== 'undefined' ? visible : true;
         this.btnSell.node.active = visible;
     },
@@ -251,11 +248,14 @@ cc.Class({
     },
 
     close: function () {
-        if (!this.canClose){
+        if (!this.canClose) {
             return;
         }
         this.scrollviewGetWay.loopScroll.releaseViewItems();
         this._super();
     },
 
+    resetInfo: function () {
+        this.setTitle('道具详情');
+    },
 });

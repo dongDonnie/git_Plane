@@ -2,15 +2,11 @@ const RootBase = require("RootBase");
 const WindowManager = require("windowmgr");
 const WndTypeDefine = require("wndtypedefine");
 const GlobalVar = require('globalvar')
-const EventMsgID = require("eventmsgid");
 const GlobalFunc = require('GlobalFunctions')
-const i18n = require('LanguageData');
 const ResMapping = require('resmapping')
 
-
-const MODE_GET_BUY_ITEM = 0;
 const MODE_GET_DRAW_ITEM = 1;
-const MODE_GET_NEW_PLANE_OR_GUAZAI = 2;
+
 cc.Class({
     extends: RootBase,
 
@@ -21,7 +17,6 @@ cc.Class({
 
     onLoad: function () {
         this._super();
-        i18n.init('zh');
         this.typeName = WndTypeDefine.WindowType.E_DT_NORMAL_GET_NEW_ITEM_WND;
 
 

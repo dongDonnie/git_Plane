@@ -4,13 +4,13 @@ const BattleManager = require('BattleManager')
 const EntityManager = require('EntityManager')
 
 cc.Class({
-    statics: {
+    // statics: {
 
-    },
+    // },
 
-    properties: {
+    // properties: {
 
-    },
+    // },
 
     ctor() {
         this.heroManager = require('HeroManager').getInstance();
@@ -81,7 +81,6 @@ cc.Class({
                 }
             }
 
-            let collided = false;
             for (let monster of monsterList) {
                 if (monster.objectType != Defines.ObjectType.OBJ_MONSTER ||
                     monster.baseObject == null ||
@@ -94,25 +93,9 @@ cc.Class({
 
                 if (this.Intersects(a, b)) {
                     this.collision(blt, monster);
-                    collided = true;
                     break;
                 }
             }
-
-            // if (!collided) {
-            //     for (let monsterBlt of monsterBltList) {
-            //         if (monsterBlt.objectType != Defines.ObjectType.OBJ_MONSTER_BULLET ||
-            //             monsterBlt.baseObject == null ||
-            //             monsterBlt.isDead) {
-            //             continue;
-            //         }
-
-            //         if (monsterBlt.checkPointInNode(bPos)) {
-            //             this.collision(blt, monsterBlt);
-            //             break;
-            //         }
-            //     }
-            // }
         }
 
         if (!!heroManager.planeEntity && cc.isValid(heroManager.planeEntity)) {
@@ -270,29 +253,6 @@ cc.Class({
 
         let colliderPoint = [wp0, wp1, wp2, wp3];
         return colliderPoint;
-        // let tempRect = cc.rect();
-
-        // let offset = collider.offset;
-        // let world = collider.world;
-
-        // let t = world.transform = collider.node.getNodeToWorldTransformAR();
-
-        // let size = collider.size;
-
-        // tempRect.x = offset.x - size.width / 2;
-        // tempRect.y = offset.y - size.height / 2;
-        // tempRect.width = size.width;
-        // tempRect.height = size.height;
-
-        // let wps = world.points;
-        // let wp0 = wps[0];
-        // let wp1 = wps[1];
-        // let wp2 = wps[2];
-        // let wp3 = wps[3];
-        // cc.obbApplyAffineTransform(tempRect, t, wp0, wp1, wp2, wp3);
-
-        // let colliderPoint = [wp0, wp1, wp2, wp3];
-        //return colliderPoint;
     },
 
     Intersects(a, b) {
@@ -323,26 +283,6 @@ cc.Class({
         return true;
     },
 
-    InSide(touchPoint, colliderPoint) {
-        let A_Path0 = colliderPoint[1].sub(colliderPoint[0]);
-        let A_Path1 = colliderPoint[2].sub(colliderPoint[1]);
-        let A_Path2 = colliderPoint[3].sub(colliderPoint[2]);
-        let A_Path3 = colliderPoint[0].sub(colliderPoint[3]);
-        let touch_Path0 = touchPoint.sub(colliderPoint[0]);
-        let touch_Path1 = touchPoint.sub(colliderPoint[1]);
-        let touch_Path2 = touchPoint.sub(colliderPoint[2]);
-        let touch_Path3 = touchPoint.sub(colliderPoint[3]);
-
-        let a0 = A_Path0.x * touch_Path0.y - A_Path0.y * touch_Path0.x;
-        let a1 = A_Path1.x * touch_Path1.y - A_Path1.y * touch_Path1.x;
-        let a2 = A_Path2.x * touch_Path2.y - A_Path2.y * touch_Path2.x;
-        let a3 = A_Path3.x * touch_Path3.y - A_Path3.y * touch_Path3.x;
-        if (a0 > 0 && a1 > 0 && a2 > 0 && a3 > 0) {
-            return true;
-        }
-        return false;
-    },
-
     collision(objA, objB) {
 
         if (objA.objectType == Defines.ObjectType.OBJ_MONSTER) {
@@ -359,8 +299,6 @@ cc.Class({
 
             if (objB.objectType == Defines.ObjectType.OBJ_HERO) {
                 this.collisionHeroWithBullet(objB, objA);
-            } else if (objB.objectType == Defines.ObjectType.OBJ_HERO_BULLET) {
-                this.collisionHeroBulletWithMonsterBullet(objB, objA);
             }
 
         } else if (objA.objectType == Defines.ObjectType.OBJ_HERO) {
@@ -381,8 +319,6 @@ cc.Class({
 
             if (objB.objectType == Defines.ObjectType.OBJ_MONSTER) {
                 this.collisionMonsterWithBullet(objB, objA);
-            } else if (objB.objectType == Defines.ObjectType.OBJ_MONSTER_BULLET) {
-                this.collisionHeroBulletWithMonsterBullet(objA, objB);
             } else if (objB.objectType == Defines.ObjectType.OBJ_SUNDRIES) {
                 this.collisionSundriesWithHeroBullet(objB, objA);
             }
@@ -428,12 +364,8 @@ cc.Class({
             hero.addProtectTime(Defines.PROTECT_TIME);
         } else if (buff.objectID == Defines.Assist.HP) {
             hero.addHP();
-        } else if (buff.objectID == Defines.Assist.MP) {
-
         } else if (buff.objectID == Defines.Assist.DASH) {
             hero.addDashTime(Defines.DASH_TIME);
-        } else if (buff.objectID == Defines.Assist.GHOST) {
-
         } else if (buff.objectID == Defines.Assist.GREENSTONE) {
             hero.addCrystal(1);
         } else if (buff.objectID == Defines.Assist.BLUESTONE) {
@@ -562,23 +494,6 @@ cc.Class({
         let y1 = posM.y + r * Math.sin(angle * Math.PI / 180);
         bullet.disappearPos = cc.v3(x1, y1);
         monster.flyDamageMsg(dmgMsg.dmg, dmgMsg.critical, dmgMsg.pos, false);
-
-        return dmgMsg;
-    },
-
-    collisionHeroBulletWithMonsterBullet(hbullet, mbullet) {
-        let tblBullet = GlobalVar.tblApi.getDataBySingleKey('TblBattleBullet', hbullet.objectID);
-        let part = Defines.Part.Unknown;
-        if (tblBullet) {
-            part = tblBullet.dwPart;
-        }
-
-        let dmgMsg = 0;
-        dmgMsg.pos = mbullet.getPosition();
-
-        BattleManager.getInstance().flyDamageMsg(dmgMsg.dmg, dmgMsg.critical, dmgMsg.pos, false);
-
-        hbullet.isDead = true;
 
         return dmgMsg;
     },

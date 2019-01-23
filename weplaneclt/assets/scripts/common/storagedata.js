@@ -66,6 +66,7 @@ StoredData.Type.FuLiShare = "fuLiShare";
 StoredData.Type.ClearCache = "clearcache";
 StoredData.Type.LastBannerShowTime = "lastBannerCreateTime";
 StoredData.Type.ResFileMap = "resFileMap";
+StoredData.Type.VibrateSwitch = "vibrateSwitch";
 
 
 StoredData.setClearCache = function (clear) {
@@ -352,7 +353,7 @@ StoredData.getBannerTimeCount = function () {
     }
     let timeCount = curTime - lastBannerShowTime;
     StoredData.resetLastBannerShowTime();
-    return timeCount > 0 ? timeCount : 0;
+    return timeCount > 1 ? timeCount : 1;
 };
 
 StoredData.setResFileMap = function (map) {
@@ -362,4 +363,16 @@ StoredData.setResFileMap = function (map) {
 StoredData.getResFileMap = function () {
     let data = StoredData.getItem(StoredData.Type.ResFileMap);
     if (data) return JSON.parse(data);
+};
+
+StoredData.setVibrateSwitch = function (onOff) {
+    StoredData.setItem(StoredData.Type.VibrateSwitch, onOff?1:0);
+};
+
+StoredData.getVibrateSwitch = function () {
+    let data = StoredData.getItem(StoredData.Type.VibrateSwitch);
+    if (data != null){
+        return !!parseInt(data);
+    }
+    return true;
 };

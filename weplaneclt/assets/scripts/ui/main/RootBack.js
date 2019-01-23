@@ -1,5 +1,3 @@
-const ResMapping = require("resmapping");
-const ResManager = require("ResManager");
 const UIBase = require("uibase");
 
 cc.Class({

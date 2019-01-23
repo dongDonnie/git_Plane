@@ -45,7 +45,6 @@ cc.Class({
 
     onLoad: function () {
         this._super();
-        i18n.init('zh');
         this.typeName = WndTypeDefine.WindowType.E_DT_NORMAL_RECHARGE_WND;
 
         this.content = this.rechargeScroll.content;
@@ -121,14 +120,14 @@ cc.Class({
             nodeRecharge.getChildByName("label").active = false;
             nodeRecharge.getChildByName("spriteIcon").active = false;
         }else{
-            nodeRecharge.getChildByName("labelUpLevelTip").getComponent(cc.Label).string = i18n.t('label.4000504').replace("%left", vipData.nRecharge - GlobalVar.me().diamondCz);
+            nodeRecharge.getChildByName("labelUpLevelTip").getComponent(cc.Label).string = i18n.t('label.4000504').replace("%left", vipData.nRecharge - GlobalVar.me().vipExp);
             nodeRecharge.getChildByName("labelUpLevel").getComponent(cc.Label).string = "贵族" + (vipLevel + 1);
         }
         nodeVip.getChildByName("labelVipLevel").getComponent(cc.Label).string = vipLevel;
         this.btnOperate.node.getComponent("ButtonObject").setText(i18n.t('label.4000501'));
 
-        nodeVip.getChildByName("labelRate").getComponent(cc.Label).string = GlobalVar.me().diamondCz + "/" + vipData.nRecharge;
-        nodeVip.getChildByName("progressBarLevel").getComponent(cc.ProgressBar).progress = (GlobalVar.me().diamondCz / vipData.nRecharge) > 1?1:(GlobalVar.me().diamondCz / vipData.nRecharge);
+        nodeVip.getChildByName("labelRate").getComponent(cc.Label).string = GlobalVar.me().vipExp + "/" + vipData.nRecharge;
+        nodeVip.getChildByName("progressBarLevel").getComponent(cc.ProgressBar).progress = (GlobalVar.me().vipExp / vipData.nRecharge) > 1?1:(GlobalVar.me().vipExp / vipData.nRecharge);
     },
 
     resetVocherCount: function () {

@@ -5,7 +5,6 @@
 
 var HandlerBase = require("handlerbase")
 var GlobalVar = require('globalvar')
-var EventMsgID = require("eventmsgid")
 var GameServerProto = require("GameServerProto");
 
 var self = null;
@@ -17,8 +16,6 @@ cc.Class({
     },
 
     initHandler: function (handlerMgr) {
-        // handlerMgr.setKey(GameServerProto.GMID_MAIL_GET_LIST_ACK,GameServerProto.GMID_MAIL_GET_LIST_REQ);
-        // handlerMgr.setKey(GameServerProto.GMID_MAIL_READ_ACK,GameServerProto.GMID_MAIL_READ_REQ);
 
         GlobalVar.messageDispatcher.bindMsg(GameServerProto.GMID_MAIL_GET_LIST_ACK, self._recvGetMailListAck, self);
         GlobalVar.messageDispatcher.bindMsg(GameServerProto.GMID_MAIL_READ_ACK, self._recvMailReadAck, self);

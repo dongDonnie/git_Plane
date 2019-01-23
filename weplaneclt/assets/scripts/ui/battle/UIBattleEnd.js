@@ -75,6 +75,7 @@ cc.Class({
         this.animeStartParam(0, 0);
         this.setEndNode();
         GlobalVar.me().memberData.setOneTimeChuZhanMemberID();
+        GlobalVar.me().shareData.testPlayMemberID = 0;
     },
 
     animeStartParam: function (paramScale, paramOpacity) {
@@ -509,6 +510,11 @@ cc.Class({
         }
     },
 
+    onBtnGoToLevelUpPlane: function () {
+        GlobalVar.windowManager().record = WndTypeDefine.WindowType.E_DT_NORMALPLANE_WND;
+        GlobalVar.sceneManager().gotoScene(SceneDefines.MAIN_STATE);
+    },
+
     onBtnGoToLevelUpEquip: function () {
         GlobalVar.windowManager().record = WndTypeDefine.WindowType.E_DT_NORMALIMPROVEMENT_WND;
         GlobalVar.sceneManager().gotoScene(SceneDefines.MAIN_STATE);
@@ -525,22 +531,21 @@ cc.Class({
         let cityFlagSwitch = GlobalVar.getCityFlagSwitch();
         let cityFlag = GlobalVar.me().loginData.getLoginReqDataCityFlag();
         console.log("-------------SuperInduce-------------");
-        console.log("guide =" +config.NEED_GUIDE );
-        console.log("ShareSwitch =" +GlobalVar.getShareSwitch() );    
-        console.log("cityFlag=" +GlobalVar.me().loginData.getLoginReqDataCityFlag());
+        console.log("guide =" + config.NEED_GUIDE);
+        console.log("ShareSwitch =" + GlobalVar.getShareSwitch());
+        console.log("cityFlag=" + GlobalVar.me().loginData.getLoginReqDataCityFlag());
         console.log("random = " + random);
         console.log("superBannerProb" + weChatAPI.shareSetting.superBannerProb);
-        console.log("SuperInduceCount=" +superInduceCount );
-        
+        console.log("SuperInduceCount=" + superInduceCount);
+
         if (!config.NEED_GUIDE &&
             GlobalVar.getShareSwitch() &&
             (cityFlagSwitch == 0 || cityFlag == 0) &&
             random < weChatAPI.shareSetting.superBannerProb &&
-            superInduceCount < weChatAPI.shareSetting.superBannerMax) 
-        {
+            superInduceCount < weChatAPI.shareSetting.superBannerMax) {
             GlobalVar.windowManager().record = WndTypeDefine.WindowType.E_DT_NORMAL_BANNER_YD_WND;
         }
-        
+
     },
 
     updateScore: function (targetData) {

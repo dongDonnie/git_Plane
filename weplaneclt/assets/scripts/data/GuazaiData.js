@@ -16,6 +16,7 @@ var GuazaiData = cc.Class({
         self.wearHotFlag = [false, false, false, false];
         self.qualityUpHotFlag = [false, false, false, false];
         self.levelUpHotFlag = [false, false, false, false];
+        self.composeHotFlag = [false, false, false, false];
     },
 
     setData: function (data) {     //原UpdateMountBag，传入的参数是GMDT_GUAZAI_BAG
@@ -29,7 +30,7 @@ var GuazaiData = cc.Class({
 
     getHechengGetItem: function () {
         let data = [];
-        for (let i = 0; i<self.heChengGetItem.length; i++){
+        for (let i = 0; i < self.heChengGetItem.length; i++) {
             data[i] = self.heChengGetItem[i];
         }
         self.heChengGetItem = [];
@@ -40,11 +41,11 @@ var GuazaiData = cc.Class({
         let bagGuazaiData = GlobalVar.me().bagData.getItemsByType(GameServerProto.PT_ITEMTYPE_GUAZAI);
         // for (let i = 0; i < self.guazaiData.GuaZais.length; i++) {
         // for (let i in self.guazaiWear) {
-        for (let i = 1; i<= 4; i ++) {
-            if (!self.guazaiWear[i]){
+        for (let i = 1; i <= 4; i++) {
+            if (!self.guazaiWear[i]) {
                 for (let j = 0; j < bagGuazaiData.length; j++) {
                     let guazaiData = GlobalVar.tblApi.getDataBySingleKey('TblGuaZai', bagGuazaiData[j].ItemID);
-                    if (guazaiData.byPosition == i){
+                    if (guazaiData.byPosition == i) {
                         self.wearHotFlag[i - 1] = guazaiData.byPosition == i;
                         self.totalHotFlag[i - 1] = self.wearHotFlag[i - 1];
                         break;
@@ -66,7 +67,7 @@ var GuazaiData = cc.Class({
             self.wearHotFlag[position - 1] = maxQuality > wearData.wQuality;
 
             let canQualityUp = true;
-            if (wearData.oVecQualityUpNeed.length == 0){
+            if (wearData.oVecQualityUpNeed.length == 0) {
                 canQualityUp = false;
             }
             for (let j = 0; j < wearData.oVecQualityUpNeed.length; j++) {
@@ -76,8 +77,8 @@ var GuazaiData = cc.Class({
                 if (!canQualityUp) break;
             }
             self.qualityUpHotFlag[position - 1] = canQualityUp;
-            
-            let levelLimit = GlobalVar.me().level*2;
+
+            let levelLimit = GlobalVar.me().level * 2;
             let levelUpNeedExp = GlobalVar.tblApi.getDataByMultiKey('TblGuaZaiLevel', position, self.guazaiWear[i].GuaZai.Level).nUpNeedEXP - self.guazaiWear[i].GuaZai.Exp;
 
             let canProvideExp = 0
@@ -89,16 +90,64 @@ var GuazaiData = cc.Class({
             self.levelUpHotFlag[position - 1] = levelUpNeedExp > 0 && canProvideExp >= levelUpNeedExp && self.guazaiWear[i].GuaZai.Level < levelLimit;
 
             self.totalHotFlag[position - 1] = self.wearHotFlag[position - 1] || self.qualityUpHotFlag[position - 1] || self.levelUpHotFlag[position - 1];
+
+            self.updateComposeHotPointData();
         }
         GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_GUAZAI_FLAG_CHANGE);
     },
 
     getHotPointData: function () {
         let flag = false;
-        for (let i = 0; i< self.totalHotFlag.length; i++){
+        for (let i = 0; i < self.totalHotFlag.length; i++) {
             flag = flag || self.totalHotFlag[i];
         }
+        flag = flag || self.getComposeHotPoint();
         return flag;
+    },
+
+    getComposeHotPoint: function () {
+        for (let i = 0; i < self.composeHotFlag.length; i++) {
+            if (self.composeHotFlag[i]) {
+                return true;
+            }
+        }
+        return false;
+    },
+
+    getComposeHotPointByPos: function (pos) { // 0,1,2,3
+        return self.composeHotFlag[pos];
+    },
+
+    updateComposeHotPointData: function () {
+        if (!self.composeTblData) {
+            this.initComposeTblData();
+        }
+        self.composeHotFlag = [false, false, false, false];
+        for (let i = 0; i < self.composeHotFlag.length; i++) {
+            for (let j = 0; j < self.composeTblData[i].length; j++) {
+                let tblData = self.composeTblData[i][j];
+                let nowChipCount = GlobalVar.me().bagData.getItemCountById(tblData.stItem.wItemID);
+                let needChipCount = tblData.stItem.nCount;
+                let nowResCount = GlobalVar.me().bagData.getItemCountById(tblData.stSpecialItem.wItemID);
+                let needResCount = tblData.stSpecialItem.nCount;
+                if (nowChipCount >= needChipCount && nowResCount >= needResCount) {
+                    self.composeHotFlag[i] = true;
+                    break;
+                }
+            }
+        }
+    },
+
+    initComposeTblData: function () {
+        self.composeTblData = [[], [], [], []];
+        let tabObj = GlobalVar.tblApi.getData('TblGuaZaiCom');
+        for (let key in tabObj) {
+            let data = tabObj[key];
+            let pos = data.byTab - 1;
+            if (pos >= 0 && pos < self.composeTblData.length) {
+                self.composeTblData[pos].push(data);
+            }
+        }
     },
 
     updateGuazaiItem(item) {     //item为GMDT_ITEM类型
@@ -288,7 +337,7 @@ var GuazaiData = cc.Class({
 
     saveRebirthData: function (msg) {
         if (msg.data.ErrCode == 0) {
-            if (msg.data.IsShow == 0){
+            if (msg.data.IsShow == 0) {
                 GlobalVar.me().bagData.updateItemDataByGMDT_ITEM_CHANGE(msg.data.ItemChange);
                 GlobalVar.me().setDiamond(msg.data.Diamond);
             }
@@ -297,7 +346,16 @@ var GuazaiData = cc.Class({
         }
         else
             GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_GUAZAI_REBIRTH_ACK, msg.data);
-    }
+    },
+
+    saveComposeData: function (msg) {
+        if (msg.data.ErrCode == GameServerProto.PTERR_SUCCESS) {
+            GlobalVar.me().bagData.updateItemDataByGMDT_ITEM_CHANGE(msg.data.ItemChange);
+            self.updateHotPoint();
+            GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_GUAZAI_DIRTY_NTF, msg.data);
+        }
+        GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_GUAZAI_COMPOSE_ACK, msg.data);
+    },
 });
 
 module.exports = GuazaiData;

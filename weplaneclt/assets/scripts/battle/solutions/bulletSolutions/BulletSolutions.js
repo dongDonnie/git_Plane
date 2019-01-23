@@ -8817,7 +8817,7 @@ const BulletSolutions = cc.Class({
                         this.setTimer(2, 0.5, 1, 0);
                     }
                 } else if (idx == 2) {
-                    let monster = ai.randMonster();
+                    let monster = ai.randMonster(this);
                     let sp = this.getSpeed();
                     if (monster == null) {
                         this.setSpeed(sp);
@@ -8847,7 +8847,7 @@ const BulletSolutions = cc.Class({
                         this.setTimer(2, 0.5, 1, 0);
                     }
                 } else if (idx == 2) {
-                    let monster = ai.randMonster();
+                    let monster = ai.randMonster(this);
                     let sp = this.getSpeed();
                     if (monster == null) {
                         this.setSpeed(sp);

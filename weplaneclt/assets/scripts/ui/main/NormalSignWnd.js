@@ -1,14 +1,10 @@
 const RootBase = require("RootBase");
 const WindowManager = require("windowmgr");
 const GlobalVar = require('globalvar')
-const WndTypeDefine = require("wndtypedefine");
 const EventMsgID = require("eventmsgid");
 const GameServerProto = require("GameServerProto");
 const CommonWnd = require("CommonWnd");
 const i18n = require('LanguageData');
-const GlobalFunc = require('GlobalFunctions');
-const weChatAPI = require("weChatAPI");
-const qqPlayAPI = require("qqPlayAPI");
 
 cc.Class({
     extends: RootBase,
@@ -41,12 +37,15 @@ cc.Class({
         nodeTip: {
             default: null,
             type: cc.Node,
+        },
+        nodeDesc: {
+            default: null,
+            type: cc.Node,
         }
     },
 
     onLoad: function () {
         this._super();
-        i18n.init('zh');
         this.animeStartParam(0, 0);
         this.canClose = true;
         this.isFirstIn = true;
@@ -62,7 +61,7 @@ cc.Class({
         this.initBoxPosition();
     },
 
-    onDestroy: function(){
+    onDestroy: function () {
         GlobalVar.eventManager().removeListenerWithTarget(this);
     },
 
@@ -118,7 +117,7 @@ cc.Class({
     initSignWnd: function () {
         // 初始化累计天数宝箱列表
         this.initActiveBoxList();
-        
+
         //初始化累计天数进度条
         this.initActiveBar();
 
@@ -129,9 +128,15 @@ cc.Class({
         this.updateStrutShow();
 
         // iOS隐藏贵族提示
-        // this.nodeTip.active = GlobalFunc.iosOrAndr() != 1;
-        this.nodeTip.active = !GlobalVar.srcSwitch();
-        this.nodeStrut.parent.active = GlobalVar.me().vipLevel < 3;
+        if (GlobalVar.me().vipLevel >= 3) {
+            this.nodeDesc.active = true;
+            this.nodeTip.active = false;
+            this.nodeStrut.parent.active = false;
+        } else {
+            this.nodeDesc.active = false;
+            this.nodeTip.active = !GlobalVar.isIOS;
+            this.nodeStrut.parent.active = true;
+        }
     },
 
     initBoxPosition: function () {
@@ -143,7 +148,7 @@ cc.Class({
         }
     },
 
-    initActiveBoxList: function() {
+    initActiveBoxList: function () {
         let signedDay = GlobalVar.me().signData.getSignedDayNum();
         this.labelDayNum.string = signedDay + '天';
         let boxList = this.nodeBox.children;
@@ -172,9 +177,9 @@ cc.Class({
         if (cc.game.renderType != cc.game.RENDER_TYPE_WEBGL) {
             this.progressBar.progress = percent;
         } else {
-            if (curPercent<=percent){
+            if (curPercent <= percent) {
                 this.progressBar.node.runAction(cc.progressLoading(0.3, curPercent, percent));
-            }else{
+            } else {
                 this.progressBar.node.runAction(cc.progressLoading(0.3, 0, percent));
             }
         }
@@ -250,15 +255,11 @@ cc.Class({
                 } else {  // 看视频
                     platformApi.showRewardedVideoAd(227, function () {
                         GlobalVar.handlerManager().signHandler.sendSignHeapReq(destDay);
-                    },function () {
+                    }, function () {
                         platformApi.shareNormal(127, function () {
                             GlobalVar.handlerManager().signHandler.sendSignHeapReq(destDay);
                         });
                     });
-                    // self.nodeBlock.enabled = true;
-                    // setTimeout(function () {
-                    //     self.nodeBlock.enabled = false;
-                    // }, 1500);
                 }
             } else {
                 GlobalVar.handlerManager().signHandler.sendSignHeapReq(destDay);
@@ -292,11 +293,7 @@ cc.Class({
     },
 
     meetVipCondition: function (cond) {
-        if (GlobalFunc.iosOrAndr() == 1) {  // iOS无贵族
-            return false;
-        } else {
-            return GlobalVar.me().vipLevel >= cond;
-        }
+        return GlobalVar.me().vipLevel >= cond;
     }
 
 });

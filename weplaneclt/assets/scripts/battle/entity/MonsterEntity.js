@@ -81,6 +81,7 @@ cc.Class({
         this.clearBulletWhenDead = false;
         this.isKill = true;
         this.deathType = 0;
+        this.isDefend = false;
         this.flyCurTime = 0;
         this.flyMsgTime1 = 0;
         this.flyMsgTime2 = 0;
@@ -444,6 +445,10 @@ cc.Class({
         this.selfEffect = null;
 
         this.zIndex = 0;
+
+        if (!!BattleManager.getInstance().bossAppear) {
+            this.bossAppear();
+        }
     },
 
     flyDamageMsg(dmg, critical, pos, big, immediately) {
@@ -833,5 +838,9 @@ cc.Class({
     },
     setDamageFromExecuteInterval: function (interval) {
         this.damageFromExecuteInterval = typeof interval !== 'undefined' ? interval : 0;
+    },
+
+    bossAppear: function (open) {
+        BattleManager.getInstance().bossAppear = typeof open !== 'undefined' ? open : false;
     },
 });

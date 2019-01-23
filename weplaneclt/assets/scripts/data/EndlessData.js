@@ -21,6 +21,12 @@ var EndlessData = cc.Class({
         self.startBattleData = null;
         self.curMode = -1;
         self.getChestFlag = false;
+        self.rankWorldData = null;
+    },
+
+    setRankWorldData: function (data) {
+        self.rankWorldData = data;
+        GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_RANK_WORLD_DATA, data);
     },
 
     saveEndlessBagData: function (data) {

@@ -17,8 +17,8 @@ var SoundManager = cc.Class({
         this.tempBGM.name = '';
         this.tempBGM.loop = false;
         this.tempBGM.callback = null;
-        this.bPlayBGM = true; //StoreageData.getBgmOnOff();
-        this.bPlayEffect = true; //StoreageData.getEffectOnOff();
+        this.bPlayBGM = StoreageData.getBgmOnOff();
+        this.bPlayEffect = StoreageData.getEffectOnOff();
         this.curEffectName = '';
     },
 
@@ -31,8 +31,8 @@ var SoundManager = cc.Class({
         this.tempBGM.name = '';
         this.tempBGM.loop = false;
         this.tempBGM.callback = null;
-        this.bPlayBGM = false; //StoreageData.getBgmOnOff();
-        this.bPlayEffect = true; //StoreageData.getEffectOnOff();
+        this.bPlayBGM = StoreageData.getBgmOnOff();
+        this.bPlayEffect = StoreageData.getEffectOnOff();
         this.curEffectName = '';
     },
 
@@ -54,7 +54,7 @@ var SoundManager = cc.Class({
 
     setBgmOnOff(bBgmOnOff) {
         this.bPlayBGM = typeof bBgmOnOff !== 'undefined' ? bBgmOnOff : true;
-        //StoreageData.setBgmOnOff(bBgmOnOff);
+        StoreageData.setBgmOnOff(bBgmOnOff);
         if (!this.bPlayBGM) {
             this.stopBGM();
         } else {
@@ -64,7 +64,7 @@ var SoundManager = cc.Class({
 
     setEffectOnOff(bEffectOnOff) {
         this.bPlayEffect = typeof bEffectOnOff !== 'undefined' ? bEffectOnOff : true;
-        //StoreageData.setEffectOnOff(bEffectOnOff);
+        StoreageData.setEffectOnOff(bEffectOnOff);
     },
 
     getBgmOnOff() {

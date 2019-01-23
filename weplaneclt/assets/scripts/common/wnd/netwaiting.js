@@ -1,7 +1,6 @@
 const GlobalVar = require("globalvar");
 const ResMapping = require("resmapping");
 const SceneDefines = require("scenedefines");
-const i18n = require('LanguageData');
 const weChatAPI = require("weChatAPI");
 
 var NetWaiting = cc.Class({
@@ -83,7 +82,6 @@ var NetWaiting = cc.Class({
                         let uiserversel = cc.find("Canvas/UINode").getChildByName('UIServerSel');
                         if (cc.isValid(uiserversel)) {
                             if (!uiserversel.getComponent('UIServerSel').canSelect) {
-                                //GlobalVar.comMsg.showMsg(i18n.t('label.4000006'));
                                 uiserversel.getComponent('UIServerSel').canSelect = true;
                             }
                         }
@@ -164,7 +162,7 @@ var NetWaiting = cc.Class({
                             this.reconnect = true;
                         }
                     } else if (GlobalVar.sceneManager().getCurrentSceneType() == SceneDefines.LOGIN_STATE) {
-                        GlobalVar.comMsg.showMsg(i18n.t('label.4000001'));
+                        GlobalVar.comMsg.showMsg('服务器维护中');
                         cc.find("Canvas/UINode").getChildByName('UIServerSel').getComponent('UIServerSel').canSelect = true;
                     } else {
                         GlobalVar.sceneManager().startUp();

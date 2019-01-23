@@ -7,12 +7,9 @@ const GlobalFunc = require('GlobalFunctions')
 const CommonWnd = require("CommonWnd");
 const i18n = require('LanguageData');
 const GameServerProto = require("GameServerProto");
-const weChatAPI = require("weChatAPI");
-////###
 
-const ITEM_SELL_TYPE_NORMAL = 1;
+
 const ITEM_SELL_TYPE_FORBIDEN = 2;
-const ITEM_SELL_TYPE_CONFIRM = 3;
 
 
 cc.Class({
@@ -96,7 +93,6 @@ cc.Class({
 
     onLoad() {
         this._super();
-        i18n.init('zh');
         this.typeName = WndTypeDefine.WindowType.E_DT_NORMALITEMINFO;
         this.animeStartParam(0, 0);
     },
@@ -143,8 +139,9 @@ cc.Class({
 
             this.node.getChildByName("btnUseMore").active = false;
             this.node.getChildByName("btnUseOne").active = false;
+            this.node.getChildByName("btnVideo").active = false;
             this.btnConfirm.node.active = true;
-        } else {
+        }else {
             this.node.getChildByName("nodeTips").getChildByName("spriteNumberBg").active = true;
             this.node.getChildByName("nodeTips").getChildByName("btnSell").active = true;
             this.node.getChildByName("nodeTips").getComponent(cc.Widget).horizontalCenter = 0;
@@ -187,6 +184,7 @@ cc.Class({
             let itemCount = GlobalVar.me().bagData.getItemCountById(this.itemID);
             if (itemCount) {
                 this.btnSell.interactable = false;
+                this.node.getChildByName("btnVideo").active = false;
 
                 if (itemCount == 1) {
                     this.node.getChildByName("btnUseMore").active = true;
@@ -208,7 +206,13 @@ cc.Class({
                     this.node.getChildByName("btnUseMore").active = true;
                 }
             }
-        }else{
+        } else if (itemData.byType == GameServerProto.PT_ITEMTYPE_SPECIAL_DROPPACKAGE) {
+            this.node.getChildByName("btnVideo").active = true;
+            this.node.getChildByName("btnUseMore").active = false;
+            this.node.getChildByName("btnUseOne").active = false;
+            this.btnConfirm.node.active = false;
+        } else{
+            this.node.getChildByName("btnVideo").active = false;
             this.node.getChildByName("btnUseMore").active = false;
             this.node.getChildByName("btnUseOne").active = false;
             this.btnConfirm.node.active = true;
@@ -267,6 +271,7 @@ cc.Class({
         nodeBoxTips.getChildByName("labelIconName").color = GlobalFunc.getCCColorByQuality(quality);
         this.node.getChildByName("btnUseMore").active = false;
         this.node.getChildByName("btnUseOne").active = false;
+        this.node.getChildByName("btnVideo").active = false;
         this.btnConfirm.node.active = true;
 
         let rewardItemId = boxData.oVecItems[0].wItemID
@@ -312,6 +317,23 @@ cc.Class({
         if (this.itemID) {
             let itemData = GlobalVar.me().bagData.getItemById(this.itemID);
             GlobalVar.handlerManager().bagHandler.sendItemUseReq(itemData.Slot, times, itemData.Type);
+        }
+    },
+    onBtnVideo: function () {
+        if (this.itemID){
+            let itemData = GlobalVar.me().bagData.getItemById(this.itemID);
+            let platfromApi = GlobalVar.getPlatformApi();
+            if (platfromApi){
+                platfromApi.showRewardedVideoAd(238, function () {
+                    GlobalVar.handlerManager().bagHandler.sendItemUseReq(itemData.Slot, 1, itemData.Type);
+                }, function () {
+                    platfromApi.shareNormal(238, function () {
+                        GlobalVar.handlerManager().bagHandler.sendItemUseReq(itemData.Slot, 1, itemData.Type);
+                    })
+                })
+            }else if (GlobalVar.configGMSwitch()){
+                GlobalVar.handlerManager().bagHandler.sendItemUseReq(itemData.Slot, 1, itemData.Type);
+            }
         }
     },
 

@@ -2,11 +2,9 @@ const GlobalVar = require("globalvar")
 const WndTypeDefine = require("wndtypedefine");
 const RootBase = require("RootBase");
 const EventMsgID = require("eventmsgid");
-const CommonWnd = require("CommonWnd");
 const GlobalFunc = require('GlobalFunctions');
 const i18n = require('LanguageData');
 const ResMapping = require("resmapping");
-const GameServerProto = require("GameServerProto");
 
 cc.Class({
     extends: RootBase,
@@ -28,7 +26,6 @@ cc.Class({
 
     onLoad: function () {
         this._super();
-        i18n.init('zh');
         this.typeName = WndTypeDefine.WindowType.E_DT_NORMAL_CHAPTER_VIEW;
         if (GlobalFunc.isAllScreen() && !this.fixViewComplete) {
             this.fixViewComplete = true;

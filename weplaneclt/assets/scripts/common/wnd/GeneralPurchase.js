@@ -1,10 +1,7 @@
 const GlobalVar = require("globalvar");
 const RootBase = require("RootBase");
 const WindowManager = require("windowmgr");
-const ResMapping = require("resmapping");
-const ResManager = require("ResManager");
 const WndTypeDefine = require("wndtypedefine");
-const weChatAPI = require("weChatAPI");
 
 var self = null;
 

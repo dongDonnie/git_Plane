@@ -1,16 +1,8 @@
 const GlobalVar = require("globalvar");
 const UIBase = require("uibase");
 const SceneDefines = require("scenedefines");
-const BattleDefines = require('BattleDefines');
-const BattleManager = require('BattleManager');
-const EventMsgID = require("eventmsgid")
 const GameServerProto = require("GameServerProto");
-const md5 = require("md5");
-const i18n = require('LanguageData');
-const base64 = require("base64");
 const WndTypeDefine = require("wndtypedefine");
-
-const RECV_ALL_NEED_VIP_LEVEL = 3;
 
 cc.Class({
     extends: UIBase,
@@ -69,7 +61,8 @@ cc.Class({
 
     setEndNode: function () {
         this.node.getChildByName("btnEnd").active = true;
-        let index = BattleManager.getInstance().result - 1;
+        let challengeData = GlobalVar.me().arenaData.getArenaChallengeData();
+        let index = challengeData.ChallengeResult - 1;
         let spriteTip = this.nodeAccountList[index].getChildByName("spriteContinueTip")
         let spriteLight = this.nodeAccountList[index].getChildByName("spriteBackLight");
         spriteLight.runAction(cc.repeatForever(cc.rotateBy(8, 360)));
@@ -83,7 +76,7 @@ cc.Class({
             GlobalVar.soundManager().playBGM('cdnRes/audio/battle/effect/battle_win', false, function () {
                 GlobalVar.soundManager().setBGMVolume(1);
             })
-            this.initSuccessWnd(); //需要传数据
+            this.initSuccessWnd(challengeData.OldRanking, challengeData.NewRanking); //需要传数据
         } else if (index == 1) {
             this.nodeAccountList[0].active = false;
             this.nodeAccountList[1].active = true;
@@ -93,21 +86,21 @@ cc.Class({
                 GlobalVar.soundManager().setBGMVolume(1);
             })
             this.initFailWnd(); //需要传数据
-        }else {
+        } else {
             this.nodeAccountList[0].active = false;
             this.nodeAccountList[1].active = false;
         }
     },
 
-    initSuccessWnd: function () {
+    initSuccessWnd: function (oldRank, newRank) {
         // 需要数据
-        // this.labelOldRank.string = "";
-        // this.labelNewRank.string = "";
-        // this.labelSuccessGetPoint.string = "";
+        this.labelOldRank.string = oldRank;
+        this.labelNewRank.string = newRank;
+        this.labelSuccessGetPoint.string = GameServerProto.PT_ARENA_CHALLENGE_WIN_POINTS;
     },
 
     initFailWnd: function () {
-        // this.labelFailGetPoint.stirng = "";
+        this.labelFailGetPoint.stirng = GameServerProto.PT_ARENA_CHALLENGE_LOSE_POINTS;
     },
 
     onBtnGoToLevelUpEquip: function () {

@@ -4,7 +4,6 @@ const WindowManager = require("windowmgr");
 const ResManager = require("ResManager");
 const Soundmanager = require("soundmgr");
 const NetworkManager = require("networkmgr");
-const DoTweenManager = require('dotweenmanager');
 const EventManager = require('eventmanager');
 const HandlerManager = require('handlermanager');
 const Me = require('me');
@@ -15,8 +14,7 @@ const TblApi = require("tblapi");
 const NetWaiting=require("netwaiting");
 const config = require("config");
 const weChatAPI = require("weChatAPI");
-const qqPlayAPI = require("qqPlayAPI");
-var requestService = require('requestservice')
+//const qqPlayAPI = require("qqPlayAPI");
 
 var GlobalVar = module.exports;
 
@@ -44,10 +42,6 @@ GlobalVar.windowManager = function () {
     return WindowManager.getInstance();
 },
 
-GlobalVar.doTweenManager = function () {
-    return DoTweenManager.getInstance();
-},
-
 GlobalVar.eventManager = function () {
     return EventManager.getInstance();
 },
@@ -69,7 +63,7 @@ GlobalVar.getPlatformApi = function () {
     if (cc.sys.platform == cc.sys.WECHAT_GAME){
         platformApi = weChatAPI || require("weChatAPI");
     }else if (window && window["wywGameId"]=="5469"){
-        platformApi = qqPlayAPI || require("qqPlayAPI");
+        //platformApi = qqPlayAPI || require("qqPlayAPI");
     }
     if (cc.isValid(platformApi)){
         return platformApi;
@@ -157,3 +151,5 @@ GlobalVar.tblApi = new TblApi;
 GlobalVar.messageDispatcher = new MessageDispatcher;
 GlobalVar.comMsg = new ComMsg;
 GlobalVar.serverTime = new ServerTime;
+// 是否是从公众号进入游戏
+GlobalVar.isFromOfficialAccount = false;

@@ -6,7 +6,6 @@ const GameServerProto = require("GameServerProto");
 const GlobalFunctions = require("GlobalFunctions");
 const CommonWnd = require("CommonWnd");
 const WndTypeDefine = require("wndtypedefine");
-const weChatAPI = require("weChatAPI");
 
 // const GUAZAI_SMELTER = "cdnRes/audio/main/effect/lingquxiaoshi";
 const GUAZAI_REBORN = "cdnRes/audio/main/effect/ronglu-chongsheng";
@@ -469,6 +468,10 @@ cc.Class({
         if (data.ErrCode == GameServerProto.PTERR_DIAMOND_LACK) {
             this.rebirthLock = false;
             CommonWnd.showNormalFreeGetWnd(GameServerProto.PTERR_DIAMOND_LACK);
+            return;
+        }
+        if (data.ErrCode == GameServerProto.PTERR_SYSTEM_OPEN_LACK) {
+            GlobalVar.comMsg.showMsg('等级不足，未开启该功能');
             return;
         }
         if (data.IsShow == 1) {

@@ -64,7 +64,11 @@ var HandlerManager = cc.Class({
         self.shareHandler = self._createHandler("ShareHandler");
         self.signHandler = self._createHandler("SignHandler");
         self.bannerYdHandler = self._createHandler("BannerYdHandler");
-        // self.arenaHandler = self._createHandler("ArenaHandler");
+        self.arenaHandler = self._createHandler("ArenaHandler");
+        self.adHandler = self._createHandler("AdHandler");
+        self.followRewardHandler = self._createHandler("FollowRewardHandler");
+        self.boxRewardHandler = self._createHandler("BoxRewardHandler");
+        
     },
 
     unInitHandlers: function () {

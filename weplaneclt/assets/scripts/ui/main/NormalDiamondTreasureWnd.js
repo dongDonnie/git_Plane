@@ -6,9 +6,6 @@ const GameServerProto = require("GameServerProto");
 const CommonWnd = require("CommonWnd");
 const i18n = require('LanguageData');
 const WndTypeDefine = require("wndtypedefine");
-const weChatAPI = require("weChatAPI");
-
-const TREAURE_GOLD = "cdnRes/audio/main/effect/kaicai";
 const NOVIDEO_NEED_VIP_LEVEL = 1;
 
 var self = null;
@@ -140,11 +137,6 @@ cc.Class({
                         GlobalVar.handlerManager().shareHandler.sendGetFreeDiamondReq();
                     }); 
                 });
-                // let self = this;
-                // self.nodeBlock.enabled = true;
-                // setTimeout(function () {
-                //     self.nodeBlock.enabled = false;
-                // }, 1500);
             }else if (GlobalVar.configGMSwitch()){
                 GlobalVar.handlerManager().shareHandler.sendGetFreeDiamondReq();
             }

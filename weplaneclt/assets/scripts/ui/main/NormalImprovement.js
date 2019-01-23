@@ -9,7 +9,6 @@ const GlobalFunc = require('GlobalFunctions');
 const GameServerProto = require("GameServerProto");
 const BattleManager = require("BattleManager");
 const ResMapping = require("resmapping");
-const ShaderUtils = require("ShaderUtils");
 const config = require('config');
 
 const AUDIO_LEVEL_UP = 'cdnRes/audio/main/effect/shengji';
@@ -76,7 +75,6 @@ cc.Class({
 
     onLoad: function () {
         this._super();
-        i18n.init('zh');
         this.typeName = WndTypeDefine.WindowType.E_DT_NORMALIMPROVEMENT_WND;
         this.animeStartParam(0);
         if (GlobalFunc.isAllScreen() && !this.fixViewComplete) {

@@ -1,13 +1,11 @@
-const UIBase = require("uibase");
 const WindowManager = require("windowmgr");
-const StoreData = require("StoreData");
 const GlobalVar = require("globalvar");
 const EventMsgId = require("eventmsgid");
 const GameServerProto = require("GameServerProto");
 const GlobalFunctions = require("GlobalFunctions");
 const RootBase = require("RootBase");
-const weChatAPI = require("weChatAPI");
 const CommonWnd = require("CommonWnd");
+const i18n = require('LanguageData');
 
 
 var self = null;
@@ -235,10 +233,30 @@ cc.Class({
         if (item1.state == 0) {
             node1.getChildByName("btno_Buy1").active = false;
             node1.getChildByName("spriteAlreadBuy").active = true;
+            node1.getChildByName("nodeCostIcon1").active = false;
+            node1.getChildByName("lblCostCount1").active = false;
         }else{
+            if (item1.costType == GameServerProto.PT_MONEY_FREE){
+                node1.getChildByName("nodeCostIcon1").active = false;
+                node1.getChildByName("lblCostCount1").active = false;
+                if (GlobalVar.getShareSwitch()){
+                    node1.getChildByName("btno_Buy1").getChildByName("spriteVideo").active = true;
+                    node1.getChildByName("btno_Buy1").getComponent("ButtonObject").setText("  " + i18n.t('label.4000328'));
+                }else{
+                    node1.getChildByName("btno_Buy1").getChildByName("spriteVideo").active = false;
+                    node1.getChildByName("btno_Buy1").getComponent("ButtonObject").setText(i18n.t('label.4000241'));
+                }
+            }else{
+                node1.getChildByName("btno_Buy1").getChildByName("spriteVideo").active = false;
+                node1.getChildByName("btno_Buy1").getComponent("ButtonObject").setText(i18n.t('label.4000214'));
+                node1.getChildByName("nodeCostIcon1").active = true;
+                node1.getChildByName("lblCostCount1").active = true;
+            }
+
             node1.getChildByName("btno_Buy1").active = true;
             node1.getChildByName("spriteAlreadBuy").active = false;
         }
+        node1.getChildByName("btno_Buy1").getComponent(cc.Button).clickEvents[0].customEventData = item1.Type;
         var node2 = node.getChildByName("ShopGoods2");
         var itemRight = GlobalVar.tblApi.getDataBySingleKey('TblItem', item2.itemId);
         this.setString(node2.getChildByName("lblShopGoods2").getComponent(cc.Label), itemRight.strName);
@@ -250,10 +268,30 @@ cc.Class({
         if (item2.state == 0) {
             node2.getChildByName("btno_Buy2").active = false;
             node2.getChildByName("spriteAlreadBuy").active = true;
+            node2.getChildByName("nodeCostIcon2").active = false;
+            node2.getChildByName("lblCostCount2").active = false;
         }else{
+            if (item2.costType == GameServerProto.PT_MONEY_FREE){
+                node2.getChildByName("nodeCostIcon2").active = false;
+                node2.getChildByName("lblCostCount2").active = false;
+                if (GlobalVar.getShareSwitch()){
+                    node2.getChildByName("btno_Buy2").getChildByName("spriteVideo").active = true;
+                    node2.getChildByName("btno_Buy2").getComponent("ButtonObject").setText("  " + i18n.t('label.4000328'));
+                }else{
+                    node2.getChildByName("btno_Buy2").getChildByName("spriteVideo").active = false;
+                    node2.getChildByName("btno_Buy2").getComponent("ButtonObject").setText(i18n.t('label.4000241'));
+                }
+            }else{
+                node2.getChildByName("btno_Buy2").getChildByName("spriteVideo").active = false;
+                node2.getChildByName("btno_Buy2").getComponent("ButtonObject").setText(i18n.t('label.4000214'));
+                node2.getChildByName("nodeCostIcon2").active = true;
+                node2.getChildByName("lblCostCount2").active = true;
+            }
+
             node2.getChildByName("btno_Buy2").active = true;
             node2.getChildByName("spriteAlreadBuy").active = false;
         }
+        node2.getChildByName("btno_Buy2").getComponent(cc.Button).clickEvents[0].customEventData = item2.Type;
         // node1.x = -1000;
         // node2.x = 1000;
         // node1.x = -147.5;
@@ -428,7 +466,7 @@ cc.Class({
         this.lblTime.string = (hours < 10 ? "0" + hours : hours) + ":" + (mins < 10 ? "0" + mins : mins) + ":" + (secs < 10 ? "0" + secs : secs);
     },
 
-    onBtnBuyTouchedCallback(event) {
+    onBtnBuyTouchedCallback(event, Type) {
         var req;
         var msg = {};
         switch (self.msgId) {
@@ -440,7 +478,17 @@ cc.Class({
                 break;
             default: break;
         }
-        GlobalVar.handlerManager().storeHandler.sendReq(req, msg);
+
+        let platformApi = GlobalVar.getPlatformApi();
+        if (!platformApi || !GlobalVar.getShareSwitch() || Type != GameServerProto.PT_MONEY_FREE){
+            GlobalVar.handlerManager().storeHandler.sendReq(req, msg);
+        }else if (platformApi){
+            platformApi.showRewardedVideoAd(235, function () {
+                GlobalVar.handlerManager().storeHandler.sendReq(req, msg);
+            }, function () {
+                GlobalVar.comMsg.showMsg(i18n.t('label.4000321'));
+            });
+        }
     },
 
     onStoreBuyDataGet: function (data) {

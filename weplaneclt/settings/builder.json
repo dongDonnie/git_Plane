@@ -37,7 +37,7 @@
   "title": "H5Plane",
   "webOrientation": "portrait",
   "wechatgame": {
-    "REMOTE_SERVER_ROOT": "https://cdn.17fengyou.com/weplane/1.0.3",
+    "REMOTE_SERVER_ROOT": "https://cdn.17fengyou.com/weplane/1.1.0",
     "appid": "wxa60dbd8655a13c00",
     "isSubdomain": false,
     "orientation": "portrait",

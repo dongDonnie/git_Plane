@@ -8,11 +8,7 @@ const GameServerProto = require("GameServerProto");
 const i18n = require('LanguageData');
 const CommonWnd = require("CommonWnd");
 const BattleDefines = require('BattleDefines');
-const weChatAPI = require("weChatAPI");
 
-const AUDIO_SWEEP_QUEST = 'cdnRes/audio/main/effect/lingquxiaoshi';
-
-var self = null;
 cc.Class({
     extends: RootBase,
 
@@ -50,11 +46,9 @@ cc.Class({
 
     onLoad: function () {
         this._super();
-        i18n.init('zh');
         this.typeName = WndTypeDefine.WindowType.E_DT_NORMAL_SWEEP_WND;
         this.content = this.sweepScroll.content;
         this.animeStartParam(0, 0);
-        self = this;
         this.targetDatas = [];
     },
 

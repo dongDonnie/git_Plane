@@ -1,6 +1,5 @@
 var HandlerBase = require("handlerbase")
 var GlobalVar = require('globalvar')
-var EventMsgID = require("eventmsgid")
 var GameServerProto = require("GameServerProto");
 const CommonWnd = require("CommonWnd");
 
@@ -14,7 +13,6 @@ cc.Class({
 
     initHandler: function(handlerMgr) {
         this.handlerMgr = handlerMgr;
-        // handlerMgr.setKey(GameServerProto.GMID_GIFT_CARD_ACK,GameServerProto.GMID_GIFT_CARD_REQ);
 
         GlobalVar.messageDispatcher.bindMsg(GameServerProto.GMID_GIFT_CARD_ACK, self._recvGiftCardAck, self);
         GlobalVar.messageDispatcher.bindMsg(GameServerProto.GMID_ROLE_RENAME_ACK, self._recvReNameAck, self);

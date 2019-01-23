@@ -5,7 +5,6 @@ const GlobalFunc = require('GlobalFunctions');
 const GlobalVar = require('globalvar')
 const EventMsgID = require("eventmsgid");
 const CommonWnd = require("CommonWnd");
-const i18n = require('LanguageData');
 const GameServerProto = require("GameServerProto");
 
 cc.Class({
@@ -57,7 +56,6 @@ cc.Class({
 
     onLoad: function () {
         this._super();
-        i18n.init('zh');
         this.animeStartParam(0);
         if (!GlobalFunc.isAllScreen() && !this.fixViewComplete) {
             this.fixViewComplete = true;

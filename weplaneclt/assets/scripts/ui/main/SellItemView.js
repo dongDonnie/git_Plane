@@ -5,7 +5,6 @@ const RootBase = require("RootBase");
 const GlobalFunc = require('GlobalFunctions')
 const CommonWnd = require("CommonWnd");
 const i18n = require('LanguageData');
-const weChatAPI = require("weChatAPI");
 cc.Class({
     extends: RootBase,
 

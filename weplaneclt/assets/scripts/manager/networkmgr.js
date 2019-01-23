@@ -1,11 +1,9 @@
-var config = require('config')
 var requestService = require('requestservice')
 var serverTimeService = require("servertimeservice")
 var GlobalVar = require("globalvar")
 var EventMsgID = require("eventmsgid")
 var GameServerProto = require("GameServerProto")
 var ByteBuffer = require("bytebuffer");
-const weChatAPI = require("weChatAPI")
 
 var self = null;
 
@@ -163,7 +161,7 @@ const NetworkManager = cc.Class({
                     self.hookHandler(msg.id, msg); //传递到requestService
                     GlobalVar.messageDispatcher.onNetMessage(msg.id, msg); //传递到分发器
                 }
-                //console.log('socket message data: ', msg);
+                // console.log('socket message data: ', msg);
                 if (msg.id != 1)
                     console.log("socket message data: ", msg);
             };

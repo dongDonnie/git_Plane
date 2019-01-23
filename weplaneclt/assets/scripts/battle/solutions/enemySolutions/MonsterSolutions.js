@@ -540,6 +540,7 @@ const MonsterSolutions = cc.Class({
             entity.setTimerHandler(function (idx) {
                 if (idx == 0) {
                     this.setCollisionSwitch(false);
+                    this.bossAppear(true);
                     ai.setMonsterLoopAction(this, 'start_1');
                     let posData = [vec_1, vec_2, vec_3, vec_4];
                     this.setBezier(posData, 1000, 0, 0);
@@ -547,6 +548,7 @@ const MonsterSolutions = cc.Class({
                 }
                 if (idx == 1) {
                     this.setCollisionSwitch(true);
+                    this.bossAppear(false);
                     this.simpleHarmonic(10, 2, -90, cc.v3(1, 0), cc.v3(0, 0), cc.v3(15, 15), 0)
                     this.setMovementType(5);
                     this.setTimer(2, 2, 1, 0);
@@ -640,6 +642,7 @@ const MonsterSolutions = cc.Class({
                     let destination = ai.posTransfer(cc.v3(0.5, 0.75));
                     this.shiftToStandby(destination, 1.5, 30, 0);
                     this.setMovementType(4);
+                    this.bossAppear(true);
                     this.setDefend(true);
                     this.setTimer(10, 2.5, 1, 0);
                 }
@@ -661,6 +664,7 @@ const MonsterSolutions = cc.Class({
                 }
                 if (idx == 9) {
                     ai.autoUseSkill(this, true);
+                    this.bossAppear(false);
                     this.setDefend(false);
                 }
                 if (idx == 10) {
@@ -710,10 +714,12 @@ const MonsterSolutions = cc.Class({
                     let destination = ai.posTransfer(cc.v3(0.5, 0.72));
                     this.shiftToStandby(destination, 1.5, 30, 0);
                     this.setMovementType(4);
+                    this.bossAppear(true);
                     this.setDefend(true);
                     this.setTimer(1, 1.5, 1, 0);
                 }
                 if (idx == 1) {
+                    this.bossAppear(false);
                     this.setDefend(false);
                     ai.playAction(this, 'daiji_1')
                     this.setTimer(2, 1, 1, 0);
@@ -843,6 +849,7 @@ const MonsterSolutions = cc.Class({
             entity.setCollisionSwitch(false);
             entity.setTimerHandler(function (idx) {
                 if (idx == 0) {
+                    this.bossAppear(true);
                     this.simpleHarmonic(250, 4, 90, cc.v3(1, 0), cc.v3(0, 0), cc.v3(0, 0), 0)
                     this.setMovementType(5);
                     this.runScale(0.9, 2);
@@ -850,6 +857,7 @@ const MonsterSolutions = cc.Class({
                 }
                 if (idx == 1) {
                     this.setCollisionSwitch(true);
+                    this.bossAppear(false);
                     let pos = this.getPosition();
                     let circlePos = pos.add(ai.speedTransfer(30, -90))
                     let R = pos.sub(circlePos);
@@ -906,12 +914,14 @@ const MonsterSolutions = cc.Class({
             entity.setTimerHandler(function (idx) {
                 if (idx == 0) {
                     this.setCollisionSwitch(false);
+                    this.bossAppear(true);
                     ai.setMonsterLoopAction(this, 'start_1');
                     this.runOpacity(255, 2);
                     this.setTimer(1, 2, 1, 0);
                 }
                 if (idx == 1) {
                     this.setCollisionSwitch(true);
+                    this.bossAppear(false);
                     ai.playAction(this, 'attack_3');
                     this.setTimer(2, 0, 1, 0);
                 }
@@ -983,6 +993,7 @@ const MonsterSolutions = cc.Class({
             }
             entity.setTimerHandler(function (idx) {
                 if (idx == 0) {
+                    this.bossAppear(true);
                     this.setDefend(true);
                     let destination = ai.posTransfer(cc.v3(0.5, 0.65));
                     this.shiftToStandby(destination, 4, 30, 0);
@@ -994,6 +1005,7 @@ const MonsterSolutions = cc.Class({
                     this.setTimer(3, 0, 1, 0);
                 }
                 if (idx == 2) {
+                    this.bossAppear(false);
                     this.setDefend(false);
                     ai.playAction(this, 'daiji', 0);
                 }
@@ -1123,6 +1135,7 @@ const MonsterSolutions = cc.Class({
             entity.opacity = (0);
             entity.setTimerHandler(function (idx) {
                 if (idx == 0) {
+                    this.bossAppear(true);
                     this.setCollisionSwitch(false);
                     this.runOpacity(255, 2);
                     this.setTimer(1, 2, 1, 0);
@@ -1131,6 +1144,7 @@ const MonsterSolutions = cc.Class({
                     ai.playAction(this, 'bianxing_1', 1, cb);
                 }
                 if (idx == 2) {
+                    this.bossAppear(false);
                     this.setCollisionSwitch(true);
                     ai.playAction(this, 'putong', 0);
                     this.setTimer(3, 1, 1, 0);
@@ -1212,6 +1226,7 @@ const MonsterSolutions = cc.Class({
             }
             entity.setTimerHandler(function (idx) {
                 if (idx == 0) {
+                    this.bossAppear(true);
                     this.setDefend(true);
                     let destination = ai.posTransfer(cc.v3(0.5, 0.65));
                     this.shiftToStandby(destination, 1.5, 30, 0);
@@ -1219,6 +1234,7 @@ const MonsterSolutions = cc.Class({
                     this.setTimer(1, 1.5, 1, 0);
                 }
                 if (idx == 1) {
+                    this.bossAppear(false);
                     this.setDefend(false);
                     ai.playAction(this, 'idle1', 0);
                     this.setTimer(2, 2, 1, 0);
@@ -1368,7 +1384,6 @@ const MonsterSolutions = cc.Class({
                 if (idx == 26) {
                     ai.setMonsterLoopAction(this,'idle2');
                     ai.playAction(this, 'bianxing', 1, cb);
-                    this.setDefend(true);
                 }
                 if (idx == 27) {
                     //ai.playAction(this, 'idle2', 0);
@@ -1465,6 +1480,7 @@ const MonsterSolutions = cc.Class({
             }
             entity.setTimerHandler(function (idx) {
                 if (idx == 0) {
+                    this.bossAppear(true);
                     this.setDefend(true);
                     let destination = ai.posTransfer(cc.v3(0.5, 0.64));
                     this.shiftToStandby(destination, 3, 50, 0);
@@ -1472,6 +1488,7 @@ const MonsterSolutions = cc.Class({
                     this.setTimer(1, 3, 1, 0);
                 }
                 if (idx == 1) {
+                    this.bossAppear(false);
                     this.setDefend(false);
                     this.setTimer(28, 4, 9999, 1);
                 }
@@ -1661,11 +1678,13 @@ const MonsterSolutions = cc.Class({
                 if (idx == 0) {
                     ai.setMonsterLoopAction(this, 'start');
                     this.runOpacity(255, 2);
+                    this.bossAppear(true);
                     this.setCollisionSwitch(false);
                     this.setTimer(1, 2, 1, 0);
                 }
                 if (idx == 1) {
                     this.setCollisionSwitch(true);
+                    this.bossAppear(false);
                     this.setTimer(2, 1, 1, 0);
                 }
                 if (idx == 2) {
@@ -1721,6 +1740,7 @@ const MonsterSolutions = cc.Class({
             }
             entity.setTimerHandler(function (idx) {
                 if (idx == 0) {
+                    this.bossAppear(true);
                     this.setDefend(true);
                     let destination = ai.posTransfer(cc.v3(0.5, 0.7));
                     this.shiftToStandby(destination, 1.5, 0, 0);
@@ -1731,6 +1751,7 @@ const MonsterSolutions = cc.Class({
                     ai.playAction(this, 'bianxing', 1, cb);
                 }
                 if (idx == 2) {
+                    this.bossAppear(false);
                     this.setDefend(false);
                     ai.playAction(this, 'idle', 0);
                     let destination = ai.posTransfer(cc.v3(0.2, 0.7));
@@ -1800,6 +1821,7 @@ const MonsterSolutions = cc.Class({
             let num = 0;
             entity.setTimerHandler(function (idx) {
                 if (idx == 0) {
+                    this.bossAppear(true);
                     this.setDefend(true);
                     ai.setMonsterLoopAction(this, 'start');
                     let destination = ai.posTransfer(cc.v3(0.5, 0.72));
@@ -1808,6 +1830,7 @@ const MonsterSolutions = cc.Class({
                     this.setTimer(1, 1, 1, 0);
                 }
                 if (idx == 1) {
+                    this.bossAppear(false);
                     this.setDefend(false);
                     ai.playAction(this, 'attack', 1, cb);
                 }
@@ -1887,6 +1910,7 @@ const MonsterSolutions = cc.Class({
             entity.setTimerHandler(function (idx) {
                 if (idx == 0) {
                     ai.setMonsterLoopAction(this,'start_1');
+                    this.bossAppear(true);
                     this.setDefend(true);
                     let destination = ai.posTransfer(cc.v3(0.5, 0.734));
                     this.shiftToStandby(destination, 1.5, 15, 0);
@@ -1894,6 +1918,7 @@ const MonsterSolutions = cc.Class({
                     this.setTimer(1, 1.5, 1, 0);
                 }
                 if (idx == 1) {
+                    this.bossAppear(false);
                     this.setDefend(false);
                     let pos = this.getPosition();
                     let circlePos = pos.add(ai.speedTransfer(30, 90))
@@ -1942,6 +1967,7 @@ const MonsterSolutions = cc.Class({
             }
             entity.setTimerHandler(function (idx) {
                 if (idx == 0) {
+                    this.bossAppear(true);
                     this.setDefend(true);
                     let destination = ai.posTransfer(cc.v3(0.5, 0.75));
                     this.shiftToStandby(destination, 3, 30, 0);
@@ -1958,6 +1984,7 @@ const MonsterSolutions = cc.Class({
                 }
                 if (idx == 3) {
                     this.setDefend(false);
+                    this.bossAppear(false);
                     let destination = ai.posTransfer(cc.v3(0.25, 0.8));
                     this.shiftToStandby(destination, 1.5, 15, 0);
                     this.setMovementType(4);
@@ -2306,6 +2333,8 @@ const MonsterSolutions = cc.Class({
             }
             entity.setTimerHandler(function (idx) {
                 if (idx == 0) {
+                    this.bossAppear(true);
+                    this.setDefend(true);
                     this.setCollisionSwitch(false);
                     let pos_1 = info.pos;
                     let vec_0 = ai.posTransfer(pos_1);
@@ -2331,6 +2360,8 @@ const MonsterSolutions = cc.Class({
                     this.setSpeed(cc.v3(0, 0));
                     this.setMovementType(0);
                     this.setCollisionSwitch(true);
+                    this.bossAppear(false);
+                    this.setDefend(false);
                     this.setTimer(3, 3, 1, 0);
                 }
                 if (idx == 3) {
@@ -2749,10 +2780,12 @@ const MonsterSolutions = cc.Class({
                     this.runOpacity(255, 2);
                     ai.setMonsterLoopAction(this, 'start_3');
                     this.setCollisionSwitch(false);
+                    this.bossAppear(true);
                     this.setTimer(1, 2, 1, 0);
                 }
                 if (idx == 1) {
                     this.setCollisionSwitch(true);
+                    this.bossAppear(false);
                     let destination = ai.posTransfer(cc.v3(0.65, 0.65));
                     this.shiftToStandby(destination, 1.5, 5, 0);
                     this.setMovementType(4);
@@ -3237,11 +3270,13 @@ const MonsterSolutions = cc.Class({
             };
             entity.setTimerHandler(function (idx) {
                 if (idx == 0) {
+                    this.bossAppear(true);
                     this.setCollisionSwitch(false);
                     this.runOpacity(255, 2);
                 }
                 if (idx == 1) {
                     this.setCollisionSwitch(true);
+                    this.bossAppear(false);
                     ai.useSkill(this, 919);
                     this.setTimer(2, 5, 1, 0);
                 }
@@ -3253,7 +3288,7 @@ const MonsterSolutions = cc.Class({
                     this.setTimer(4, 5, 9999, 0);
                 }
                 if (idx == 4) {
-                    this.setTimer(5, 0.8, 5, 0);
+                    this.setTimer(5, 1.2, 4, 0);
                     //this.setTimer(6, 1.5, 3, 0);
                 }
                 if (idx == 5) {
@@ -3471,6 +3506,7 @@ const MonsterSolutions = cc.Class({
             }
             entity.setTimerHandler(function (idx) {
                 if (idx == 0) {
+                    this.bossAppear(true);
                     this.setDefend(true);
                     let destination = ai.posTransfer(cc.v3(0.5, 0.7));
                     this.shiftToStandby(destination, 2, 30, 0);
@@ -3482,6 +3518,7 @@ const MonsterSolutions = cc.Class({
                     ai.playAction(this, 'bianxing_1', 1, cb)
                 }
                 if (idx == 2) {
+                    this.bossAppear(false);
                     this.setDefend(false);
                     let destination = ai.posTransfer(cc.v3(0.2 + 0.6 * Math.random(), 0.5 + Math.random() * 0.3));
                     this.shiftToStandby(destination, 1.5, 10, 0);
@@ -3502,6 +3539,7 @@ const MonsterSolutions = cc.Class({
             entity.setTimerHandler(function (idx) {
                 if (idx == 0) {
                     ai.setMonsterLoopAction(this,'start_1');
+                    this.bossAppear(true);
                     this.setDefend(true);
                     let destination = ai.posTransfer(cc.v3(0.5,0.65));
                     this.shiftToStandby(destination, 2, 30, 0);
@@ -3510,6 +3548,7 @@ const MonsterSolutions = cc.Class({
                     this.setTimer(9,3,1,0);
                 }
                 if (idx == 1) {
+                    this.bossAppear(false);
                     this.setDefend(false);
                     this.simpleHarmonic(10, 2, -90, cc.v3(1, 0), cc.v3(0, 0), cc.v3(15, 15), 0)
                     this.setMovementType(5);
@@ -3600,6 +3639,7 @@ const MonsterSolutions = cc.Class({
             entity.setTimerHandler(function (idx) {
                 if(idx == 0){
                     ai.setMonsterLoopAction(this,'start');
+                    this.bossAppear(true);
                     this.setDefend(true);
                     let destination = ai.posTransfer(cc.v3(0.5,0.65));
                     this.shiftToStandby(destination, 2, 30, 0);
@@ -3611,6 +3651,7 @@ const MonsterSolutions = cc.Class({
                     this.setTimer(2,1.5,1,0);
                 }
                 if(idx == 2){
+                    this.bossAppear(false);
                     this.setDefend(false);
                     ai.useSkill(this,968);
                     this.setTimer(3,2,1,0);
@@ -3741,157 +3782,33 @@ const MonsterSolutions = cc.Class({
             entity.setTimer(8,0.016,9999,1);
             return entity;
         },
-        // solution_44: function (info, skills) {
-        //     //xuzhouqishi
-        //     //attacktimem,attack2time,skill1-8,time1-8,circletime1-2,circleskill1-2,circleskilltime1-2
-        //     let ai = require('AIInterface');
-        //     let entity = ai.createMonster(info);
-        //     var cb = function (actName) {
-        //         if (actName == 'bianxing') {
-        //             entity.setTimer(11, 2, 1, 0);
-        //         }
-        //     }
-        //     entity.setTimerHandler(function (idx) {
-        //         if(idx == 0){
-        //             ai.setMonsterLoopAction(this,'start');
-        //             this.setDefend(true);
-        //             let destination = ai.posTransfer(cc.v3(0.5,0.65));
-        //             this.shiftToStandby(destination, 2, 30, 0);
-        //             this.setMovementType(4);
-        //             this.setTimer(1,2,1,0);
-        //         }
-        //         if(idx == 1){
-        //             ai.playAction(this,'attack',1);
-        //             this.setTimer(2,attacktime,1,0);
-        //         }
-        //         if(idx == 2){
-        //             this.setDefend(false);
-        //             ai.useSkill(this,skill1);
-        //             this.setTimer(3,time1,1,0);
-        //         }
-        //         if(idx == 3){
-        //             let destination = ai.posTransfer(cc.v3(0.4,0.75));
-        //             this.shiftToStandby(destination, 1, 10, 0);
-        //             this.setMovementType(4);
-        //             this.setTimer(4,1,1,0);
-        //         }
-        //         if(idx == 4){
-        //             ai.useSkill(this,skill2);
-        //             this.setTimer(5,time2,1,0);
-        //         }
-        //         if(idx == 5){
-        //             let T1 = circletime1;
-        //             let pos = this.getPosition();
-        //             let circlePos = ai.posTransfer(cc.v3(0.5,0.65));
-        //             let R = pos.sub(circlePos);
-        //             this.setEntityAutoCircle(circlePos, R, 270/T1, T1, 0, 0, 0);
-        //             this.setMovementType(1);
-        //             this.setTimer(6,T1,1,0);
-        //             this.setTimer(22,circleskilltime1,1,0);
-        //         }
-        //         if(idx == 6){
-        //             this.resetEntityAutoCircle();
-        //             ai.useSkill(this,skill3);
-        //             this.setTimer(7,time3,1,0);
-        //         }
-        //         if(idx == 7){
-        //             let destination = ai.posTransfer(cc.v3(0.5,0.65));
-        //             this.shiftToStandby(destination, 1, 10, 0);
-        //             this.setMovementType(4);
-        //             this.setTimer(1,1,1,0);
-        //         }
-        //         if(idx == 8){
-        //             let hp = this.getCurHpPer();
-        //             if (hp < 50) {
-        //                 this.setTimer(9, 0, 1, 0);
-        //                 for (let i = 1; i < 8; i++) {
-        //                     this.delTimer(i);
-        //                 }
-        //                 this.delTimer(8);
-        //                 this.delTimer(22);
-        //             }
-        //         }
-        //         if(idx == 9){
-        //             this.resetEntityAutoCircle();
-        //             let destination = ai.posTransfer(cc.v3(0.5,0.65));
-        //             this.shiftToStandby(destination, 1, 10, 0);
-        //             this.setMovementType(4);
-        //             this.setTimer(10,1,1,0);
-        //         }
-        //         if(idx == 10){
-        //             ai.setMonsterLoopAction(this,'idle');
-        //             ai.playAction(this,'bianxing',1,cb);
-        //         }
-        //         if(idx == 11){
-        //             ai.playAction(this,'attack2',1);
-        //             this.setTimer(12,attack2time,1,0);
-        //         }
-        //         if(idx == 12){
-        //             ai.useSkill(this,skill4);
-        //             this.setTimer(13,time4,1,0);
-        //         }
-        //         if(idx == 13){
-        //             let destination = ai.posTransfer(cc.v3(0.4,0.55));
-        //             this.shiftToStandby(destination, 1, 10, 0);
-        //             this.setMovementType(4);
-        //             this.setTimer(14,1,1,0);
-        //         }
-        //         if(idx == 14){
-        //             ai.useSkill(this,skill5);
-        //             this.setTimer(15,time5,1,0);
-        //         }
-        //         if(idx == 14){
-        //             let T2 = circletime2;
-        //             let pos = this.getPosition();
-        //             let circlePos = ai.posTransfer(cc.v3(0.5,0.65));
-        //             let R = pos.sub(circlePos);
-        //             this.setEntityAutoCircle(circlePos, R, 90/T2, T2, 0, 0, 0);
-        //             this.setMovementType(1);
-        //             this.setTimer(16,T2,1,0);
-        //             this.setTimer(23,circleskilltime2,1,0);
-        //         }
-        //         if(idx == 16){
-        //             this.resetEntityAutoCircle();
-        //             ai.useSkill(this,skill6);
-        //             this.setTimer(17,time6,1,0);
-        //         }
-        //         if(idx == 17){
-        //             let destination = ai.posTransfer(cc.v3(0.5,0.65));
-        //             this.shiftToStandby(destination, 1, 10, 0);
-        //             this.setMovementType(4);
-        //             this.setTimer(18,1,1,0);
-        //         }
-        //         if(idx == 18){
-        //             ai.useSkill(this,skill7);
-        //             this.setTimer(19,time7,1,0);
-        //         }
-        //         if(idx == 19){
-        //             let destination = ai.posTransfer(cc.v3(0.5,0.55));
-        //             this.shiftToStandby(destination, 1, 10, 0);
-        //             this.setMovementType(4);
-        //             this.setTimer(20,1,1,0);
-        //         }
-        //         if(idx == 20){
-        //             ai.useSkill(this,skill8);
-        //             this.setTimer(21,time8,1,0);
-        //         }
-        //         if(idx == 21){
-        //             let destination = ai.posTransfer(cc.v3(0.5,0.65));
-        //             this.shiftToStandby(destination, 1, 10, 0);
-        //             this.setMovementType(4);
-        //             this.setTimer(11,1,1,0);
-        //         }
-        //         if(idx == 22){
-        //             ai.useSkill(this,circleskill1);
-        //         }
-        //         if(idx == 23){
-        //             ai.useSkill(this,circleskill2);
-        //         }
-        //     });
-        //     entity.setTimer(0, 0, 1, 0);
-        //     entity.setTimer(8,0.016,9999,1);
-        //     return entity;
-        // },
+        solution_45: function (info, skills) {
+            //rmgy
+            let ai = require('AIInterface');
+            let entity = ai.createMonster(info);
+            let vec = ai.posTransfer(info.pos.add(cc.v3(0, -0.5)));
+            entity.setTimerHandler(function (idx) {
+                if (idx == 0) {
+                    this.bossAppear(true);
+                    this.setDefend(true);
+                    this.shiftToStandby(vec, 3.1, 100, 0);
+                    this.setMovementType(4);
+                }
+                if (idx == 1) {
+                    this.bossAppear(false);
+                    this.setDefend(false);
+                    ai.autoUseSkill(this, true);
+                }
+                if (idx == 2) {
+                    this.simpleHarmonic(22, 2, -90, cc.v3(1, 0), cc.v3(0, 0), cc.v3(0, 0), 0)
+                    this.setMovementType(5);
+                }
+            });
+            entity.setTimer(0, 0, 1, 0);
+            entity.setTimer(1, 3.1 + 0.25, 1, 0);
+            entity.setTimer(2, 3.1 + 0.25, 1, 0);
+            return entity;
+        },
         solution_61: function (info, runtime, autoskilldelay) {
             //渐隐出现——左右摆动
             let ai = require('AIInterface');
@@ -4274,6 +4191,13 @@ const MonsterSolutions = cc.Class({
             //原地测试弹幕
             let ai = require('AIInterface');
             let entity = ai.createMonster(info);
+            entity.setCollisionSwitch(false);
+            entity.setTimerHandler(function (idx) {
+                if (idx == 0) {
+                    ai.useSkill(this,975);
+                }
+            });
+            entity.setTimer(0,1,1,0);
             return entity;
         },
         solution_113: function (info, skills) {

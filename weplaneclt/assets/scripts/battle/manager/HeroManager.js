@@ -80,6 +80,7 @@ const HeroManager = cc.Class({
 
     revive() {
         this.createPlane(this.displayNode, this.showType, this.member, this.props, this.full);
+        this.planeEntity.addProtectTime(Defines.PROTECT_TIME);
     },
 
     update(dt) {

@@ -7,7 +7,6 @@ const i18n = require('LanguageData');
 const CommonWnd = require("CommonWnd");
 const ButtonObject = require("ButtonObject");
 const GameServerProto = require("GameServerProto");
-const weChatAPI = require("weChatAPI");
 const WindowManager = require("windowmgr");
 
 const BUTTON_TYPE_PURCHASE_ONLY = 0;
@@ -49,7 +48,6 @@ cc.Class({
 
     onLoad: function () {
         this._super();
-        i18n.init('zh');
         this.typeName = WndTypeDefine.WindowType.E_DT_NORMAL_FREE_GET_WND;
         this.animeStartParam(0, 0);
         this._shareType = 0; // 1为获取金币，2为获取钻石;
@@ -242,10 +240,6 @@ cc.Class({
                     }
                     }); 
                 });
-                // self.nodeBlock.enabled = true;
-                // setTimeout(function () {
-                //     self.nodeBlock.enabled = false;
-                // }, 1500);
             }else{
                 platformApi.shareNormal(materialID, function () {
                     if (self._shareType == SHARE_TYPE_GOLD) {

@@ -157,7 +157,7 @@ var UIBattle = cc.Class({
             topWidget.updateAlignment();
         }
 
-        if (typeof GlobalVar.me().guazaiData.getGuazaiBySlot(2) !== 'undefined') {
+        if (typeof GlobalVar.me().guazaiData.getGuazaiBySlot(2) !== 'undefined' && !this.battleManager.isArenaFlag) {
             this.barSkillCD.node.active = true;
             this.skillBtnShow = true;
         } else {

@@ -3,8 +3,6 @@ const WindowManager = require("windowmgr");
 const WndTypeDefine = require("wndtypedefine");
 const RootBase = require("RootBase");
 const i18n = require('LanguageData');
-const GlobalFunc = require('GlobalFunctions');
-const weChatAPI = require("weChatAPI");
 
 cc.Class({
     extends: RootBase,

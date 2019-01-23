@@ -1,8 +1,6 @@
 var HandlerBase = require("handlerbase")
 var GlobalVar = require('globalvar')
-var EventMsgID = require("eventmsgid")
 var GameServerProto = require("GameServerProto");
-const me = require("me");
 
 var self = null;
 cc.Class({
@@ -14,9 +12,6 @@ cc.Class({
 
     initHandler: function (handlerMgr) {
         this.handlerMgr = handlerMgr;
-        // handlerMgr.setKey(GameServerProto.GMID_BIG_LOGIN_ACK, GameServerProto.GMID_BIG_LOGIN_REQ);
-        // handlerMgr.setKey(GameServerProto.GMID_CREATE_ROLE_ACK, GameServerProto.GMID_CREATE_ROLE_REQ);
-        // handlerMgr.setKey(GameServerProto.GMID_CREATE_ROLE_ACK, GameServerProto.GMID_CREATE_ROLE_REQ);
 
         GlobalVar.messageDispatcher.bindMsg(GameServerProto.GMID_BIG_LOGIN_ACK, self._recvLoginAck, self);
         GlobalVar.messageDispatcher.bindMsg(GameServerProto.GMID_CREATE_ROLE_NTF, self._needCreateRoleNTF, self);

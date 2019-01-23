@@ -1,7 +1,6 @@
 
 var HandlerBase = require("handlerbase");
 var GlobalVar = require('globalvar');
-var EventMsgID = require("eventmsgid");
 var GameServerProto = require("GameServerProto");
 
 var self = null;
@@ -13,7 +12,6 @@ cc.Class({
     },
 
     initHandler: function (handlerMgr) {
-        // handlerMgr.setKey(GameServerProto.GMID_SP_BUY_REQ,GameServerProto.GMID_SP_BUY_ACK);
         
         GlobalVar.messageDispatcher.bindMsg(GameServerProto.GMID_SP_BUY_ACK, self._recvSpBuyAck, self);
         GlobalVar.messageDispatcher.bindMsg(GameServerProto.GMID_SP_CHANGE_NTF, self._recvSpChangeNtf, self);

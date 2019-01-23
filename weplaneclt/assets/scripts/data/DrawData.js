@@ -64,6 +64,7 @@ var DrawData = cc.Class({
             self.nextFreeTime = data.NextFreeTime;
         }
         GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_GET_TREASURE_MINING_RESULT, data);
+        GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_TREASURE_FLAG_CHANGE);
     },
 
     showMiningRewardResult: function (data) {

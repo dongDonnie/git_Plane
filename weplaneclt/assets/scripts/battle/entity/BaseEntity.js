@@ -1,6 +1,5 @@
 const Defines = require('BattleDefines');
 const GlobalVar = require('globalvar');
-const ResMapping = require("resmapping");
 const MotionNode = require("MotionNode");
 
 var BezierStatus = {
@@ -681,10 +680,10 @@ cc.Class({
         //若 P × Q < 0 , 则P在Q的逆时针方向。
 
         if (chase.target == null) {
-            chase.target = require('AIInterface').randMonster();
+            chase.target = require('AIInterface').randMonster(this);
         } else {
             if (chase.target.objectType == Defines.ObjectType.OBJ_MONSTER && chase.target.isDead) {
-                chase.target = require('AIInterface').randMonster();
+                chase.target = require('AIInterface').randMonster(this);
             }
         }
 
@@ -703,6 +702,13 @@ cc.Class({
         }
 
         let v = chase.target.getPosition().sub(this.getPosition());
+        if (chase.target.objectType == Defines.ObjectType.OBJ_SELF) {
+            let pos = cc.v3(this.battleManager.arenaRivalDisplay.convertToNodeSpaceAR(cc.v2(chase.target.getPosition())));
+            v = pos.sub(this.getPosition());
+        } else if (chase.target.objectType == Defines.ObjectType.OBJ_RIVAL) {
+            let pos = cc.v3(this.battleManager.arenaRivalDisplay.convertToNodeSpaceAR(cc.v2(this.getPosition())));
+            v = chase.target.getPosition().sub(pos).mul(-1);
+        }
 
         if (chase.mode == 0) {
             let originAngle = Math.atan2(chase.speed.y, chase.speed.x) * 180 / Math.PI;

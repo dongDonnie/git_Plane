@@ -1,6 +1,5 @@
 var HandlerBase = require("handlerbase");
 var GlobalVar = require('globalvar');
-var EventMsgID = require("eventmsgid");
 var GameServerProto = require("GameServerProto");
 
 var self = null;
@@ -13,13 +12,6 @@ cc.Class({
 
     initHandler: function (handlerMgr) {
         this.handlerMgr = handlerMgr;
-        // handlerMgr.setKey(GameServerProto.GMID_MEMBER_ACTIVE_ACK,GameServerProto.GMID_MEMBER_ACTIVE_REQ);
-        // handlerMgr.setKey(GameServerProto.GMID_SAVE_CHUZHAN_CONF_ACK,GameServerProto.GMID_SAVE_CHUZHAN_CONF_REQ);
-        // handlerMgr.setKey(GameServerProto.GMID_MEMBER_LEVELUP_ACK,GameServerProto.GMID_MEMBER_LEVELUP_REQ);
-        // handlerMgr.setKey(GameServerProto.GMID_MEMBER_QUALITYUP_ACK,GameServerProto.GMID_MEMBER_QUALITYUP_REQ);
-        // handlerMgr.setKey(GameServerProto.GMID_LEADEREQUIP_LEVELUP_ACK,GameServerProto.GMID_LEADEREQUIP_LEVELUP_REQ);
-        // handlerMgr.setKey(GameServerProto.GMID_LEADEREQUIP_QUALITYUP_ACK,GameServerProto.GMID_LEADEREQUIP_QUALITYUP_REQ);
-        // handlerMgr.setKey(GameServerProto.GMID_PLAYER_PROP_ACK,GameServerProto.GMID_PLAYER_PROP_REQ);
 
 
         GlobalVar.messageDispatcher.bindMsg(GameServerProto.GMID_MEMBER_ACTIVE_ACK, self.recvMemberActiveAck, self);
@@ -32,7 +24,30 @@ cc.Class({
         GlobalVar.messageDispatcher.bindMsg(GameServerProto.GMID_PLAYER_PROP_ACK, self.recvMemberPropNtf, self);
 
         GlobalVar.messageDispatcher.bindMsg(GameServerProto.GMID_MEMBER_PIECE_DATA_ACK, self.recvMemberPieceDataAck, self);
+        GlobalVar.messageDispatcher.bindMsg(GameServerProto.GMID_MEMBER_PIECE_BREAK_ACK, self.recvMemberPieceBreakAck, self);
+        GlobalVar.messageDispatcher.bindMsg(GameServerProto.GMID_MEMBER_PIECE_CRYSTAL_NTF, self.recvMemberPieceCrystalNtf, self);
 
+        GlobalVar.messageDispatcher.bindMsg(GameServerProto.GMID_CHUZHAN_DATA_ACK, self.recvMixDriveDataAck, self);
+        GlobalVar.messageDispatcher.bindMsg(GameServerProto.GMID_CHUZHAN_MIX_LEVEL_NTF, self.recvMixLevelNtf, self);
+    },
+
+    recvMemberPieceCrystalNtf: function (msgId, msg) {
+        GlobalVar.me().memberData.saveMemberPieceCrystal(msgId, msg);
+    },
+
+    recvFreshAck: function (msgId, msg) {
+        GlobalVar.me().memberData.saveRefreshData(msgId, msg);
+    },
+
+    recvBuyAck:  function (msgId, msg) {
+        GlobalVar.me().memberData.saveBuyData(msgId, msg);
+    },
+
+    recvMemberPieceBreakAck: function (msgId, msg) {
+        if (typeof msg != "object") {
+            return;
+        }
+        GlobalVar.me().memberData.savePieceBreakData(msgId, msg);
     },
 
     recvMemberPieceDataAck: function (msgId, msg) {
@@ -153,5 +168,35 @@ cc.Class({
             Reserved: reserved,
         };
         this.sendMsg(GameServerProto.GMID_PLAYER_PROP_REQ, msg);
+    },
+
+    sendPieceBreakReq: function (msgId, msg) {
+        this.sendMsg(msgId, msg);
+    },
+
+    recvMemberStoreData: function (msgId, msg) {
+        GlobalVar.me().memberData.saveMemberStoreData(msg);
+    },
+
+    recvMixDriveDataAck: function (msgId, msg) {
+        if (typeof msg != "object") {
+            return;
+        }
+        GlobalVar.me().memberData.setMixDriveData(msg.data);
+    },
+
+    sendGetMixDriveDataReq: function (reserved) {
+        reserved = reserved ? reserved : 1;
+        let msg = {
+            Reserved: reserved,
+        };
+        self.sendMsg(GameServerProto.GMID_CHUZHAN_DATA_REQ, msg);
+    },
+
+    recvMixLevelNtf: function (msgId, msg) {
+        if (typeof msg != "object") {
+            return;
+        }
+        GlobalVar.me().memberData.setMixDriveLevelNtf(msg.data);
     },
 });

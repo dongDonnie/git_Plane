@@ -7,10 +7,11 @@ const DIAMOND_ID = 3;
 
 var LimitStoreData = cc.Class({
     ctor: function () {
-        this.typeMap = { 1: [], 2: [], 3: [] };
+        this.typeMap = { 0:[], 1: [], 2: [], 3: [] };
         this.buyAck = {};
         this.limitStoreBuyId = 0;
         this.nowType = 0;
+        this.gift = null;
         this.initData();
     },
 
@@ -60,6 +61,10 @@ var LimitStoreData = cc.Class({
             cost += costOnce;
         }
         return cost;
+    },
+
+    getGiftData: function () {
+        return this.gift;
     },
 });
 

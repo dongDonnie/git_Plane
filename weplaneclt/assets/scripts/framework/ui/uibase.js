@@ -1,5 +1,4 @@
 var GlobalVar = require("globalvar");
-const ResMapping = require("resmapping");
 
 var UIBase = cc.Class({
     extends: cc.Component,
@@ -15,13 +14,7 @@ var UIBase = cc.Class({
     },
 
     onLoad: function () {
-        let node = new cc.Node("nodeBlock");
-        node.addComponent(cc.BlockInputEvents);
-        node.width = cc.winSize.width;
-        node.height = cc.winSize.height;
-        this.node.addChild(node);
-        this.nodeBlock = node.getComponent(cc.BlockInputEvents);
-        this.nodeBlock.enabled = false;
+        
     },
     
     properties: {
@@ -40,23 +33,23 @@ var UIBase = cc.Class({
     },
 
     // 创建一个node
-    instantiateNode:function(perfab) {
-        var newNode = cc.instantiate(perfab);
-        return newNode;
-    },
+    // instantiateNode:function(perfab) {
+    //     var newNode = cc.instantiate(perfab);
+    //     return newNode;
+    // },
 
     //更改父节点
-    changeParentNode:function(newParentNode) {
-        this.node.removeFromParent(false);
-        newParentNode.addChild(this.node);
-    },
+    // changeParentNode:function(newParentNode) {
+    //     this.node.removeFromParent(false);
+    //     newParentNode.addChild(this.node);
+    // },
 
     //添加到父节点
-    setParentNode:function(parentNode) {
-        if (parentNode != null) {
-            parentNode.addChild(this.node);
-        }	
-    }, 
+    // setParentNode:function(parentNode) {
+    //     if (parentNode != null) {
+    //         parentNode.addChild(this.node);
+    //     }	
+    // }, 
 
     ///////UI便捷读取封装
     seekNodeByName: function(root, name) {
@@ -87,66 +80,66 @@ var UIBase = cc.Class({
         return this.seekNodeByName(this.node, name);
     },
 
-    getButtonByName: function(name) {
-        return this.getNodeByName(name).getComponent(cc.Button);
-    },
+    // getButtonByName: function(name) {
+    //     return this.getNodeByName(name).getComponent(cc.Button);
+    // },
 
-    getLabelByName: function(name) {
-        return this.getNodeByName(name).getComponent(cc.Label);
-    },
+    // getLabelByName: function(name) {
+    //     return this.getNodeByName(name).getComponent(cc.Label);
+    // },
 
-    getRichTextByName: function(name) {
-        return this.getNodeByName(name).getComponent(cc.RichText);
-    },
+    // getRichTextByName: function(name) {
+    //     return this.getNodeByName(name).getComponent(cc.RichText);
+    // },
 
-    getSpriteByName: function(name) {
-        return this.getNodeByName(name).getComponent(cc.Sprite);
-    },
+    // getSpriteByName: function(name) {
+    //     return this.getNodeByName(name).getComponent(cc.Sprite);
+    // },
 
-    getEditBoxByName: function(name) {
-        return this.getNodeByName(name).getComponent(cc.EditBox);
-    },
+    // getEditBoxByName: function(name) {
+    //     return this.getNodeByName(name).getComponent(cc.EditBox);
+    // },
 
-    getPageViewByName: function(name) {
-        return this.getNodeByName(name).getComponent(cc.PageView);
-    },
+    // getPageViewByName: function(name) {
+    //     return this.getNodeByName(name).getComponent(cc.PageView);
+    // },
 
-    getProgressBarByName: function(name) {
-        return this.getNodeByName(name).getComponent(cc.ProgressBar);
-    },
+    // getProgressBarByName: function(name) {
+    //     return this.getNodeByName(name).getComponent(cc.ProgressBar);
+    // },
 
-    getScrollViewByName: function(name) {
-        return this.getNodeByName(name).getComponent(cc.ScrollView);
-    },
+    // getScrollViewByName: function(name) {
+    //     return this.getNodeByName(name).getComponent(cc.ScrollView);
+    // },
 
-    getWidgetByName: function(name) {
-        return this.getNodeByName(name).getComponent(cc.WidgetName);
-    },
+    // getWidgetByName: function(name) {
+    //     return this.getNodeByName(name).getComponent(cc.WidgetName);
+    // },
 
-    getToggleByName: function(name) {
-        return this.getNodeByName(name).getComponent(cc.Toggle);
-    },
+    // getToggleByName: function(name) {
+    //     return this.getNodeByName(name).getComponent(cc.Toggle);
+    // },
 
-    getTabBtnViewByName: function(name) {
-        return this.getNodeByName(name).getComponent('tabbtnview');
-    },
+    // getTabBtnViewByName: function(name) {
+    //     return this.getNodeByName(name).getComponent('tabbtnview');
+    // },
 
-    getUILoopScrollViewByName: function(name) {
-        return this.getNodeByName(name).getComponent('uiloopscrollview');
-    },
+    // getUILoopScrollViewByName: function(name) {
+    //     return this.getNodeByName(name).getComponent('uiloopscrollview');
+    // },
 
-    getUIPageViewByName: function(name) {
-        return this.getNodeByName(name).getComponent('uipageview');
-    },
+    // getUIPageViewByName: function(name) {
+    //     return this.getNodeByName(name).getComponent('uipageview');
+    // },
 
-    setSpriteByName: function(spriteName, frameName, cb) {
-        // var spriteCompo = this.getSpriteByName(spriteName);
-        // var _textureFilename = spriteCompo.spriteFrame._textureFilename;
-        // var splits = _textureFilename.split('/');
-        // var filepath = 'ui/textures/' + splits[splits.length-2] + '/' + frameName + '.png';
-        // GlobalVar.resManager().loadRes(ResMapping.ResType.SpriteFrame, filepath, function(spriteFrame) {
-        //     spriteCompo.spriteFrame = spriteFrame;
-        //     if (!!cb) cb();
-        // });
-    },
+    // setSpriteByName: function(spriteName, frameName, cb) {
+    //     // var spriteCompo = this.getSpriteByName(spriteName);
+    //     // var _textureFilename = spriteCompo.spriteFrame._textureFilename;
+    //     // var splits = _textureFilename.split('/');
+    //     // var filepath = 'ui/textures/' + splits[splits.length-2] + '/' + frameName + '.png';
+    //     // GlobalVar.resManager().loadRes(ResMapping.ResType.SpriteFrame, filepath, function(spriteFrame) {
+    //     //     spriteCompo.spriteFrame = spriteFrame;
+    //     //     if (!!cb) cb();
+    //     // });
+    // },
 });

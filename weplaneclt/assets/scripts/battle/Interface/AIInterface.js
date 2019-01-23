@@ -8,10 +8,10 @@ var AIInterface = cc.Class({
 
         createBullet: function (id, owner, pos_plus) {
             let bullet = Factory.getInstance().produceBullet(id, owner, pos_plus);
-            if(!BattleManager.getInstance().isArenaFlag){
+            if (!BattleManager.getInstance().isArenaFlag) {
                 EntityManager.getInstance().entityNewList.push(bullet);
                 bullet.entityId = EntityManager.getInstance().getEntityId();
-            }else{
+            } else {
                 BattleManager.getInstance().arenaPrime(bullet);
             }
             return bullet;
@@ -29,16 +29,16 @@ var AIInterface = cc.Class({
             return monster;
         },
 
-        createBuff: function (id, pos, elastic,drop) {
-            let buff = Factory.getInstance().produceBuff(id, pos, elastic,drop);
+        createBuff: function (id, pos, elastic, drop) {
+            let buff = Factory.getInstance().produceBuff(id, pos, elastic, drop);
             buff.entityId = EntityManager.getInstance().getEntityId();
             EntityManager.getInstance().newEntity(buff);
             //EntityManager.getInstance().entityNewList.push(buff);
             return buff;
         },
 
-        createSundries: function (id, pos,hp) {
-            let sundries = Factory.getInstance().produceSundries(id, pos,hp);
+        createSundries: function (id, pos, hp) {
+            let sundries = Factory.getInstance().produceSundries(id, pos, hp);
             sundries.entityId = EntityManager.getInstance().getEntityId();
             EntityManager.getInstance().newEntity(sundries);
             //EntityManager.getInstance().entityNewList.push(sundries);
@@ -76,12 +76,12 @@ var AIInterface = cc.Class({
             }
         },
 
-        eliminateBulletByOwner(owner, needDisappearAnime,onlyDeleteLine) {
+        eliminateBulletByOwner(owner, needDisappearAnime, onlyDeleteLine) {
             onlyDeleteLine = typeof onlyDeleteLine !== 'undefined' ? onlyDeleteLine : true;
-            needDisappearAnime=typeof needDisappearAnime!=='undefined'?needDisappearAnime:true;
+            needDisappearAnime = typeof needDisappearAnime !== 'undefined' ? needDisappearAnime : true;
             Factory.getInstance().shutdownByCustomer(owner);
             if (!onlyDeleteLine) {
-                EntityManager.getInstance().deleteBulletsByOwner(owner,needDisappearAnime);
+                EntityManager.getInstance().deleteBulletsByOwner(owner, needDisappearAnime);
             }
         },
 
@@ -129,7 +129,7 @@ var AIInterface = cc.Class({
             return null;
         },
 
-        addAction:function(entity,actName,loop,callback){
+        addAction: function (entity, actName, loop, callback) {
             let obj = entity.getObject();
             if (obj != null) {
                 return obj.playAction(actName, loop, callback);
@@ -148,7 +148,7 @@ var AIInterface = cc.Class({
             return null;
         },
 
-        stopAction(entity){
+        stopAction(entity) {
             let obj = entity.getObject();
             if (obj != null) {
                 return obj.stop();
@@ -160,13 +160,23 @@ var AIInterface = cc.Class({
             return require('HeroManager').getInstance().planeEntity;
         },
 
-        randMonster() {
-            let length = EntityManager.getInstance().entityMonsterList.length;
-            if (length == 0) {
-                return null;
+        randMonster(owner) {
+            if (!!BattleManager.getInstance().isArenaFlag) {
+                if (owner.objectType == Defines.ObjectType.OBJ_SELF_BULLET) {
+                    return BattleManager.getInstance().getArenaPlane(1);
+                } else if (owner.objectType == Defines.ObjectType.OBJ_RIVAL_BULLET) {
+                    return BattleManager.getInstance().getArenaPlane(0);
+                } else {
+                    return null;
+                }
+            } else {
+                let length = EntityManager.getInstance().entityMonsterList.length;
+                if (length == 0) {
+                    return null;
+                }
+                let idx = Math.floor(Math.random() * length);
+                return EntityManager.getInstance().entityMonsterList[idx];
             }
-            let idx = Math.floor(Math.random() * length);
-            return EntityManager.getInstance().entityMonsterList[idx];
         },
 
         getHeroPosition() {
@@ -176,7 +186,7 @@ var AIInterface = cc.Class({
         speedTransfer(speed, angle) {
             speed = typeof speed !== 'undefined' ? speed : 0;
             angle = typeof angle !== 'undefined' ? angle : 0;
-            let v=cc.v3(Math.cos(angle * Math.PI / 180),Math.sin(angle * Math.PI / 180));
+            let v = cc.v3(Math.cos(angle * Math.PI / 180), Math.sin(angle * Math.PI / 180));
             return v.mul(speed);
         },
 
@@ -184,7 +194,7 @@ var AIInterface = cc.Class({
             target = typeof target !== 'undefined' ? target : cc.v3(0, 0);
             origin = typeof origin !== 'undefined' ? origin : cc.v3(0, 0);
             let v = target.sub(origin);
-            return Math.atan2(v.y,v.x) * 180 / Math.PI;
+            return Math.atan2(v.y, v.x) * 180 / Math.PI;
         },
 
         posTransfer(pospercent) {
@@ -214,24 +224,24 @@ var AIInterface = cc.Class({
             return pos;
         },
 
-        splitStringPos:function(pos){
+        splitStringPos: function (pos) {
             let p = pos.split(',');
             let v = cc.v3(Number(p[0]), Number(p[1]));
             return this.posTransfer(v);
         },
 
-        allBuffChaseToHero:function(){
-            let pos=require('HeroManager').getInstance().planeEntity.getPosition();
-            for (let entity of EntityManager.getInstance().entityBuffList){
+        allBuffChaseToHero: function () {
+            let pos = require('HeroManager').getInstance().planeEntity.getPosition();
+            for (let entity of EntityManager.getInstance().entityBuffList) {
                 entity.chaseHero(pos.sub(entity.getPosition()).mul(2), pos.sub(entity.getPosition()).mul(2), 0, 0, 1);
                 entity.setMovementType(3);
             }
         },
 
-        getDisPlayContentSize:function(){
-            let battleManager=require('BattleManager').getInstance();
-            if(typeof battleManager.displayContainer !=='undefined' && battleManager.displayContainer!=null){
-                let size=battleManager.displayContainer.getContentSize();
+        getDisPlayContentSize: function () {
+            let battleManager = require('BattleManager').getInstance();
+            if (typeof battleManager.displayContainer !== 'undefined' && battleManager.displayContainer != null) {
+                let size = battleManager.displayContainer.getContentSize();
                 if (battleManager.allScreen) {
                     size.height -= 130;
                 } else {
@@ -240,7 +250,7 @@ var AIInterface = cc.Class({
 
                 return size;
             }
-            return cc.size(0,0);
+            return cc.size(0, 0);
         },
     },
 

@@ -57,8 +57,12 @@ BattleDefines.ObjectType = cc.Enum({
     OBJ_GOLD: 16,
     OBJ_SELF: 17,
     OBJ_RIVAL: 18,
-    OBJ_SELF_BULLET: 19,
-    OBJ_RIVAL_BULLET: 20,
+    OBJ_SELF_GUAZAI: 19,
+    OBJ_RIVAL_GUAZAI: 20,
+    OBJ_FAKE_SELF: 21,
+    OBJ_FAKE_RIVAL: 22,
+    OBJ_SELF_BULLET: 23,
+    OBJ_RIVAL_BULLET: 24,
 });
 
 BattleDefines.BulletType = cc.Enum({

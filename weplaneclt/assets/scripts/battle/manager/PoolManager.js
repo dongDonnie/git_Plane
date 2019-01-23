@@ -1,6 +1,4 @@
 var Defines = require('BattleDefines')
-const BulletEntity = require('BulletEntity')
-
 
 const PoolManager = cc.Class({
 

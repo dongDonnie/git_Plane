@@ -25,6 +25,7 @@ wx.onMessage(data => {
                     drawFriendsPage(curPage);
                     isGetData = true;
                 });
+                console.log("拉取新的排行榜数据")
             } else {
                 drawFriendsPage(curPage);
             }
@@ -59,6 +60,9 @@ wx.onMessage(data => {
         case MSG.ON_MSG_DEFAULT_BEYOUND_SETTING:
             beyoundStartRank = friendsDataList.length-1;
             break;
+        case MSG.ON_MSG_RESET_RANK_GET_DATA:
+            isGetData = false;
+            break;
         default:
             break;
     }
@@ -66,6 +70,9 @@ wx.onMessage(data => {
 
 function getAvatar(avatarUrl) {
     // return avatarUrl.substring(0, avatarUrl.length - 1) + '64';
+    if (avatarUrl == ""){
+        avatarUrl = 'src/myOpenDataContext/image/head_img.png'
+    }
     return avatarUrl;
 };
 
@@ -163,9 +170,9 @@ function drawMyRankItem() {
     }
     else {
         context.fillStyle = '#fff';
-        context.textAlign = 'start';
+        context.textAlign = 'right';
         context.font = '30px sans-serif';
-        context.fillText(myRank, 60, 62 + myrankHeight + startHieght);
+        context.fillText(myRank, 110, 62 + myrankHeight + startHieght);
     }
 
     // 显示玩家微信头像url
@@ -186,6 +193,7 @@ function drawMyRankItem() {
 
     context.fillStyle = "#4fbbff"
     context.font = '24px sans-serif';
+    context.textAlign = 'left';
     context.fillText(name, 200, 62 + myrankHeight + startHieght);
 
     context.fillStyle = '#FFA847';
@@ -338,34 +346,31 @@ function getRankList(rawData) {
 function drawFriendAvatar(score) {
     let sharedCanvas = wx.getSharedCanvas();
     let context = sharedCanvas.getContext('2d');
-    // context.clearRect(0, 0, sharedCanvas.width, sharedCanvas.height);
     if (score < 0) {
         console.log("score error:", score);
-        // sharedCanvas.width = 0;
-        // sharedCanvas.height = 0;
         return;
     }
 
     let friendData = friendsDataList[beyoundStartRank]
     if (!friendData){
         console.log("friendData error, beyoundStartRank:", beyoundStartRank);
-        // sharedCanvas.width = 0;
-        // sharedCanvas.height = 0;
+        context.fillStyle = 'rgba(255, 255, 255, 0)';
+        context.fillRect(0, 0, 120, 160);
+        context.clearRect(0, 0, sharedCanvas.width, sharedCanvas.height);
         return;
     }
-    // sharedCanvas.width = 120;
-    // sharedCanvas.height = 104;
 
     // console.log("scoreGap:", beyoundFriendScoreGap, "  next data: ", friendData);
     let isBeyound = false;
     let drawBeyound = false;
     if (score < friendData.score){
-        if ((score + beyoundFriendScoreGap >= friendData.score) && !alreadDraw){
+        // if ((score + beyoundFriendScoreGap >= friendData.score) && !alreadDraw){
+        // if (!alreadDraw){
             // 即將超越
             // console.log("即將超越");
             alreadDraw = true;
             drawBeyound = true;
-        }
+        // }
     }else {
         // 已超越
         // console.log("已超越");
@@ -373,12 +378,19 @@ function drawFriendAvatar(score) {
         beyoundStartRank -= 1;
         alreadDraw = false;
         drawBeyound = true;
+        drawFriendAvatar(score);
+        return;
     }
 
     // context.fillStyle = '#fff';
-    context.fillStyle = 'rgba(255, 255, 255, 0)';
+    // context.fillStyle = 'rgba(255, 255, 255, 0)';
     context.textAlign = 'start';
     if (drawBeyound){
+    // if (true){
+        context.fillStyle = 'rgba(255, 255, 255, 0)';
+        context.fillRect(0, 0, 120, 160);
+        context.clearRect(0, 0, sharedCanvas.width, sharedCanvas.height);
+        console.log("绘制的好友数据：", friendData);
         let bg = wx.createImage();
         bg.src = 'src/myOpenDataContext/image/battle_friend_bg.png';
         bg.onload = function () {
@@ -404,6 +416,26 @@ function drawFriendAvatar(score) {
                     context.drawImage(typeSprite, 18, 80, typeSprite.width, typeSprite.height);
                 }
             }
+        }
+        let scoreBg = wx.createImage();
+        scoreBg.src = 'src/myOpenDataContext/image/battle_friend_score_bg.png';
+        scoreBg.onload = function () {
+            context.drawImage(scoreBg, 0, 100, 120, 40);
+
+            // 画分数
+            context.fillStyle = '#C6E3FC';
+            context.font = '20px sans-serif';
+            context.textAlign = 'left';
+            context.fillText("分数", 4, 125);
+
+            context.fillStyle = '#FFFFFF';
+            context.font = '18px sans-serif';
+            context.textAlign = 'right';
+            let friendScore = friendData.score;
+            if (parseInt(friendScore) > 99999){
+                friendScore = parseInt(friendScore/10000) + "万";
+            }
+            context.fillText(friendScore, 115, 125);
         }
     }
 };

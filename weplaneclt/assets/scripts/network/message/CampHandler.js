@@ -1,7 +1,6 @@
 
 var HandlerBase = require("handlerbase")
 var GlobalVar = require('globalvar')
-var EventMsgID = require("eventmsgid")
 var GameServerProto = require("GameServerProto");
 
 var self = null;
@@ -13,11 +12,6 @@ cc.Class({
     },
 
     initHandler: function (handlerMgr) {
-        // handlerMgr.setKey(GameServerProto.GMID_NOTICE_ACK,GameServerProto.GMID_NOTICE_REQ);
-        // handlerMgr.setKey(GameServerProto.GMID_CAMP_BAG_ACK,GameServerProto.GMID_CAMP_BAG_REQ);
-        // handlerMgr.setKey(GameServerProto.GMID_CAMP_CHAPTER_REWARD_ACK,GameServerProto.GMID_CAMP_CHAPTER_REWARD_REQ);
-        // handlerMgr.setKey(GameServerProto.GMID_CAMP_SAODANG_ACK,GameServerProto.GMID_CAMP_SAODANG_REQ);
-        // handlerMgr.setKey(GameServerProto.GMID_CAMP_BUYCOUNT_ACK,GameServerProto.GMID_CAMP_BUYCOUNT_REQ);
 
         GlobalVar.messageDispatcher.bindMsg(GameServerProto.GMID_CAMP_BAG_ACK, self._recvCampBagData, self);
         GlobalVar.messageDispatcher.bindMsg(GameServerProto.GMID_CAMP_CHAPTER_REWARD_ACK, self._recvCampChapterRewardAck, self);

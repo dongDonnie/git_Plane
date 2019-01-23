@@ -8,7 +8,6 @@ const CommonWnd = require("CommonWnd");
 const i18n = require('LanguageData');
 const BattleManager = require('BattleManager');
 const SceneDefines = require("scenedefines");
-const weChatAPI = require("weChatAPI");
 const config = require("config");
 
 cc.Class({
@@ -67,7 +66,6 @@ cc.Class({
 
     onLoad: function () {
         this._super();
-        i18n.init('zh');
         this.typeName = WndTypeDefine.WindowType.E_DT_NORMAL_QUESTINFO_WND;
 
         this.content = this.scrollTrophyView.content;
@@ -425,22 +423,60 @@ cc.Class({
         }
 
         let self = this;
+
+        let tryGetTestMember =  function () {
+            let testPlayMemberID = -1;
+            let random = Math.random();
+            if (!config.NEED_GUIDE && self.tblData.wIconID != 1 && self.campData.Played == 0 && GlobalVar.getShareSwitch() && random < 0.5) {
+                let totalMemberData = GlobalVar.tblApi.getData('TblMember');
+                let ids = [];
+                for (let i in totalMemberData) {
+                    if (totalMemberData[i].byGetType == 1 && totalMemberData[i].stPingJia.byStarNum >= 3) {
+                        ids.push(parseInt(i));
+                    }
+                }
+                let highestStar = 0;
+                for (let i = 0; i < ids.length; i++) {
+                    let memberData = GlobalVar.me().memberData.getMemberByID(ids[i]);
+                    if (memberData || GlobalVar.me().memberData.unLockHotFlag[ids[i]]) {
+                        if (highestStar < totalMemberData[ids[i]].stPingJia.byStarNum) {
+                            highestStar = totalMemberData[ids[i]].stPingJia.byStarNum;
+                        }
+                        ids.splice(i, 1);
+                        i -= 1;
+                    }
+                }
+                for (let i = 0; i < ids.length; i++) {
+                    if (totalMemberData[ids[i]].stPingJia.byStarNum <= highestStar) {
+                        ids.splice(i, 1);
+                        i -= 1;
+                    }
+                }
+
+                let randomID = ids[parseInt(Math.random() * ids.length)] || -1;
+                testPlayMemberID = randomID;
+            }
+            GlobalVar.me().shareData.testPlayMemberID = 0;
+            if (testPlayMemberID != -1) {
+                CommonWnd.showShareMemberTestPlayWnd(testPlayMemberID, function () {
+                    GlobalVar.handlerManager().campHandler.sendCampBeginReq(self.tblData.byChapterID, self.tblData.wCampaignID);
+                }, function () {
+                    GlobalVar.handlerManager().campHandler.sendCampBeginReq(self.tblData.byChapterID, self.tblData.wCampaignID);
+                });
+            } else {
+                GlobalVar.handlerManager().campHandler.sendCampBeginReq(self.tblData.byChapterID, self.tblData.wCampaignID);
+            }
+        }
+
         if (this.checkCombatEnough()){
             this.btnStartBattle.interactable = false;
-            GlobalVar.handlerManager().campHandler.sendCampBeginReq(this.tblData.byChapterID, this.tblData.wCampaignID);
+            tryGetTestMember();
         }else{
-            // CommonWnd.showMessage(null, CommonWnd.bothConfirmAndCancel, i18n.t('label.4000216'), i18n.t('label.4000268'), null, function(){
-            //     self.btnStartBattle.interactable = false;
-            //     GlobalVar.handlerManager().campHandler.sendCampBeginReq(self.tblData.byChapterID, self.tblData.wCampaignID);
-            // }, function () {
-            //     WindowManager.getInstance().popToRoot(false, function () {
-            //         CommonWnd.showNormalEquipment(GlobalVar.me().memberData.getStandingByFighterID());
-            //     });
-            // }, i18n.t('label.4000267'), i18n.t('label.4000266'));
-            CommonWnd.showCombatSuppressWnd(GlobalVar.me().combatPoint, this.tblData.nFightingLeast,
+            CommonWnd.showCombatSuppressWnd(GlobalVar.me().combatPoint, self.tblData.nFightingLeast,
                 function () {
                     self.btnStartBattle.interactable = false;
-                    GlobalVar.handlerManager().campHandler.sendCampBeginReq(self.tblData.byChapterID, self.tblData.wCampaignID);
+                    tryGetTestMember()
+                    // GlobalVar.handlerManager().campHandler.sendCampBeginReq(self.tblData.byChapterID, self.tblData.wCampaignID);
                 }, function () {
                     WindowManager.getInstance().popToRoot(false, function () {
                         CommonWnd.showNormalEquipment(GlobalVar.me().memberData.getStandingByFighterID());
@@ -538,7 +574,7 @@ cc.Class({
             }
         }
         CommonWnd.showTreasureExploit(getItems);
-        // this.close();
+        this.close();
     },
 
     onDestroy: function () {

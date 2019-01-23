@@ -49,6 +49,7 @@ var memberData = cc.Class({
         this.unLockHotFlag = {};
         this.qualityUpHotFlag = {};
         this.levelUpHotFlag = {};
+        this.mixDriveHotFlag = false;
         this.memberLevel = 0;
         this.memberQuality = 0;
         this.isLevelUp = false;
@@ -56,7 +57,7 @@ var memberData = cc.Class({
         this.showCombatLate = false;
         this.oneTimeChuZhanMemberID = 0;
         this.assistFighterID = 0;
-        this.memberPieceData = null;
+        this.memberPieceCrystal = 0;
     },
 
     setMemberData: function (data) {
@@ -104,7 +105,22 @@ var memberData = cc.Class({
             }
             this.totalHotFlag[i] = this.unLockHotFlag[i] || this.qualityUpHotFlag[i] || this.levelUpHotFlag[i];
         }
+        this.updateMixDriveHotPoint();
         GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_MEMBER_FLAG_CHANGE);
+    },
+
+    updateMixDriveHotPoint: function () {
+        let mixOpenData = GlobalVar.tblApi.getData('TblMix');
+        this.mixDriveHotFlag = false;
+        for (let i = 0; i < 4; i++) {
+            if (GlobalVar.me().level >= mixOpenData[i+1].wLevelReq) {
+                let mixMemberId = this.getMixMemberIDByIndex(i);
+                if (!mixMemberId) {
+                    this.mixDriveHotFlag = true;
+                    break;
+                }
+            }
+        }
     },
 
     getHotPointData: function () {
@@ -123,6 +139,7 @@ var memberData = cc.Class({
         let standingByFighterID = this.getStandingByFighterID();
         flag = flag || this.qualityUpHotFlag[standingByFighterID];
         flag = flag || this.levelUpHotFlag[standingByFighterID];
+        flag = flag || this.mixDriveHotFlag;
         return flag;
     },
 
@@ -195,8 +212,38 @@ var memberData = cc.Class({
         return this.assistFighterID;
     },
 
-    saveMemberPieceData: function (msg) {
-        GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_MEMBER_STORE_RESULT, msg.data);
+    saveMemberPieceCrystal: function (msgId, msg) { //msgId: GameServerProto.GMID_MEMBER_PIECE_CRYSTAL_NTF
+        this.memberPieceCrystal = msg.data.PieceCrystal;
+        GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_MEMBER_PIECE_CRYSTAL_NTF);
+    },
+
+    saveRefreshData: function (msgId, msg) { //msgId: GameServerProto.GMID_STORE_REFRESH_ACK
+        GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_MEMBER_STORE_DATA, msg.data);
+    },
+
+    saveBuyData: function (msgId, msg) { //msgId: GameServerProto.GMID_STORE_BUY_ACK
+        GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_MEMBER_STORE_FRESH, msg.data);
+        GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_MEMBER_PIECE_CHANGE_NTF);
+    },
+
+    saveMemberStoreData: function (msg) { //msgId: GameServerProto.GMID_STORE_DATA_ACK
+        GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_MEMBER_STORE_DATA, msg.data);
+    },
+
+    savePieceBreakData: function (msgId, msg) { //msgId: GameServerProto.GMID_MEMBER_PIECE_BREAK_ACK
+        if (msg.data.ErrCode == GameServerProto.PTERR_SUCCESS) {
+            this.memberPieceCrystal = msg.data.PieceCryStal;
+            GlobalVar.me().bagData.updateItemDataByGMDT_ITEM_CHANGE(msg.data.ItemChange);
+        }
+        GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_MEMBER_PIECE_DATA, msg.data);
+        GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_MEMBER_PIECE_CHANGE_NTF);
+    },
+
+    saveMemberPieceData: function (msg) { //msgId: GameServerProto.GMID_MEMBER_PIECE_DATA_ACK
+        if (msg.data.ErrCode == GameServerProto.PTERR_SUCCESS) {
+            this.memberPieceCrystal = msg.data.PieceCryStal;
+        }
+        GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_MEMBER_PIECE_DATA, msg.data);
     },
 
     saveActiveData: function (msg) {
@@ -208,13 +255,15 @@ var memberData = cc.Class({
     },
 
     saveStandingByData: function (msg) {
-        this.standingbyData.ChuZhanConf.ChuZhanMemberID = msg.data.Conf.ChuZhanMemberID;
-        this.standingbyData.ChuZhanConf.MixMember1ID = msg.data.Conf.MixMember1ID;
-        this.standingbyData.ChuZhanConf.MixMember2ID = msg.data.Conf.MixMember2ID;
-        this.standingbyData.ChuZhanConf.MixMember3ID = msg.data.Conf.MixMember3ID;
-        this.standingbyData.ChuZhanConf.MixMember4ID = msg.data.Conf.MixMember4ID;
-        this.standingbyData.ChuZhanConf.MysteryID = msg.data.Conf.MysteryID;
-        this.updateHotPoint();
+        if (msg.data.ErrCode == 0) {
+            this.standingbyData.ChuZhanConf.ChuZhanMemberID = msg.data.Conf.ChuZhanMemberID;
+            this.standingbyData.ChuZhanConf.MixMember1ID = msg.data.Conf.MixMember1ID;
+            this.standingbyData.ChuZhanConf.MixMember2ID = msg.data.Conf.MixMember2ID;
+            this.standingbyData.ChuZhanConf.MixMember3ID = msg.data.Conf.MixMember3ID;
+            this.standingbyData.ChuZhanConf.MixMember4ID = msg.data.Conf.MixMember4ID;
+            this.standingbyData.ChuZhanConf.MysteryID = msg.data.Conf.MysteryID;
+            this.updateHotPoint();
+        }
         GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_MEMBER_STANDINGBY_NTF, msg);
     },
 
@@ -330,6 +379,48 @@ var memberData = cc.Class({
         }
         return false
     },
+
+    setMixDriveData: function (data) {
+        GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_GET_MIXDRIVE_DATA);
+    },
+
+    setMixDriveLevelNtf: function (data) {
+        this.standingbyData.Level = data.MixLevel;
+        GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_GET_MIXDRIVE_LEVEL_NTF, data);
+    },
+
+    getMixLevel: function () {
+        return this.standingbyData.Level;
+    },
+
+    // idx: 0~3
+    getMixMemberIDByIndex: function (idx) {
+        return this.standingbyData.ChuZhanConf['MixMember' + (idx + 1) + 'ID'];
+    },
+
+    getRestMemberIDList: function () {
+        let list = [];
+        for (let i = 0; i < this.memberData.length; i++) {
+            if (this.memberData[i].MemberID == this.standingbyData.ChuZhanConf.ChuZhanMemberID) continue;
+            if (this.memberData[i].MemberID == this.standingbyData.ChuZhanConf.MixMember1ID) continue;
+            if (this.memberData[i].MemberID == this.standingbyData.ChuZhanConf.MixMember2ID) continue;
+            if (this.memberData[i].MemberID == this.standingbyData.ChuZhanConf.MixMember3ID) continue;
+            if (this.memberData[i].MemberID == this.standingbyData.ChuZhanConf.MixMember4ID) continue;
+            list.push(this.memberData[i].MemberID);
+        }
+        return list;
+    },
+
+    isMemberInMix: function (memberID) {
+        for (let i = 0; i < 4; i++) {
+            if (this.getMixMemberIDByIndex(i) == memberID) return i;
+        }
+        return -1;
+    },
+
+    getMixDriveHotFlag: function () {
+        return this.mixDriveHotFlag;
+    }
 });
 
 module.exports = memberData;

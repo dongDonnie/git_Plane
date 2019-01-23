@@ -2,10 +2,7 @@ const RootBase = require("RootBase");
 const WindowManager = require("windowmgr");
 const GlobalVar = require('globalvar')
 const WndTypeDefine = require("wndtypedefine");
-const EventMsgID = require("eventmsgid");
 const ResMapping = require("resmapping");
-const GameServerProto = require("GameServerProto");
-const ShaderUtils = require("ShaderUtils");
 const GlobalFunc = require('GlobalFunctions');
 const config = require('config');
 
@@ -105,10 +102,7 @@ cc.Class({
     },
 
     registerEvent: function () {
-        // GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_SHOW_MAIL_LIST, this.showMailList, this);
-        // GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_SET_MAIL_READSTATUS, this.setMailReadStatus, this);
-        // GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_GET_NEW_MAIL, this.addNewMail, this);
-        // GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_DELETE_MAIL, this.deleteMail, this);
+        
     },
 
     initEquipQualityUpWnd: function () {
@@ -188,13 +182,6 @@ cc.Class({
         this.addValue.runAction(cc.sequence(cc.spawn(cc.scaleTo(0.2, 1), cc.moveBy(0.2, 0, -95)), cc.callFunc(()=>{
             self.canClose = true;
         })));
-
-        // if (GlobalVar.me().level == 3){
-        //     let self = this;
-        //     this.scheduleOnce(()=>{
-        //         self.onTouchMain();
-        //     }, 0.5);
-        // }
     },
 
     onTouchMain: function () {

@@ -1,7 +1,6 @@
 
 var HandlerBase = require("handlerbase")
 var GlobalVar = require('globalvar')
-var EventMsgID = require("eventmsgid")
 var GameServerProto = require("GameServerProto");
 
 var self = null;
@@ -13,9 +12,6 @@ cc.Class({
     },
 
     initHandler: function (handlerMgr) {
-        // handlerMgr.setKey(GameServerProto.GMID_DAILY_DATA_ACK, GameServerProto.GMID_DAILY_DATA_REQ);
-        // handlerMgr.setKey(GameServerProto.GMID_DAILY_ACTIVE_REWARD_ACK, GameServerProto.GMID_DAILY_ACTIVE_REWARD_REQ);
-        // handlerMgr.setKey(GameServerProto.GMID_DAILY_REWARD_ACK, GameServerProto.GMID_DAILY_REWARD_REQ);
 
         GlobalVar.messageDispatcher.bindMsg(GameServerProto.GMID_DAILY_DATA_ACK, self._recvDailyDataAck, self);
         GlobalVar.messageDispatcher.bindMsg(GameServerProto.GMID_DAILY_ACTIVE_REWARD_ACK, self._recvDailyActiveRewardAck, self);
@@ -83,10 +79,11 @@ cc.Class({
         }
         GlobalVar.me().dailyData.setNewTaskRewardData(msg.data);
     },
-    sendNewTaskRewardReq: function (newTaskID) {
+    sendNewTaskRewardReq: function (newTaskID, flag) {
         newTaskID = newTaskID ? newTaskID : 0
         let msg = {
             NewTaskID: newTaskID,
+            DoubleFlag: flag || 0,
         };
         self.sendMsg(GameServerProto.GMID_NEW_TASK_GET_REWARD_REQ, msg);
     },

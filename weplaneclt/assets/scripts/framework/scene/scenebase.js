@@ -1,6 +1,5 @@
 const GlobalVar = require("globalvar");
 const ResMapping = require("resmapping");
-const weChatAPI = require("weChatAPI");
 const BattleManager = require('BattleManager');
 const BattleDefines = require('BattleDefines');
 const i18n = require('LanguageData');

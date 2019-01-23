@@ -2,8 +2,6 @@ const Defines = require('BattleDefines');
 const GlobalVar = require('globalvar');
 const ResMapping = require("resmapping");
 const PartEntity = require('PartEntity');
-const BattleManager = require('BattleManager');
-const HeroManager = require('HeroManager');
 
 cc.Class({
     extends: PartEntity,

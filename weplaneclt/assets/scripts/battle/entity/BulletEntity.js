@@ -139,6 +139,24 @@ cc.Class({
                         hit.setPosition(self.disappearPos);
                     }
                 });
+            } else if (this.objectType == Defines.ObjectType.OBJ_SELF_BULLET) {
+                GlobalVar.resManager().loadRes(ResMapping.ResType.Prefab, 'cdnRes/battlemodel/prefab/effect/HeroBulletHit', function (prefab) {
+                    if (prefab != null) {
+                        let hit = cc.instantiate(prefab);
+                        BattleManager.getInstance().arenaRivalDisplay.addChild(hit, Defines.Z.HEROBULLETHIT);
+                        hit.runAction(cc.sequence(cc.delayTime(0.4), cc.removeSelf(true)));
+                        hit.setPosition(self.disappearPos);
+                    }
+                });
+            } else if (this.objectType == Defines.ObjectType.OBJ_RIVAL_BULLET) {
+                GlobalVar.resManager().loadRes(ResMapping.ResType.Prefab, 'cdnRes/battlemodel/prefab/effect/HeroBulletHit', function (prefab) {
+                    if (prefab != null) {
+                        let hit = cc.instantiate(prefab);
+                        BattleManager.getInstance().arenaRivalDisplay.addChild(hit, Defines.Z.HEROBULLETHIT);
+                        hit.runAction(cc.sequence(cc.delayTime(0.4), cc.removeSelf(true)));
+                        hit.setPosition(self.disappearPos);
+                    }
+                });
             } else {
                 GlobalVar.resManager().loadRes(ResMapping.ResType.Prefab, 'cdnRes/battlemodel/prefab/effect/MonsterBulletClear', function (prefab) {
                     if (prefab != null) {

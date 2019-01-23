@@ -2,15 +2,11 @@ const RootBase = require("RootBase");
 const WindowManager = require("windowmgr");
 const WndTypeDefine = require("wndtypedefine");
 const GlobalVar = require('globalvar')
-const EventMsgID = require("eventmsgid");
 const GlobalFunc = require('GlobalFunctions')
-const i18n = require('LanguageData');
-const weChatAPI = require("weChatAPI");
 const CommonWnd = require("CommonWnd");
 
-const MODE_GET_BUY_ITEM = 0;
 const MODE_GET_DRAW_ITEM = 1;
-const MODE_GET_NEW_PLANE_OR_GUAZAI = 2;
+
 cc.Class({
     extends: RootBase,
 
@@ -35,17 +31,20 @@ cc.Class({
         openModel: {
             default: null,
             type: cc.Node
+        },
+        btnContinue: {
+            default: null,
+            type: cc.Node
         }
     },
 
     onLoad: function () {
         this._super();
-        i18n.init('zh');
         this.typeName = WndTypeDefine.WindowType.E_DT_NORMAL_LEVEL_UP_WND;
         
 
         this.spriteBackLight.node.runAction(cc.repeatForever(cc.rotateBy(8, 360)));
-        this.node.getChildByName("spriteContinue").runAction(cc.repeatForever(cc.sequence(cc.fadeOut(0.7),cc.fadeIn(0.7))))
+        this.btnContinue.getChildByName("spriteContinue").runAction(cc.repeatForever(cc.sequence(cc.fadeOut(0.7),cc.fadeIn(0.7))))
         this.animeStartParam(0, 0);
     },
 
@@ -150,13 +149,26 @@ cc.Class({
                 // }
                 WindowManager.getInstance().resumeView();
             }, false);
+            this.getNodeByName('btnNode').active = false;
+            this.btnContinue.active = false;
         } else if (name == "Enter") {
             this._super("Enter");
-            let spriteTip = this.node.getChildByName("spriteContinue");
-            spriteTip.active = true;
+            var self = this;
             GlobalVar.me().setLevelUpFlag();
             this.openNewFunction();
-            cc.find('Canvas/UINode/UIMain').getComponent('UIMain').onGuideNeed();
+            cc.find('Canvas/UINode/UIMain').getComponent('UIMain').showDeskIcon();
+
+            if (GlobalVar.getShareSwitch() && GlobalVar.me().getLevel() > 5) {
+                this.btnContinue.active = false;
+                this.getNodeByName('btnNode').active = true;
+                this.getNodeByName('btnRecvText').active = false;
+                setTimeout(() => {
+                    self.getNodeByName('btnRecvText').active = true;
+                }, 1000);
+            } else {
+                this.btnContinue.active = true;
+                this.getNodeByName('btnNode').active = false;
+            }
         }
     },
 
@@ -169,8 +181,9 @@ cc.Class({
                 systems.push(tblSystem[key]);
             }
         }
+        let systemNum = 0;
         for (let i = 0; i < systems.length; i++){
-            if (level >= systems[i].wOpenLevel && this.levelOld < systems[i].wOpenLevel) {
+            if (level >= systems[i].wOpenLevel && this.levelOld < systems[i].wOpenLevel && systemNum < 2) {
                 let model = cc.instantiate(this.openModel);
                 model.active = true;
                 model.getChildByName('labelOpenTecName').getComponent(cc.Label).string = systems[i].strName+' 开启';
@@ -178,6 +191,7 @@ cc.Class({
                 model.getChildByName('spriteOpenIcon').active = true;
                 model.getChildByName('btnGo').active = false;
                 this.nodeOpenSystem.addChild(model);
+                systemNum++;
             }
         }
 
@@ -196,24 +210,60 @@ cc.Class({
         // }
     },
 
+    onBtnDoubleReward: function () {
+        let platformApi = GlobalVar.getPlatformApi();
+        let self = this;
+        this.watchVideo = false;
+        if (platformApi) {
+            platformApi.showRewardedVideoAd(236, function () {
+                GlobalVar.handlerManager().meHandler.sendDoubleReward(self.levelOld);
+                self.watchVideo = true;
+                self.btnContinue.active = true;
+                self.getNodeByName('btnNode').active = false;
+            }, function () {
+                platformApi.shareNormal(136, function () {
+                    GlobalVar.handlerManager().meHandler.sendDoubleReward(self.levelOld);
+                    self.watchVideo = true;
+                    self.btnContinue.active = true;
+                    self.getNodeByName('btnNode').active = false;
+                });
+            })
+        } else {
+            GlobalVar.handlerManager().meHandler.sendDoubleReward(self.levelOld);
+            this.watchVideo = true;
+            this.btnContinue.active = true;
+            this.getNodeByName('btnNode').active = false;
+        }
+    },
+
     goToChapterView: function () {
         CommonWnd.showQuestList();
     },
 
     showBannnerCallback: function (bannerHeight) {
-        let spriteTip = this.node.getChildByName("spriteContinue");
+        let spriteTip = this.btnContinue.getChildByName("spriteContinue");
         if (cc.sys.platform == cc.sys.WECHAT_GAME){
             let winHeight = cc.winSize.height;
             let screenHeight = wx.getSystemInfoSync().screenHeight;
-            spriteTip.y = -(winHeight/2 - bannerHeight / screenHeight * winHeight);
-            spriteTip.active = true;
+            spriteTip.y = -(winHeight / 2 - bannerHeight / screenHeight * winHeight);
+            cc.log('btnNodeY', -(winHeight / 2 - bannerHeight / screenHeight * winHeight));
+            this.getNodeByName('btnNode').y = -(winHeight / 2 - bannerHeight / screenHeight * winHeight);
         }else{
-            spriteTip.y = -300;
-            spriteTip.active = true;
+            spriteTip.y = -330;
+            this.getNodeByName('btnNode').y = -330;
         }
     },
 
     enter: function (isRefresh) {
+        let self = this;
+        if (GlobalVar.getShareSwitch() && GlobalVar.me().getLevel() > 5 && !this.watchVideo) {
+            this.btnContinue.active = false;
+            this.getNodeByName('btnNode').active = true;
+            this.getNodeByName('btnRecvText').active = false;
+            setTimeout(() => {
+                self.getNodeByName('btnRecvText').active = true;
+            }, 1000);
+        }
         if (isRefresh) {
             this._super(true);
         } else {
@@ -227,6 +277,8 @@ cc.Class({
         } else {
             this._super(false);
         }
+        // this.getNodeByName('btnNode').active = false;
+        // this.btnContinue.active = false;
     },
 
     onBtnRecv: function () {

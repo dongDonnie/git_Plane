@@ -1,5 +1,3 @@
-const GlobalVar = require('globalvar')
-const ResMapping = require('resmapping')
 const Defines = require('BattleDefines')
 const BattleEndlessMode = require('BattleEndlessMode')
 const BattleCampaignMode = require('BattleCampaignMode')
@@ -87,22 +85,22 @@ var ScenarioManager = cc.Class({
 
     initScenario: function (mapName) {
 
-        if (this.battleManager.isEndlessFlag) {
+        if (!!this.battleManager.isEndlessFlag) {
             this.battleEndlessMode = new BattleEndlessMode();
             this.battleEndlessMode.init();
         }
 
-        if (this.battleManager.isShowFlag) {
+        if (!!this.battleManager.isShowFlag) {
             this.battleCampaignMode = new BattleCampaignMode();
             this.battleCampaignMode.init(mapName);
         }
 
-        if (this.battleManager.isCampaignFlag) {
+        if (!!this.battleManager.isCampaignFlag) {
             this.battleCampaignMode = new BattleCampaignMode();
             this.battleCampaignMode.init(mapName);
         }
 
-        if (this.battleManager.isArenaFlag) {
+        if (!!this.battleManager.isArenaFlag) {
             this.battleArenaMode = new BattleArenaMode();
             this.battleArenaMode.init();
         }
@@ -120,6 +118,13 @@ var ScenarioManager = cc.Class({
         if (this.battleManager.isArenaFlag && !!this.battleArenaMode) {
             this.battleArenaMode.primeBullet(bullet);
         }
+    },
+
+    getArenaPlane:function(side){
+        if (this.battleManager.isArenaFlag && !!this.battleArenaMode) {
+            return this.battleArenaMode.getPlane(side);
+        }
+        return null;
     },
 
     kill: function (entity) {

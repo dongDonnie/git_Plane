@@ -2,7 +2,6 @@ const WndTypeDefine = require("wndtypedefine");
 const RootBase = require("RootBase");
 const GlobalVar = require('globalvar')
 const EventMsgID = require("eventmsgid");
-const GlobalFunc = require('GlobalFunctions');
 const i18n = require('LanguageData');
 const CommonWnd = require("CommonWnd");
 const ButtonObject = require("ButtonObject");
@@ -51,7 +50,6 @@ cc.Class({
 
     onLoad: function () {
         this._super();
-        i18n.init('zh');
         this.typeName = WndTypeDefine.WindowType.E_DT_NORMAL_BUY_SP_WND;
         this.animeStartParam(0, 0);
         this.shareCallBack = null;

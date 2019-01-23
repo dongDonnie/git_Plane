@@ -2,9 +2,7 @@ const GlobalVar = require("globalvar");
 const BattleDefines = require('BattleDefines');
 const SceneDefines = require("scenedefines");
 const SceneBase = require("scenebase");
-const ResMapping = require("resmapping");
 const BattleManager = require('BattleManager');
-const weChatAPI = require("weChatAPI");
 
 var BattleScene = cc.Class({
     extends: SceneBase,
@@ -23,7 +21,7 @@ var BattleScene = cc.Class({
         this.battleManager = BattleManager.getInstance();
         this.uiNode = cc.find("Canvas/UINode");
         this.openScene();
-        if (this.battleManager.isArenaFlag) {
+        if (!!this.battleManager.isArenaFlag) {
             this.battleManager.startArena(this.node, cc.find('Canvas/ArenaSelfNode'), cc.find('Canvas/ArenaRivalNode'), cc.find('Canvas/GameNode'));
         } else {
             this.battleManager.start(this.node, cc.find('Canvas/GameNode'));
@@ -35,12 +33,21 @@ var BattleScene = cc.Class({
     },
 
     start: function () {
-        if (this.battleManager.isEditorFlag) {
-            this.loadPrefab("UIBattleEditor")
+        if (!!this.battleManager.isArenaFlag) {
+            var self = this;
+            this.loadPrefab("UIBattleArena", function () {
+                self.uiNode.getChildByName('UIBattle').active = false;
+            });
+            let asNode = cc.find('Canvas/ArenaSelfNode');
+            let arNode = cc.find('Canvas/ArenaRivalNode');
+            let pos = asNode.getPosition();
+            arNode.width = asNode.width;
+            arNode.height = asNode.height;
+            arNode.angle = 180;
+            arNode.setPosition(-pos.x, -pos.y);
         } else {
             //this.loadPrefab("UIBattle");
         }
-
     },
 
     onDestroy() {
@@ -48,8 +55,15 @@ var BattleScene = cc.Class({
     },
 
     update: function (dt) {
-        if (this.battleManager.isArenaFlag) {
-
+        if (!!this.battleManager.isArenaFlag) {
+            this.battleManager.updateArena(dt);
+            if (this.battleManager.gameState == BattleDefines.GameResult.PREPARE) {
+                this.showCountWnd();
+                this.battleManager.gameState = BattleDefines.GameResult.COUNT;
+            } else if (this.battleManager.gameState == BattleDefines.GameResult.END) {
+                this.showArenaEndWnd();
+                this.battleManager.gameState = BattleDefines.GameResult.NONE;
+            }
         } else {
             this.battleManager.update(dt);
             if (this.battleManager.gameState == BattleDefines.GameResult.INTERRUPT) {
@@ -113,5 +127,9 @@ var BattleScene = cc.Class({
 
     showGetAssistWnd() {
         this.loadPrefab("UIBattleAssist");
+    },
+
+    showArenaEndWnd() {
+        this.loadPrefab("UIBattleArenaEnd");
     }
 });

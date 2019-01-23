@@ -2,6 +2,8 @@ const RootBase = require("RootBase");
 const WndTypeDefine = require("wndtypedefine");
 const GlobalVar = require("globalvar");
 const GameServerProto = require("GameServerProto");
+const EventMsgID = require("eventmsgid");
+const WindowManager = require("windowmgr");
 
 cc.Class({
     extends: RootBase,
@@ -28,17 +30,11 @@ cc.Class({
     start: function () {
         this.rewardNum.string = '+' + this._rewardNum;
         this._taskData = GlobalVar.me().adData.getTaskData();
-        if (this._taskData === null) {
-            GlobalVar.me().adData.pullADTaskInfo();
-        }
     },
 
     animeStartParam: function (paramScale, paramOpacity) {
         this.node.setScale(paramScale);
         this.node.opacity = paramOpacity;
-        if (paramOpacity >= 255) {
-            this.adTaskScroll.loopScroll.releaseViewItems();
-        }
     },
 
     registerEvent: function () {
@@ -51,8 +47,18 @@ cc.Class({
     },
 
     refresh: function () {
-        if (this._taskData.length <= 0) return;
-        
+        if (!this._taskData) return;
+        let self = this;
+        this.adTaskScroll.loopScroll.releaseViewItems();
+        this.adTaskScroll.loopScroll.setTotalNum(Math.ceil(self._taskData.length));
+        this.adTaskScroll.loopScroll.setCreateModel(self.adTaskPrefab);
+        this.adTaskScroll.loopScroll.registerUpdateItemFunc(function (cell, index) {
+            cell.getComponent('AdTaskObject').show(self._taskData[index]);
+        });
+        this.adTaskScroll.loopScroll.registerCompleteFunc(function () {
+
+        });
+        this.adTaskScroll.loopScroll.resetView();
     },
 
     animePlayCallBack: function (name) {
@@ -63,6 +69,7 @@ cc.Class({
         } else if (name == "Enter") {
             this._super("Enter");
             this.registerEvent();
+            this.refresh();
         }
     },
 

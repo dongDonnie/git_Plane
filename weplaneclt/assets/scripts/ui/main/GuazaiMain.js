@@ -1,10 +1,8 @@
 const GlobalVar = require("globalvar");
 const EventMsgID = require("eventmsgid");
-const WindowManager = require("windowmgr");
 const RootBase = require("RootBase");
 const WndTypeDefine = require("wndtypedefine");
 const CommonWnd = require("CommonWnd");
-const i18n = require('LanguageData');
 const GlobalFunc = require('GlobalFunctions');
 const GameServerProto = require("GameServerProto");
 const BattleManager = require('BattleManager');
@@ -21,7 +19,6 @@ cc.Class({
 
     onLoad: function () {
         this._super();
-        i18n.init('zh');
         this.dirty = true;
         this.typeName = WndTypeDefine.WindowType.E_DT_GUAZAIMAIN_WND;
 
@@ -42,7 +39,7 @@ cc.Class({
 
     },
 
-    fixView: function(){
+    fixView: function () {
         let bottomWidget = this.node.getChildByName("nodeBottom").getComponent(cc.Widget);
         bottomWidget.bottom += 25;
         bottomWidget.updateAlignment();
@@ -54,7 +51,7 @@ cc.Class({
     animeStartParam(num) {
         this.node.opacity = num;
 
-        if (num == 0 || num == 255){
+        if (num == 0 || num == 255) {
             this.getNodeByName("nodeTouzhi").active = false;
             this.getNodeByName("nodeFeidan").active = false;
             this.getNodeByName("nodeliaoji").active = false;
@@ -79,7 +76,7 @@ cc.Class({
             this.dirty = true;
             this.deleteMode = false;
             BattleManager.getInstance().quitOutSide();
-            BattleManager.getInstance().startOutside(this.getNodeByName('planeNode'),GlobalVar.me().memberData.getStandingByFighterID(),true);
+            BattleManager.getInstance().startOutside(this.getNodeByName('planeNode'), GlobalVar.me().memberData.getStandingByFighterID(), true);
             GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_GUAZAI_DIRTY_NTF, this.onGuazaiDirtyCallback, this);
             this.getNodeByName("nodeTouzhi").active = true;
             this.getNodeByName("nodeFeidan").active = true;
@@ -114,15 +111,15 @@ cc.Class({
         if (!this.dirty)
             return;
         this.dirty = false;
-        
+
         BattleManager.getInstance().quitOutSide();
-        BattleManager.getInstance().startOutside(this.getNodeByName('planeNode'),GlobalVar.me().memberData.getStandingByFighterID(),true);
-        
+        BattleManager.getInstance().startOutside(this.getNodeByName('planeNode'), GlobalVar.me().memberData.getStandingByFighterID(), true);
+
         let guazaiWearFlag = GlobalVar.me().guazaiData.wearHotFlag;
         let guazailevelUpHotFlag = GlobalVar.me().guazaiData.levelUpHotFlag;
         let guazaiQualityUpHotFlag = GlobalVar.me().guazaiData.qualityUpHotFlag;
-        for (let i = 1; i<=4; i++) {
-        // for (let i in GlobalVar.me().guazaiData.guazaiWear) {
+        for (let i = 1; i <= 4; i++) {
+            // for (let i in GlobalVar.me().guazaiData.guazaiWear) {
             let node = null;
             switch (i) {
                 case 1:
@@ -143,24 +140,24 @@ cc.Class({
             if (node) {
                 let guazai = GlobalVar.me().guazaiData.guazaiWear[i];
                 let item = null;
-                if (guazai && node.children.length == 0){
+                if (guazai && node.children.length == 0) {
                     item = cc.instantiate(this.itemObject);
                     item.getComponent("ItemObject").updateItem(guazai.ItemID, -1, guazai.GuaZai.Level);
                     node.addChild(item);
-                }else if (guazai) {
+                } else if (guazai) {
                     item = node.children[0];
                     item.getComponent("ItemObject").updateItem(guazai.ItemID, -1, guazai.GuaZai.Level);
                 }
-                if (guazaiWearFlag[parseInt(i) - 1]){
+                if (guazaiWearFlag[parseInt(i) - 1]) {
                     node.parent.getChildByName("spriteHot").active = true;
-                }else{
+                } else {
                     node.parent.getChildByName("spriteHot").active = false;
-                    if (guazaiQualityUpHotFlag[i-1] || guazailevelUpHotFlag[i-1]){
-                        if (item){
+                    if (guazaiQualityUpHotFlag[i - 1] || guazailevelUpHotFlag[i - 1]) {
+                        if (item) {
                             item.getComponent("ItemObject").setSpriteHotPointData(0);
                         }
-                    }else{
-                        if (item){
+                    } else {
+                        if (item) {
                             item.getComponent("ItemObject").setSpriteHotPointData(-1);
                         }
                     }
@@ -168,6 +165,12 @@ cc.Class({
             }
         }
         this.setGuazaiPropsPanel();
+        this.refreshGuazaiChipHot();
+    },
+
+    refreshGuazaiChipHot: function () {
+        let node = cc.find('nodeTop/btnoChip/spriteHot', this.node);
+        node.active = GlobalVar.me().guazaiData.getComposeHotPoint();
     },
 
     onGuazaiBtnTouchedCallback: function (target, data) {
@@ -200,6 +203,10 @@ cc.Class({
 
     onGuazaiSmelterTouchedCallback: function () {
         CommonWnd.showGuazaiSmelter();
+    },
+
+    onGuazaiChipTouchedCallback: function () {
+        CommonWnd.showGuazaiChip();
     },
 
     setGuazaiPropsPanel: function () {
@@ -238,7 +245,7 @@ cc.Class({
         this.animePlay(0);
     },
 
-    onGuazaiDirtyCallback: function (ack) {        
+    onGuazaiDirtyCallback: function (ack) {
         this.dirty = true;
     },
 });

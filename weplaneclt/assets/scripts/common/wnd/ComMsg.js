@@ -1,18 +1,10 @@
 const GlobalVar = require("globalvar");
 const ResMapping = require("resmapping");
 const UIBase = require("uibase");
-const WndTypeDefine = require("wndtypedefine");
-const CommonDefine = require("define");
-const GameServerProto = require("GameServerProto");
-
-
-const MSG_WND_PUSH_CP_DELAY = 0.4;
 
 var self = null;
 var pushMsgNodeArray = [];
 var pushItemNodeArray = [];
-var deltaCP = 0;
-var pushCPDelay = 0;
 
 var ComMsg = cc.Class({
     extends: UIBase,

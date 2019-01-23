@@ -3,12 +3,9 @@ const WindowManager = require("windowmgr");
 const WndTypeDefine = require("wndtypedefine");
 const RootBase = require("RootBase");
 const i18n = require('LanguageData');
-const GlobalFunc = require('GlobalFunctions');
+
 const EventMsgID = require("eventmsgid");
-const weChatAPI = require("weChatAPI");
 const GameServerProto = require("GameServerProto");
-const CommonWnd = require("CommonWnd");
-const StoreageData = require("storagedata");
 
 cc.Class({
     extends: RootBase,
@@ -122,11 +119,6 @@ cc.Class({
                         GlobalVar.handlerManager().drawHandler.sendTreasureTimeReduceReq();
                     })
                 });
-                // let self = this;
-                // self.nodeBlock.enabled = true;
-                // setTimeout(function () {
-                //     self.nodeBlock.enabled = false;
-                // }, 1500);
             }else if (GlobalVar.configGMSwitch()){
                 GlobalVar.handlerManager().drawHandler.sendTreasureTimeReduceReq();
             }

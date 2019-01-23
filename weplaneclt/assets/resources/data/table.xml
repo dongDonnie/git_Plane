@@ -474,6 +474,7 @@
         <col name="RelationID" type="UINT16" vector="true"/>
         <col name="Scale" type="double"/>
         <col name="ShareDropPackage" type="UINT16"/>
+        <col name="TestPlayUp" type="double"/>
         <col name="Description" type="string"/>
     </table>
 
@@ -555,7 +556,7 @@
         <col name="Comment" type="comment" />
     </table>
 
-    <table name="TblMix" file="data/mix.tbl" key="ID" serveronly="true">
+    <table name="TblMix" file="data/mix.tbl" key="ID">
         <col name="ID" type="UINT8"/>
         <col name="Name" type="string"/>
         <col name="LevelReq" type="UINT16"/>
@@ -563,19 +564,7 @@
         <col name="Desc" type="comment"/>
     </table>
 
-    <table name="TblMixLevel" file="data/mixlevel.tbl" key="Level" serveronly="true">
-        <col name="Level" type="UINT8"/>
-        <col name="LevelName" type="string"/>
-        <col name="UpType" type="UINT8"/>
-        <col name="NeedItems" type="TblItemCount" vector="true"/>
-        <col name="NeedGold" type="INT32"/>
-        <col name="NeedDiamond" type="INT32"/>
-        <col name="Result" type="UINT16"/>
-        <col name="DisplayResult" type="UINT16"/>
-        <col name="Desc" type="comment"/>
-    </table>
-
-    <table name="TblMixMaster" file="data/mixmaster.tbl" key="Level" serveronly="true">
+    <table name="TblMixMaster" file="data/mixmaster.tbl" key="Level">
         <col name="Level" type="UINT8"/>
         <col name="CombatConvert" type="INT32"/>
         <col name="Mix1CombatReq" type="INT32"/>
@@ -584,7 +573,7 @@
         <col name="Mix4CombatReq" type="INT32"/>
     </table>
 
-    <table name="TblMixProp" file="data/mixprop.tbl" key="MixID" serveronly="true">
+    <table name="TblMixProp" file="data/mixprop.tbl" key="MixID">
         <col name="MixID" type="UINT8"/>
         <col name="PropID" type="UINT16"/>
         <col name="PropPerCombat" type="double"/>
@@ -902,6 +891,7 @@
         <col name="MaxLevel" type="UINT16"/>
         <col name="PackageID" type="UINT16"/>
         <col name="RefreshType" type="UINT16"/>
+        <col name="FreeBuyLimit" type="UINT8"/>
         <col name="Description" type="string"/>
     </table>
     
@@ -1206,12 +1196,11 @@
         <col name="RobotName" type="string" />
     </table>
 
-    <table name="TblArenaReward" file="data/arenareward.tbl" key="ID" serveronly="true">
+    <table name="TblArenaReward" file="data/arenareward.tbl" key="ID">
         <col name="ID" type="UINT8"/>
         <col name="MinRank" type="UINT32"/>
         <col name="MaxRank" type="UINT32"/>
         <col name="DayReward" type="TblItemCount" vector="true" />
-        <col name="ExcRank" type="double"/>
     </table>
 
     <table name="TblArenaWinLose" file="data/arenawinlose.tbl" key="ID" serveronly="true">

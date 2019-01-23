@@ -5,7 +5,6 @@
 const GlobalVar = require('globalvar');
 const EventMsgID = require("eventmsgid");
 const GameServerProto = require("GameServerProto");
-const StoreageData = require("storagedata");
 
 
 var self = null;
@@ -14,12 +13,12 @@ var shareData = cc.Class({
     properties: {
         data: null,
     },
-    ctor: function() {
+    ctor: function () {
         self = this;
         self.token = "";
         self.data = {};
     },
-    setData: function(data){
+    setData: function (data) {
         self.data = data;
         // GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_GETDAILY_DATA, data.ErrCode);
         // self.FuliShareRecommand = StoreageData.getFuliShareState("recommand");
@@ -49,9 +48,15 @@ var shareData = cc.Class({
     getSuperRewardState: function () {
         return self.data.SuperFuli;
     },
+    getInviteGiftBagState: function () {
+        return self.data.InviteGiftBag;
+    },
+    getFreeJinHuaCount: function () {
+        return self.data.JinHuaCount;
+    },
 
     setFreeGoldCount: function (data) {
-        if (data.ErrCode == GameServerProto.PTERR_SUCCESS){
+        if (data.ErrCode == GameServerProto.PTERR_SUCCESS) {
             self.data.FreeGoldCount = data.FreeGoldCount;
             console.log("setGold", data.Gold);
             GlobalVar.me().setGold(data.Gold);
@@ -60,7 +65,7 @@ var shareData = cc.Class({
     },
 
     setFreeDiamondCount: function (data) {
-        if (data.ErrCode == GameServerProto.PTERR_SUCCESS){
+        if (data.ErrCode == GameServerProto.PTERR_SUCCESS) {
             self.data.FreeDiamondCount = data.FreeDiamondCount;
             console.log("setDiamond", data.Diamond);
             GlobalVar.me().setDiamond(data.Diamond);
@@ -70,7 +75,7 @@ var shareData = cc.Class({
     },
 
     setRecommandData: function (data) {
-        if (data.ErrCode == GameServerProto.PTERR_SUCCESS){
+        if (data.ErrCode == GameServerProto.PTERR_SUCCESS) {
             self.data.FuliRecommend = data.FuliShareRecommand;
             // StoreageData.setFuliShareState("recommand");
         }
@@ -78,7 +83,7 @@ var shareData = cc.Class({
     },
 
     setMemberTestPlayData: function (data) {
-        if (data.ErrCode == GameServerProto.PTERR_SUCCESS){
+        if (data.ErrCode == GameServerProto.PTERR_SUCCESS) {
             self.data.FuliMemberTestPlay = data.FuliShareMemberTestPlay;
             // StoreageData.setFuliShareState("shareMemberTestPlay");
         }
@@ -86,7 +91,7 @@ var shareData = cc.Class({
     },
 
     setShareDailyData: function (data) {
-        if (data.ErrCode == GameServerProto.PTERR_SUCCESS){
+        if (data.ErrCode == GameServerProto.PTERR_SUCCESS) {
             self.data.FuliDaily = data.FuliShareDaily;
             // StoreageData.setFuliShareState("shareDaily");
         }
@@ -94,11 +99,25 @@ var shareData = cc.Class({
     },
 
     setSuperRewardData: function (data) {
-        if (data.ErrCode == GameServerProto.PTERR_SUCCESS){
+        if (data.ErrCode == GameServerProto.PTERR_SUCCESS) {
             self.data.SuperFuli = data.SuperFuli;
         }
         GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_GET_SUPER_REWARD_DATA, data);
     },
+
+    setInviteGiftBagData: function (data) {
+        if (data.ErrCode == GameServerProto.PTERR_SUCCESS) {
+            self.data.InviteGiftBag = data.InviteGiftBag;
+        }
+        GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_GET_INVITE_REWARD_DATA, data);
+    },
+
+    setGuazaiJinHuaData: function (data) {
+        if (data.ErrCode == GameServerProto.PTERR_SUCCESS) {
+            self.data.JinHuaCount = data.JinHuaCount;
+        }
+        GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_GET_JINHUA_REWARD_DATA, data);
+    }
 });
 
 module.exports = shareData;

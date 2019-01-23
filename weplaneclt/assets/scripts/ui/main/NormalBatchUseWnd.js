@@ -3,9 +3,6 @@ const RootBase = require("RootBase");
 const WindowManager = require("windowmgr");
 const GlobalVar = require('globalvar')
 const WndTypeDefine = require("wndtypedefine");
-const EventMsgID = require("eventmsgid");
-const GameServerProto = require("GameServerProto");
-const weChatAPI = require("weChatAPI");
 
 cc.Class({
     extends: RootBase,

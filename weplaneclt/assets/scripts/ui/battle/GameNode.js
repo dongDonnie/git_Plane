@@ -1,5 +1,3 @@
-const BattleManager = require('BattleManager')
-const Defines = require('BattleDefines')
 const HeroManager = require('HeroManager')
 
 cc.Class({

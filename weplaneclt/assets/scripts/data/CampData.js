@@ -3,13 +3,6 @@ const GlobalVar = require('globalvar');
 const EventMsgID = require("eventmsgid");
 const GameServerProto= require("GameServerProto");
 
-const STARSTATE_START_INDEX = 0;
-const STARSTATE_LENGTH = 3;
-const BUYTIME_START_INDEX = 3;
-const BUYTIME_LENGTH = 4;
-const PLAYSTATE_START_INDEX = 7;
-const PLAYSTATE_LENGTH = 1;
-
 var self = null;
 var campData = cc.Class({
 

@@ -30,7 +30,7 @@ var BagData = cc.Class({
         for (let i = 0; i< this.itemData.Items.length; i++){
             this.canUseItemHotFlag[i] = false;
             let item = this.itemData.Items[i];
-            if (item.Type == GameServerProto.PT_ITEMTYPE_CHEST || item.Type == GameServerProto.PT_ITEMTYPE_DROPPACKAGE){
+            if (item.Type == GameServerProto.PT_ITEMTYPE_CHEST || item.Type == GameServerProto.PT_ITEMTYPE_DROPPACKAGE || item.Type == GameServerProto.PT_ITEMTYPE_SPECIAL_DROPPACKAGE){
                 this.canUseItemHotFlag[i] = true;
             }
             this.totalHotFlag = this.totalHotFlag || this.canUseItemHotFlag[i];

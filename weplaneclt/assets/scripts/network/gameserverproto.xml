@@ -29,7 +29,7 @@
         <define name="PT_CONST_1000"            value="1000" />
         <define name="PT_MAX_INT32"             value="2147483647" />
 
-        <define name="PT_SERVER_VERSION"        value="103" />
+        <define name="PT_SERVER_VERSION"        value="110" />
 
         <define name="PT_SVRTYPE_ALL"           value="0" />
         <define name="PT_SVRTYPE_GAMESERVER"    value="1" />
@@ -63,6 +63,7 @@
         <define name="PT_GENDER_MALE"           value="1" />
         <define name="PT_GENDER_FEMALE"         value="0" />
 
+        <define name="PT_MONEY_FREE"            value="0" />
         <define name="PT_MONEY_GOLD"            value="1" />
         <define name="PT_MONEY_DIAMOND"         value="2" />
         <define name="PT_MONEY_ZIZUAN"          value="3" />
@@ -314,6 +315,10 @@
         <define name="PTERR_FULI_GC_SUPERREDUCE_COUNTLIMIT" value="684"/>
         <define name="PTERR_FULI_GC_SUPERINDUCE_VECITEMGET_EMPTY" value="685"/>
         <define name="PTERR_FULI_GC_OFFICIALACCOUNT_DRAINGET_ALREADY_GET" value="686"/>
+        <define name="PTERR_FULI_SHARE_INVITE_GIFTBAG_ALREAGY_GET" value="687" />
+        <define name="PTERR_FULI_SHARE_INVITE_TICKET_NOT_MATCH" value="688" />
+        <define name="PTERR_FULI_SHARE_INVITE_COUNT_LACK" value="689"/>
+        <define name="PTERR_FULI_SHARE_GUAZAI_JINHUA_COUNT_LIMIT" value="690"/>
 
         <define name="PTERR_MAIL_NO_ATTACHMENT" value="931" />
         <define name="PTERR_MAIL_ATTACHMENT_ALREADYGOT" value="932" />
@@ -767,6 +772,11 @@
         <define name="PTPARAM_FULI_GC_SUPER_INDUCE_MAX_COUNT" value="317" />
         <define name="PTPARAM_FULI_GC_OFFICIALACCOUNTDRAINGET_DROPPACKAGE" value="318"/>
         <define name="PTPARAM_ARENA_CHALLENGE_COUNT_FREE_BUY_LIMIT" value="319" />
+        <define name="PTPARAM_FULI_SHARE_INVITE_DROPPACKAGE" value="320"/>
+        <define name="PTPARAM_FULI_SHARE_INVITE_COUNT_LIMIT" value="321"/>
+        <define name="PTPARAM_FULI_GC_HEZI_DROPPACKAGE" value="322"/>
+        <define name="PTPARAM_FULI_SHARE_GUAZAI_JINHUA_DROPPACKAGE" value="323"/>
+        <define name="PTPARAM_FULI_SHARE_GUAZAI_JINHUA_LIMIT" value="324"/>
       
         <!-- param info -->
         <!-- ###########################################################################################################################-->
@@ -932,6 +942,7 @@
         <define name="PT_ITEMTYPE_ENERGY_SCROLL" value="32" />
         <define name="PT_ITEMTYPE_MEMBER_EQUIP_QH" value="40" />
         <define name="PT_ITEMTYPE_MATERIAL_OTHER" value="41" />
+        <define name="PT_ITEMTYPE_SPECIAL_DROPPACKAGE" value="49" />
         <define name="PT_ITEMTYPE_CHEST"        value="50" />
         <define name="PT_ITEMTYPE_DROPPACKAGE"  value="51" />
         <define name="PT_ITEMTYPE_SELECT_CHEST" value="52" />
@@ -1505,7 +1516,7 @@
 
 
         <define name="PT_RANK_MEMBER_MAX"   value="999" />
-        <define name="PT_RANK_MEMBER_COUNT" value="10" />
+        <define name="PT_RANK_MEMBER_COUNT" value="250" />
         <define name="PT_AMS_RANK_MEMBER_COUNT" value="50" />
         
         <define name="PT_RANK_DIANZAN_MAX" value="50" />
@@ -2139,12 +2150,6 @@
             <item name="State" type="UINT8"/>
         </type>
 
-        <type name="GMDT_STORE">
-            <item name="RefreshTimes" type="UINT16"/>
-            <item name="Expires" type="UINT32"/>
-            <item name="Item" type="vector" member_type="GMDT_STORE_ITEM" max_count="PT_STORE_ITEM_MAX"/>
-        </type>
-
         <type name="GMDT_GUILD_LIST_MEMBER">
             <item name="RoleID" type="UINT64"/>
             <item name="RoleName" type="string" max_count="PT_MAX_ROLENAME_LEN"/>
@@ -2368,12 +2373,15 @@
             <item name="FuliRecommend" type="UINT8"/>
             <item name="FuliMemberTestPlay" type="UINT8"/>
             <item name="SuperFuli" type="UINT8" />
+            <item name="InviteGiftBag" type="UINT8"/>
+            <item name="JinHuaCount" type="UINT8"/>
         </type>
       
         <type name="GMDT_FULI_GC_BAG">
             <item name="TestPlayReward" type="vector" member_type="UINT32" max_count="PT_FULI_GC_TESTPLAY_REWARD_MAX" />
             <item name="SuperInduceCount" type="UINT8" />
             <item name="OfficialAccountDraingetFlag" type="UINT8" />
+            <item name="HeZiReward" type="UINT8"/>
         </type>
         
         <type name="GMDT_PLAYER">
@@ -2794,22 +2802,6 @@
         <type name="GMPKG_SAVE_CHUZHAN_CONF_ACK">
             <item name="ErrCode" type="INT32"/>
             <item name="Conf" type="GMDT_CHUZHAN_CONF" select="ErrCode" id="PTERR_SUCCESS"/>
-        </type>
-
-        <type name="GMPKG_CHUZHAN_MIX_LEVELUP_REQ">
-            <item name="Reserved" type="UINT8"/>
-        </type>
-
-        <type name="GMDT_CHUZHAN_MIX_LEVELUP_OK">
-            <item name="Level" type="UINT8"/>
-            <item name="Gold" type="INT32"/>
-            <item name="Diamond" type="INT32"/>
-            <item name="ItemChange" type="GMDT_ITEM_CHANGE" />
-        </type>
-
-        <type name="GMPKG_CHUZHAN_MIX_LEVELUP_ACK">
-            <item name="ErrCode" type="INT32"/>
-            <item name="OK" type="GMDT_CHUZHAN_MIX_LEVELUP_OK" select="ErrCode" id="PTERR_SUCCESS"/>
         </type>
 
         <type name="GMPKG_CHUZHAN_MIX_LEVEL_NTF">
@@ -5149,8 +5141,28 @@
             <item name="FuliShareMemberTestPlay" type="UINT8"/>
             <item name="Item" type="vector" member_type="GMDT_ITEM_COUNT" max_count="PT_BAG_MAX_SIZE"/>
         </type>
-     
-        <type name="GMPKG_FULI_GC_TESTPLAY_REWARD_REQ">
+       
+        <type name="GMPKG_FULI_SHARE_INVITE_GIFTBAG_REQ">
+            <item name="Ticket" type="string" max_count="PT_CONST_1000"/>
+        </type>
+
+        <type name="GMPKG_FULI_SHARE_INVITE_GIFTBAG_ACK">
+            <item name="ErrCode" type="INT32"/>
+            <item name="InviteGiftBag" type="UINT8" />
+            <item name="Item" type="vector" member_type="GMDT_ITEM_COUNT" max_count="PT_BAG_MAX_SIZE"/>
+        </type>
+        
+        <type name="GMPKG_FULI_SHARE_GUAZAI_JINHUA_REQ">
+            <item name="Reserved" type="UINT8"/>      
+        </type>
+      
+        <type name="GMPKG_FULI_SHARE_GUAZAI_JINHUA_ACK">
+             <item name="ErrCode" type="INT32"/>
+             <item name="Item" type="vector" member_type="GMDT_ITEM_COUNT" max_count="PT_BAG_MAX_SIZE"/>
+             <item name="JinHuaCount" type="UINT8"/>
+        </type>
+      
+      <type name="GMPKG_FULI_GC_TESTPLAY_REWARD_REQ">
             <item name="ID" type="UINT32"/>
         </type>
 
@@ -5187,6 +5199,28 @@
              <item name="ErrCode" type="INT32" />
              <item name="ItemGet" type="vector" member_type="GMDT_ITEM_COUNT" max_count="PT_BAG_MAX_SIZE" />
              <item name="OfficialAccountDraingetFlag" type="UINT8" />
+        </type>
+        
+        <type name="GMPKG_FULI_GC_HEZI_REWARD_REQ">
+             <item name="DoubleGetFlag" type="UINT8"/>
+        </type>
+        
+        <type name="GMPKG_FULI_GC_HEZI_REWARD_ACK">
+             <item name="ErrCode" type="INT32"/>
+             <item name="ItemGet" type="vector" member_type="GMDT_ITEM_COUNT" max_count="PT_BAG_MAX_SIZE"/>
+             <item name="HeZiReward" type="UINT8"/>
+        </type>
+
+        <type name="GMPKG_LEVELUP_DOUBLE_REWARD_REQ" >
+            <item name="OldLevel" type="UINT16" />
+        </type>
+
+        <type name="GMPKG_LEVELUP_DOUBLE_REWARD_ACK">
+            <item name="ErrCode" type="INT32" />
+            <item name="SpReward" type="UINT16"/>
+            <item name="SpCur" type="UINT16"/>
+            <item name="GoldReward" type="INT32"/>
+            <item name="GoldCur" type="INT32"/>
         </type>
       
         <!-- Arena -->
@@ -5321,7 +5355,7 @@
             <item name="Reserved" type="UINT8"/>
             <item name="TicketCount" type="UINT16"/>
         </type>
-`
+
         <type name="GMDT_ARENA_CHALLENGE_COUNT_BUY_OK">
             <item name="DiamondCur" type="INT32"/>
             <item name="DiamondChange" type="INT32" />
@@ -7621,6 +7655,7 @@
 
         <type name="GMPKG_NEW_TASK_GET_REWARD_REQ">
             <item name="NewTaskID" type="UINT16" />
+            <item name="DoubleFlag" type="UINT8" />
         </type>
 
         <type name="GMPKG_NEW_TASK_GET_REWARD_ACK">
@@ -8266,6 +8301,7 @@
             <item name="RefreshTimes" type="UINT16"/>
             <item name="Expires" type="UINT32"/>
             <item name="Item" type="vector" member_type="DBDT_STORE_ITEM" max_count="PT_STORE_ITEM_MAX"/>
+            <item name="FreeBuyTimes" type="UINT8"/>
         </type>
 
         <type name="DBDT_MIBAO_STORE">
@@ -8477,12 +8513,15 @@
             <item name="Recommend" type="UINT8"/>
             <item name="MemberTestPlay" type="UINT8"/>
             <item name="SuperFuli" type="UINT8" />
+            <item name="InviteGiftBag" type="UINT8"/>
+            <item name="JinHuaCount" type="UINT8"/>
         </type>
-
+               
         <type name="DBDT_FULI_GC">
             <item name="TestPlayReward" type="vector" member_type="UINT32" max_count="PT_FULI_GC_TESTPLAY_REWARD_MAX" />
             <item name="SuperInduceCount" type="UINT8" />
             <item name="OfficialAccountDraingetFlag" type="UINT8" />
+            <item name="HeZiReward" type="UINT8"/>
             
         </type>
 
@@ -10792,8 +10831,6 @@
 
         <message name="GMID_SAVE_CHUZHAN_CONF_REQ" id="191" type="GMPKG_SAVE_CHUZHAN_CONF_REQ" />
         <message name="GMID_SAVE_CHUZHAN_CONF_ACK" id="192" type="GMPKG_SAVE_CHUZHAN_CONF_ACK" />
-        <message name="GMID_CHUZHAN_MIX_LEVELUP_REQ" id="193" type="GMPKG_CHUZHAN_MIX_LEVELUP_REQ" />
-        <message name="GMID_CHUZHAN_MIX_LEVELUP_ACK" id="194" type="GMPKG_CHUZHAN_MIX_LEVELUP_ACK" />
         <message name="GMID_CHUZHAN_MIX_LEVEL_NTF" id="195" type="GMPKG_CHUZHAN_MIX_LEVEL_NTF" />
         <message name="GMID_CHUZHAN_DATA_REQ" id="196" type="GMPKG_CHUZHAN_DATA_REQ" />
         <message name="GMID_CHUZHAN_DATA_ACK" id="197" type="GMPKG_CHUZHAN_DATA_ACK" />
@@ -11175,26 +11212,8 @@
         <message name="GMID_FULI_VIPBONUS_CZ_ACK" id="1233" type="GMPKG_FULI_VIPBONUS_CZ_ACK" />
         <message name="GMID_FULI_VIPBONUS_VIP_REQ" id="1234" type="GMPKG_FULI_VIPBONUS_VIP_REQ" />
         <message name="GMID_FULI_VIPBONUS_VIP_ACK" id="1235" type="GMPKG_FULI_VIPBONUS_VIP_ACK" />
-        <message name="GMID_FULI_VIPBONUS_NTF" id="1236" type="GMPKG_FULI_VIPBONUS_NTF" />
-
-        <message name="GMID_FULI_SHARE_DAILY_REQ" id="1240" type="GMPKG_FULI_SHARE_DAILY_REQ" />
-        <message name="GMID_FULI_SHARE_DAILY_ACK" id="1241" type="GMPKG_FULI_SHARE_DAILY_ACK" />
-        <message name="GMID_FULI_SHARE_RECOMMAND_REQ" id="1242" type="GMPKG_FULI_SHARE_RECOMMAND_REQ" />
-        <message name="GMID_FULI_SHARE_RECOMMAND_ACK" id="1243" type="GMPKG_FULI_SHARE_RECOMMAND_ACK" />
-        <message name="GMID_FULI_SHARE_MEMBER_TESTPLAY_REQ" id="1244" type="GMPKG_FULI_SHARE_MEMBER_TESTPLAY_REQ" />
-        <message name="GMID_FULI_SHARE_MEMBER_TESTPLAY_ACK" id="1245" type="GMPKG_FULI_SHARE_MEMBER_TESTPLAY_ACK" />
-        <message name="GMID_FULI_SHARE_SUPERFULI_REQ" id="1246" type="GMPKG_FULI_SHARE_SUPERFULI_REQ" />
-        <message name="GMID_FULI_SHARE_SUPERFULI_ACK" id="1247" type="GMPKG_FULI_SHARE_SUPERFULI_ACK" />
+        <message name="GMID_FULI_VIPBONUS_NTF" id="1236" type="GMPKG_FULI_VIPBONUS_NTF" />  
       
-        <message name="GMID_FULI_GC_TESTPLAY_REWARD_REQ" id="1280" type="GMPKG_FULI_GC_TESTPLAY_REWARD_REQ" />
-        <message name="GMID_FULI_GC_TESTPLAY_REWARD_ACK" id="1281" type="GMPKG_FULI_GC_TESTPLAY_REWARD_ACK" />
-        <message name="GMID_FULI_GC_SUPER_INDUCE_REQ" id="1282" type="GMPKG_FULI_GC_SUPER_INDUCE_REQ" />
-        <message name="GMID_FULI_GC_SUPER_INDUCE_ACK" id="1283" type="GMPKG_FULI_GC_SUPER_INDUCE_ACK" />
-        <message name="GMID_FULI_GC_SUPER_INDUCE_GET_REQ" id="1284" type="GMPKG_FULI_GC_SUPER_INDUCE_GET_REQ" />
-        <message name="GMID_FULI_GC_SUPER_INDUCE_GET_ACK" id="1285" type="GMPKG_FULI_GC_SUPER_INDUCE_GET_ACK" />
-        <message name="GMID_FULI_GC_OFFICIALACCOUNT_DRAINAGE_REQ" id="1286" type="GMPKG_FULI_GC_OFFICIALACCOUNT_DRAINAGE_REQ" />
-        <message name="GMID_FULI_GC_OFFICIALACCOUNT_DRAINAGE_ACK" id="1287" type="GMPKG_FULI_GC_OFFICIALACCOUNT_DRAINAGE_ACK" />
-
         <message name="GMID_ARENA_OPEN_REQ" id="1251" type="GMPKG_ARENA_OPEN_REQ" />
         <message name="GMID_ARENA_OPEN_ACK" id="1252" type="GMPKG_ARENA_OPEN_ACK" />
         <message name="GMID_ARENA_REPORT_REQ" id="1253" type="GMPKG_ARENA_REPORT_REQ" />
@@ -11403,8 +11422,8 @@
         <message name="GMID_GUAZAI_AWAKE_ACK" id="1915" type="GMPKG_GUAZAI_AWAKE_ACK" />
         <message name="GMID_GUAZAI_AWAKEUP_REQ" id="1916" type="GMPKG_GUAZAI_AWAKEUP_REQ" />
         <message name="GMID_GUAZAI_AWAKEUP_ACK" id="1917" type="GMPKG_GUAZAI_AWAKEUP_ACK" />
-        <message name="GMID_GUAZAI_COMPOSE_REQ" id="1918" type="GMPKG_GUAZAI_HECHENG_REQ" />
-        <message name="GMID_GUAZAI_COMPOSE_ACK" id="1919" type="GMPKG_GUAZAI_HECHENG_ACK" />
+        <message name="GMID_GUAZAI_COMPOSE_REQ" id="1918" type="GMPKG_GUAZAI_COMPOSE_REQ" />
+        <message name="GMID_GUAZAI_COMPOSE_ACK" id="1919" type="GMPKG_GUAZAI_COMPOSE_ACK" />
 
         <message name="GMID_MYSTERY_ACTIVE_REQ" id="2000" type="GMPKG_MYSTERY_ACTIVE_REQ" />
         <message name="GMID_MYSTERY_ACTIVE_ACK" id="2001" type="GMPKG_MYSTERY_ACTIVE_ACK" />
@@ -11557,6 +11576,33 @@
         <message name="GMID_FULL_BOSS_JUJI_ACK" id="2761" type="GMPKG_FULL_BOSS_JUJI_ACK" />
         <message name="GMID_FULL_BOSS_QH_REQ" id="2762" type="GMPKG_FULL_BOSS_QH_REQ" />
         <message name="GMID_FULL_BOSS_QH_ACK" id="2763" type="GMPKG_FULL_BOSS_QH_ACK" />
+
+        <message name="GMID_FULI_SHARE_DAILY_REQ" id="2800" type="GMPKG_FULI_SHARE_DAILY_REQ" />
+        <message name="GMID_FULI_SHARE_DAILY_ACK" id="2801" type="GMPKG_FULI_SHARE_DAILY_ACK" />
+        <message name="GMID_FULI_SHARE_RECOMMAND_REQ" id="2802" type="GMPKG_FULI_SHARE_RECOMMAND_REQ" />
+        <message name="GMID_FULI_SHARE_RECOMMAND_ACK" id="2803" type="GMPKG_FULI_SHARE_RECOMMAND_ACK" />
+        <message name="GMID_FULI_SHARE_MEMBER_TESTPLAY_REQ" id="2804" type="GMPKG_FULI_SHARE_MEMBER_TESTPLAY_REQ" />
+        <message name="GMID_FULI_SHARE_MEMBER_TESTPLAY_ACK" id="2805" type="GMPKG_FULI_SHARE_MEMBER_TESTPLAY_ACK" />
+        <message name="GMID_FULI_SHARE_SUPERFULI_REQ" id="2806" type="GMPKG_FULI_SHARE_SUPERFULI_REQ" />
+        <message name="GMID_FULI_SHARE_SUPERFULI_ACK" id="2807" type="GMPKG_FULI_SHARE_SUPERFULI_ACK" />
+        <message name="GMID_FULI_SHARE_INVITE_GIFTBAG_REQ" id="2808" type="GMPKG_FULI_SHARE_INVITE_GIFTBAG_REQ"/>
+        <message name="GMID_FULI_SHARE_INVITE_GIFTBAG_ACK" id="2809" type="GMPKG_FULI_SHARE_INVITE_GIFTBAG_ACK"/>
+        <message name="GMID_FULI_SHARE_GUAZAI_JINHUA_REQ" id="2810" type="GMPKG_FULI_SHARE_GUAZAI_JINHUA_REQ"/>
+        <message name="GMID_FULI_SHARE_GUAZAI_JINHUA_ACK" id="2811" type="GMPKG_FULI_SHARE_GUAZAI_JINHUA_ACK"/>  
+      
+        <message name="GMID_FULI_GC_TESTPLAY_REWARD_REQ" id="2900" type="GMPKG_FULI_GC_TESTPLAY_REWARD_REQ" />
+        <message name="GMID_FULI_GC_TESTPLAY_REWARD_ACK" id="2901" type="GMPKG_FULI_GC_TESTPLAY_REWARD_ACK" />
+        <message name="GMID_FULI_GC_SUPER_INDUCE_REQ" id="2902" type="GMPKG_FULI_GC_SUPER_INDUCE_REQ" />
+        <message name="GMID_FULI_GC_SUPER_INDUCE_ACK" id="2903" type="GMPKG_FULI_GC_SUPER_INDUCE_ACK" />
+        <message name="GMID_FULI_GC_SUPER_INDUCE_GET_REQ" id="2904" type="GMPKG_FULI_GC_SUPER_INDUCE_GET_REQ" />
+        <message name="GMID_FULI_GC_SUPER_INDUCE_GET_ACK" id="2905" type="GMPKG_FULI_GC_SUPER_INDUCE_GET_ACK" />
+        <message name="GMID_FULI_GC_OFFICIALACCOUNT_DRAINAGE_REQ" id="2906" type="GMPKG_FULI_GC_OFFICIALACCOUNT_DRAINAGE_REQ" />
+        <message name="GMID_FULI_GC_OFFICIALACCOUNT_DRAINAGE_ACK" id="2907" type="GMPKG_FULI_GC_OFFICIALACCOUNT_DRAINAGE_ACK" />
+        <message name="GMID_FULI_GC_HEZI_REWARD_REQ" id="2908" type="GMPKG_FULI_GC_HEZI_REWARD_REQ" />
+        <message name="GMID_FULI_GC_HEZI_REWARD_ACK" id="2909" type="GMPKG_FULI_GC_HEZI_REWARD_ACK" />
+
+        <message name="GMID_LEVELUP_DOUBLE_REWARD_REQ" id="3000" type="GMPKG_LEVELUP_DOUBLE_REWARD_REQ" />
+        <message name="GMID_LEVELUP_DOUBLE_REWARD_ACK" id="3001" type="GMPKG_LEVELUP_DOUBLE_REWARD_ACK" />
       
         <!-- ###########################################################################################################################-->
         <!-- ###########################################################################################################################-->

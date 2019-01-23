@@ -390,6 +390,9 @@
     },
     "_enabled": true,
     "fixViewComplete": false,
+    "bg": {
+      "__id__": 2
+    },
     "_id": ""
   },
   {

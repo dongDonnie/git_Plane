@@ -3,8 +3,6 @@ const GlobalVar = require('globalvar');
 const ResMapping = require("resmapping");
 const BattleManager = require('BattleManager');
 const BM = require('BulletMapping');
-var ShaderUtils = require("ShaderUtils");
-const weChatAPI = require("weChatAPI");
 const config = require("config");
 const i18n = require('LanguageData');
 
@@ -54,8 +52,6 @@ cc.Class({
         // this.shader=false;
         // this.shaderRender=null;
         // this.shaderStartTime=0;
-
-        //this.motionNode=null;
     },
 
     reset: function () {
@@ -275,7 +271,9 @@ cc.Class({
         if (!!tblSkill) {
             let func = BM.getSolution(tblSkill.dwSolution);
             if (!!func) {
-                func(this, tblSkill.oVecBulletIDs);
+                if (!BattleManager.getInstance().bossAppear) {
+                    func(this, tblSkill.oVecBulletIDs);
+                }
                 return tblSkill.dCD;
             } else {
                 return -1;
@@ -361,11 +359,6 @@ cc.Class({
             dmg = this.maxHp * 0.5;
         }
 
-        // if (this.state == FighterState.Crazy) {
-        //     return;
-        // }
-
-        //weChatAPI.deviceShock();
         BattleManager.getInstance().screenShake(1);
 
         this.invincibleTime = Defines.INVINCIBLE_TIME;
@@ -380,10 +373,6 @@ cc.Class({
             //require('HeroManager').getInstance().skillLevelDown();
         } else {
             this.hp = 0;
-            // if (this.objectType == Defines.ObjectType.OBJ_HERO) {
-            //     BattleManager.getInstance().result = 0;
-            //     BattleManager.getInstance().gameState = Defines.GameResult.END;
-            // }
         }
     },
 
@@ -393,7 +382,6 @@ cc.Class({
     },
 
     addMotionStreak: function (res, color, fadeTime, minSeg, stroke, fastMode) {
-        //if (this.motionNode == null) {
         res = typeof res !== 'undefined' ? res : 'huoyan';
         let motionNode = this.addComponent(cc.MotionStreak);
         var self = this;
@@ -407,7 +395,6 @@ cc.Class({
         motionNode.stroke = typeof stroke !== 'undefined' ? stroke : 30;
         motionNode.fastMode = typeof fastMode !== 'undefined' ? fastMode : false;
         motionNode.color = typeof color !== 'undefined' ? color : new cc.Color(255, 255, 255);
-        //}
     },
 
     flyIntoScreen(callback) {

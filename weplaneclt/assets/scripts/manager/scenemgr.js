@@ -1,5 +1,4 @@
 const SceneDefines = require("scenedefines")
-const ResMapping = require("resmapping")
 const GlobalVar = require('globalvar')
 
 var SceneManager = cc.Class({

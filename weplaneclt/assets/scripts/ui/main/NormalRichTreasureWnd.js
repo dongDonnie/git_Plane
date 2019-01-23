@@ -6,7 +6,6 @@ const EventMsgID = require("eventmsgid");
 const GameServerProto = require("GameServerProto");
 const CommonWnd = require("CommonWnd");
 const i18n = require('LanguageData');
-const weChatAPI = require("weChatAPI");
 
 
 const TREAURE_GOLD = "cdnRes/audio/main/effect/kaicai";

@@ -1,14 +1,6 @@
-// var DoTweenManager = require('dotweenmanager2').getInstance();
-// var DoTweenType = require('dotweendefine2').DoTweenType;
-
-// var self = null; // WARNING: 可能以后会造成问题
 cc.Class({
     extends: cc.Component,
 
-    editor: {
-        requireComponent: cc.ScrollView,
-        menu: 'i18n:MAIN_MENU.component.ui/LoopScrollview'  
-    },
     properties: {
 
         itemDataCount: {
@@ -57,7 +49,6 @@ cc.Class({
         this.scrollView = this.node.getComponent(cc.ScrollView);
         this.scrollView.enabled = false;
         this.content = this.scrollView.content;
-        this.scrollView.enabled = false;
         this.nodeBlock = new cc.Node();
         this.nodeBlock.width = this.scrollView.node.width;
         this.nodeBlock.height = this.scrollView.node.height;
@@ -107,6 +98,8 @@ cc.Class({
         this.startUpdate = false;
 
         this.intervalIndex = -1;
+
+        this._playAni = null;
     },
 
     /**
@@ -181,6 +174,10 @@ cc.Class({
     },
     setGapDisY(disY) {
         this.gapDisY = disY;
+    },
+
+    setPlayAni(callback) { 
+        this._playAni = callback;
     },
 
     /**
@@ -333,6 +330,7 @@ cc.Class({
         this.updateInterval = 0.1;
         this.lastContentPosY = 0;
         this.curItemIndex = 0;
+        this.scrollView.enabled = false;
         this.bufferZone = this.scrollView.vertical ? this._createModel.height + this.gapDisY : this._createModel.width + this.gapDisX;
 
         let rowNeedCount = this.itemRowCount;
@@ -377,9 +375,22 @@ cc.Class({
             this.content.addChild(item);
             let posX = this.scrollView.vertical ? (Math.floor(curCreIndex % this.itemColCount) - (this.itemColCount - 1) / 2) * (this._createModel.width + this.gapDisX) : item.width * (0.5 + Math.floor(curCreIndex / this.itemColCount)) + this.gapDisX * (Math.ceil((curCreIndex + 1) / this.itemColCount) - 1) + (this.gapLeft || 10);
             let posY = this.scrollView.vertical ? -item.height * (0.5 + Math.floor(curCreIndex / this.itemColCount)) - this.gapDisY * (Math.ceil((curCreIndex + 1) / this.itemColCount) - 1) - (this.gapTop || 10) : (Math.floor(curCreIndex % this.itemColCount) - (this.itemColCount - 1) / 2) * (this._createModel.height + this.gapDisY);
-            // let posX = (Math.floor(curCreIndex % this.itemColCount) - (this.itemColCount - 1) / 2) * (this._createModel.width + this.gapDisX);
-            // let posY = -item.height * (0.5 + Math.floor(curCreIndex / this.itemColCount)) - this.gapDisY * (Math.ceil((curCreIndex + 1) / this.itemColCount) - 1) - (this.gapTop || 10);
-            item.position = new cc.Vec2(posX, posY);
+            // item.position = new cc.Vec2(posX, posY);
+            // item.stopAllActions()
+            if (this._playAni) {
+                let stopIndex = self.curItemIndex;
+                this._playAni(item, curCreIndex, posX, posY, function(){
+                    if (stopIndex >= initNum - 1){
+                        self.scrollView.enabled = true;
+                    }
+                });
+            } else {
+                let stopIndex = this.curItemIndex;
+                if (stopIndex >= initNum - 1){
+                    this.scrollView.enabled = true;
+                }
+                item.position = new cc.Vec2(posX, posY);
+            }
             this.initItem(item, curCreIndex);
             this.itemList.push(item);
             this.curItemIndex += 1;
@@ -391,7 +402,7 @@ cc.Class({
                 return;
             }
 
-            this.scrollView.enabled = true;
+            // this.scrollView.enabled = true;
             this.scrollView.node.removeChild(this.nodeBlock);
             this.nodeBlock = null;
             if (this.itemList.length <= 0) return;
@@ -402,7 +413,6 @@ cc.Class({
 
             this.curItemIndex = 0;
 
-            this.scrollView.enabled = true;
             this.startUpdate = true;
             if (!!this._completeFunc) {
                 this._completeFunc();
@@ -486,5 +496,5 @@ cc.Class({
 
             this.lastContentPosX = this.content.x;
         }
-    }
+    },
 });

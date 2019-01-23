@@ -4,8 +4,6 @@ const Defines = require('BattleDefines');
 const BattleManager = require('BattleManager');
 const EventMsgID = require("eventmsgid")
 const GameServerProto = require("GameServerProto");
-const md5 = require("md5");
-const weChatAPI = require("weChatAPI");
 
 cc.Class({
     extends: UIBase,

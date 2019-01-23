@@ -128,7 +128,11 @@ var Factory = cc.Class({
             line = new ProductLine();
         }
 
-        if (customer.objectType == Defines.ObjectType.OBJ_HERO ||
+        if (customer.objectType == Defines.ObjectType.OBJ_SELF || customer.objectType == Defines.ObjectType.OBJ_SELF_GUAZAI) {
+            line.lineType = Defines.ObjectType.OBJ_FAKE_SELF;
+        } else if (customer.objectType == Defines.ObjectType.OBJ_FAKE || customer.objectType == Defines.ObjectType.OBJ_RIVAL_GUAZAI) {
+            line.lineType = Defines.ObjectType.OBJ_FAKE_RIVAL;
+        } else if (customer.objectType == Defines.ObjectType.OBJ_HERO ||
             customer.objectType == Defines.ObjectType.OBJ_WINGMAN ||
             customer.objectType == Defines.ObjectType.OBJ_ASSIST) {
             line.lineType = Defines.ObjectType.OBJ_FAKE_HERO;
@@ -205,7 +209,9 @@ var Factory = cc.Class({
                 break;
             case Defines.Part.Assist:
                 dps = (0.2 + (atkProp[Defines.PropName.AssistAttack] + 100) / (atkProp[Defines.PropName.AssistAttack] + 100 + atkLevel * 30)) * atkProp[Defines.PropName.Attack];
-                dps *= 30;
+                if (typeof skilllevel !== 'undefined'){
+                    dps *= 30;
+                }
                 break;
             case Defines.Part.Skill:
                 dps = (0.2 + (atkProp[Defines.PropName.SkillAttack] + 100) / (atkProp[Defines.PropName.SkillAttack] + 100 + atkLevel * 30)) * atkProp[Defines.PropName.Attack] * 50;
@@ -213,7 +219,9 @@ var Factory = cc.Class({
                 break;
             case Defines.Part.Missile:
                 dps = (0.2 + (atkProp[Defines.PropName.MissileAttack] + 100) / (atkProp[Defines.PropName.MissileAttack] + 100 + atkLevel * 30)) * atkProp[Defines.PropName.Attack];
-                dps *= 50;
+                if (typeof skilllevel !== 'undefined'){
+                    dps *= 50;
+                }
                 break;
         }
 
@@ -258,10 +266,12 @@ var Factory = cc.Class({
         } else if (owner.objectType == Defines.ObjectType.OBJ_MONSTER) {
             type = Defines.ObjectType.OBJ_MONSTER_BULLET;
             bullet.setZ(Defines.Z.MONSTERBULLET);
-        } else if (owner.objectType == Defines.ObjectType.OBJ_SELF) {
+        } else if (owner.objectType == Defines.ObjectType.OBJ_SELF || owner.objectType == Defines.ObjectType.OBJ_SELF_GUAZAI) {
             type = Defines.ObjectType.OBJ_SELF_BULLET;
-        } else if (owner.objectType == Defines.ObjectType.OBJ_RIVAL) {
+            bullet.owner = this.battleManager.getInstance().getArenaPlane(0);
+        } else if (owner.objectType == Defines.ObjectType.OBJ_RIVAL || owner.objectType == Defines.ObjectType.OBJ_RIVAL_GUAZAI) {
             type = Defines.ObjectType.OBJ_RIVAL_BULLET;
+            bullet.owner = this.battleManager.getInstance().getArenaPlane(1);
         }
 
         bullet.setObjectData(type, id);

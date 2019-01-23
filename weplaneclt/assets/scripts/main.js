@@ -46,6 +46,7 @@ cc.Class({
         GlobalVar.sceneManager().reset();
         GlobalVar.sceneManager().setCurrentSceneType(SceneDefines.INIT_STATE);
         GlobalVar.windowManager().clearRecordView();
+        GlobalVar.cleanAllMgr();
 
         if (!!require("storagedata").getClearCache()) {
             if (cc.sys.platform == cc.sys.WECHAT_GAME) {
@@ -85,7 +86,7 @@ cc.Class({
             });
         }
 
-        i18n.init('zh');
+        //i18n.init('zh');
         let self = this;
 
         if (this.clearCache) {
@@ -161,6 +162,9 @@ cc.Class({
                     }
                     if (launchInfo.scene == 1104) {
                         StoreageData.setShareTimesWithKey("superReward", 0);
+                    }
+                    if (launchInfo.query['vpnaFlag'] == 1) {
+                        GlobalVar.isFromOfficialAccount = true;
                     }
                 }
                 console.log("get data for login, userID:" + user_id + " ticket:" + ticket + " avatar:" + avatar);
@@ -264,7 +268,7 @@ cc.Class({
 
         let platformApi = GlobalVar.getPlatformApi();
         if (platformApi) {
-            platformApi.requestIosRechageLockState(GlobalVar.me().level, GlobalVar.me().combatPoint, GlobalVar.me().creatTime, function (state) {
+            platformApi.requestIosRechageLockState(GlobalVar.me().level, GlobalVar.me().combatPoint, GlobalVar.me().createTime, function (state) {
                 GlobalVar.IosRechargeLock = !!state;
             });
             platformApi.requestShareOpenState(GlobalVar.tblApi.getData('TblVersion')[1].strVersion, function (state) {

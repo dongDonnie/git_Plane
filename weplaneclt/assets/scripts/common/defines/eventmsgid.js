@@ -53,6 +53,7 @@ module.exports = {
     EVENT_SHOW_BLESS: "event_show_bless",
     EVENT_ENDLESS_START_BATTLE: "event_endless_start_battle",
     EVENT_ENDLESS_POWER_POINT_CHANGE_NTF: "event_endless_power_point_change_ntf",
+    EVENT_RANK_WORLD_DATA: "event_rank_world_data",
 
     EVENT_SETSTATUS_COUNT: "event_setstatus_count",
     EVENT_SPCHANGE_NTF: "EVENT_SPCHANGE_NTF",
@@ -60,6 +61,7 @@ module.exports = {
     EVENT_COMBATPOINT_CHANGE_NTF: "event_combatpoint_change_ntf",
     EVENT_LEVELUP_NTF: "event_levelup_ntf",
     EVENT_BUY_SP_RESULT: "event_buysp_result",
+    EVENT_BUY_JINHUA_RESULT: "event_buyjinhua_result",
     EVENT_CHAPTER_SELECT: "event_chapter_change",
     EVENT_RECIVE_DRAW_REWARD: "event_recive_draw_reward",
     EVENT_GET_RECHARGE_RESULT: "event_get_recharge_result",
@@ -84,6 +86,7 @@ module.exports = {
     EVENT_GET_VOUCHER_RESULT: "event_get_voucher_result",
     EVENT_GET_RENAME_ACK: "event_get_rename_ack",
     EVENT_NEWTASK_NTF: "event_newtask_ntf",
+    EVENT_LEVELUP_DOUBLE_REWARD: "event_levelup_double_reward",
 
     EVENT_LOGIN_DATA_NTF: "event_login_data_ntf",
 
@@ -97,13 +100,20 @@ module.exports = {
     EVENT_ITEM_SELL_NTF: "event_item_sell_ntf",
     EVENT_MEMBER_STANDINGBY_NTF: "event_member_standingby_ntf",
     EVENT_MEMBER_ACTIVE_NTF: "event_member_active_ntf",
-    EVENT_MEMBER_STORE_RESULT: "event_member_store_result",
+    EVENT_MEMBER_STORE_DATA: "event_member_store_data",
+    EVENT_MEMBER_PIECE_DATA: "event_member_piece_data",
+    EVENT_MEMBER_STORE_FRESH: "event_member_store_fresh",
+    EVENT_MEMBER_PIECE_CRYSTAL_NTF: "event_member_piece_crystal_ntf",
+    EVENT_MEMBER_PIECE_CHANGE_NTF: "event_member_piece_change_ntf",
 
     EVENT_BAG_ADDITEM_NTF: "event_bag_additem_ntf",
 
     EVENT_GET_SIGN_DATA: 'event_get_sign_data',
     EVENT_GET_SIGN_RESULT: 'event_get_sign_result',
     EVENT_GET_SIGN_HEAP_RESULT: 'event_get_sign_heap_result',
+
+    EVENT_GET_MIXDRIVE_DATA: 'event_get_mixdrive_data',
+    EVENT_GET_MIXDRIVE_LEVEL_NTF: 'event_get_mixdrive_level_ntf',
 
     //更换挂载
     EVENT_GUAZAI_CHANGE_NTF: "EVENT_GUAZAI_CHANGE_NTF",
@@ -130,6 +140,7 @@ module.exports = {
     EVENT_GET_ASSIST_SHARE_SUCCESS: "event_get_assist_success",
 
     EVENT_GUAZAI_REBIRTH_ACK: "EVENT_GUAZAI_REBIRTH_ACK",
+    EVENT_GUAZAI_COMPOSE_ACK: "EVENT_GUAZAI_COMPOSE_ACK",
 
     //redPoint
     EVENT_ACTIVE_FLAG_CHANGE: "event_active_flag_change",
@@ -146,6 +157,7 @@ module.exports = {
     EVENT_FREE_DIAMOND_FLAG_CHANGE: 'event_free_diamond_flag_change',
     EVENT_LIMIT_STORE_FLAG_CHANGE: 'event_limit_store_flag_change',
     EVENT_SIGN_FLAG_CHANGE: 'event_sign_flag_change',
+    EVENT_TREASURE_FLAG_CHANGE: 'event_treasure_flag_change',
 
     //share
     EVENT_GET_FREE_GOLD: "event_get_free_gold",
@@ -155,12 +167,17 @@ module.exports = {
     EVENT_GET_SHARE_DAILY_DATA: "event_get_share_daily_data",
     EVENT_ENDLESS_GET_CHARGE_DATA: "event_endless_get_charge_data",
     EVENT_GET_SUPER_REWARD_DATA: "event_get_super_reward_data",
+    EVENT_GET_JINHUA_REWARD_DATA: "event_get_jinhua_reward_data",
     EVENT_TREASURE_REDUCE_TIME_RESULT: "event_treasure_reduce_time_result",
+    EVENT_GET_INVITE_REWARD_DATA: "event_get_invite_reward_data",
 
     //ad
     EVENT_REFRESH_AD_EXP_DATA: "event_refresh_ad_exp_data",
     EVENT_REFRESH_AD_SP_DATA: "event_refresh_ad_sp_data",
     EVENT_REFRESH_AD_TASK_DATA: "event_refresh_ad_task_data",
+    EVENT_REFRESH_AD_TASK_REWARD_DATA: "event_refresh_ad_task_reward_data",
+    EVENT_REFRESH_AD_TASK_COMPLETE_DATA: "event_refresh_ad_task_complete_data",
+    EVENT_REFRESH_AD_TASK_HOT_FLAG: "event_refresh_ad_task_hot_flag",
 
     //gm
     EVENT_GM_SWITCH_CHANGE: "event_gm_switch_change",
@@ -181,5 +198,15 @@ module.exports = {
     EVENT_GET_ARENA_SAODANG_DATA: "event_get_arena_saodang_data",
     EVENT_GET_ARENA_CHALLENGE_COUNT_FREE_GET_DATA: "event_get_arena_challenge_count_free_get_data",
     EVENT_GET_ARENA_STORE_DATA: "event_get_arena_store_data",
+    EVENT_GET_ARENA_STORE_BUY_DATA: "event_get_arena_store_buy_data",
+    EVENT_GET_ARENA_STORE_REFRESH_DATA: "event_get_arena_store_refresh_data",
+    EVENT_GET_ARENA_POINT_CHANGE_DATA: "event_get_arena_point_change_data",
     EVENT_GET_RANK_STORE_DATA: "event_get_rank_store_data",
+    EVENT_GET_RANK_STORE_BUY_DATA: "event_get_rank_store_buy_data",
+
+    //公众号奖励
+    EVENT_FOLLOW_REWARD_GET: "event_follow_reward_get",
+
+    //盒子跳转奖励
+    EVENT_BOX_REWARD_GET: "event_box_reward_get",
 };

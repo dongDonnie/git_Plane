@@ -1,5 +1,4 @@
 var requestService = require('requestservice')
-var GlobalVar = require('globalvar');
 
 var HandlerBase = cc.Class({
     ctor: function() {

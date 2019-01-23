@@ -1,13 +1,11 @@
 const RootBase = require("RootBase");
 const WindowManager = require("windowmgr");
-const StoreData = require("StoreData");
 const GlobalVar = require("globalvar");
 const EventMsgId = require("eventmsgid");
 const GameServerProto = require("GameServerProto");
 const GlobalFunctions = require("GlobalFunctions");
 const CommonWnd = require("CommonWnd");
 const WndTypeDefine = require("wndtypedefine");
-const weChatAPI = require("weChatAPI");
 
 const AUDIO_LEVEL_UP = 'cdnRes/audio/main/effect/shengji';
 const AUDIO_QUALITY_UP = 'cdnRes/audio/main/effect/shengjie2'

@@ -25,7 +25,7 @@ cc.Class({
         this._super();
 
         this._listData = [];
-        this.getAdData();
+        this._listData = GlobalVar.me().adData.getAdExpInfo();
         this.typeName = WndTypeDefine.WindowType.E_DT_NORMAL_AD_EXP_WND;
 
         this._posX = this.node.x;
@@ -42,20 +42,13 @@ cc.Class({
         this.refresh();
     },
 
-    getAdData: function () {
-        this._listData = GlobalVar.me().adData.getAdExpInfo();
-        if (this._listData.length <= 0) {
-            GlobalVar.me().adData.pullAdExpInfo();
-        }
-    },
-
     updateAdExpData: function () {
         this._listData = GlobalVar.me().adData.getAdExpInfo();
         this.refresh();
     },
 
     refresh: function () {
-        if (this._listData.length <= 0) return;
+        if (!this._listData || this._listData.length <= 0) return;
         let self = this;
         this.adExpScroll.loopScroll.releaseViewItems();
         this.adExpScroll.loopScroll.setTotalNum(Math.ceil(this._listData.length / row));

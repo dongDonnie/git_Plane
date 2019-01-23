@@ -12,12 +12,12 @@ let audio = cc.Enum({
 
 let audioNames = {
     0: 'cdnRes/audio/main/effect/btnoClick',
-    1: 'cdnRes/audio/clips/sound_cancel',
+    1: '',
     2: 'cdnRes/audio/main/effect/click_close',
-    3: 'cdnRes/audio/clips/sound_back',
-    4: 'cdnRes/audio/clips/sound_pop',
+    3: '',
+    4: '',
     5: 'cdnRes/audio/main/effect/openView',
-    6: 'cdnRes/audio/clips/sound_check',
+    6: '',
     7: 'cdnRes/audio/main/effect/button_click',
     8: '',
 };
@@ -36,6 +36,7 @@ let colorType = cc.Enum({
 const GlobalVar = require("globalvar");
 const Guide = require("Guide");
 const config = require("config");
+const WndTypeDefine = require("wndtypedefine");
 var ButtonObject = cc.Class({
     extends: cc.Component,
 
@@ -105,24 +106,23 @@ var ButtonObject = cc.Class({
     },
 
     onTouchStart: function (event) {
-        if (!cc.isValid(ButtonObject.isPress)) {
+        if (ButtonObject.isPress == null) {
             this.playAudio();
             ButtonObject.isPress = event.target;
         }
     },
     onTouchEnd: function (event) {
+        if (GlobalVar.windowManager().getTopViewType() == WndTypeDefine.WindowType.E_DT_NORMAL_LEVEL_UP_WND ||
+            GlobalVar.windowManager().getTopViewType() == WndTypeDefine.WindowType.E_DT_NORMALTREASUREEXPLOIT) {
+            ButtonObject.isPress = null;
+        }
         if (cc.isValid(ButtonObject.isPress)) {
-            if (cc.isValid(event.target)) {
-                if (ButtonObject.isPress.uuid != event.target.uuid) {
-                    event.target.getComponent(cc.Button)._pressed = false;
-                } else {
-                    ButtonObject.isPress = null;
-                }
+            if (ButtonObject.isPress.uuid != event.target.uuid) {
+                event.target.getComponent(cc.Button)._pressed = false;
+            } else {
+                ButtonObject.isPress = null;
             }
         } else {
-            if (cc.isValid(event.target)) {
-                event.target.getComponent(cc.Button)._pressed = false;
-            }
             ButtonObject.isPress = null;
         }
 
@@ -143,7 +143,9 @@ var ButtonObject = cc.Class({
             return;
         }
         let name = audioNames[this.audioType];
-        GlobalVar.soundManager().playEffect(name);
+        if (name != '') {
+            GlobalVar.soundManager().playEffect(name);
+        }
     },
 
     getColor: function (index) {

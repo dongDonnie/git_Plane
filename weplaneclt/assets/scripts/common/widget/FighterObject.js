@@ -1,5 +1,4 @@
 const UIBase = require("uibase");
-const GlobalFunc = require('GlobalFunctions');
 cc.Class({
     extends: UIBase,
 

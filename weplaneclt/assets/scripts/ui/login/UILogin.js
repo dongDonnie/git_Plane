@@ -1,10 +1,6 @@
 const UIBase = require("uibase");
 const GlobalVar = require("globalvar");
-const SceneDefines = require("scenedefines");
-const SceneManger = require('scenemgr');
-const weChatAPI = require("weChatAPI");
 const EventMsgID = require("eventmsgid");
-const NetworkManager = require("networkmgr");
 
 var UILogin = cc.Class({
     extends: UIBase,

@@ -229,7 +229,10 @@ const guide = cc.Class({
             return;
         } else if (clickBtnName == 'NormalEquipQualityUpWnd'){
             return;
-        } else if ((clickBtnName == 'ItemObject' && self.step != 11) || clickBtnName == 'btnoSkill' || clickBtnName =='btnoAssist') return;
+        } else if (clickBtnName == 'btn_active') {
+            return;
+        }
+        else if ((clickBtnName == 'ItemObject' && self.step != 11) || clickBtnName == 'btnoSkill' || clickBtnName == 'btnoAssist') return;
 
         var cbtn = cc.find('Canvas/GuideNode/btnClone');
         self.fingerSprite.active = false;

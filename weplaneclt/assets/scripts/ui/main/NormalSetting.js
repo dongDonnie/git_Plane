@@ -2,13 +2,13 @@ const RootBase = require("RootBase");
 const WindowManager = require("windowmgr");
 const GlobalVar = require('globalvar')
 const WndTypeDefine = require("wndtypedefine");
-const GameServerProto = require("GameServerProto");
 const CommonWnd = require("CommonWnd")
 const EventMsgID = require("eventmsgid");
 const config = require("config");
 const SceneDefines = require('scenedefines')
 const BattleManager = require('BattleManager')
 const weChatAPI = require("weChatAPI");
+const StoreageData = require("storagedata");
 
 cc.Class({
     extends: RootBase,
@@ -50,6 +50,10 @@ cc.Class({
             default: null,
             type: cc.Button,
         },
+        btnVibrateOnOff: {
+            default: null,
+            type: cc.Button,
+        },
         btnFeedback: {
             default: null,
             type: cc.Node,
@@ -60,6 +64,7 @@ cc.Class({
         },
         effectIsOn: true,
         bgmIsOn: true,
+        vibrateIsOn: true,
     },
 
     onLoad: function () {
@@ -122,8 +127,11 @@ cc.Class({
         this.labelServerName.string = GlobalVar.me().loginData.getLoginReqDataServerName() || "";
         this.effectIsOn = GlobalVar.soundManager().getEffectOnOff();
         this.bgmIsOn = GlobalVar.soundManager().getBgmOnOff();
+        this.vibrateIsOn = StoreageData.getVibrateSwitch();
+
         this.setBtnEffectState();
         this.setBtnBgmState();
+        this.setBtnVibrateState();
     },
 
     setBtnEffectState: function () {
@@ -145,6 +153,12 @@ cc.Class({
         //     console.log("banner已开启");
         // }
     },
+    setBtnVibrateState: function () {
+        let SWITCH_ON = 1,
+        SWITCH_OFF = 0;
+        let spriteVibrate = this.btnVibrateOnOff.node.getComponent("RemoteSprite");
+        this.vibrateIsOn ? spriteVibrate.setFrame(SWITCH_ON) : spriteVibrate.setFrame(SWITCH_OFF)
+    },
 
     onBtnEffectOnOff: function (event) {
         GlobalVar.soundManager().setEffectOnOff(this.effectIsOn = !this.effectIsOn);
@@ -156,6 +170,11 @@ cc.Class({
         GlobalVar.soundManager().setBgmOnOff(this.bgmIsOn = !this.bgmIsOn, true);
         this.setBtnBgmState();
         // console.log("Bgm checked:" + this.bgmIsOn);
+    },
+    onBtnVibrateOnOff: function (event) {
+        StoreageData.setVibrateSwitch(this.vibrateIsOn = !this.vibrateIsOn);
+        console.log("震动开关", StoreageData.getVibrateSwitch());
+        this.setBtnVibrateState();
     },
 
     onBtnConfirm: function () {

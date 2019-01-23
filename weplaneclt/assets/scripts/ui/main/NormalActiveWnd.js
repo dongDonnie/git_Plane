@@ -7,11 +7,9 @@ const EventMsgID = require("eventmsgid");
 const GameServerProto = require("GameServerProto");
 const i18n = require('LanguageData');
 const CommonWnd = require("CommonWnd");
-const RemoteSprite = require("RemoteSprite");
 const ResMapping = require("resmapping");
 const StoreageData = require("storagedata");
 const weChatAPI = require("weChatAPI");
-const INIT_COUNT = 5;
 
 var self = null;
 cc.Class({
@@ -42,7 +40,6 @@ cc.Class({
 
     onLoad: function () {
         this._super();
-        i18n.init('zh');
         this.typeName = WndTypeDefine.WindowType.E_DT_NORMAL_ACTIVE_WND;
         this.animeStartParam(0, 0);
         this.curActiveIndex = 0;
@@ -302,16 +299,44 @@ cc.Class({
         let nodeActiveContent = this.node.getChildByName("nodeActiveContent");
         let nodeContent = nodeActiveContent.getChildByName("nodeType2");
 
+
         let updateModel = function (model, index) {
             // model.active = true;
             model.opacity = 255;
             model.x = 0;
             let modelData = data.Act.OpCfg.FenCfg[index];
             let ruleCfg = data.Act.RuleCfg[index];
+            let rule = ruleCfg.RuleList[0];
             let joinData = null;
+            let curJoinTime = 0
             for (let i = 0; i < data.Join.length; i++) {
                 if (data.Join[i].ID == index) {
                     joinData = data.Join[i];
+                    curJoinTime = joinData.Join;
+                }
+            }
+            let isShare = false, isAD = false, isComplete = false;
+            if (rule) {
+                if (rule.RuleID == GameServerProto.PT_AMS_RULEID_INVITE) {
+                    isInvite = true;
+                } else {
+                    if (rule.RuleID == GameServerProto.PT_AMS_RULEID_SHARE) {
+                        isShare = true;
+                        let curStep = StoreageData.getShareTimesWithKey(data.Act.Actid, data.Act.Limit, data.Act.EndTime);
+                        curStep = curStep > rule.Var * (curJoinTime + 1) ? rule.Var * (curJoinTime + 1) : curStep;
+                        console.log("curStep:", curStep, "  rule.Var:", rule.Var, "  curJoinTime:", curJoinTime);
+                        if (curStep >= rule.Var * (curJoinTime + 1)) {
+                            isComplete = true;
+                        }
+                    } else if (rule.RuleID == GameServerProto.PT_AMS_RULEID_AD) {
+                        isAD = true;
+                        let curStep = StoreageData.getShareTimesWithKey(data.Act.Actid, data.Act.Limit, data.Act.EndTime);
+                        curStep = curStep > rule.Var * (curJoinTime + 1) ? rule.Var * (curJoinTime + 1) : curStep;
+                        console.log("curStep:", curStep, "  rule.Var:", rule.Var, "  curJoinTime:", curJoinTime);
+                        if (curStep >= rule.Var * (curJoinTime + 1)) {
+                            isComplete = true;
+                        }
+                    }
                 }
             }
 
@@ -319,18 +344,35 @@ cc.Class({
             let nodeRewards = model.getChildByName("nodeRewards");
 
             let labelRequire = model.getChildByName("labelRequire");
-            let requireData = GlobalVar.tblApi.getDataBySingleKey('TblAMSRule', ruleCfg.RuleList[0].RuleID);
-            let requireStr = requireData.strRuleName.replace("{0}", ruleCfg.RuleList[0].Compare.replace(">=", "达到").replace("==", "").replace("<=", "小于") + ruleCfg.RuleList[0].Var > 10000?(parseInt(ruleCfg.RuleList[0].Var/10000)):ruleCfg.RuleList[0].Var);
+            let requireData = GlobalVar.tblApi.getDataBySingleKey('TblAMSRule', rule.RuleID);
+            let requireStr = requireData.strRuleName.replace("{0}", rule.Compare.replace(">=", "达到").replace("==", "").replace("<=", "小于") + rule.Var > 10000?(parseInt(rule.Var/10000)):rule.Var);
             labelRequire.getComponent(cc.Label).string = requireStr;
 
             model.getChildByName("btnRecv").active = true;
-            if (joinData && joinData.Join >= (modelData.LimitNum || data.Act.LimitNum)) {
-                let btnRecv = model.getChildByName("btnRecv");
+            let btnRecv = model.getChildByName("btnRecv");
+            btnRecv.getChildByName("spriteShare").active = false;
+            btnRecv.getChildByName("spriteVideo").active = false;
+            if (curJoinTime >= (modelData.LimitNum || data.Act.LimitNum)) {
                 btnRecv.getComponent("ButtonObject").setText("已参与");
+                btnRecv.getComponent("ButtonObject").fontSize = 28;
                 btnRecv.getComponent(cc.Button).interactable = false;
             } else {
-                let btnRecv = model.getChildByName("btnRecv");
-                btnRecv.getComponent("ButtonObject").setText("领取");
+                let btnText = "领取";
+                let fontSize = 28;
+                if ((!isShare && !isAD) || isComplete){
+                    btnText = "领取";
+                } else if (isShare){
+                    btnRecv.getChildByName("spriteShare").active = true;
+                    btnText = "  分享到群"
+                    fontSize = 22;
+                } else if (isAD){
+                    btnText = "  观看视频"
+                    fontSize = 22;
+                    btnRecv.getChildByName("spriteVideo").active = true;
+                }
+
+                btnRecv.getComponent("ButtonObject").setText(btnText);
+                btnRecv.getComponent("ButtonObject").fontSize = fontSize;
                 btnRecv.getComponent(cc.Button).interactable = true;
             }
 
@@ -695,8 +737,72 @@ cc.Class({
     //活动类型为Type2的领取按钮点击事件
     onActiveRecvBtnClick: function (event) {
         let btn = event.target;
-        let data = btn.parent.data;
-        GlobalVar.handlerManager().activeHandler.sendActiveFenReq(data.actid, data.id, data.num);
+        let customData = btn.parent.data;
+        let data = GlobalVar.me().activeData.getActiveDataByActID(customData.actid);
+        let ruleCfg = data.Act.RuleCfg;
+        let rule = ruleCfg[customData.id] && ruleCfg[customData.id].RuleList[0];
+        let curJoinTime = 0;
+        let joinData = null;
+        for (let i = 0; i < data.Join.length; i++) {
+            if (data.Join[i].ID == customData.id) {
+                joinData = data.Join[i];
+            }
+        }
+        if (joinData && joinData.Join) {
+            curJoinTime = joinData.Join;
+        }
+        let self = this;
+        if (rule && rule.RuleID == GameServerProto.PT_AMS_RULEID_SHARE) {
+            let curStep = StoreageData.getShareTimesWithKey(data.Act.Actid, data.Act.Limit, data.Act.EndTime);
+            if (curStep >= rule.Var * (curJoinTime + 1)) {
+                GlobalVar.handlerManager().activeHandler.sendActiveFenReq(customData.actid, customData.id, customData.num);
+            } else {
+                let shareSuccessFunc = function () {
+                    curStep = StoreageData.setShareTimesWithKey(data.Act.Actid, data.Act.Limit, data.Act.EndTime);
+                    if (curStep >= rule.Var * (curJoinTime + 1)) {
+                        GlobalVar.handlerManager().activeHandler.sendActiveFenReq(customData.actid, customData.id, customData.num);
+                    } else {
+                        self.refreshActiveContent(data);
+                    }
+                };
+                if (cc.sys.platform == cc.sys.WECHAT_GAME){
+                    if (rule.Param == 0) {
+                        weChatAPI.shareNormal(113, shareSuccessFunc);
+                    } else {
+                        CommonWnd.showMessage(null, CommonWnd.oneConfirm, i18n.t('label.4000216'), i18n.t('label.4000317'), null, function () {
+                            weChatAPI.shareNeedClick(113, shareSuccessFunc);
+                        }, null, i18n.t('label.4000304'));
+                    }
+                }else{
+                    let platformApi = GlobalVar.getPlatformApi();
+                    if (platformApi) {
+                        platformApi.shareNormal(113, shareSuccessFunc);
+                    }
+                }
+            }
+        }else if (rule && rule.RuleID == GameServerProto.PT_AMS_RULEID_AD) {
+            let curStep = StoreageData.getShareTimesWithKey(data.Act.Actid, data.Act.Limit, data.Act.EndTime);
+            if (curStep >= rule.Var * (curJoinTime + 1)) {
+                GlobalVar.handlerManager().activeHandler.sendActiveFenReq(customData.actid, customData.id, customData.num);
+            } else {
+                let shareSuccessFunc = function () {
+                    curStep = StoreageData.setShareTimesWithKey(data.Act.Actid, data.Act.Limit, data.Act.EndTime);
+                    if (curStep >= rule.Var * (curJoinTime + 1)) {
+                        GlobalVar.handlerManager().activeHandler.sendActiveFenReq(customData.actid, customData.id, customData.num);
+                    } else {
+                        self.refreshActiveContent(data);
+                    }
+                };
+                let platformApi = GlobalVar.getPlatformApi();
+                if (platformApi) {
+                    platformApi.showRewardedVideoAd(213, shareSuccessFunc, function () {
+                        platformApi.shareNormal(113, shareSuccessFunc);
+                    });
+                }
+            }
+        }else{
+            GlobalVar.handlerManager().activeHandler.sendActiveFenReq(customData.actid, customData.id, customData.num);
+        }
     },
     //活动类型为Type1的兑换按钮点击事件
     onActiveExchangeBtnClick: function (event) {
@@ -779,7 +885,6 @@ cc.Class({
                         platformApi.shareNormal(113, shareSuccessFunc);
                     }
                 }
-
             }
         } else if (rule && rule.RuleID == GameServerProto.PT_AMS_RULEID_AD){
             let curStep = StoreageData.getShareTimesWithKey(data.Act.Actid, data.Act.Limit, data.Act.EndTime);
@@ -799,10 +904,6 @@ cc.Class({
                     platformApi.showRewardedVideoAd(213, shareSuccessFunc, function (data) {
                         platformApi.shareNormal(113, shareSuccessFunc);
                     });
-                    // self.nodeBlock.enabled = true;
-                    // setTimeout(function () {
-                    //     self.nodeBlock.enabled = false;
-                    // }, 1500);
                 }
             }
         } else {
@@ -869,10 +970,6 @@ cc.Class({
                     platformApi.showRewardedVideoAd(213, shareSuccessFunc, function (data) {
                         platformApi.shareNormal(113, shareSuccessFunc);
                     });
-                    // self.nodeBlock.enabled = true;
-                    // setTimeout(function () {
-                    //     self.nodeBlock.enabled = false;
-                    // }, 1500);
                 }
             }
         } else {

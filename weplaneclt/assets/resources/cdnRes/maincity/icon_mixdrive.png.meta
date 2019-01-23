@@ -1,0 +1,32 @@
+{
+  "ver": "2.3.0",
+  "uuid": "ce2738f6-da78-4b6b-9a32-5828ae3d19a4",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "platformSettings": {},
+  "subMetas": {
+    "icon_mixdrive": {
+      "ver": "1.0.3",
+      "uuid": "381620b0-ef51-449b-b22f-eaeb2378dba3",
+      "rawTextureUuid": "ce2738f6-da78-4b6b-9a32-5828ae3d19a4",
+      "trimType": "auto",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 94,
+      "height": 91,
+      "rawWidth": 94,
+      "rawHeight": 91,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

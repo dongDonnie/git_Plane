@@ -1,7 +1,6 @@
 
 var HandlerBase = require("handlerbase")
 var GlobalVar = require('globalvar')
-var EventMsgID = require("eventmsgid")
 var GameServerProto = require("GameServerProto");
 
 var self = null;
@@ -18,15 +17,17 @@ cc.Class({
         GlobalVar.messageDispatcher.bindMsg(GameServerProto.GMID_ARENA_RANK_TOP_LIST_ACK, self._recvArenaRankTopListAck, self);
         GlobalVar.messageDispatcher.bindMsg(GameServerProto.GMID_ARENA_LIKE_ACK, self._recvArenaLikeAck, self);
         GlobalVar.messageDispatcher.bindMsg(GameServerProto.GMID_ARENA_CHALLENGE_ACK, self._recvArenaChallengeAck, self);
-        GlobalVar.messageDispatcher.bindMsg(GameServerProto.GMID_ARENA_CHALLENGE_COUNT_BUY_ACK, self._recvArenaChallengeCountBuyAck, self);
         GlobalVar.messageDispatcher.bindMsg(GameServerProto.GMID_ARENA_POINTS_CHANGE_NTF, self._recvArenaPointChangeNtf, self);
         GlobalVar.messageDispatcher.bindMsg(GameServerProto.GMID_ARENA_DAY_REWARD_ACK, self._recvArenaDayRewardAck, self);
         GlobalVar.messageDispatcher.bindMsg(GameServerProto.GMID_ARENA_SAODANG_ACK, self._recvArenaSaoDangAck, self);
+        GlobalVar.messageDispatcher.bindMsg(GameServerProto.GMID_ARENA_CHALLENGE_COUNT_BUY_ACK, self._recvArenaChallengeCountBuyAck, self);
         GlobalVar.messageDispatcher.bindMsg(GameServerProto.GMID_ARENA_CHALLENGE_COUNT_FREE_GET_ACK, self._recvArenaChallengeCountFreeGetAck, self);
-        GlobalVar.messageDispatcher.bindMsg(GameServerProto.GMID_STORE_DATA_ACK, self._recvArenaStoreAck, self);
         GlobalVar.messageDispatcher.bindMsg(GameServerProto.GMID_RANK_STORE_DATA_ACK, self._recvRankStoreDataAck, self);
         GlobalVar.messageDispatcher.bindMsg(GameServerProto.GMID_RANK_STORE_BUY_ACK, self._recvRankStoreBuyAck, self);
-        GlobalVar.messageDispatcher.bindMsg(GameServerProto.GMID_STORE_BUY_ACK, self._recvArenaStoreBuyAck, self);
+        GlobalVar.messageDispatcher.bindMsg(GameServerProto.GMID_ARENA_POINTS_CHANGE_NTF, self._recvArenaPointChangeNtf, self);
+        // GlobalVar.messageDispatcher.bindMsg(GameServerProto.GMID_STORE_DATA_ACK, self._recvArenaStoreAck, self);
+        // GlobalVar.messageDispatcher.bindMsg(GameServerProto.GMID_STORE_BUY_ACK, self._recvArenaStoreBuyAck, self);
+        // GlobalVar.messageDispatcher.bindMsg(GameServerProto.GMID_STORE_REFRESH_ACK, self._recvArenaStoreRefreshAck, self);
     },
 
     _recvArenaOpenAck: function (msgId, msg) {
@@ -106,9 +107,9 @@ cc.Class({
         }
         GlobalVar.me().arenaData.setArenaChallengeCountBuyData(msg.data);
     },
-    sendArenaChallengeCountBuyReq: function () {
+    sendArenaChallengeCountBuyReq: function (ticketCount) {
         let msg = {
-            Reserved: reserved,
+            Reserved: 0,
             TicketCount: ticketCount,
         };
         self.sendMsg(GameServerProto.GMID_ARENA_CHALLENGE_COUNT_BUY_REQ, msg);
@@ -180,11 +181,11 @@ cc.Class({
         }
         GlobalVar.me().arenaData.setArenaStoreBuyData(msg.data);
     },
-    sendArenaStoreBuyReq: function (id, type, expires) {
+    sendArenaStoreBuyReq: function (id) {
         let msg = {
             ID: id,
-            Type: type,
-            Expires: expires,
+            Type: GameServerProto.PT_STORE_ARENA,
+            Expires: GlobalVar.me().arenaData.arenaExpires || 0,
         };
         self.sendMsg(GameServerProto.GMID_STORE_BUY_REQ, msg);
     },
@@ -215,5 +216,25 @@ cc.Class({
             Num: num,
         };
         self.sendMsg(GameServerProto.GMID_RANK_STORE_BUY_REQ, msg);
+    },
+
+    _recvArenaStoreRefreshAck: function (msgId, msg) {
+        if (typeof msg != 'object'){
+            return;
+        }
+        GlobalVar.me().arenaData.setArenaStoreRefreshData(msg.data);
+    },
+    sendArenaStoreRefreshReq: function (storeType) {
+        let msg = {
+            Type: GameServerProto.PT_STORE_ARENA,
+        };
+        self.sendMsg(GameServerProto.GMID_STORE_REFRESH_REQ, msg);
+    },
+
+    _recvArenaPointChangeNtf: function (msgId, msg) {
+        if (typeof msg != 'object') {
+            return;
+        }
+        GlobalVar.me().arenaData.setArenaPointChangeData(msg.data);
     },
 });

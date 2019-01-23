@@ -154,12 +154,12 @@ cc.Class({
         }
     },
 
-    _spineStartCallBack(trackEntry) {
+    // _spineStartCallBack(trackEntry) {
 
-    },
-    _spineCompleteCallBack(trackEntry) {
+    // },
+    // _spineCompleteCallBack(trackEntry) {
 
-    },
+    // },
 
     setDefaultAction(actName) {
         if (this.findAction(actName) != null) {

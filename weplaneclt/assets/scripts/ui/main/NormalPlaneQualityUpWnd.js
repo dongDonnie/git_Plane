@@ -2,12 +2,7 @@ const RootBase = require("RootBase");
 const WindowManager = require("windowmgr");
 const GlobalVar = require('globalvar')
 const WndTypeDefine = require("wndtypedefine");
-const EventMsgID = require("eventmsgid");
-const ResMapping = require("resmapping");
-const GameServerProto = require("GameServerProto");
-const ShaderUtils = require("ShaderUtils");
 const GlobalFunc = require('GlobalFunctions');
-const config = require('config');
 const PlaneEntity = require('PlaneEntity');
 
 const AUDIO_QUALITY_UP2 = 'cdnRes/audio/main/effect/shengjie2'

@@ -9,15 +9,25 @@ cc.Class({
     extends: UIBase,
 
     properties: {
-        
+        bg: {
+            default: null,
+            type: cc.Node
+        }
     },
 
     onLoad: function () {
         this.battleManager = require('BattleManager').getInstance();
+        if (!!this.battleManager.isArenaFlag) {
+            this.bg.opacity = 0;
+        }
     },
 
-    countdown:function(){
-        this.battleManager.gameState = Defines.GameResult.RESUME;
+    countdown: function () {
+        if (!!this.battleManager.isArenaFlag) {
+            this.battleManager.gameState = Defines.GameResult.READY;
+        } else {
+            this.battleManager.gameState = Defines.GameResult.RESUME;
+        }
         this.node.destroy();
     },
 

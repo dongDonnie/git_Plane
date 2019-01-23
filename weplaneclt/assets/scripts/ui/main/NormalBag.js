@@ -68,7 +68,6 @@ cc.Class({
 
     onLoad: function () {
         this._super();
-        i18n.init('zh');
         self = this;
         this.typeName = WndTypeDefine.WindowType.E_DT_NORMALBAG;
         this.animeStartParam(0);

@@ -2,7 +2,6 @@ const GlobalVar = require("globalvar");
 const ResMapping = require("resmapping");
 const SceneDefines = require("scenedefines");
 const WndTypeDefine = require("wndtypedefine");
-const i18n = require('LanguageData');
 
 var WindowManager = cc.Class({
     extends: cc.Component,
@@ -12,6 +11,7 @@ var WindowManager = cc.Class({
         this.addMask = false;
         this.openLog = false;
         this.pushName = '';
+        this.pushArray = [];
         this.revertViewStack = [];
     },
     clearWindowMgr: function () {
@@ -20,6 +20,7 @@ var WindowManager = cc.Class({
         this.addMask = false;
         this.openLog = false;
         this.pushName = '';
+        this.pushArray = [];
         this.revertViewStack = [];
     },
 
@@ -86,6 +87,18 @@ var WindowManager = cc.Class({
             typeName != WndTypeDefine.WindowType.E_DT_ROOTBACK_WND &&
             typeName != WndTypeDefine.WindowType.E_DT_NORMALROOT_WND) {
             this.showLog("window manager is pushing");
+            for (let value of this.pushArray) {
+                if (typeName == value.typeName) {
+                    return;
+                }
+            }
+            let view = {};
+            view.typeName = typeName;
+            view.callback = callback;
+            view.needUpMask = needUpMask;
+            view.skipCheck = skipCheck;
+            view.param = param;
+            this.pushArray.push(view);
             return;
         }
 
@@ -124,7 +137,7 @@ var WindowManager = cc.Class({
                 } else {
                     self.showLog("PushView: push view failed!");
                     self.revertStack();
-                    GlobalVar.comMsg.showMsg(i18n.t('label.4000000'));
+                    GlobalVar.comMsg.showMsg('请保持网络连接畅通');
                 }
             });
         } else {
@@ -185,18 +198,22 @@ var WindowManager = cc.Class({
                 //if (needRefresh) {
                 this.mapViewData[typeName].getComponent(type).enter(needRefresh);
                 //}
-                if (this.pushName == typeName) {
-                    this.pushName = '';
-                }
 
                 this.showLog("Addview: add " + typeName + " success!");
+
+                if (this.pushName == typeName) {
+                    if (this.pushArray.length != 0) {
+                        let view = this.pushArray.shift();
+                        this.pushName = '';
+                        this.pushView(view.typeName, view.callback, view.needUpMask, view.skipCheck, view.param);
+                    } else {
+                        this.pushName = '';
+                    }
+                }
             }
         } else {
             this.showLog("AddView: addview can not find wndnode!");
         }
-
-        let block = cc.find("Canvas/BlockNode");
-        block.active = false;
     },
 
     addMaskBack: function (type, nextTpye, callback, param) {
@@ -254,7 +271,7 @@ var WindowManager = cc.Class({
 
             } else {
                 self.showLog("AddMaskBack: MackBack error!");
-                GlobalVar.comMsg.showMsg(i18n.t('label.4000000'));
+                GlobalVar.comMsg.showMsg('请保持网络连接畅通');
             }
         });
     },
@@ -348,7 +365,7 @@ var WindowManager = cc.Class({
                 } else {
                     self.showLog("InsertView: insert failed!");
                     self.revertStack();
-                    GlobalVar.comMsg.showMsg(i18n.t('label.4000000'));
+                    GlobalVar.comMsg.showMsg('请保持网络连接畅通');
                 }
             });
         } else {
@@ -418,6 +435,8 @@ var WindowManager = cc.Class({
                     this.record = WndTypeDefine.WindowType.E_DT_ENDLESS_CHALLENGE_VIEW;
                 } else if (this.vectorViewStack[i] == WndTypeDefine.WindowType.E_DT_NORMAL_QUESTLIST_VIEW) {
                     this.record = WndTypeDefine.WindowType.E_DT_NORMAL_QUESTLIST_VIEW;
+                } else if (this.vectorViewStack[i] == WndTypeDefine.WindowType.E_DT_NORMAL_ARENA_MAIN_WND) {
+                    this.record = WndTypeDefine.WindowType.E_DT_NORMAL_ARENA_MAIN_WND;
                 }
             }
             this.vectorViewStack.splice(0, this.vectorViewStack.length);
@@ -439,6 +458,12 @@ var WindowManager = cc.Class({
                             wnd.getComponent(type).needShowRecommond();
                             wnd.getComponent(type).needShowTestPlayFinish();
                         });
+                    } else if (this.record == WndTypeDefine.WindowType.E_DT_NORMAL_ARENA_MAIN_WND) {
+                        GlobalVar.handlerManager().arenaHandler.sendArenaOpenReq();
+                    } else if (this.record == WndTypeDefine.WindowType.E_DT_NORMALIMPROVEMENT_WND) {
+                        WindowManager.getInstance().pushView(WndTypeDefine.WindowType.E_DT_NORMALIMPROVEMENT_WND, function (wnd, name, type) {
+                            wnd.getComponent(type).selectEquipment(null, 1);
+                        }, true, false);
                     } else {
                         this.pushView(this.record);
                     }
@@ -468,6 +493,7 @@ var WindowManager = cc.Class({
 
     revertStack: function () {
         this.pushName = '';
+        this.pushArray.splice(0, this.pushArray.length);
         let topType = this.getCeilingViewType();
         if (topType == WndTypeDefine.WindowType.E_DT_MASKBACK_WND && this.vectorViewStack.length == 1 && this.revertViewStack.length == this.vectorViewStack.length) {
             this.popView(false);

@@ -47,7 +47,7 @@ var LoadingScene = cc.Class({
     },
 
     statics: {
-
+        reloadCount: 0,
     },
 
     ctor: function () {
@@ -160,6 +160,17 @@ var LoadingScene = cc.Class({
                                         GlobalVar.sceneManager().reStart();
                                     });
                                 } else {
+                                    LoadingScene.reloadCount++;
+                                    if (LoadingScene.reloadCount > 2) {
+                                        weChatAPI.showToast("系统检测到资源异常, 是否需要清理缓存", true, true, "确认", "取消", function () {
+                                            weChatAPI.loadingClearCache(function () {
+                                                LoadingScene.reloadCount = 0;
+                                                cc.director.loadScene('LoadingScene');
+                                            }, '清理缓存中');
+                                        }, function () {
+                                            cc.director.loadScene('LoadingScene');
+                                        });
+                                    }
                                     weChatAPI.showToast("读取资源失败, 点击确认重试", true, false, "确认", "取消", function () {
                                         cc.director.loadScene('LoadingScene');
                                     });
@@ -237,6 +248,7 @@ var LoadingScene = cc.Class({
             cc.log("loading finish");
             if (this.bgmComplete == 2 || this.bgmComplete == -1) {
                 this.loadingState = LoadingState.E_WAITING;
+                LoadingScene.reloadCount = 0;
                 this.releaseScene();
                 let nextSceneState = GlobalVar.sceneManager().nextScene;
                 GlobalVar.sceneManager().directGotoScene(nextSceneState);

@@ -1,13 +1,5 @@
 const UIBase = require("uibase");
-const GameServerProto = require("GameServerProto");
 const GlobalVar = require('globalvar')
-const WndTypeDefine = require("wndtypedefine");
-const EventMsgID = require("eventmsgid");
-const CommonWnd = require("CommonWnd");
-const WindowManager = require("windowmgr");
-const i18n = require('LanguageData');
-const weChatAPI = require("weChatAPI");
-const GlobalFunc = require('GlobalFunctions');
 
 const DayLabel = ['一', '二', '三', '四', '五', '六', '七'];
 cc.Class({
@@ -59,6 +51,7 @@ cc.Class({
 
     updateItemInfo: function () {
         let len = this.data.oVecReward.length;
+        len > 3 && (len = 3);
         for (let i = 0; i < len; i++) {
             let rewardData = this.data.oVecReward[i];
             let itemObj = this.nodeItems.children[i];
@@ -131,14 +124,6 @@ cc.Class({
                         GlobalVar.handlerManager().signHandler.sendSignReq(self.data.byDay);
                     });
                 });
-                // let signNode = WindowManager.getInstance().findViewInWndNode(WndTypeDefine.WindowType.E_DT_NORMAL_SIGN_WND);
-                // if (signNode){
-                //     let component = signNode.getComponent(WndTypeDefine.WindowType.E_DT_NORMAL_SIGN_WND);
-                //     component.nodeBlock.enabled = true;
-                //     setTimeout(function () {
-                //         component.nodeBlock.enabled = false;
-                //     }, 1500);
-                // }
             }
         } else {
             GlobalVar.handlerManager().signHandler.sendSignReq(this.data.byDay);
@@ -146,11 +131,6 @@ cc.Class({
     },
 
     meetVipCondition: function (cond) {
-        // if (GlobalFunc.iosOrAndr() == 1) {  // iOS无贵族
-        //     return false;
-        // } else {
-        //     return GlobalVar.me().vipLevel >= cond;
-        // }
         return GlobalVar.me().vipLevel >= cond;
     }
 

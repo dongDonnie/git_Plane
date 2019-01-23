@@ -69,7 +69,7 @@ var Me = cc.Class({
         self.endlessRankID = null;
         self.vipExp = null;
         self.vipLevel = null;
-        self.creatTime = null;
+        self.createTime = null;
         self.avatar = null;
         self.combatPoint = null;
         self.icon = null;
@@ -115,7 +115,9 @@ var Me = cc.Class({
         self.signData = self._createData("SignData");
         self.adData = self._createData("AdData");
         self.bannerYdData = self._createData("BannerYdData");
-        // self.arenaData = self._createData("ArenaData");
+        self.arenaData = self._createData("ArenaData");
+        self.followRewardData = self._createData("FollowRewardData");
+        self.boxRewardData = self._createData("BoxRewardData");
     },
 
     setMyselfData: function (playerData) {
@@ -129,7 +131,7 @@ var Me = cc.Class({
         self.endlessRankID = playerData.EndlessRankID;
         self.vipExp = playerData.VIPExp;
         self.vipLevel = playerData.VIPLevel;
-        self.creatTime = playerData.CreatTime;
+        self.createTime = playerData.CreateTime;
         if (playerData.Avatar != "") {
             self.loginData.setLoginReqDataAvatar(playerData.Avatar);
         }
@@ -165,6 +167,13 @@ var Me = cc.Class({
     setDiamond: function (diamond) {
         self.diamond = diamond;
         GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_DIAMOND_NTF);
+    },
+    serVipExp: function (vipExp) {
+        self.vipExp = vipExp
+    },
+    setVipLevel: function (vipLevel) {
+        self.vipLevel = vipLevel;
+        GlobalVar.me().rechargeData.updateCanGetRewardHotFlag();
     },
     getSpData: function () {
         return self.spData.getData();
@@ -231,12 +240,14 @@ var Me = cc.Class({
 
         self.spData.setData(playerData.SpBag);
         self.bagData.setData(playerData.ItemBag);
-        self.memberData.setMemberData(playerData.MemberBag.Members);
         self.memberData.setStandingByData(playerData.ChuZhanBag);
+        self.memberData.setMemberData(playerData.MemberBag.Members);
         self.guazaiData.setData(playerData.GuaZaiBag);
         self.leaderData.setData(playerData.Leader);
         self.dailyData.setNewTaskData(playerData.NewTaskBag);
         self.shareData.setData(playerData.ShareBag);
+        self.adData.setAdTaskRewardData(playerData.FuLiGCBag);
+        self.arenaData.setData(playerData.ArenaBag);
 
         self.propData.setData(playerData.PropBag); //这个放在最后调用
     },
@@ -256,7 +267,13 @@ var Me = cc.Class({
 
     setServerTime: function (t) {
         self.serverTime = t;
-    }
+    },
+
+    saveDoubleReward: function (data) {
+        self.setGold(data.GoldCur);
+        self.updatePlayerSp(data.SpCur);
+        GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_LEVELUP_DOUBLE_REWARD, data);
+    },
 });
 
 module.exports = Me;
