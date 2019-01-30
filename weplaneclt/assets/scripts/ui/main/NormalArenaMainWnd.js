@@ -10,8 +10,12 @@ const i18n = require('LanguageData');
 const GameServerProto = require("GameServerProto");
 const BattleManager = require('BattleManager');
 
-cc.Class({
+var NormalArenaMainWnd = cc.Class({
     extends: RootBase,
+
+    statics: {
+        challengeIndex: null,
+    },
 
     properties: {
         nodeRankModel: {
@@ -59,15 +63,12 @@ cc.Class({
         this._leftSaoDangCount = 0;
         this._getPoint = 0;
         this.isFirstIn = true;
+        this.timeoutId = -1;
     },
 
     animeStartParam(num) {
         this.node.opacity = num;
-        if (num = 0) {
-            this.node.setA(0);
-        }
-
-        if (num == 0 || num == 255){
+        if (num == 0 || num == 255) {
             this.node.getChildByName("nodeTop").active = false;
             this.node.getChildByName("nodeBottom").active = false;
         }
@@ -80,35 +81,38 @@ cc.Class({
             if (!this.deleteMode) {
                 CommonWnd.showArenaRankingWnd();
             } else if (this.deleteMode) {
+                GlobalVar.me().arenaData.setOldArenaList(null);
                 let uiNode = cc.find("Canvas/UINode");
                 BattleManager.getInstance().quitOutSide();
                 BattleManager.getInstance().startOutside(uiNode.getChildByName('UIMain').getChildByName('nodeBottom').getChildByName('planeNode'), GlobalVar.me().memberData.getStandingByFighterID(), true);
             }
         } else if (name == "Enter") {
             this._super("Enter");
-            let challengeData = GlobalVar.me().arenaData.getArenaChallengeData();
-            if (challengeData && challengeData.DiamondReward > 0) {
-                let uiNode = cc.find("Canvas/UINode");
-                if (cc.isValid(uiNode)) {
-                    uiNode.active = true;
-                }
+            let block = cc.find("Canvas/BlockNode");
+            if (cc.isValid(block)) {
+                block.active = true;
             }
             this.deleteMode = false;
             BattleManager.getInstance().quitOutSide();
             this.registerEvent();
-            
+
             this.node.getChildByName("nodeTop").active = true;
             this.node.getChildByName("nodeBottom").active = true;
 
-            this.initLoopScroll();
-            
-            if (challengeData && challengeData.DiamondReward > 0) {
-                CommonWnd.showTreasureExploit([{
-                    ItemID: 3,
-                    Count: challengeData.DiamondReward
-                }])
-                GlobalVar.me().arenaData.arenaChallengeData = null;
-            }
+            this.initLoopScroll(function () {
+                let block = cc.find("Canvas/BlockNode");
+                if (cc.isValid(block)) {
+                    block.active = false;
+                }
+                let challengeData = GlobalVar.me().arenaData.getArenaChallengeData();
+                if (challengeData && challengeData.PointsReward > 0) {
+                    CommonWnd.showTreasureExploit([{
+                        ItemID: GameServerProto.PT_ITEMID_ARENA_POINT,
+                        Count: challengeData.PointsReward,
+                    }]);
+                    GlobalVar.me().arenaData.arenaChallengeData = null;
+                }
+            });
         }
     },
 
@@ -136,31 +140,154 @@ cc.Class({
         this.nodeRewardHotPoint.active = GlobalVar.me().arenaData.getArenaRewardFlag();
     },
 
-    initLoopScroll: function () {
+    initLoopScroll: function (callback) {
         let self = this;
+        let createLoop = function (list, complete) {
+            let startIndex = 0;
+            for (let key in list) {
+                if (list[key].RoleID == GlobalVar.me().roleID) {
+                    startIndex = key;
+                    break;
+                }
+            }
+            startIndex = startIndex > 3 ? startIndex - 3 : 0;
+            if (startIndex >= list.length - 3) {
+                startIndex = list.length - 6;
+            }
+            self.rankScroll.loopScroll.setStartIndex(startIndex);
+            self.rankScroll.loopScroll.setTotalNum(list.length);
+            self.rankScroll.loopScroll.setCreateInterval(0);
+            self.rankScroll.loopScroll.setCreateModel(self.nodeRankModel);
+            self.rankScroll.loopScroll.saveCreatedModel(self.rankScroll.content.children);
+            self.rankScroll.loopScroll.registerUpdateItemFunc(function (model, index) {
+                self.updateRank(model, list[index]);
+                model.getChildByName("btnChallenge").getComponent(cc.Button).clickEvents[0].customEventData = index;
+                model.getChildByName("btnSaoDangSingle").getComponent(cc.Button).clickEvents[0].customEventData = index + "." + 1;
+                model.getChildByName("btnSaoDangMulti").getComponent(cc.Button).clickEvents[0].customEventData = index + "." + 5;
+            });
+            if (!!complete) {
+                self.rankScroll.loopScroll.registerAllCompleteFunc(complete);
+            }
+            self.rankScroll.loopScroll.resetView();
+        };
+
+        let oldData = null; //GlobalVar.me().arenaData.getOldArenaList();
         let arenaListData = GlobalVar.me().arenaData.getArenaListData();
-        this.rankScroll.loopScroll.setTotalNum(arenaListData.length);
-        this.rankScroll.loopScroll.setCreateInterval(0);
-        this.rankScroll.loopScroll.setCreateModel(this.nodeRankModel);
-        this.rankScroll.loopScroll.saveCreatedModel(this.rankScroll.content.children);
-        this.rankScroll.loopScroll.registerUpdateItemFunc(function(model, index){
-            self.updateRank(model, arenaListData[index]);
-            model.getChildByName("btnChallenge").getComponent(cc.Button).clickEvents[0].customEventData = index;
-            model.getChildByName("btnSaoDangSingle").getComponent(cc.Button).clickEvents[0].customEventData = index + "." + 1;
-            model.getChildByName("btnSaoDangMulti").getComponent(cc.Button).clickEvents[0].customEventData = index + "." + 5;
+        if (oldData != null) {
+            let oldIndex = -1;
+            for (let key in oldData) {
+                if (oldData[key].RoleID == GlobalVar.me().roleID) {
+                    oldIndex = key;
+                    break;
+                }
+            }
+            let newIndex = -1;
+            for (let key in arenaListData) {
+                if (arenaListData[key].RoleID == GlobalVar.me().roleID) {
+                    newIndex = key;
+                    break;
+                }
+            }
+            if (oldData[oldIndex].Ranking > arenaListData[newIndex].Ranking) {
+                createLoop(oldData, function () {
+                    let animeBack = self.node.getChildByName("spriteRankUpAnime");
+                    animeBack.active = true;
+                    let obj = null;
+                    let origin = null;
+                    let target = null;
+                    for (let item of self.rankScroll.loopScroll.itemList) {
+                        let str = item.getChildByName("spriteRank").getChildByName("labelRank").getComponent(cc.Label).string;
+                        if (str == oldData[oldIndex].Ranking.toString()) {
+                            origin = item;
+                            obj = cc.instantiate(item);
+                            self.updateRank(obj, oldData[oldIndex]);
+                            obj.opacity = 0;
+                            animeBack.addChild(obj);
+                            GlobalFunc.converToOtherNodeSpaceAR(item, obj);
+                        }
+                        if (str == oldData[NormalArenaMainWnd.challengeIndex].Ranking.toString()) {
+                            target = item;
+                        }
+                    }
+                    let offset = self.rankScroll.getScrollOffset();
+                    if (offset.y <= 0) {
+                        let y = (obj.height + self.rankScroll.loopScroll.gapDisY) * (NormalArenaMainWnd.challengeIndex - oldIndex);
+                        obj.runAction(cc.sequence(cc.fadeIn(0.2), cc.moveBy(0.2, cc.v2(0, -y)), cc.fadeOut(0.2), cc.removeSelf(true)));
+                        animeBack.runAction(cc.sequence(cc.delayTime(0.6), cc.callFunc(function () {
+                            createLoop(arenaListData);
+                            GlobalVar.me().arenaData.setOldArenaList(arenaListData);
+                            animeBack.active = false;
+                            if (!!callback) {
+                                callback();
+                            }
+                        })));
+                    } else {
+                        animeBack.runAction(cc.sequence(
+                            cc.callFunc(function () {
+                                obj.runAction(cc.fadeIn(0.2));
+                            }),
+                            cc.delayTime(0.2),
+                            cc.callFunc(function () {
+                                if (target != null) {
+                                    let plus = target.getPosition().sub(origin.getPosition());
+                                    self.rankScroll.scrollToOffset(cc.v2(offset.x, offset.y - plus.y), 0.2);
+                                } else {
+                                    self.rankScroll.scrollToOffset(cc.v2(offset.x, 0), 0.2);
+                                }
+                            }),
+                            cc.delayTime(0.2),
+                            cc.callFunc(function () {
+                                if (target == null) {
+                                    for (let item of self.rankScroll.loopScroll.itemList) {
+                                        let str = item.getChildByName("spriteRank").getChildByName("labelRank").getComponent(cc.Label).string;
+                                        if (str == oldData[NormalArenaMainWnd.challengeIndex].Ranking.toString()) {
+                                            target = item;
+                                            break;
+                                        }
+                                    }
+                                }
+                                let worldPos = target.parent.convertToWorldSpaceAR(target);
+                                let nodePos = animeBack.convertToNodeSpaceAR(worldPos);
+                                obj.runAction(cc.moveTo(0.2, nodePos));
+
+                            }),
+                            cc.delayTime(0.2),
+                            cc.callFunc(function () {
+                                obj.runAction(cc.sequence(cc.fadeOut(0.2), cc.removeSelf(true)));
+                            }),
+                            cc.delayTime(0.2),
+                            cc.callFunc(function () {
+                                NormalArenaMainWnd.challengeIndex = null;
+                                createLoop(arenaListData);
+                                GlobalVar.me().arenaData.setOldArenaList(arenaListData);
+                                animeBack.active = false;
+                                if (!!callback) {
+                                    callback();
+                                }
+                            })
+                        ));
+                    }
+                });
+                return;
+            }
+        }
+        createLoop(arenaListData, function () {
+            if (!!callback) {
+                callback();
+            }
+            //GlobalVar.me().arenaData.setOldArenaList(arenaListData);
         });
-        this.rankScroll.loopScroll.resetView();
-        this.rankScroll.scrollToTop();
     },
 
     updateRank: function (model, data) {
+        let rank = model.getChildByName("spriteRank");
+        rank.getChildByName("labelRank").getComponent(cc.Label).string = data.Ranking;
         if (data.Ranking > 3 || data.Ranking < 1) {
-            model.getChildByName("spriteRank").getComponent("RemoteSprite").setFrame(0);
-            model.getChildByName("spriteRank").getChildByName("labelRank").getComponent(cc.Label).string = data.Ranking;
-            model.getChildByName("spriteRank").getChildByName("labelRank").active = true;
+            rank.getComponent("RemoteSprite").setFrame(0);
+            rank.getChildByName("labelRank").active = true;
         } else {
-            model.getChildByName("spriteRank").getComponent("RemoteSprite").setFrame(data.Ranking);
-            model.getChildByName("spriteRank").getChildByName("labelRank").active = false;
+            rank.getComponent("RemoteSprite").setFrame(data.Ranking);
+            rank.getChildByName("labelRank").active = false;
         }
 
         if (data.RoleID == GlobalVar.me().roleID) {
@@ -173,7 +300,7 @@ cc.Class({
             model.getChildByName("spriteBg").active = true;
             model.getChildByName("spriteBgSelect").active = false;
 
-            if (data.CombatPoint <= GlobalVar.me().combatPoint && data.Ranking > GlobalVar.me().arenaData.getPlayerRanking() && GlobalVar.me().arenaData.getPlayerRanking() <= 1000){
+            if (data.CombatPoint <= GlobalVar.me().combatPoint && data.Ranking > GlobalVar.me().arenaData.getPlayerRanking() && GlobalVar.me().arenaData.getPlayerRanking() <= 1000) {
                 model.getChildByName("btnChallenge").active = false;
                 model.getChildByName("btnSaoDangSingle").active = true;
                 model.getChildByName("btnSaoDangMulti").active = true;
@@ -183,16 +310,17 @@ cc.Class({
                 model.getChildByName("btnSaoDangMulti").active = false;
             }
         }
-        model.getChildByName("labelPlayerName").getComponent(cc.Label).string = GlobalFunc.interceptStr(data.RoleName, 8, "...");
+        model.getChildByName("labelPlayerName").getComponent(cc.Label).string = GlobalFunc.interceptStrNew(data.RoleName, 4, "...");
         model.getChildByName("labelPlayerLevel").getComponent(cc.Label).string = "等级" + data.Level;
         model.getChildByName("labelPlayerCombat").getComponent(cc.Label).string = data.CombatPoint;
         model.x = 0;
+        let item = model.getChildByName("ItemObject").getComponent("ItemObject");
         if (data.Avatar == "") {
-            model.getChildByName("ItemObject").getComponent("ItemObject").updateItem(data.MemberID);
-            model.getChildByName("ItemObject").getComponent("ItemObject").setSpriteEdgeData(data.Quality < 100 ? data.Quality * 100 : data.Quality);
-            model.getChildByName("ItemObject").getComponent("ItemObject").setSpritePieceVisible(false);
+            item.updateItem(data.MemberID);
+            item.setSpriteEdgeData(data.Quality < 100 ? data.Quality * 100 : data.Quality);
+            item.setSpritePieceVisible(false);
         } else {
-            model.getChildByName("ItemObject").getComponent("ItemObject").setAllVisible(false);
+            item.setAllVisible(false);
 
             cc.loader.load({
                 url: data.Avatar,
@@ -208,9 +336,30 @@ cc.Class({
         // model.getChildByName("btnChallenge").getComponent(cc.Button).clickEvents[0].customEventData = data.Ranking;
     },
 
-
     btnChallengeClick: function (event, index) {
-        let challengeMode = GlobalVar.me().arenaData.getFreeChallengeCount() > 0 ? GameServerProto.PT_ARENA_CHALLENGE_USE_COUNT : GameServerProto.PT_ARENA_CHALLENGE_USE_TICKET;
+        let block = cc.find("Canvas/BlockNode");
+        if (cc.isValid(block)) {
+            block.active = true;
+            this.timeoutId = setTimeout(function () {
+                let block = cc.find("Canvas/BlockNode");
+                if (cc.isValid(block)) {
+                    block.active = false;
+                }
+            }, 3000);
+        }
+
+        let challengeMode = GameServerProto.PT_ARENA_CHALLENGE_USE_TICKET;
+        if (GlobalVar.me().arenaData.getFreeChallengeCount() > 0) {
+            challengeMode = GameServerProto.PT_ARENA_CHALLENGE_USE_COUNT;
+        } else if (GlobalVar.me().bagData.getItemCountById(GameServerProto.PT_ITEMID_ARENA_CHALLENGE_TICKET) > 0) {
+            challengeMode = GameServerProto.PT_ARENA_CHALLENGE_USE_TICKET;
+        } else {
+            CommonWnd.showArenaGetFreeTicketWnd();
+            return;
+        }
+
+        //NormalArenaMainWnd.challengeIndex = index;
+
         let arenaListData = GlobalVar.me().arenaData.getArenaListData();
         GlobalVar.handlerManager().arenaHandler.sendArenaChallengeReq(arenaListData[index].RoleID, arenaListData[index].Ranking, challengeMode);
     },
@@ -223,7 +372,18 @@ cc.Class({
         let count = arr[1];
         this._index = index;
         this._leftSaoDangCount = count;
-        let challengeMode = GlobalVar.me().arenaData.getFreeChallengeCount() > 0 ? GameServerProto.PT_ARENA_CHALLENGE_USE_COUNT : GameServerProto.PT_ARENA_CHALLENGE_USE_TICKET;
+        let challengeMode = GameServerProto.PT_ARENA_CHALLENGE_USE_TICKET;
+        if (GlobalVar.me().arenaData.getFreeChallengeCount() > 0) {
+            challengeMode = GameServerProto.PT_ARENA_CHALLENGE_USE_COUNT;
+        } else if (GlobalVar.me().bagData.getItemCountById(GameServerProto.PT_ITEMID_ARENA_CHALLENGE_TICKET) > 0) {
+            challengeMode = GameServerProto.PT_ARENA_CHALLENGE_USE_TICKET;
+        } else if (!isSerial) {
+            this._leftSaoDangCount = 0;
+            this._getPoint = 0;
+            CommonWnd.showArenaGetFreeTicketWnd();
+            return;
+        }
+
         let arenaListData = GlobalVar.me().arenaData.getArenaListData();
         GlobalVar.handlerManager().arenaHandler.sendArenaSaoDangReq(arenaListData[index].Ranking, challengeMode);
     },
@@ -251,7 +411,8 @@ cc.Class({
             GlobalVar.comMsg.errorWarning(event.ErrCode);
             return;
         }
-        BattleManager.getInstance().quitOutSide();
+        clearTimeout(this.timeoutId);
+        //BattleManager.getInstance().quitOutSide();
         BattleManager.getInstance().isArenaFlag = true;
         BattleManager.getInstance().setCampName('CampDemo');
         BattleManager.getInstance().setMusic('audio/battle/music/Boss_Room');
@@ -327,7 +488,7 @@ cc.Class({
             let getPoint = this._getPoint;
             let items = [{
                 wItemID: GameServerProto.PT_ITEMID_ARENA_POINT,
-                nCount: getPoint
+                nCount: getPoint,
             }];
             CommonWnd.showTreasureExploit(items);
         }

@@ -193,6 +193,7 @@ var EndlessData = cc.Class({
         if (self.bagData && self.bagData.RankID){
             return self.bagData.RankID;
         }
+        return 0;
     },
 
     getSeed: function () {

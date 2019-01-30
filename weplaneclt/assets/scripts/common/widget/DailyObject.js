@@ -158,7 +158,7 @@ var DailyObject = cc.Class({
             }else{
                 this.btnRecv.interactable = true;
             }
-            if (GlobalVar.getShareSwitch()){
+            if (GlobalVar.getShareSwitch() && GlobalVar.getShareControl() != 6){
                 this.btnRecv.node.getComponent("ButtonObject").fontSize = 24;
                 this.btnRecv.node.getComponent("ButtonObject").setText("  " + i18n.t('label.4000304'));
                 this.btnRecv.node.getChildByName("spriteShare").active = true;
@@ -180,7 +180,7 @@ var DailyObject = cc.Class({
             if (data.wID == GameServerProto.PT_DAILY_TASK_AD){
                 this.btnGo.node.getComponent("RemoteSprite").setFrame(0);
                 this.btnGo.node.getComponent("ButtonObject").fontSize = 24;
-                if (!StoreageData.getShareTimesWithKey("rewardedVideoLimit", 1) && GlobalVar.getVideoAdSwitch()){
+                if (!StoreageData.getShareTimesWithKey("rewardedVideoLimit", 99) || GlobalVar.getShareControl() == 6){
                     this.btnGo.node.getComponent("ButtonObject").setText("  " + i18n.t('label.4000328'));
                     this.btnGo.node.getChildByName("spriteVideo").active = true;
                 }else {
@@ -229,11 +229,15 @@ var DailyObject = cc.Class({
         // console.log("RecvBtnClick")
         if (GlobalVar.getShareSwitch() && (data.wID == GameServerProto.PT_DAILY_TASK_SP1 || data.wID == GameServerProto.PT_DAILY_TASK_SP2)){
             let platformApi = GlobalVar.getPlatformApi();
-            if (platformApi){
+            if (platformApi && GlobalVar.getShareControl() == 1){
                 platformApi.shareNormal(121, function(){
                     GlobalVar.handlerManager().dailyHandler.sendDailyRewardReq(data.wID);
                 });
-            }else if (GlobalVar.configGMSwitch()){
+            } else if (platformApi && GlobalVar.getShareControl() == 6){
+                platformApi.showRewardedVideoAd(221, function () {
+                    GlobalVar.handlerManager().dailyHandler.sendDailyRewardReq(data.wID);
+                });
+            } else if (GlobalVar.configGMSwitch()){
                 GlobalVar.handlerManager().dailyHandler.sendDailyRewardReq(data.wID);
             }
         }else{
@@ -246,15 +250,15 @@ var DailyObject = cc.Class({
         console.log("goBtnClick = ", windowID);
         if (data.wID == GameServerProto.PT_DAILY_TASK_AD){
             let platformApi = GlobalVar.getPlatformApi();
-            if (platformApi){
+            if (platformApi && (platformApi.canShowRewardVideo() || GlobalVar.getShareControl() == 6)){
                 platformApi.showRewardedVideoAd(230, function(){
                     GlobalVar.handlerManager().dailyHandler.sendDailyADReq();
-                }, function () {
-                    platformApi.shareNormal(130, function () {
-                        GlobalVar.handlerManager().dailyHandler.sendDailyADReq();
-                    })
                 });
-            }else if (GlobalVar.configGMSwitch()){
+            } else if (platformApi && GlobalVar.getShareControl() == 1){
+                platformApi.shareNormal(130, function(){
+                    GlobalVar.handlerManager().dailyHandler.sendDailyADReq();
+                });
+            } else if (GlobalVar.configGMSwitch()){
                 GlobalVar.handlerManager().dailyHandler.sendDailyADReq();
             }
         }else{

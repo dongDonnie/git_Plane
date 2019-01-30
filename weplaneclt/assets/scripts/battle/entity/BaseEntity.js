@@ -173,7 +173,7 @@ cc.Class({
     deleteObject: function () {
         this.motionStreakCtrl(2);
 
-        if (this.baseObject == null) {
+        if (!cc.isValid(this.baseObject)) {
             return;
         }
 
@@ -194,6 +194,7 @@ cc.Class({
         }
         this.removeChild(this.baseObject);
 
+        this.resetAim();
     },
 
     getObject: function () {
@@ -857,7 +858,7 @@ cc.Class({
 
     updateAim: function (dt) {
         let aimAt = this.atrb.aimAt;
-        if (aimAt.target != null) {
+        if (cc.isValid(aimAt.target)) {
 
             let v = aimAt.target.getPosition().sub(this.getPosition());
 

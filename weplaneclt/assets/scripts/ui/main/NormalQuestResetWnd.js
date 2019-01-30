@@ -60,8 +60,8 @@ cc.Class({
                 this.btnVideo.node.active = false;
                 this.btnPurchase.node.x = 0;
             } else {
-                this.btnShare.node.active = !!StoreageData.getShareTimesWithKey("rewardedVideoLimit", 1);
-                this.btnVideo.node.active = !StoreageData.getShareTimesWithKey("rewardedVideoLimit", 1)
+                this.btnShare.node.active = !!StoreageData.getShareTimesWithKey("rewardedVideoLimit", 99) && GlobalVar.getShareControl() != 6;
+                this.btnVideo.node.active = !StoreageData.getShareTimesWithKey("rewardedVideoLimit", 99) || GlobalVar.getShareControl() == 6;
             }
             this.registerEvent();
         }
@@ -137,14 +137,6 @@ cc.Class({
                 let campaignID = self.tblData.wCampaignID;
                 GlobalVar.handlerManager().campHandler.sendCampBuyCountReq(typeID, chapterID, campaignID, 1);
                 self.close();
-            }, function () {
-                platformApi.shareNormal(123, function () {
-                    let typeID = self.tblData.byTypeID;
-                    let chapterID = self.tblData.byChapterID;
-                    let campaignID = self.tblData.wCampaignID;
-                    GlobalVar.handlerManager().campHandler.sendCampBuyCountReq(typeID, chapterID, campaignID, 1);
-                    self.close();
-                }); 
             });
         }else if (GlobalVar.configGMSwitch()){
             let typeID = self.tblData.byTypeID;

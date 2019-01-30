@@ -10,8 +10,6 @@ const WndTypeDefine = require("wndtypedefine");
 const AUDIO_LEVEL_UP = 'cdnRes/audio/main/effect/shengji';
 const AUDIO_QUALITY_UP = 'cdnRes/audio/main/effect/shengjie2'
 
-var self = null;
-
 cc.Class({
     extends: RootBase,
 
@@ -27,26 +25,41 @@ cc.Class({
     },
 
     ctor: function () {
-        self = this;
-        this.scheduleHandler = null;
         this.chkbox = 0;
     },
 
-    touchMain: function () {
-        // cc.log("touchMain");
+    setParam: function (item) {
+        this.guazai = JSON.parse(JSON.stringify(item));
+        this.chkbox = 0;
+        this.wearPosition = GlobalVar.tblApi.getDataBySingleKey('TblGuaZai', this.guazai.ItemID).byPosition;
+        this.mapProps = GlobalVar.me().propData.getPropsByGuazaiItem(this.guazai);
+        this.guazaiNext = JSON.parse(JSON.stringify(item));
+        let maxLevel = GameServerProto.PT_PLAYER_MAX_LEVEL * 2;
+        this.guazaiNext.GuaZai.Level = this.guazaiNext.GuaZai.Level + 1 > maxLevel ? maxLevel : this.guazaiNext.GuaZai.Level + 1;
+        this.mapPropsNext = GlobalVar.me().propData.getPropsByGuazaiItem(this.guazaiNext);
+
+        this.getNodeByName("btnoShengjie").getComponent(cc.Button).interactable = true;
+        this.getNodeByName("btnoShengji").getComponent(cc.Button).interactable = false;
+        this.getNodeByName("nodeShengjie").active = false;
+        this.getNodeByName("nodeShengji").active = true;
+        this.updateTopPanel();
+        this.updateHotPoint();
+        this.updateAttrPanel(this.getNodeByName("nodeAttrOld"), 0);
+        this.updateAttrPanel(this.getNodeByName("nodeAttrNew"), 1);
+        this.updateLvlUpPanel();
     },
 
     onLoad: function () {
         this._super();
-        // GlobalVar.eventManager().addEventListener(EventMsgId.EVENT_GUAZAI_CHANGE_NTF, this.onGuazaiChangedCallback, this);
-        // GlobalVar.eventManager().addEventListener(EventMsgId.EVENT_GUAZAI_LVUP_NTF, this.onGuazaiLvUpCallback, this);
 
         this.typeName = WndTypeDefine.WindowType.E_DT_GUAZAIADVANCE_WND;
         this.animeStartParam(0, 0);
+        this.oldLevel = GlobalVar.me().guazaiData.getCurPosGuazai().GuaZai.Level;
+        this.oldExp = GlobalVar.me().guazaiData.getCurPosGuazai().GuaZai.Exp;
         for (let i = 1; i < 6; i++) {
-            self.getNodeByName('ItemObject' + i).on('touchstart', self.touchStart, self);
-            self.getNodeByName('ItemObject' + i).on('touchend', self.touchEnd, self);
-            self.getNodeByName('ItemObject' + i).on('touchcancel', self.touchCancel, self);
+            this.getNodeByName('ItemObject' + i).on('touchstart', this.touchStart.bind(this), this);
+            this.getNodeByName('ItemObject' + i).on('touchend', this.touchEnd.bind(this), this);
+            this.getNodeByName('ItemObject' + i).on('touchcancel', this.touchCancel.bind(this), this);
         }
     },
 
@@ -54,57 +67,79 @@ cc.Class({
         let netNode = cc.find("Canvas/NetNode");
         netNode.active = false;
 
-        self.press = false;
-        self.lastItem = false;
+        this.press = false;
+        this.lastItem = false;
         var itemObject = event.target.getComponent("ItemObject");
-        if (itemObject.getLabelNumberData() <= 0) {
+        if (itemObject.getBagNumberData() <= 0) {
             return;
         }
-        if (itemObject.getLabelNumberData() == 1) self.lastItem = true;
-        GlobalVar.gameTimer().delTimer(self.itemTimeHandler);
+        if (itemObject.getBagNumberData() == 1) this.lastItem = true;
+        this.unschedule(this.PressLevelUp);
 
-        self.expBottleTouched(null, itemObject.itemID);
-        self.durTime = 0;
-        self.curTime = 0.15;
+        this.durTime = 0;
+        this.curTime = 0.2;
+        this.maxTime = 0.2;
+        let self = this;
+        this.expBottleTouched(null, itemObject.itemID);
         var canSend = function () {
             var itemObject = event.target.getComponent("ItemObject");
-            if (itemObject.getLabelNumberData() <= 0) {
-                GlobalVar.gameTimer().delTimer(self.itemTimeHandler);
+            if (itemObject.getBagNumberData() <= 0) {
+                self.unschedule(self.PressLevelUp);
             }
             self.expBottleTouched(null, itemObject.itemID);
         }
-        
-        self.itemTimeHandler = GlobalVar.gameTimer().startTimer(function () {
-            self.durTime += 0.01;
-            if (self.durTime > self.curTime) {
+
+        this.PressLevelUp =  function (dt) {
+            self.durTime += dt;
+            if (self.durTime > self.maxTime) {
                 self.durTime = 0;
-                if (self.curTime > 0.05) {
+                if (self.curTime > 0.04) {
                     self.curTime -= 0.01;
                 }
                 self.press = true;
                 canSend();
             }
-        }, 0.01)
+        }
+        
+        this.schedule(this.PressLevelUp, 0.01);
     },
 
     touchEnd: function (event) {
-        if (!self.press) {
+        if (!this.press) {
             var itemObject = event.target.getComponent("ItemObject");
-            if (itemObject.getLabelNumberData() <= 0 && !self.lastItem) {
+            if (itemObject.getBagNumberData() <= 0 && !this.lastItem) {
                 WindowManager.getInstance().pushView(WndTypeDefine.WindowType.E_DT_NORMALITEMGETWAY, function (wnd, name, type) {
-                    wnd.getComponent(type).updateInfo(itemObject.itemID, itemObject.getLabelNumberData(), 0, -1);
+                    wnd.getComponent(type).updateInfo(itemObject.itemID, itemObject.getBagNumberData(), 0, -1);
                 });
             }
         }
-        GlobalVar.gameTimer().delTimer(self.itemTimeHandler);
+        this.unschedule(this.PressLevelUp);
         let netNode = cc.find("Canvas/NetNode");
         netNode.active = true;
     },
 
     touchCancel: function (event) {
-        GlobalVar.gameTimer().delTimer(self.itemTimeHandler);
+        this.unschedule(this.PressLevelUp);
         let netNode = cc.find("Canvas/NetNode");
         netNode.active = true;
+    },
+
+    expBottleTouched: function (target, data) {
+        if (GlobalVar.me().bagData.getItemCountById(data) <= 0)
+            return;
+        let count = GlobalVar.me().bagData.getItemCountById(data);
+        let useCount = parseInt(this.maxTime * 100 / (this.curTime * 100));
+        let num = useCount > count ? count : useCount;
+        let GMDT_ITEM_COUNT = {
+            ItemID: parseInt(data),
+            Count: num,
+        }
+        let msg = {
+            GuaZaiPos: this.guazai.Slot,
+            SrcItem: [GMDT_ITEM_COUNT]
+        }
+        // cc.log(msg);
+        GlobalVar.handlerManager().guazaiHandler.sendReq(GameServerProto.GMID_GUAZAI_LEVELUP_REQ, msg);
     },
 
     animeStartParam(paramScale, paramOpacity) {
@@ -129,10 +164,11 @@ cc.Class({
     },
 
     registerEvent: function (){
-        GlobalVar.eventManager().addEventListener(EventMsgId.EVENT_GUAZAI_DIRTY_NTF, this.onGuazaiDirtyCallback, this);
+        GlobalVar.eventManager().addEventListener(EventMsgId.EVENT_GUAZAI_ADDEXP_NTF, this.onGuazaiAddexpNtf, this);
         GlobalVar.eventManager().addEventListener(EventMsgId.EVENT_GUAZAI_QUALITY_UP, this.playGuazaiQualityUpEffect, this);
         GlobalVar.eventManager().addEventListener(EventMsgId.EVENT_GUAZAI_LEVEL_UP, this.playGuazaiUseItemEffect, this);
         GlobalVar.eventManager().addEventListener(EventMsgId.EVENT_BAG_ADDITEM_NTF, this.bagAddItem, this);
+        GlobalVar.eventManager().addEventListener(EventMsgId.EVENT_GUAZAI_PUTON_NTF, this.guazaiPutOnNtf, this);
     },
 
     enter: function (isRefresh) {
@@ -151,48 +187,13 @@ cc.Class({
         }
     },
 
-    update: function (dt) {
-        if (!this.dirty)
-            return;
-        this.setParam(GlobalVar.me().guazaiData.getCurPosGuazai());
-        this.beforeLevel = this.guazai.GuaZai.Level;
-        this.dirty = false;
-        this.updateTopPanel();
-        this.updateHotPoint();
-
-        let lblLvNum2 = this.getNodeByName("lblLvNum2");
-
-        if (this.chkbox) {
-            this.updateQualityUpPanel();
-            var qlevel = this.guazaiProp.strQualityDisplay == '' ? 0 : parseInt(this.guazaiProp.strQualityDisplay);
-            lblLvNum2.getComponent(cc.Label).string = qlevel;
-            if (this.guazaiProp.wNextItemID == 0) {
-                this.getNodeByName("lblLvNum3").getComponent(cc.Label).string = 'Max';
-                this.getNodeByName('lblLvNum3').color = new cc.color(255, 73, 43, 255);
-            } else {
-                this.getNodeByName("lblLvNum3").getComponent(cc.Label).string = qlevel + 1;
-                this.getNodeByName('lblLvNum3').color = new cc.color(178, 211, 255);
-            }
-        }
-        else {
-            this.updateLvlUpPanel();
-            lblLvNum2.getComponent(cc.Label).string = this.guazai.GuaZai.Level;
-
-            let maxLevel = GameServerProto.PT_PLAYER_MAX_LEVEL * 2;
-            this.getNodeByName("lblLvNum3").getComponent(cc.Label).string = this.beforeLevel == maxLevel ? "Max" : this.guazaiNext.GuaZai.Level;
-            this.getNodeByName('lblLvNum3').color = this.beforeLevel == maxLevel ? new cc.color(255, 73, 43, 255) : new cc.color(178, 211, 255);
-        }
-
-        this.updateAttrPanel(this.getNodeByName("nodeAttrOld"), 0);
-        this.updateAttrPanel(this.getNodeByName("nodeAttrNew"), 1);
-    },
+    
 
     updateHotPoint: function(){
-        let position = GlobalVar.tblApi.getDataBySingleKey('TblGuaZai', this.guazai.ItemID).byPosition;
-        this.getNodeByName("btnoChange").getChildByName("spriteHot").active = GlobalVar.me().guazaiData.wearHotFlag[position - 1];
-        this.getNodeByName("btnoShengji").getChildByName("spriteHot").active = GlobalVar.me().guazaiData.levelUpHotFlag[position - 1];
-        this.getNodeByName("btnoShengjie").getChildByName("spriteHot").active = GlobalVar.me().guazaiData.qualityUpHotFlag[position - 1];
-        this.getNodeByName("btnoQualityUp").getChildByName("spriteHot").active = GlobalVar.me().guazaiData.qualityUpHotFlag[position - 1];
+        this.getNodeByName("btnoChange").getChildByName("spriteHot").active = GlobalVar.me().guazaiData.wearHotFlag[this.wearPosition - 1];
+        this.getNodeByName("btnoShengji").getChildByName("spriteHot").active = GlobalVar.me().guazaiData.levelUpHotFlag[this.wearPosition - 1];
+        this.getNodeByName("btnoShengjie").getChildByName("spriteHot").active = GlobalVar.me().guazaiData.qualityUpHotFlag[this.wearPosition - 1];
+        this.getNodeByName("btnoQualityUp").getChildByName("spriteHot").active = GlobalVar.me().guazaiData.qualityUpHotFlag[this.wearPosition - 1];
     },
 
     setString: function (lbl, text) {
@@ -215,23 +216,7 @@ cc.Class({
 
     },
 
-    setParam: function (item) {
-        this.dirty = true;
-        this.guazai = item;
-        this.mapProps = GlobalVar.me().propData.getPropsByGuazaiItem(this.guazai);
-        this.guazaiNext = JSON.parse(JSON.stringify(this.guazai));
-        let maxLevel = GameServerProto.PT_PLAYER_MAX_LEVEL * 2;
-        this.guazaiNext.GuaZai.Level = this.guazaiNext.GuaZai.Level + 1 > maxLevel ? maxLevel : this.guazaiNext.GuaZai.Level + 1;
-        this.mapPropsNext = GlobalVar.me().propData.getPropsByGuazaiItem(this.guazaiNext);
-        if (this.chkbox) {
-            let nextQualityLevel = JSON.parse(JSON.stringify(this.guazai));
-            this.guazaiProp = GlobalVar.tblApi.getDataBySingleKey('TblGuaZai', nextQualityLevel.ItemID);
-            if (this.guazaiProp.wNextItemID != 0) {
-                nextQualityLevel.ItemID = this.guazaiProp.wNextItemID;
-                this.mapPropsNext = GlobalVar.me().propData.getPropsByGuazaiItem(nextQualityLevel);
-            }
-        }
-    },
+    
 
     updateTopPanel: function () {
         let icon = this.getNodeByName("nodeIcon");
@@ -258,6 +243,7 @@ cc.Class({
         else {
             mapProps = this.mapProps;
         }
+        let maxLevel = GameServerProto.PT_PLAYER_MAX_LEVEL * 2;
 
         for (let i in mapProps) {
             switch (i) {
@@ -295,10 +281,26 @@ cc.Class({
                 }
             }
             if (!this.chkbox) {
-                let maxLevel = GameServerProto.PT_PLAYER_MAX_LEVEL * 2;
                 setPanel(this.beforeLevel == maxLevel);
             } else {
                 setPanel(this.guazaiProp.wNextItemID == 0);
+            }
+        }
+
+        
+        if (this.chkbox == 0) {
+            this.getNodeByName("lblLvNum2").getComponent(cc.Label).string = this.guazai.GuaZai.Level;
+            this.getNodeByName("lblLvNum3").getComponent(cc.Label).string = this.beforeLevel == maxLevel ? "Max" : this.guazaiNext.GuaZai.Level;
+            this.getNodeByName('lblLvNum3').color = this.beforeLevel == maxLevel ? new cc.color(255, 73, 43, 255) : new cc.color(178, 211, 255);
+        } else {
+            var qlevel = this.guazaiProp.strQualityDisplay == '' ? 0 : parseInt(this.guazaiProp.strQualityDisplay);
+            this.getNodeByName("lblLvNum2").getComponent(cc.Label).string = qlevel;
+            if (this.guazaiProp.wNextItemID == 0) {
+                this.getNodeByName("lblLvNum3").getComponent(cc.Label).string = 'Max';
+                this.getNodeByName('lblLvNum3').color = new cc.color(255, 73, 43, 255);
+            } else {
+                this.getNodeByName("lblLvNum3").getComponent(cc.Label).string = qlevel + 1;
+                this.getNodeByName('lblLvNum3').color = new cc.color(178, 211, 255);
             }
         }
     },
@@ -306,19 +308,14 @@ cc.Class({
     updateQualityUpPanel: function () {
         this.getNodeByName("lblDes").getComponent(cc.Label).string = "挂载升阶";
         let guazaiItem = GlobalVar.tblApi.getDataBySingleKey('TblGuaZai', this.guazai.ItemID);
-        this.getNodeByName("nodeShengji").active = false;
-        this.getNodeByName("nodeShengjie").active = true;
+        this.updateHotPoint();
         // cc.log(guazaiItem);
         if (!guazaiItem.oVecQualityUpNeed[0]) {
             this.getNodeByName("nodeShengjie").active = false;
             return;
         }
         this.setIcon(this.getNodeByName("nodeCostIcon"), guazaiItem.oVecQualityUpNeed[0].wItemID);
-        // this.setIcon(this.getNodeByName("nodeCostGoldIcon"), guazaiItem.oVecQualityUpNeed[1].wItemID);
-        // this.getNodeByName("nodeCostGoldIcon").getChildByName("ItemObject").getComponent("ItemObject").setSpriteEdgeVisible(false);
-        // this.getNodeByName("nodeCostGoldIcon").getChildByName("ItemObject").getComponent("ItemObject").setClick(false);
         this.getNodeByName("lblCostName").getComponent(cc.Label).string = guazaiItem.strName;
-        // this.getNodeByName("lblGoldCostNum").getComponent(cc.Label).string = guazaiItem.oVecQualityUpNeed[1].nCount;
         let costNum = guazaiItem.oVecQualityUpNeed[0].nCount;
         let haveNum = GlobalVar.me().bagData.getGuazaiQualityUpMaterialCount(guazaiItem.oVecQualityUpNeed[0].wItemID);
 
@@ -327,19 +324,17 @@ cc.Class({
 
     updateLvlUpPanel: function () {
         this.getNodeByName("lblDes").getComponent(cc.Label).string = "挂载升级";
-        this.getNodeByName("nodeShengjie").active = false;
-        this.getNodeByName("nodeShengji").active = true;
         let lvlExp = GlobalVar.tblApi.getDataByMultiKey('TblGuaZaiLevel', this.guazai.Slot, this.guazai.GuaZai.Level).nUpNeedEXP;
         let maxLevel = GameServerProto.PT_PLAYER_MAX_LEVEL * 2;
-        this.expProgressBar.progress = this.guazai.GuaZai.Level == maxLevel ? 1 : this.guazai.GuaZai.Exp / lvlExp;
-
-        this.getNodeByName("ItemObject1").getComponent("ItemObject").updateItem(23, GlobalVar.me().bagData.getItemCountById(23));
-        this.getNodeByName("ItemObject2").getComponent("ItemObject").updateItem(24, GlobalVar.me().bagData.getItemCountById(24));
-        this.getNodeByName("ItemObject3").getComponent("ItemObject").updateItem(25, GlobalVar.me().bagData.getItemCountById(25));
-        this.getNodeByName("ItemObject4").getComponent("ItemObject").updateItem(26, GlobalVar.me().bagData.getItemCountById(26));
-        this.getNodeByName("ItemObject5").getComponent("ItemObject").updateItem(27, GlobalVar.me().bagData.getItemCountById(27));
+        if (this.guazai.GuaZai.Level == maxLevel) {
+            this.expProgressBar.progress = 1;
+        } else {
+            this.levelUpAction(0.2, this.oldExp / lvlExp, this.guazai.GuaZai.Exp / lvlExp, null, this.guazai.GuaZai.Level - this.oldLevel);
+            this.oldLevel = this.guazai.GuaZai.Level;
+            this.oldExp = this.guazai.GuaZai.Exp;
+        }
         for(let i = 1; i<=5; i++){
-            let itemID = i+22;
+            let itemID = i + 22;
             let itemCount = GlobalVar.me().bagData.getItemCountById(itemID);
             let itemNode = this.getNodeByName("ItemObject" + i);
             itemNode.getComponent("ItemObject").updateItem(itemID, itemCount);
@@ -351,29 +346,56 @@ cc.Class({
                 effect.active = false;
             }
         }
+        this.updateHotPoint();
+        // this.getNodeByName("btnoShengji").getChildByName("spriteHot").active = GlobalVar.me().guazaiData.levelUpHotFlag[this.wearPosition - 1];
     },
 
-    expBottleTouched: function (target, data) {
-        if (GlobalVar.me().bagData.getItemCountById(data) <= 0)
-            return;
-        let GMDT_ITEM_COUNT = {
-            ItemID: parseInt(data),
-            Count: 1,
+    levelUpAction: function (duration, from, to, callback, levelGap) {
+
+        let bar = this.expProgressBar.node;
+        let cycle = levelGap - from + to;
+        let cellInterval = duration / cycle;
+
+        if (levelGap > 0) {
+            let action1 = cc.progressLoading(cellInterval * (1 - from), from, 1, callback);
+            let action2 = cc.progressLoading(cellInterval * to, 0, to, callback);
+            if (levelGap > 1) {
+                let actionCycle = cc.progressLoading(cellInterval, 0, 1, callback).repeat(levelGap - 1);
+                bar.runAction(cc.sequence(action1, actionCycle, action2));
+            } else {
+                bar.runAction(cc.sequence(action1, action2));
+            }
+        } else {
+            let action = cc.progressLoading(duration, from, to, callback);
+            bar.runAction(action);
         }
-        let msg = {
-            GuaZaiPos: this.guazai.Slot,
-            SrcItem: [GMDT_ITEM_COUNT]
-        }
-        // cc.log(msg);
-        GlobalVar.handlerManager().guazaiHandler.sendReq(GameServerProto.GMID_GUAZAI_LEVELUP_REQ, msg);
     },
+
+    
 
     onChkboxTouchedCallback: function (target, data) {
         this.getNodeByName("btnoShengjie").getComponent(cc.Button).interactable = true;
         this.getNodeByName("btnoShengji").getComponent(cc.Button).interactable = true;
         target.target.getComponent(cc.Button).interactable = false;
         this.chkbox = parseInt(data) - 1;
-        this.dirty = true;
+
+        if (this.chkbox == 0) {
+            this.getNodeByName("nodeShengjie").active = false;
+            this.getNodeByName("nodeShengji").active = true;
+            this.mapPropsNext = GlobalVar.me().propData.getPropsByGuazaiItem(this.guazaiNext);
+            this.updateLvlUpPanel();
+        } else {
+            this.getNodeByName("nodeShengjie").active = true;
+            this.getNodeByName("nodeShengji").active = false;
+            let nextQualityLevel = JSON.parse(JSON.stringify(this.guazai));
+            this.guazaiProp = GlobalVar.tblApi.getDataBySingleKey('TblGuaZai', nextQualityLevel.ItemID);
+            if (this.guazaiProp.wNextItemID != 0) {
+                nextQualityLevel.ItemID = this.guazaiProp.wNextItemID;
+                this.mapPropsNext = GlobalVar.me().propData.getPropsByGuazaiItem(nextQualityLevel);
+            }
+            this.updateQualityUpPanel();
+        }
+        this.updateAttrPanel(this.getNodeByName("nodeAttrNew"), 1);
     },
 
     onQualityUpBtnTouchedCallback: function () {
@@ -420,11 +442,12 @@ cc.Class({
         CommonWnd.showItemBag(GameServerProto.PT_ITEMTYPE_GUAZAI, selectFunc, chooseingCallback, this, 0);
     },
 
-    onGuazaiDirtyCallback: function (ack) {
-        this.dirty = true;
+    onGuazaiAddexpNtf: function (data) {
+        this.guazai = data.GuaZai;
+        this.updateLvlUpPanel();
     },
 
-    playGuazaiQualityUpEffect: function () {
+    playGuazaiQualityUpEffect: function (data) {
         GlobalVar.soundManager().playEffect(AUDIO_QUALITY_UP);
         let effect = this.node.getChildByName("imgbg").getChildByName("nodeQualityUpEffect");
         effect.active = true;
@@ -436,11 +459,24 @@ cc.Class({
                 effect.active = false;
             }
         })
+
+        this.guazai = data.GuaZai;
+        let nextQualityLevel = JSON.parse(JSON.stringify(this.guazai));
+        this.guazaiProp = GlobalVar.tblApi.getDataBySingleKey('TblGuaZai', nextQualityLevel.ItemID);
+        if (this.guazaiProp.wNextItemID != 0) {
+            nextQualityLevel.ItemID = this.guazaiProp.wNextItemID;
+            this.mapPropsNext = GlobalVar.me().propData.getPropsByGuazaiItem(nextQualityLevel);
+        }
+        this.updateAttrPanel(this.getNodeByName("nodeAttrOld"), 0);
+        this.updateAttrPanel(this.getNodeByName("nodeAttrNew"), 1);
+        this.updateTopPanel();
+        this.updateQualityUpPanel();
     },
 
-    playGuazaiUseItemEffect: function (event) {
-        GlobalVar.soundManager().playEffect(AUDIO_LEVEL_UP);
-        if (event.levelUpFlag) {
+    playGuazaiUseItemEffect: function (data) {
+        this.guazai = data.GuaZai;
+        if (data.GuaZai.levelUpFlag) {
+            GlobalVar.soundManager().playEffect(AUDIO_LEVEL_UP);
             let self = this;
             let effect = this.node.getChildByName("imgbg").getChildByName("nodeUseExpItemEffect");
             GlobalFunctions.playDragonBonesAnimation(effect, function () { 
@@ -451,11 +487,46 @@ cc.Class({
                     levelUpEffect.active = false;
                 })
             })
-            
+            let maxLevel = GameServerProto.PT_PLAYER_MAX_LEVEL * 2;
+            this.guazaiNext.GuaZai.Level = this.guazai.GuaZai.Level + 1 > maxLevel ? maxLevel : this.guazai.GuaZai.Level + 1;
+            this.mapProps = GlobalVar.me().propData.getPropsByGuazaiItem(this.guazai);
+            this.mapPropsNext = GlobalVar.me().propData.getPropsByGuazaiItem(this.guazaiNext);
+            this.updateAttrPanel(this.getNodeByName("nodeAttrOld"), 0);
+            this.updateAttrPanel(this.getNodeByName("nodeAttrNew"), 1);
+            this.updateTopPanel();
         }
+        this.updateLvlUpPanel();
+    },
+
+    guazaiPutOnNtf: function (data) {
+        this.guazai = data.OnGuaZai;
+        let maxLevel = GameServerProto.PT_PLAYER_MAX_LEVEL * 2;
+        this.guazaiNext.GuaZai.Level = this.guazai.GuaZai.Level + 1 > maxLevel ? maxLevel : this.guazai.GuaZai.Level + 1;
+        this.mapProps = GlobalVar.me().propData.getPropsByGuazaiItem(this.guazai);
+        this.mapPropsNext = GlobalVar.me().propData.getPropsByGuazaiItem(this.guazaiNext);
+        this.updateAttrPanel(this.getNodeByName("nodeAttrOld"), 0);
+        this.updateAttrPanel(this.getNodeByName("nodeAttrNew"), 1);
+        this.updateTopPanel();
+        this.updateLvlUpPanel();
+        this.updateQualityUpPanel();
+        this.updateHotPoint();
     },
 
     bagAddItem: function (data) {
-        this.updateLvlUpPanel();
+        // this.updateLvlUpPanel();
+
+        for (let i = 1; i <= 5; i++) {
+            let itemID = i + 22;
+            let itemCount = GlobalVar.me().bagData.getItemCountById(itemID);
+            let itemNode = this.getNodeByName("ItemObject" + i);
+            itemNode.getComponent("ItemObject").updateItem(itemID, itemCount);
+            if (itemCount > 0) {
+                let effect = itemNode.getChildByName("nodeEffect");
+                effect.active = true;
+            } else {
+                let effect = itemNode.getChildByName("nodeEffect");
+                effect.active = false;
+            }
+        }
     },
 });

@@ -91,6 +91,14 @@ var LoginScene = cc.Class({
         }
         GlobalVar.handlerManager().noticeHandler.sendGetNoticeReq();
         GlobalVar.handlerManager().drawHandler.sendTreasureData();
+        GlobalVar.handlerManager().activeHandler.sendActiveTypeActIdReq();
+        if (GlobalVar.me().loginData.getLoginReqDataServerID()) {
+            let platformApi = GlobalVar.getPlatformApi();
+            if (platformApi){
+                platformApi.reportServerLogin(GlobalVar.me().loginData.getLoginReqDataAccount(), GlobalVar.me().loginData.getLoginReqDataServerID(), GlobalVar.me().serverTime * 100);
+            }
+        }
+        
         GlobalVar.sceneManager().gotoScene(SceneDefines.MAIN_STATE);
     },
 

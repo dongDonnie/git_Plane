@@ -25,7 +25,6 @@ cc.Class({
         if (cc.sys.platform == cc.sys.WECHAT_GAME) {
             let platformApi = GlobalVar.getPlatformApi();
             this.onShowFunc = function (launchInfo) {
-                launchInfo.query.coinGiftOnly = "coinGiftOnly1";
                 if(typeof launchInfo.query.coinGiftOnly == "undefined") return;
                 if (GlobalVar.me().fuLiGCBag.HeZiReward == 1) {
                     return;

@@ -48,6 +48,10 @@ var actveData = cc.Class({
             if (!!data.ItemChange){
                 GlobalVar.me().bagData.updateItemDataByGMDT_ITEM_CHANGE(data.ItemChange);
             }
+            if (!self.activeData[data.Actid]){
+                GlobalVar.handlerManager().activeHandler.sendGetActiveDataReq(data.Actid);
+                return;
+            }
             self.activeData[data.Actid].Join = data.Join;
         }
         GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_ACTIVE_FEN_RESULT, data);
@@ -56,6 +60,10 @@ var actveData = cc.Class({
         if (data.ErrCode == GameServerProto.PTERR_SUCCESS){
             if (!!data.ItemChange){
                 GlobalVar.me().bagData.updateItemDataByGMDT_ITEM_CHANGE(data.ItemChange);
+            }
+            if (!self.activeData[data.Actid]){
+                GlobalVar.handlerManager().activeHandler.sendGetActiveDataReq(data.Actid);
+                return;
             }
             self.activeData[data.Actid].Join = data.Join;
             GlobalVar.me().setDiamond(data.Diamond);
@@ -71,7 +79,11 @@ var actveData = cc.Class({
     },
 
     setActiveActFlagNtf: function(data){
-        let actType = self.getActiveDataByActID(data.Actid).Act.Type;
+        let actData = self.getActiveDataByActID(data.Actid);
+        if (!actData){
+            return;
+        }
+        let actType = actData.Act.Type;
         let actList = self.getActiveListDataByType(actType);
         for(let i =0;i<actList.length; i++){
             if (actList[i].Actid == data.Actid){
@@ -80,6 +92,36 @@ var actveData = cc.Class({
                 break;
             }
         }
+    },
+
+    setActiveTypeActIdData: function (data) {
+        if (data.ErrCode == GameServerProto.PTERR_SUCCESS){
+            for (let i = 0; i< data.ActidList.length; i++){
+                self.activeList[data.ActidList[i].Type] = data.ActidList[i];
+            }
+        }
+        GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_GET_ACTIVE_TYPE_ACT_ID_DATA, data);
+    },
+
+    setActiveTreasuryData: function (data) {
+        if (data.ErrCode == GameServerProto.PTERR_SUCCESS){
+
+        }
+        GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_GET_ACTIVE_TREASURY_DATA, data);
+    },
+
+    setActiveVastData: function (data) {
+        if (data.ErrCode == GameServerProto.PTERR_SUCCESS){
+
+        }
+        GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_GET_ACTIVE_VAST_DATA, data);
+    },
+
+    setActiveRankResultData: function (data) {
+        if (data.ErrCode == GameServerProto.PTERR_SUCCESS) {
+            this.rankResultData = data;
+        }
+        GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_ACTIVE_RANK_RESULT, data);
     },
 });
 

@@ -125,8 +125,8 @@ cc.Class({
     initSettingWindow: function () {
         this.labelUserAccount.string = GlobalVar.me().roleID;
         this.labelServerName.string = GlobalVar.me().loginData.getLoginReqDataServerName() || "";
-        this.effectIsOn = GlobalVar.soundManager().getEffectOnOff();
-        this.bgmIsOn = GlobalVar.soundManager().getBgmOnOff();
+        this.effectIsOn = GlobalVar.soundManager().getEffectOnOff() ? "on" : "off";
+        this.bgmIsOn = GlobalVar.soundManager().getBgmOnOff() ? "on" : "off";
         this.vibrateIsOn = StoreageData.getVibrateSwitch();
 
         this.setBtnEffectState();
@@ -138,14 +138,14 @@ cc.Class({
         let SWITCH_ON = 1,
             SWITCH_OFF = 0;
         let spriteEffect = this.btnEffectOnOff.node.getComponent("RemoteSprite");
-        this.effectIsOn ? spriteEffect.setFrame(SWITCH_ON) : spriteEffect.setFrame(SWITCH_OFF);
+        this.effectIsOn === "on" ? spriteEffect.setFrame(SWITCH_ON) : spriteEffect.setFrame(SWITCH_OFF);
     },
 
     setBtnBgmState: function () {
         let SWITCH_ON = 1,
             SWITCH_OFF = 0;
         let spriteBgm = this.btnBgmOnOff.node.getComponent("RemoteSprite");
-        this.bgmIsOn ? spriteBgm.setFrame(SWITCH_ON) : spriteBgm.setFrame(SWITCH_OFF)
+        this.bgmIsOn === "on" ? spriteBgm.setFrame(SWITCH_ON) : spriteBgm.setFrame(SWITCH_OFF)
 
         // this.bgmClickTimes = this.bgmClickTimes + 1 || 1;
         // if (this.bgmClickTimes > 10){
@@ -155,24 +155,27 @@ cc.Class({
     },
     setBtnVibrateState: function () {
         let SWITCH_ON = 1,
-        SWITCH_OFF = 0;
+            SWITCH_OFF = 0;
         let spriteVibrate = this.btnVibrateOnOff.node.getComponent("RemoteSprite");
-        this.vibrateIsOn ? spriteVibrate.setFrame(SWITCH_ON) : spriteVibrate.setFrame(SWITCH_OFF)
+        this.vibrateIsOn === "on" ? spriteVibrate.setFrame(SWITCH_ON) : spriteVibrate.setFrame(SWITCH_OFF)
     },
 
     onBtnEffectOnOff: function (event) {
-        GlobalVar.soundManager().setEffectOnOff(this.effectIsOn = !this.effectIsOn);
+        this.effectIsOn = this.effectIsOn === "on" ? "off" : "on";
+        GlobalVar.soundManager().setEffectOnOff(this.effectIsOn);
         this.setBtnEffectState();
         // console.log("Effect checked:" + this.effectIsOn);
     },
 
     onBtnBgmOnOff: function (event) {
-        GlobalVar.soundManager().setBgmOnOff(this.bgmIsOn = !this.bgmIsOn, true);
+        this.bgmIsOn = this.bgmIsOn === "on" ? "off" : "on";
+        GlobalVar.soundManager().setBgmOnOff(this.bgmIsOn);
         this.setBtnBgmState();
         // console.log("Bgm checked:" + this.bgmIsOn);
     },
     onBtnVibrateOnOff: function (event) {
-        StoreageData.setVibrateSwitch(this.vibrateIsOn = !this.vibrateIsOn);
+        this.vibrateIsOn = this.vibrateIsOn === "on" ? "off" : "on";
+        StoreageData.setVibrateSwitch(this.vibrateIsOn);
         console.log("震动开关", StoreageData.getVibrateSwitch());
         this.setBtnVibrateState();
     },
@@ -221,7 +224,7 @@ cc.Class({
     },
 
     onClickOpenGM: function (event, index) {
-        //return;
+        return;
         if (Math.abs(this.clickGMTimes % 2) == index) {
             if (!config.GM_SWITCH) {
                 this.clickGMTimes++;
@@ -230,7 +233,7 @@ cc.Class({
             }
             console.log("clickTimes:", this.clickGMTimes);
         } else {
-            this.clickGMTimes = 0;
+            // this.clickGMTimes = 0;
         }
         if (this.clickGMTimes == 10) {
             config.GM_SWITCH = true;

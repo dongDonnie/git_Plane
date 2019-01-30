@@ -151,6 +151,7 @@ cc.Class({
             }, false);
             this.getNodeByName('btnNode').active = false;
             this.btnContinue.active = false;
+            this.watchVideo = false;
         } else if (name == "Enter") {
             this._super("Enter");
             var self = this;
@@ -158,16 +159,13 @@ cc.Class({
             this.openNewFunction();
             cc.find('Canvas/UINode/UIMain').getComponent('UIMain').showDeskIcon();
 
-            if (GlobalVar.getShareSwitch() && GlobalVar.me().getLevel() > 5) {
-                this.btnContinue.active = false;
-                this.getNodeByName('btnNode').active = true;
-                this.getNodeByName('btnRecvText').active = false;
-                setTimeout(() => {
-                    self.getNodeByName('btnRecvText').active = true;
-                }, 1000);
-            } else {
-                this.btnContinue.active = true;
-                this.getNodeByName('btnNode').active = false;
+            this.btnContinue.opacity = 255;
+            this.getNodeByName('btnNode').opacity = 255;
+            this.getNodeByName('btnRecv').opacity = 255;
+            this.getNodeByName('btnRecvText').opacity = 255;
+            if (!this.hasBanner) {
+                this.btnContinue.getChildByName("spriteContinue").y = -330;
+                this.getNodeByName('btnNode').y = -330;
             }
         }
     },
@@ -220,13 +218,6 @@ cc.Class({
                 self.watchVideo = true;
                 self.btnContinue.active = true;
                 self.getNodeByName('btnNode').active = false;
-            }, function () {
-                platformApi.shareNormal(136, function () {
-                    GlobalVar.handlerManager().meHandler.sendDoubleReward(self.levelOld);
-                    self.watchVideo = true;
-                    self.btnContinue.active = true;
-                    self.getNodeByName('btnNode').active = false;
-                });
             })
         } else {
             GlobalVar.handlerManager().meHandler.sendDoubleReward(self.levelOld);
@@ -242,7 +233,8 @@ cc.Class({
 
     showBannnerCallback: function (bannerHeight) {
         let spriteTip = this.btnContinue.getChildByName("spriteContinue");
-        if (cc.sys.platform == cc.sys.WECHAT_GAME){
+        if (cc.sys.platform == cc.sys.WECHAT_GAME && bannerHeight) {
+            this.hasBanner = true;
             let winHeight = cc.winSize.height;
             let screenHeight = wx.getSystemInfoSync().screenHeight;
             spriteTip.y = -(winHeight / 2 - bannerHeight / screenHeight * winHeight);
@@ -263,6 +255,9 @@ cc.Class({
             setTimeout(() => {
                 self.getNodeByName('btnRecvText').active = true;
             }, 1000);
+        } else {
+            this.btnContinue.active = true;
+            this.getNodeByName('btnNode').active = false;
         }
         if (isRefresh) {
             this._super(true);

@@ -15,7 +15,7 @@ cc.Class({
             default: null,
             type: cc.Node,
         },
-        nodeItems:{
+        nodeItems: {
             default: null,
             type: cc.Node,
         },
@@ -31,11 +31,15 @@ cc.Class({
         this.animeStartParam(0, 0);
     },
 
+    onDestroy() {
+        this._super();
+    },
+
     animeStartParam(paramScale, paramOpacity) {
         this.node.setScale(paramScale, paramScale);
         this.node.opacity = paramOpacity;
 
-        if (paramOpacity == 0 || paramOpacity == 255){
+        if (paramOpacity == 0 || paramOpacity == 255) {
             this.nodeTips.active = false;
             this.nodeItems.active = false;
         }
@@ -45,7 +49,7 @@ cc.Class({
         if (name == "Escape") {
             this._super("Escape");
             let platformApi = GlobalVar.getPlatformApi();
-            if (platformApi){
+            if (platformApi) {
                 platformApi.setOffShowListener(this.refreshWnd.bind(this));
             }
             GlobalVar.eventManager().removeListenerWithTarget(this);
@@ -53,7 +57,7 @@ cc.Class({
         } else if (name == "Enter") {
             this._super("Enter");
             let platformApi = GlobalVar.getPlatformApi();
-            if (platformApi){
+            if (platformApi) {
                 platformApi.setOnShowListener(this.refreshWnd.bind(this));
             }
             GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_GET_SUPER_REWARD_DATA, this.getSuperRewardData, this);
@@ -63,27 +67,32 @@ cc.Class({
     },
 
     refreshWnd: function (res) {
-        if (parseInt(res.scene) == 1104){
+        if (parseInt(res.scene) == 1104) {
             StoreageData.setShareTimesWithKey("superReward", 0);
             this.initSuperRewardWnd();
         }
     },
 
     initSuperRewardWnd: function () {
-        this.nodeTips.active = true;
-        this.nodeItems.active = true;
-        this.nodeItems.children[0].getComponent("ItemObject").updateItem(1, 88888);
-        this.nodeItems.children[0].getComponent("ItemObject").setClick(true, 2);
-        this.nodeItems.children[1].getComponent("ItemObject").updateItem(3, 30),
-        this.nodeItems.children[1].getComponent("ItemObject").setClick(true, 2);
-        this.nodeItems.children[2].getComponent("ItemObject").updateItem(502, 5);
-        this.nodeItems.children[2].getComponent("ItemObject").setClick(true, 2);
-
-        this.btnRecv.interactable = !!StoreageData.getShareTimesWithKey("superReward", 0);
+        if (cc.isValid(this.nodeTips)) {
+            this.nodeTips.active = true;
+        }
+        if (cc.isValid(this.nodeItems)) {
+            this.nodeItems.active = true;
+            this.nodeItems.children[0].getComponent("ItemObject").updateItem(1, 88888);
+            this.nodeItems.children[0].getComponent("ItemObject").setClick(true, 2);
+            this.nodeItems.children[1].getComponent("ItemObject").updateItem(3, 30),
+                this.nodeItems.children[1].getComponent("ItemObject").setClick(true, 2);
+            this.nodeItems.children[2].getComponent("ItemObject").updateItem(502, 5);
+            this.nodeItems.children[2].getComponent("ItemObject").setClick(true, 2);
+        }
+        if (cc.isValid(this.btnRecv)) {
+            this.btnRecv.interactable = !!StoreageData.getShareTimesWithKey("superReward", 0);
+        }
     },
 
     getSuperRewardData: function (event) {
-        if (event.ErrCode != GameServerProto.PTERR_SUCCESS){
+        if (event.ErrCode != GameServerProto.PTERR_SUCCESS) {
             GlobalVar.comMsg.errorWarning(event.ErrCode);
             return;
         }
@@ -96,7 +105,7 @@ cc.Class({
         GlobalVar.handlerManager().shareHandler.sendSuperRewardReq();
     },
 
-    onBtnClose: function(){
+    onBtnClose: function () {
         this.close();
     },
 

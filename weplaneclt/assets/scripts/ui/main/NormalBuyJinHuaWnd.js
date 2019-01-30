@@ -151,10 +151,14 @@ cc.Class({
             GlobalVar.handlerManager().shareHandler.sendGetFreeJinHuaReq();
         };
         if (platformApi) {
-            let failCallback = () => {
-                platformApi.shareNormal(132, successCallback);
-            }
-            platformApi.showRewardedVideoAd(232, successCallback, failCallback);
+            // let failCallback = () => {
+            //     if (GlobalVar.getShareControl() == 1){
+            //         platformApi.shareNormal(132, successCallback);
+            //     }else{
+            //         GlobalVar.comMsg.showMsg(i18n.t('label.4000321'));
+            //     }
+            // }
+            platformApi.showRewardedVideoAd(232, successCallback);
         } else {
             successCallback();
         }

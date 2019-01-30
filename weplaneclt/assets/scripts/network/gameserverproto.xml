@@ -772,8 +772,6 @@
         <define name="PTPARAM_FULI_GC_SUPER_INDUCE_MAX_COUNT" value="317" />
         <define name="PTPARAM_FULI_GC_OFFICIALACCOUNTDRAINGET_DROPPACKAGE" value="318"/>
         <define name="PTPARAM_ARENA_CHALLENGE_COUNT_FREE_BUY_LIMIT" value="319" />
-        <define name="PTPARAM_FULI_SHARE_INVITE_DROPPACKAGE" value="320"/>
-        <define name="PTPARAM_FULI_SHARE_INVITE_COUNT_LIMIT" value="321"/>
         <define name="PTPARAM_FULI_GC_HEZI_DROPPACKAGE" value="322"/>
         <define name="PTPARAM_FULI_SHARE_GUAZAI_JINHUA_DROPPACKAGE" value="323"/>
         <define name="PTPARAM_FULI_SHARE_GUAZAI_JINHUA_LIMIT" value="324"/>
@@ -1327,7 +1325,7 @@
         <define name="PT_ARENA_RANK_TOP_LIST_MAX_SIZE" value="50" />
         <define name="PT_ARENA_LIST_MAX_SIZE" value="13" />
         <define name="PT_ARENA_REPORT_MAX_SIZE" value="10" />
-        <define name="PT_ARENA_CHALLENGE_TICKET_PRICE" value="10" />
+        <define name="PT_ARENA_CHALLENGE_TICKET_PRICE" value="20" />
         <define name="PT_ARENA_USR_MAX" value="999999" />
         <define name="PT_ARENA_LIKE_MAX_COUNT" value="5"/>
         <define name="PT_ARENA_CHALLENGE_USE_COUNT" value="0"/>
@@ -2846,6 +2844,7 @@
         <type name="GMPKG_MEMBER_LEVELUP_REQ">
             <item name="MemberID" type="UINT16" />
             <item name="ItemID" type="UINT16" />
+            <item name="Count" type="INT32" />
         </type>
 
         <type name="GMDT_MEMBER_LEVELUP_OK">
@@ -5336,8 +5335,7 @@
             <item name="NewRanking" type="UINT32"/>
             <item name="OldRanking" type="UINT32"/>
             <item name="Points" type="INT32"/>
-            <item name="DiamondReward" type="INT32" />
-            <item name="DiamondCur" type="INT32" />
+            <item name="PointsReward" type="INT32"/>
             <item name="ChallengeResult" type="UINT8"/>
             <item name="ChallengeCount" type="UINT16"/>
             <item name="ChallengeLimit" type="UINT16"/>

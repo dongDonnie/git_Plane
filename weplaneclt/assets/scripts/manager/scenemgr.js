@@ -69,6 +69,11 @@ var SceneManager = cc.Class({
         if (sceneName !== "") {
             var self = this;
 
+            GlobalVar.soundManager().stopAll();
+            let platformApi = GlobalVar.getPlatformApi();
+            if (platformApi){
+                platformApi.removeAllShowHideListener();
+            }
             //cc.director.preloadScene(sceneName, function () {
             cc.director.loadScene(sceneName);
             self.curScene = cc.director.getScene();

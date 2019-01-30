@@ -141,6 +141,7 @@ cc.Class({
     updateDriveCardShow: function () {
         this.sumCombatRaw = 0;
         let mixOpenData = GlobalVar.tblApi.getData('TblMix');
+        let restMemberNum = GlobalVar.me().memberData.getRestMemberIDList().length;
         for (let i = 0; i < 4; i++) {
             let driveCard = this.nodeDrivers.children[i];
             let lockNode = driveCard.getChildByName('lock');
@@ -152,6 +153,7 @@ cc.Class({
 
                 let mixMemberId = GlobalVar.me().memberData.getMixMemberIDByIndex(i);
                 if (mixMemberId) {
+                    unlockNode.getChildByName('spriteHot').active = false;
                     unlockNode.getChildByName('labelDesc').active = false;
                     unlockNode.getChildByName('nodeItem').active = true;
                     let itemObj = cc.find('nodeItem/ItemObject', unlockNode).getComponent("ItemObject");
@@ -162,6 +164,7 @@ cc.Class({
                     cc.find('nodeItem/labelCpValue', unlockNode).getComponent(cc.Label).string = member.Combat;
                     this.sumCombatRaw += member.Combat;
                 } else {
+                    unlockNode.getChildByName('spriteHot').active = restMemberNum > 0;
                     unlockNode.getChildByName('labelDesc').active = true;
                     unlockNode.getChildByName('nodeItem').active = false;
                 }

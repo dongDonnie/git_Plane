@@ -96,6 +96,8 @@ cc.Class({
         // 需要数据
         this.labelOldRank.string = oldRank;
         this.labelNewRank.string = newRank;
+        // let challengeData = GlobalVar.me().arenaData.getArenaChallengeData();
+        // this.labelSuccessGetPoint.string = challengeData.PointsReward;
         this.labelSuccessGetPoint.string = GameServerProto.PT_ARENA_CHALLENGE_WIN_POINTS;
     },
 

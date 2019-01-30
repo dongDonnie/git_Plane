@@ -29,6 +29,7 @@ cc.Class({
         _createItemFunc: null,
         _updateItemFunc: null,
         _completeFunc: null,
+        _completeAllFunc: null,
     },
 
     // LIFE-CYCLE CALLBACKS:
@@ -126,6 +127,10 @@ cc.Class({
         this._completeFunc = func;
     },
 
+    registerAllCompleteFunc(func) {
+        this._completeAllFunc = func;
+    },
+
     setCreateModel(model) {
         if (model.__classname__ == "cc.Prefab") {
             this._createModel = model.data;
@@ -176,7 +181,7 @@ cc.Class({
         this.gapDisY = disY;
     },
 
-    setPlayAni(callback) { 
+    setPlayAni(callback) {
         this._playAni = callback;
     },
 
@@ -379,14 +384,14 @@ cc.Class({
             // item.stopAllActions()
             if (this._playAni) {
                 let stopIndex = self.curItemIndex;
-                this._playAni(item, curCreIndex, posX, posY, function(){
-                    if (stopIndex >= initNum - 1){
+                this._playAni(item, curCreIndex, posX, posY, function () {
+                    if (stopIndex >= initNum - 1) {
                         self.scrollView.enabled = true;
                     }
                 });
             } else {
                 let stopIndex = this.curItemIndex;
-                if (stopIndex >= initNum - 1){
+                if (stopIndex >= initNum - 1) {
                     this.scrollView.enabled = true;
                 }
                 item.position = new cc.Vec2(posX, posY);
@@ -396,7 +401,7 @@ cc.Class({
             this.curItemIndex += 1;
             //setTimeout(this.createItems.bind(this), this.createInterval);
         } else {
-            if(!cc.isValid(this.scrollView) && this.intervalIndex != -1){
+            if (!cc.isValid(this.scrollView) && this.intervalIndex != -1) {
                 cc.error('loop is already release');
                 clearInterval(this.intervalIndex);
                 return;
@@ -409,6 +414,10 @@ cc.Class({
 
             if (this.intervalIndex != -1) {
                 clearInterval(this.intervalIndex);
+                if (!!this._completeAllFunc) {
+                    this._completeAllFunc();
+                    this._completeAllFunc = null;
+                }
             }
 
             this.curItemIndex = 0;

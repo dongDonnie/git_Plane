@@ -815,7 +815,7 @@
     "asset": {
       "__uuid__": "2a4ae06d-8cdc-42b4-81d2-3e55ddfb4045"
     },
-    "fileId": "4e/H3YmZhCe49aVq+I5F2x",
+    "fileId": "6bhW3Y1HtGar3k2+MNgKcL",
     "sync": false
   },
   {
@@ -915,7 +915,7 @@
     "asset": {
       "__uuid__": "2a4ae06d-8cdc-42b4-81d2-3e55ddfb4045"
     },
-    "fileId": "6a35qd1ANLa5/pvS4jrF0C",
+    "fileId": "camAUyKUdIOahIgWQ9dzNq",
     "sync": false
   },
   {
@@ -1015,7 +1015,7 @@
     "asset": {
       "__uuid__": "2a4ae06d-8cdc-42b4-81d2-3e55ddfb4045"
     },
-    "fileId": "38+DG8fsxIVa8jbx2YtK0h",
+    "fileId": "0bMku4VbZANJSG6EwjJIek",
     "sync": false
   },
   {
@@ -1717,7 +1717,6 @@
     "_fontSize": 30,
     "_showShadow": true,
     "btnState": true,
-    "btnPress": false,
     "_N$fontColor": 0,
     "_N$textLabel": "领 取",
     "_id": ""
@@ -2078,7 +2077,6 @@
     "_fontSize": 30,
     "_showShadow": true,
     "btnState": true,
-    "btnPress": false,
     "_N$fontColor": 0,
     "_N$textLabel": "",
     "_id": ""
@@ -2122,7 +2120,7 @@
       "__id__": 1
     },
     "_enabled": true,
-    "alignMode": 0,
+    "alignMode": 1,
     "_target": null,
     "_alignFlags": 18,
     "_left": 0,

@@ -19,32 +19,32 @@ var buttonArray = [
     'btnoGuazai',
     'nodeTouzhi',
     'ItemObject',
-    'button',//10
+    'button', //10
     'btnoCharpter',
     'spritePlanetModel1',
     'btnStartBattle',
     'btnoSkill',
-    'button',//15
+    'button', //15
     'btnoEquipment',
     'btnLevelUpOne',
     'btnoAdvance',
     'btnQualityUp',
-    'button',//20
+    'button', //20
     'btnoCharpter',
     'spritePlanetModel2',
     'btnStartBattle',
     '',
-    'button',//25
+    'button', //25
     'btnoPlane',
     'btnoAdvance',
     'btnoLevelUp',
     'button',
-    'button',//30
+    'button', //30
     'btnoCharpter',
     'spritePlanetModel3',
     'btnStartBattle',
     '',
-    '',//35
+    '', //35
     'btnoEndless',
     'btnoCharpter',
     'spritePlanetModel0',
@@ -60,37 +60,37 @@ var labelArray = [
     '',
     '滑动战机,可进行移动',
     '战斗中会掉落这些道具',
-    '子弹只有击中中心点时战机的生命值才会减少',//5
+    '子弹只有击中中心点时战机的生命值才会减少', //5
     '点击返回,我们去装备投掷炸弹',
     '获得了新的投掷炸弹，点击挂载',
     '',
     '点击装备投掷炸弹',
-    '',//10
+    '', //10
     '已经装备了投掷炸弹,让我们继续冒险',
     '',
     '',
     '释放【投掷】炸弹,可以清除全屏子弹,产生巨大威力',
-    '现在去强化装备',//15
+    '现在去强化装备', //15
     '',
     '',
     '现在去升阶吧',
     '',
-    '强化成功，让我们开始下一场战斗',//20
+    '强化成功，让我们开始下一场战斗', //20
     '',
     '',
     '',
     '',
-    '现在，我们去升级战机',//25
+    '现在，我们去升级战机', //25
     '',
     '',
     '',
-    '战机升级成功，战力提升，现在去完成最后的考验。',//29
+    '战机升级成功，战力提升，现在去完成最后的考验。', //29
     '',
     '',
     '',
     '',
     '',
-    '你已经成功通过了考验,是一名合格的指挥官了,加油,暴风要塞的未来就靠你了!',//35
+    '你已经成功通过了考验,是一名合格的指挥官了,加油,暴风要塞的未来就靠你了!', //35
     '无尽征战已开启，亲爱的指挥官，请迎接你的挑战吧！',
     '扫荡开启',
     '',
@@ -122,6 +122,7 @@ const guide = cc.Class({
         self = this;
         self.id = 0;
         self.step = 0;
+        self.canClick = true;
         self.mapLoop = false;
         self.watchBlt = false;
     },
@@ -212,9 +213,20 @@ const guide = cc.Class({
         }, 100);
     },
 
-    clickBtn: function (clickBtnName) {
+    clickBtn: function (btnNode) {
+        let clickBtnName = btnNode ? btnNode.name: 'null';
         if (!config.NEED_GUIDE)
             return;
+        
+        if (!self.canClick && btnNode) {
+            btnNode.getComponent(cc.Button)._pressed = false;
+            return;
+        }
+        self.canClick = false;
+        setTimeout(() => {
+            self.canClick = true;
+        }, 1000);
+
         var scenetype = GlobalVar.sceneManager().getCurrentSceneType();
         if (scenetype != 4 && scenetype != 5) return;
         if (clickBtnName == 'btnoPause') {
@@ -227,12 +239,11 @@ const guide = cc.Class({
                 cc.director.getScheduler().resumeTarget(self);
             }, 3000);
             return;
-        } else if (clickBtnName == 'NormalEquipQualityUpWnd'){
+        } else if (clickBtnName == 'NormalEquipQualityUpWnd') {
             return;
         } else if (clickBtnName == 'btn_active') {
             return;
-        }
-        else if ((clickBtnName == 'ItemObject' && self.step != 11) || clickBtnName == 'btnoSkill' || clickBtnName == 'btnoAssist') return;
+        } else if ((clickBtnName == 'ItemObject' && self.step != 11) || clickBtnName == 'btnoSkill' || clickBtnName == 'btnoAssist') return;
 
         var cbtn = cc.find('Canvas/GuideNode/btnClone');
         self.fingerSprite.active = false;
@@ -321,14 +332,14 @@ const guide = cc.Class({
             self.guideNode.active = false;
             self.clickBtn();
         }
-        
+
         //maskSprite
         if (step == 0) {
             self.maskSprite.opacity = 180;
         } else if (step == 1 || step == 5) {
             self.maskSprite.active = true;
             self.maskSprite.opacity = 0;
-        }else {
+        } else {
             self.maskSprite.active = true;
             self.maskSprite.opacity = 80;
         }
@@ -364,7 +375,7 @@ const guide = cc.Class({
             self.fingerSprite.active = true;
             self.fingerSprite.runAction(cc.sequence(cc.delayTime(0.2), cc.fadeIn(0.3)));
             self.fingerSprite.getChildByName('finger').getComponent(cc.Animation).play();
-        }else if (step == 5) {
+        } else if (step == 5) {
             self.fingerSprite.getChildByName('finger').getComponent(cc.Animation).play('animeFinger2');
             self.fingerSprite.children[0].active = false;
         } else {
@@ -411,7 +422,7 @@ const guide = cc.Class({
         if (step == 40) {
             if (GlobalVar.me().campData.getLastChapterID(1) != 1) {
                 let normalquestlistview = windowmgr.getInstance().mapViewData.NormalQuestListView;
-                if (!!normalquestlistview) { 
+                if (!!normalquestlistview) {
                     let curChapterIndex = normalquestlistview.getComponent('NormalQuestListView').curChapterIndex;
                     if (curChapterIndex == -1 || curChapterIndex != 0) {
                         setTimeout(() => {
@@ -428,7 +439,7 @@ const guide = cc.Class({
             }
         }
         self.cloneBtn(buttonArray[step]);
-        
+
         if (step == 0) {
             var RecvCallback = function () {
                 windowmgr.getInstance().popView(false, null, false);
@@ -470,7 +481,7 @@ const guide = cc.Class({
         }
         self.btnClone.active = false;
 
-        let delayShow =  function () {
+        let delayShow = function () {
             self.btnClone.active = true;
             var pos0 = btn.parent.convertToWorldSpaceAR(btn);
             var pos1 = self.guideNode.convertToNodeSpaceAR(pos0);
@@ -599,7 +610,10 @@ const guide = cc.Class({
 
     update: function (dt) {
         if (!!self.mapLoop) {
-            BattleManager.getInstance().managers[Defines.MgrType.SCENARIO].battleCampaignMode.mapUpdate(Defines.BATTLE_FRAME_SECOND);
+            let campaignMode = BattleManager.getInstance().managers[Defines.MgrType.SCENARIO].battleCampaignMode;
+            if (cc.isValid(campaignMode)) {
+                campaignMode.mapUpdate(Defines.BATTLE_FRAME_SECOND);
+            }
         }
         if (!!self.watchBlt) {
             if (BattleManager.getInstance().managers[Defines.MgrType.ENTITY].entityMonBltList.length > 0) {

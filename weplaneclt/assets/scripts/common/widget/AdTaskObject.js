@@ -14,6 +14,9 @@ cc.Class({
         btnTry: cc.Node,
         btnStart: cc.Node,
         btnReceive: cc.Node,
+
+        rewardBefore: cc.Node,
+        rewardNo: cc.Node,
     },
 
     onLoad: function () {
@@ -49,12 +52,10 @@ cc.Class({
     },
 
     refreshState: function () {
-        if (GlobalVar.me().adData.hasCompleteTask(this._task.tskid)) {
-            if (GlobalVar.me().adData.hasRewardTask(this._task.tskid)) {
-                this.stateStart();
-            } else {
-                this.stateReceive();
-            }
+        if (GlobalVar.me().adData.hasRewardTask(this._task.tskid)) {
+            this.stateStart();
+        } else if (GlobalVar.me().adData.hasCompleteTask(this._task.tskid)) {
+            this.stateReceive();
         } else {
             this.stateTry();
         }
@@ -64,18 +65,27 @@ cc.Class({
         this.btnTry.active = true;
         this.btnStart.active = false;
         this.btnReceive.active = false;
+
+        this.rewardBefore.active = false;
+        this.rewardNo.active = true;
     },
 
     stateStart: function () {
         this.btnTry.active = false;
         this.btnStart.active = true;
         this.btnReceive.active = false;
+
+        this.rewardBefore.active = true;
+        this.rewardNo.active = false;
     },
 
     stateReceive: function () {
         this.btnTry.active = false;
         this.btnStart.active = false;
         this.btnReceive.active = true;
+
+        this.rewardBefore.active = false;
+        this.rewardNo.active = true;
     },
 
     goToMiniProgram: function (successCB, failCB, completeCB) {

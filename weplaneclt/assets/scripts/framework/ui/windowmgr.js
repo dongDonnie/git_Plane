@@ -868,12 +868,14 @@ var WindowManager = cc.Class({
                 // }
                 if (topType != WndTypeDefine.WindowType.E_DT_MASKBACK_WND &&
                     topType != WndTypeDefine.WindowType.E_DT_ROOTBACK_WND &&
-                    topType != WndTypeDefine.WindowType.E_DT_NORMALROOT_WND) {
+                    topType != WndTypeDefine.WindowType.E_DT_NORMALROOT_WND &&
+                    topType != WndTypeDefine.WindowType.E_DT_NORMALTREASUREEXPLOIT) {
                     let topSize = this.mapViewData[topType].getContentSize();
                     for (let i = this.vectorViewStack.length - 1; i > 0; i--) {
                         if (this.vectorViewStack[i] == WndTypeDefine.WindowType.E_DT_MASKBACK_WND ||
                             this.vectorViewStack[i] == WndTypeDefine.WindowType.E_DT_ROOTBACK_WND ||
-                            this.vectorViewStack[i] == WndTypeDefine.WindowType.E_DT_NORMALROOT_WND) {
+                            this.vectorViewStack[i] == WndTypeDefine.WindowType.E_DT_NORMALROOT_WND ||
+                            this.vectorViewStack[i] == WndTypeDefine.WindowType.E_DT_NORMALTREASUREEXPLOIT) {
                             continue;
                         }
                         let size = this.mapViewData[this.vectorViewStack[i]].getContentSize();

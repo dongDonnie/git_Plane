@@ -115,14 +115,14 @@ cc.Class({
                     GlobalVar.sceneManager().startUp();
                 }
             } else {
-                if (platformApi){
+                if (platformApi) {
                     platformApi.showToast("没有网络链接, 是否重试", true, true, "确认", "取消", function () {
                         //cc.game.restart();
                         cc.director.loadScene('InitScene');
                     }, function () {
                         cc.game.end();
                     })
-                }else{
+                } else {
                     //cc.game.restart();
                     cc.director.loadScene('InitScene');
                 }
@@ -155,13 +155,12 @@ cc.Class({
                 GlobalVar.me().loginData.setLoginReqDataAvatar(avatar);
                 GlobalVar.me().loginData.setLoginReqDataCityFlag(cityFlag);
 
+                platformApi.getShareConfig();
+
                 if (cc.sys.platform == cc.sys.WECHAT_GAME) {
                     let launchInfo = wx.getLaunchOptionsSync();
                     if (launchInfo.query.materialID >= 0) {
                         platformApi.reportClickMaterial(launchInfo.query.materialID);
-                    }
-                    if (launchInfo.scene == 1104) {
-                        StoreageData.setShareTimesWithKey("superReward", 0);
                     }
                     if (launchInfo.query['vpnaFlag'] == 1) {
                         GlobalVar.isFromOfficialAccount = true;
@@ -234,6 +233,7 @@ cc.Class({
         if (platformApi) {
             platformApi.createRoll(function (nickName, avatar) {
                 // console.log("发送创建角色消息, nickName:" + nickName + "  avatar:" + avatar);
+                platformApi.judgeInvite();
                 GlobalVar.handlerManager().loginHandler.sendCreateRollReq(nickName || "", avatar || "");
                 GlobalVar.me().loginData.setLoginReqDataAvatar(avatar);
             })
@@ -253,6 +253,12 @@ cc.Class({
                             cc.director.loadScene('InitScene');
                         }
                     } else {
+                        let errStr = GlobalVar.tblApi.getDataBySingleKey('TblErrString', event.data.ErrCode);
+                        if (cc.isValid(errStr)) {
+                            weChatAPI.showToast(errStr.strString, true, false);
+                        } else {
+                            weChatAPI.showToast('服务器连接异常', true, false);
+                        }
                         GlobalVar.sceneManager().startUp();
                     }
                 })
@@ -295,6 +301,14 @@ cc.Class({
 
         GlobalVar.handlerManager().noticeHandler.sendGetNoticeReq();
         GlobalVar.handlerManager().drawHandler.sendTreasureData();
+        GlobalVar.handlerManager().activeHandler.sendActiveTypeActIdReq();
+
+        if (GlobalVar.me().loginData.getLoginReqDataServerID()) {
+            let platformApi = GlobalVar.getPlatformApi();
+            if (platformApi) {
+                platformApi.reportServerLogin(GlobalVar.me().loginData.getLoginReqDataAccount(), GlobalVar.me().loginData.getLoginReqDataServerID(), GlobalVar.me().serverTime * 100);
+            }
+        }
 
         if (cc.sys.platform === cc.sys.WECHAT_GAME) {
             GlobalVar.sceneManager().gotoScene(SceneDefines.MAIN_STATE);

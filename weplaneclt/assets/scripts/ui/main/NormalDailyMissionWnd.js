@@ -8,6 +8,7 @@ const GameServerProto = require("GameServerProto");
 const CommonWnd = require("CommonWnd");
 const i18n = require('LanguageData');
 const GlobalFunc = require('GlobalFunctions');
+const StoreageData = require("storagedata");
 
 const TAB_NEWTASK = 0, TAB_DAILYMISSION = 1;
 const BUTTON_INACTIVE = 0, BUTTON_ACTIVE = 1;
@@ -272,11 +273,17 @@ cc.Class({
                 this.node.getChildByName("btnChallenge").getChildByName("spriteHot").active = (curRate == maxRate);
 
                 // 按钮
+                let platformApi = GlobalVar.getPlatformApi();
                 if (curRate == maxRate) {
                     if (newTaskRate.TaskID % 3 == 0) {
                         nodeChallenge.getChildByName("btnRecv").active = false;
                         nodeChallenge.getChildByName("btnWatchVideo").active = true;
                         nodeChallenge.getChildByName("btnRecvText").active = true;
+                        if (platformApi && !platformApi.canShowRewardVideo()) {
+                            nodeChallenge.getChildByName('btnWatchVideo').getChildByName('videoIcon').getComponent('RemoteSprite').setFrame(1);
+                        } else {
+                            nodeChallenge.getChildByName('btnWatchVideo').getChildByName('videoIcon').getComponent('RemoteSprite').setFrame(0);
+                        }
                     } else {
                         nodeChallenge.getChildByName("btnRecv").active = true;
                         nodeChallenge.getChildByName("btnWatchVideo").active = false;
@@ -513,24 +520,20 @@ cc.Class({
         };
 
         let platformApi = GlobalVar.getPlatformApi();
-        if ((rewardBoxIndex > 1 && rewardBoxIndex < 4) && platformApi && GlobalVar.me().vipLevel < 3) {
-            confirmText = i18n.t('label.4000304');
-            mode = 1;
-            confirm = function () {
-                platformApi.shareNormal(125, function () {
-                    GlobalVar.handlerManager().dailyHandler.sendDailyActiveRewardReq(active);
-                })
-            };
-        } else if (rewardBoxIndex >= 4 && platformApi && GlobalVar.me().vipLevel < 3) {
+        if (platformApi && GlobalVar.me().vipLevel < 3 && (platformApi.canShowRewardVideo() || GlobalVar.getShareControl() == 6)) {
             confirmText = i18n.t('label.4000328');
             mode = 2;
             confirm = function () {
                 platformApi.showRewardedVideoAd(225, function () {
                     GlobalVar.handlerManager().dailyHandler.sendDailyActiveRewardReq(active);
-                }, function () {
-                    platformApi.shareNormal(125, function () {
-                        GlobalVar.handlerManager().dailyHandler.sendDailyActiveRewardReq(active);
-                    })
+                }, null, true, true);
+            };
+        } else if (platformApi && GlobalVar.me().vipLevel < 3 && !platformApi.canShowRewardVideo() && GlobalVar.getShareControl() == 1) {
+            confirmText = i18n.t('label.4000304');
+            mode = 1;
+            confirm = function () {
+                platformApi.shareNormal(125, function () {
+                    GlobalVar.handlerManager().dailyHandler.sendDailyActiveRewardReq(active);
                 })
             };
         }
@@ -721,14 +724,14 @@ cc.Class({
         if (customEventData == 0) {
             GlobalVar.handlerManager().dailyHandler.sendNewTaskRewardReq(newTaskRate.TaskID);
         } else {
-            if (platformApi) {
+            if (platformApi && (platformApi.canShowRewardVideo() || GlobalVar.getShareControl() == 6)) {
                 platformApi.showRewardedVideoAd(234, function () {
                     GlobalVar.handlerManager().dailyHandler.sendNewTaskRewardReq(newTaskRate.TaskID, 1);
-                }, function () {
-                    platformApi.shareNormal(134, function () {
-                        GlobalVar.handlerManager().dailyHandler.sendNewTaskRewardReq(newTaskRate.TaskID, 1);
-                    });
-                })
+                }, null, true, true);
+            } else if (platformApi && !platformApi.canShowRewardVideo() && GlobalVar.getShareControl() == 1){
+                platformApi.shareNormal(134, function () {
+                    GlobalVar.handlerManager().dailyHandler.sendNewTaskRewardReq(newTaskRate.TaskID, 1);
+                });
             } else {
                 GlobalVar.handlerManager().dailyHandler.sendNewTaskRewardReq(newTaskRate.TaskID, 1);
             }

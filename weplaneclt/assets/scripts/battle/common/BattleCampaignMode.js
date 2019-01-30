@@ -81,6 +81,8 @@ const Mode = cc.Class({
                 break;
             case campaignStep.WAVEEND:
                 this.waveIndex++;
+                this.battleManager.judgementSwitch = false;
+                this.battleManager.judgementTime = 0;
                 if (this.waveIndex >= this.waveControlList.length) {
                     this.step = campaignStep.GAMEEND;
                 } else {
@@ -117,6 +119,14 @@ const Mode = cc.Class({
         if (this.step != campaignStep.MAPEND && this.step != campaignStep.NONE) {
             this.createExtra(dt);
             this.checkHint(dt);
+        }
+
+        if (!!this.battleManager.judgementSwitch && this.battleManager.gameState == Defines.GameResult.RUNNING) {
+            this.battleManager.judgementTime += dt;
+            if (this.battleManager.judgementTime > Defines.CAMPAIGNTIMEOUT) {
+                this.battleManager.judgement();
+                this.battleManager.judgementTime = 0;
+            }
         }
     },
 
@@ -854,6 +864,7 @@ const Mode = cc.Class({
                         self.step = campaignStep.GROUPSTART;
                         if (self.inBossRoom == 1) {
                             GlobalVar.soundManager().playBGM("cdnRes/audio/battle/music/Boss_Room");
+                            self.battleManager.judgementSwitch = true;
                         }
                     });
                     return true;

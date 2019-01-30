@@ -104,6 +104,10 @@ cc.Class({
         this.hp = this.maxHp = this.prop[Defines.PropName.Life] + this.prop[Defines.PropName.Defense] * 5;
         
         let member = GlobalVar.me().memberData.getMemberByID(id);
+        if (member == null) {
+            //this.prop[Defines.PropName.Attack] *= GlobalVar.tblApi.getDataBySingleKey('TblMember', id).dTestPlayUp;
+            member = GlobalVar.me().memberData.getMemberByID(GlobalVar.me().memberData.getStandingByFighterConf().ChuZhanMemberID);
+        }
         this.lv = member.Level;
     },
 

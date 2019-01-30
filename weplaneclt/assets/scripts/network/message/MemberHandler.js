@@ -106,10 +106,11 @@ cc.Class({
         GlobalVar.me().memberData.saveLevelUpData(msg);
     },
 
-    sendMemberLevelUpReq: function (memberID, itemID) {
+    sendMemberLevelUpReq: function (memberID, itemID, count) {
         let msg = {
             MemberID: memberID,
             ItemID: itemID,
+            Count: count,
         }
         this.sendMsg(GameServerProto.GMID_MEMBER_LEVELUP_REQ, msg);
     },

@@ -123,9 +123,11 @@ cc.Class({
 
     deleteObject: function () {
         this._super();
-        if (this.baseObject.getComponent(cc.Animation) != null) {
-            let anime = this.baseObject.getComponent(cc.Animation);
-            anime.stop();
+        if (cc.isValid(this.baseObject)) {
+            if (this.baseObject.getComponent(cc.Animation) != null) {
+                let anime = this.baseObject.getComponent(cc.Animation);
+                anime.stop();
+            }
         }
         if (this.disappearAnime) {
             this.setMovementType(-1);

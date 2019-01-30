@@ -243,7 +243,11 @@ const Mode = cc.Class({
         //let origin = typeof this.endlessMode.nMonsterBasisFraction !== 'undefined' ? (this.endlessMode.nMonsterBasisFraction != 0 ? this.endlessMode.nMonsterBasisFraction : 1000) : 1000;
         let origin = 1000;
         this.endlessScore = base64.encode(origin.toString());
-        this.rushRank = typeof this.endlessMode.nRushRank !== 'undefined' ? this.endlessMode.nRushRank : 0;
+        if(cc.isValid(this.endlessMode)){
+            this.rushRank = typeof this.endlessMode.nRushRank !== 'undefined' ? this.endlessMode.nRushRank : 0;
+        }else{
+            this.rushRank = 0;
+        }
         this.killRecord = 0;
 
         this.waveCount = 0;

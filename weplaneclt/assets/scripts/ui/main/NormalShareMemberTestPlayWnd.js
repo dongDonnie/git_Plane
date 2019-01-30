@@ -3,6 +3,7 @@ const WindowManager = require("windowmgr");
 const WndTypeDefine = require("wndtypedefine");
 const RootBase = require("RootBase");
 const BattleManager = require('BattleManager');
+const StoreageData = require("storagedata");
 
 cc.Class({
     extends: RootBase,
@@ -45,22 +46,29 @@ cc.Class({
         } else if (name == "Enter") {
             this._super("Enter");
             this.setPlane();
+
+            let platformApi = GlobalVar.getPlatformApi();
+            if (platformApi && !platformApi.canShowRewardVideo()) {
+                this.getNodeByName('videoIcon').getComponent('RemoteSprite').setFrame(1);
+            } else {
+                this.getNodeByName('videoIcon').getComponent('RemoteSprite').setFrame(0);
+            }
         }
     },
 
     onBtnShare: function (event) {
         let self = this;
         let platformApi = GlobalVar.getPlatformApi();
-        if (cc.isValid(platformApi)){
+        if (platformApi && (platformApi.canShowRewardVideo() || GlobalVar.getShareControl() == 6)  ){
             platformApi.showRewardedVideoAd(218, function () {
                 GlobalVar.me().shareData.testPlayMemberID = self.memberID;
                 self.close();
-            }, function () {
-                platformApi.shareNormal(118, function () {
-                    GlobalVar.me().shareData.testPlayMemberID = self.memberID;
-                    self.close();
-                });
-            })
+            }, null, true, true);
+        }else if (platformApi && !platformApi.canShowRewardVideo()) {
+            platformApi.shareNormal(118, function () {
+                GlobalVar.me().shareData.testPlayMemberID = self.memberID;
+                self.close();
+            });
         }else if (GlobalVar.configGMSwitch()){
             GlobalVar.me().shareData.testPlayMemberID = self.memberID;
             self.close();

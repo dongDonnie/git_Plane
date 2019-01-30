@@ -234,8 +234,8 @@ cc.Class({
             node.getChildByName("btnoVideo").active = false;
             node.getChildByName("btnoShare").active = false;
         }else if (this.itemArray[i].byFree == 1){
-            node.getChildByName("btnoVideo").active = !StoreageData.getShareTimesWithKey("rewardedVideoLimit", 1);
-            node.getChildByName("btnoShare").active = !!StoreageData.getShareTimesWithKey("rewardedVideoLimit", 1);
+            node.getChildByName("btnoVideo").active = !StoreageData.getShareTimesWithKey("rewardedVideoLimit", 99) || GlobalVar.getShareControl() == 6;
+            node.getChildByName("btnoShare").active = !!StoreageData.getShareTimesWithKey("rewardedVideoLimit", 99) && GlobalVar.getShareControl() != 6;
             if (this.itemArray[i].wLimit + vipLimitTimes - bought.Num <= 0){
                 node.getChildByName("btnoVideo").getComponent(cc.Button).interactable = false;
                 node.getChildByName("btnoShare").getComponent(cc.Button).interactable = false;
@@ -354,10 +354,6 @@ cc.Class({
         if (platformApi){
             platformApi.showRewardedVideoAd(222, function () {
                 GlobalVar.handlerManager().limitStoreHandler.sendReq(GameServerProto.GMID_FULI_GIFT_BUY_REQ, msg);
-            },function () {
-                platformApi.shareNormal(122, function () {
-                    GlobalVar.handlerManager().limitStoreHandler.sendReq(GameServerProto.GMID_FULI_GIFT_BUY_REQ, msg);
-                }); 
             })
         } else {
             GlobalVar.handlerManager().limitStoreHandler.sendReq(GameServerProto.GMID_FULI_GIFT_BUY_REQ, msg);

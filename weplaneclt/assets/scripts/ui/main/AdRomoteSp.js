@@ -124,8 +124,8 @@ cc.Class({
                 cc.moveBy(0.1, cc.v2(-xoff, -yoff)),
                 cc.delayTime(1.5),
             ));
-        this.node.stopAllActions();
-        this.node.runAction(action);
+        this.frameNode.stopAllActions();
+        this.frameNode.runAction(action);
     },
 
     clickBtn: function (event, reject, result, path) {

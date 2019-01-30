@@ -137,7 +137,7 @@ cc.Class({
         let msg = {
             Ticket: ticket,
         };
-        self.sendMsg(GameServerProto.GMID_FULI_SHARE_INVITE_GIFTBAG_REQ);
+        self.sendMsg(GameServerProto.GMID_FULI_SHARE_INVITE_GIFTBAG_REQ, msg);
     },
 
     sendGetFreeJinHuaReq: function (reserved) {

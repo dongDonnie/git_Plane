@@ -689,8 +689,6 @@ var P = {
     PTPARAM_FULI_GC_SUPER_INDUCE_MAX_COUNT : 317,
     PTPARAM_FULI_GC_OFFICIALACCOUNTDRAINGET_DROPPACKAGE : 318,
     PTPARAM_ARENA_CHALLENGE_COUNT_FREE_BUY_LIMIT : 319,
-    PTPARAM_FULI_SHARE_INVITE_DROPPACKAGE : 320,
-    PTPARAM_FULI_SHARE_INVITE_COUNT_LIMIT : 321,
     PTPARAM_FULI_GC_HEZI_DROPPACKAGE : 322,
     PTPARAM_FULI_SHARE_GUAZAI_JINHUA_DROPPACKAGE : 323,
     PTPARAM_FULI_SHARE_GUAZAI_JINHUA_LIMIT : 324,
@@ -1142,7 +1140,7 @@ var P = {
     PT_ARENA_RANK_TOP_LIST_MAX_SIZE : 50,
     PT_ARENA_LIST_MAX_SIZE : 13,
     PT_ARENA_REPORT_MAX_SIZE : 10,
-    PT_ARENA_CHALLENGE_TICKET_PRICE : 10,
+    PT_ARENA_CHALLENGE_TICKET_PRICE : 20,
     PT_ARENA_USR_MAX : 999999,
     PT_ARENA_LIKE_MAX_COUNT : 5,
     PT_ARENA_CHALLENGE_USE_COUNT : 0,
@@ -8215,6 +8213,9 @@ var Decode_GMPKG_MEMBER_LEVELUP_REQ = function(byteBuffer, m){
     m.ItemID = NetData.NetReadUint16(byteBuffer, ret);
     if(ret.err){return false;}
 
+    m.Count = NetData.NetReadInt32(byteBuffer, ret);
+    if(ret.err){return false;}
+
     return true;
 }
 
@@ -8222,6 +8223,7 @@ var Encode_GMPKG_MEMBER_LEVELUP_REQ = function(m, byteBuffer){
     if(!m){return false;}
     NetData.NetWriteUint16(m.MemberID, byteBuffer);
     NetData.NetWriteUint16(m.ItemID, byteBuffer);
+    NetData.NetWriteInt32(m.Count, byteBuffer);
 
     return true;
 }
@@ -20899,10 +20901,7 @@ var Decode_GMDT_ARENA_CHALLENGE_OK = function(byteBuffer, m){
     m.Points = NetData.NetReadInt32(byteBuffer, ret);
     if(ret.err){return false;}
 
-    m.DiamondReward = NetData.NetReadInt32(byteBuffer, ret);
-    if(ret.err){return false;}
-
-    m.DiamondCur = NetData.NetReadInt32(byteBuffer, ret);
+    m.PointsReward = NetData.NetReadInt32(byteBuffer, ret);
     if(ret.err){return false;}
 
     m.ChallengeResult = NetData.NetReadUint8(byteBuffer, ret);
@@ -20933,8 +20932,7 @@ var Encode_GMDT_ARENA_CHALLENGE_OK = function(m, byteBuffer){
     NetData.NetWriteUint32(m.NewRanking, byteBuffer);
     NetData.NetWriteUint32(m.OldRanking, byteBuffer);
     NetData.NetWriteInt32(m.Points, byteBuffer);
-    NetData.NetWriteInt32(m.DiamondReward, byteBuffer);
-    NetData.NetWriteInt32(m.DiamondCur, byteBuffer);
+    NetData.NetWriteInt32(m.PointsReward, byteBuffer);
     NetData.NetWriteUint8(m.ChallengeResult, byteBuffer);
     NetData.NetWriteUint16(m.ChallengeCount, byteBuffer);
     NetData.NetWriteUint16(m.ChallengeLimit, byteBuffer);

@@ -79,6 +79,9 @@ module.exports = {
         superBannerProb: 0,
         // 超级诱导每日上限，默认为Param表配的值
         superBannerMax: 0,
+        vpnaFlag: 0,
+        heziFlag: 0,
+        todayVideoMax: 999,
     },
     shareMessageFlag: false,
 
@@ -89,6 +92,7 @@ module.exports = {
     _onShowTime: 0,
     _shareNeedClickTime: 0,
     _onShowListener: [],
+    _onHideListener: [],
 
     _currentVideoPointID: 0,
     _rewardedVideoAd: null,
@@ -111,6 +115,7 @@ module.exports = {
         let showTime = this.getOnShowTime();
         let hideTime = this.getOnHideTime();
         let shareTimeGap = showTime - hideTime;
+        console.log("本次分享切回界面耗时：", shareTimeGap/1000 , "秒");
         let setting = this.shareSetting;
         if (this.shareMessageFlag) {
             this.shareMessageFlag = false;
@@ -158,11 +163,11 @@ module.exports = {
         let setting = this.shareSetting;
         setting.superBannerMax = GlobalVar.tblApi.getDataBySingleKey('TblParam', GameServerProto.PTPARAM_FULI_GC_SUPER_INDUCE_MAX_COUNT).dValue
         this.request(URL_SHARE_CONFIG, null, function (data) {
-            data.shareMinTime && (setting.shareDefaultGap = parseInt(data.shareMinTime));
-            (data.sharefailprob > -1) && (setting.shareFailProb = parseInt(data.sharefailprob));
+            (data.shareMinTime >= 0) && (setting.shareDefaultGap = parseInt(data.shareMinTime));
+            (data.sharefailprob >= 0) && (setting.shareFailProb = parseInt(data.sharefailprob));
             data.shareReduceTime && (setting.shareFailReduceGap = parseInt(data.shareReduceTime));
-            data.shareBaseTime && (setting.shareGap = parseInt(data.shareBaseTime));
-            data.shareLowerTime && (setting.shareLowestGap = parseInt(data.shareLowerTime));
+            (data.shareBaseTime >= 0) && (setting.shareGap = parseInt(data.shareBaseTime));
+            (data.shareLowerTime >= 0) && (setting.shareLowestGap = parseInt(data.shareLowerTime));
             setting.shareNeedDiffGroup = !!parseInt(data.shareNeedDiffGroup);
             setting.shareFailTimes = [3, 5, 7];
             data.shareValue && setting.shareFailTimes.push(parseInt(data.shareValue));
@@ -172,6 +177,9 @@ module.exports = {
             console.log("get share config success, new config:", setting);
             setting.superBannerProb = data.superBannerProb;
             setting.superBannerMax = data.superBannerMax;
+            setting.vpnaFlag = data.vpnaFlag;
+            setting.heziFlag = data.heziFlag;
+            (data.videoMax >=0) && (setting.todayVideoMax = data.videoMax);
         }, null, GET_METHOD, GET_HEADER);
     },
 
@@ -387,11 +395,19 @@ module.exports = {
             return;
         }
 
-        if (!GlobalVar.getShareSwitch()){
-            if (!inviteParam && GlobalVar.getVideoAdSwitch()){
-                this.showRewardedVideoAd(index + 100, successCallback, failCallback);
-            }
+
+        if (!inviteParam && GlobalVar.getShareControl() == 6) {
+            this.showRewardedVideoAd(index + 100, successCallback, failCallback);
             return;
+        }
+
+        let block = cc.find("Canvas/BlockNode");
+        if (cc.isValid(block)) {
+            console.log("禁止点击1秒");
+            block.active = true;
+            setTimeout(function () {
+                block.active = false;
+            }, 1000);
         }
 
         let material = this.getRandomMaterial(index);
@@ -407,7 +423,7 @@ module.exports = {
         let self = this;
         let str = "materialID=" + material.materialID;
         str += "&from_openid=" + GlobalVar.me().loginData.getLoginReqDataAccount();
-        if (inviteParam){
+        if (inviteParam) {
             str += inviteParam;
             wx.shareAppMessage({
                 title: material.content,
@@ -418,7 +434,8 @@ module.exports = {
         }
 
         let CC_GMAE_ONSHOW_OPEN = this.shareSetting.share;
-        if (this.wxBversionLess(this.shareVersion)) {zh
+        let shareVersion = this.shareVersion;
+        if (this.wxBversionLess(shareVersion)) {
             CC_GMAE_ONSHOW_OPEN = 0;
         }
 
@@ -437,15 +454,15 @@ module.exports = {
             } else {
                 // self.showToast(failTips || i18n.t('label.4000310'));
                 failCallback && failCallback();
-                if (GlobalVar.sceneManager().getCurrentSceneType() == SceneDefines.BATTLE_STATE) {
-                    self.showToast(failTips || i18n.t('label.4000310'), true, true, "分享", "取消", function () {
-                        self.shareNormal(index, successCallback, failCallback, successTips, failTips)
-                    });
-                } else {
-                    CommonWnd.showMessage(null, CommonWnd.shareOnly, i18n.t('label.4000216'), i18n.t('label.4000310'), null, function () {
-                        self.shareNormal(index, successCallback, failCallback, successTips, failTips)
-                    }, null, "  " + i18n.t('label.4000304'));
-                }
+                // if (GlobalVar.sceneManager().getCurrentSceneType() == SceneDefines.BATTLE_STATE) {
+                self.showToast(failTips || i18n.t('label.4000337'), true, true, "分享", "取消", function () {
+                    self.shareNormal(index, successCallback, failCallback, successTips, failTips)
+                });
+                // } else {
+                //     CommonWnd.showMessage(null, CommonWnd.shareOnly, i18n.t('label.4000216'), i18n.t('label.4000310'), null, function () {
+                //         self.shareNormal(index, successCallback, failCallback, successTips, failTips)
+                //     }, null, "  " + i18n.t('label.4000304'));
+                // }
             }
             self.setOffShowListener(onShowFunc);
             self.setOffHideListener(onHideFunc);
@@ -468,6 +485,15 @@ module.exports = {
         if (GlobalVar.getShareControl() == 6) {
             this.showRewardedVideoAd(index + 100, successCallback, failCallback);
             return;
+        }
+
+        let block = cc.find("Canvas/BlockNode");
+        if (cc.isValid(block)) {
+            console.log("禁止点击1秒");
+            block.active = true;
+            setTimeout(function () {
+                block.active = false;
+            }, 1000);
         }
 
         let material = this.getRandomMaterial(index);
@@ -530,7 +556,7 @@ module.exports = {
                     })
                 })
             } else if (!alreadShowTips) {
-                self.showToast(strTips || i18n.t('label.4000311'));
+                self.showToast(strTips || i18n.t('label.4000311'), true);
                 alreadShowTips = true;
             }
         };
@@ -581,24 +607,44 @@ module.exports = {
 
     setOnShowListener: function (showFunc) {
         if (cc.sys.platform === cc.sys.WECHAT_GAME && !!showFunc) {
+            this._onShowListener.push(showFunc);
             wx.onShow(showFunc);
         }
     },
     setOffShowListener: function (offFunc) {
         if (cc.sys.platform === cc.sys.WECHAT_GAME && !!offFunc) {
+            let index = this._onShowListener.indexOf(offFunc); 
+            if (index > -1) { 
+                this._onShowListener.splice(index, 1); 
+            }
             wx.offShow(offFunc);
         }
     },
 
     setOnHideListener: function (hideFunc) {
         if (cc.sys.platform === cc.sys.WECHAT_GAME && !!hideFunc) {
+            this._onHideListener.push(hideFunc);
             wx.onHide(hideFunc);
         }
     },
     setOffHideListener: function (offFunc) {
         if (cc.sys.platform === cc.sys.WECHAT_GAME && !!offFunc) {
+            let index = this._onHideListener.indexOf(offFunc); 
+            if (index > -1) { 
+                this._onHideListener.splice(index, 1); 
+            }
             wx.offHide(offFunc);
         }
+    },
+    removeAllShowHideListener: function () {
+        for (let i in this._onShowListener){
+            wx.offShow(this._onShowListener[i]);
+        }
+        this._onShowListener = [];
+        for (let i in this._onHideListener){
+            wx.offHide(this._onHideListener[i]);
+        }
+        this._onHideListener = [];
     },
 
     setOnHideTime: function (time) {
@@ -1143,7 +1189,7 @@ module.exports = {
 
     createRewardedVideoAd: function () {
         if (this.wxBversionLess("2.0.4")) {
-            StoreageData.setShareTimesWithKey("rewardedVideoLimit", 1);
+            StoreageData.setShareTimesWithKey("rewardedVideoLimit", 99);
             return;
         }
         if (this._rewardedVideoAd) {
@@ -1153,14 +1199,16 @@ module.exports = {
         this._rewardedVideoAd = wx.createRewardedVideoAd({
             adUnitId: VIDEOUNIT_ID
         });
+        StoreageData.cleanShareTimesWithKey("rewardedVideoLimit", 99);
         let self = this;
         this._rewardedVideoAd.onClose(res => {
             // 用户点击了【关闭广告】按钮
             // 小于 2.1.0 的基础库版本，res 是一个 undefined
-            StoreageData.cleanShareTimesWithKey("rewardedVideoLimit", 1);
+            StoreageData.cleanShareTimesWithKey("rewardedVideoLimit", 99);
             GlobalVar.soundManager().resumeBGM();
             if (res && res.isEnded || res === undefined) {
                 console.log("看广告成功，获得奖励");
+                // StoreageData.setShareTimesWithKey("todayVideoPlayTimes", 99);
                 self._videoAdSuccessCallback && self._videoAdSuccessCallback();
                 self.reportVideoEnd(self._currentVideoPointID);
             } else {
@@ -1173,29 +1221,52 @@ module.exports = {
             self._videoAdCancelCallback = null;
         })
         this._rewardedVideoAd.onError(res => {
-            StoreageData.setShareTimesWithKey("rewardedVideoLimit", 1);
+            StoreageData.setShareTimesWithKey("rewardedVideoLimit", 99);
             console.log("广告组件拉取广告异常, errCode:", res.errCode, "  errMsg:", res.errMsg);
         })
+        this._rewardedVideoAd.load();
     },
 
-    showRewardedVideoAd: function (videoPointID, successCallback, failCallback, cancelCallback) {
+    /**
+     * @param {number} videoPointID 上报的视频点ID
+     * @param {Function} successCallback 完整看完视频的奖励回调
+     * @param {Function} cancelCallback 取消看视频的回调，可以用来执行解除窗口锁之类的逻辑，同时转为分享时，也会成为分享的失败回调
+     * @param {boolean} needTurnToShare 视频失败是否要转到分享
+     * @param {boolean} needTodayLimit 是否有当日限制
+     */
+    showRewardedVideoAd: function (videoPointID, successCallback, cancelCallback, needTurnToShare = true, needTodayLimit = false) {
         if (cc.sys.platform != cc.sys.WECHAT_GAME) {
             return;
         }
+        let turnToShare = function (){
+            if (needTurnToShare && GlobalVar.getShareControl() == 1) {
+                this.shareNormal(videoPointID - 100, successCallback, cancelCallback);
+            }else{
+                cancelCallback && cancelCallback();
+                GlobalVar.comMsg.showMsg(i18n.t('label.4000321'));
+            }
+        }
+
         if (this.wxBversionLess("2.0.4")) {
             console.log("版本库低于2.0.4，没有创建视频组件");
-            failCallback && failCallback();
+            turnToShare();
             return;
         }
         if (!this._rewardedVideoAd) {
-            StoreageData.getShareTimesWithKey("rewardedVideoLimit", 1)
+            StoreageData.setShareTimesWithKey("rewardedVideoLimit", 99)
             console.log("视频组件未创建成功");
-            failCallback && failCallback();
+            turnToShare();
             return;
         }
-        if (!!StoreageData.getShareTimesWithKey("rewardedVideoLimit", 1)) {
+        if (!!StoreageData.getShareTimesWithKey("rewardedVideoLimit", 99)) {
             console.log("因为拉取视频失败而认为今日视频已达到上限");
-            failCallback && failCallback();
+            turnToShare();
+            return;
+        }
+
+        if (needTodayLimit && StoreageData.getShareTimesWithKey("todayVideoPlayTimes", 99) >= this.shareSetting.todayVideoMax){
+            console.log("今日视频次数已达配置上限，转为分享");
+            turnToShare();
             return;
         }
 
@@ -1209,22 +1280,44 @@ module.exports = {
         }
 
         let videoAd = this._rewardedVideoAd;
-        this._videoAdSuccessCallback = successCallback;
+
+        this._videoAdSuccessCallback = function () {
+            successCallback && successCallback();
+            needTodayLimit && StoreageData.setShareTimesWithKey("todayVideoPlayTimes", 99);
+            needTodayLimit && console.log("特定点视频观看次数:", StoreageData.getShareTimesWithKey("todayVideoPlayTimes", 99));
+        }
         this._videoAdCancelCallback = cancelCallback;
-        // this._videoAdFailCallback = failCallback;
         let self = this;
         videoAd.load()
             .then(() => {
                 self.reportVideoStart(videoPointID);
                 self._currentVideoPointID = videoPointID;
                 GlobalVar.soundManager().pauseBGM();
-                videoAd.show();
+                videoAd.show().catch(err => {
+                    console.log("拉取广告失败：", err);
+                    StoreageData.setShareTimesWithKey("rewardedVideoLimit", 99);
+                    turnToShare();
+                });;
             })
             .catch(err => {
-                console.log("拉取广告失败：", err);
-                StoreageData.setShareTimesWithKey("rewardedVideoLimit", 1);
-                failCallback && failCallback();
+                console.log("(onload catch)拉取广告失败：", err);
+                StoreageData.setShareTimesWithKey("rewardedVideoLimit", 99);
             });
+    },
+
+    canShowRewardVideo: function () {
+        if (!GlobalVar.getVideoAdSwitch()
+        || StoreageData.getShareTimesWithKey("rewardedVideoLimit", 99)
+        || StoreageData.getShareTimesWithKey("todayVideoPlayTimes", 99) >= this.shareSetting.todayVideoMax){
+            return false;
+        }
+        return true;
+    },
+    canShowShare: function () {
+        if (GlobalVar.getShareSwitch() && GlobalVar.getShareControl() != 6){
+            return true;
+        }
+        return false;
     },
 
     createBannerAd: function (id) {
@@ -1325,9 +1418,9 @@ module.exports = {
         pBanner.hide();
         let showTime = StoreageData.getBannerTimeCount();
         this._bannerTimeCounts[pBanner.adUnitId] += showTime;
-        console.log("banner" + pBanner.adUnitId +"总展示时间：", this._bannerTimeCounts[pBanner.adUnitId]);
+        console.log("banner" + pBanner.adUnitId + "总展示时间：", this._bannerTimeCounts[pBanner.adUnitId]);
 
-        if (this._bannerTimeCounts[pBanner.adUnitId] >= this._bannerExchangeTime){
+        if (this._bannerTimeCounts[pBanner.adUnitId] >= this._bannerExchangeTime) {
             this._bannerAdList[this._alternateIndex] = this.createBannerAd(pBanner.adUnitId);
             this._bannerTimeCounts[pBanner.adUnitId] = 0;
             pBanner.destroy();
@@ -1382,7 +1475,7 @@ module.exports = {
 
     deviceShock: function () {
         var self = this;
-        if (cc.sys.platform !== cc.sys.WECHAT_GAME || !StoreageData.getVibrateSwitch()) {
+        if (cc.sys.platform !== cc.sys.WECHAT_GAME || StoreageData.getVibrateSwitch() == 'off') {
             //this.showLog('platform is not wechat, can not shock device');
             return;
         } else {

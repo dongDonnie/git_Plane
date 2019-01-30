@@ -177,6 +177,12 @@ var ResManager = cc.Class({
         let ready = 0;
         for (let res in this.preLoadArray) {
             this.loadRes(this.preLoadArray[res].type, this.preLoadArray[res].url, function (obj, type, path) {
+                if(!cc.isValid(obj)){
+                    if(!!callback){
+                        callback(-1);
+                    }
+                    return;
+                }
                 if (path.indexOf('Fighter') != -1 && !!callback) {
                     callback(0);
                 }
@@ -197,9 +203,13 @@ var ResManager = cc.Class({
                     }
                     self.preLoadArray.splice(0, self.preLoadArray.length);
                     if (error) {
-                        callback(-1);
+                        if(!!callback){
+                            callback(-1);
+                        }
                     } else {
-                        callback(1);
+                        if(!!callback){
+                            callback(1);
+                        }
                     }
                 }
             })

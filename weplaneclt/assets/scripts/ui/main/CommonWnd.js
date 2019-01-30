@@ -210,8 +210,10 @@ module.exports = {
         }
     },
 
-    showNoticeWnd: function () {
-        WindowManager.getInstance().pushView(WndTypeDefine.WindowType.E_DT_NORMALNOTICE_VIEW);
+    showNoticeWnd: function (callback) {
+        WindowManager.getInstance().pushView(WndTypeDefine.WindowType.E_DT_NORMALNOTICE_VIEW, function () {
+            callback && callback();
+        });
     },
 
     showMailWnd: function () {
@@ -395,8 +397,10 @@ module.exports = {
     showRecommandWnd: function () {
         WindowManager.getInstance().pushView(WndTypeDefine.WindowType.E_DT_NORMAL_RECOMMAND_WND);
     },
-    showShareDailyWnd: function () {
-        WindowManager.getInstance().pushView(WndTypeDefine.WindowType.E_DT_NORMAL_SHAREDIALY_WND);
+    showShareDailyWnd: function (callback) {
+        WindowManager.getInstance().pushView(WndTypeDefine.WindowType.E_DT_NORMAL_SHAREDIALY_WND, function () {
+            callback && callback();
+        });
     },
     showSuperRewardWnd: function () {
         WindowManager.getInstance().pushView(WndTypeDefine.WindowType.E_DT_NORMAL_SUPER_REWARD_WND);
@@ -494,7 +498,19 @@ module.exports = {
         });
     },
 
-    showInviteRewardWnd: function () {
-        WindowManager.getInstance().pushView(WndTypeDefine.WindowType.E_DT_NORMAL_INVITE_REWARD_WND);
+    showInviteRewardWnd: function (callback) {
+        WindowManager.getInstance().pushView(WndTypeDefine.WindowType.E_DT_NORMAL_INVITE_REWARD_WND, function () {
+            callback && callback();
+        });
+    },
+
+    showSpecialActiveWnd: function (amsType) {
+        WindowManager.getInstance().pushView(WndTypeDefine.WindowType.E_DT_NORMAL_SPECIAL_ACTIVE_WND, function (wnd, name, type) {
+            wnd.getComponent(type).setAcitveType(amsType);
+        })
+    },
+
+    showTreasuryRankWnd: function () {
+        WindowManager.getInstance().pushView(WndTypeDefine.WindowType.E_DT_NORMAL_TREASURY_RANK_WND);
     },
 };

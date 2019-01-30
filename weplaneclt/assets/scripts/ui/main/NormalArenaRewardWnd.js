@@ -7,7 +7,7 @@ const GameServerProto = require("GameServerProto");
 const i18n = require('LanguageData');
 const EventMsgID = require("eventmsgid");
 const CommonWnd = require("CommonWnd");
-const TAB_REWARD = 0, TAB_RULE = 1;
+const TAB_REWARD = 1, TAB_RULE = 0;
 
 cc.Class({
     extends: RootBase,
@@ -30,6 +30,10 @@ cc.Class({
             type: cc.Label,
         },
         labelNextReward: {
+            default: null,
+            type: cc.Label,
+        },
+        labelRewardTip: {
             default: null,
             type: cc.Label,
         },
@@ -119,6 +123,11 @@ cc.Class({
             let rewardRankData = GlobalVar.me().arenaData.arenaOpenData.RankingHistories;
             let dayRewardGetFlags = GlobalVar.me().arenaData.arenaOpenData.DayRewardGetFlags;
             let sortData = this.srotRewardData(rewardRankData, dayRewardGetFlags);
+            if (sortData.length == 0){
+                this.labelRewardTip.node.active = true;
+                return;
+            }
+            this.labelRewardTip.node.active = false;
 
             this.rewardScroll.loopScroll.setTotalNum(sortData.length);
             this.rewardScroll.loopScroll.setCreateModel(this.nodeRewardModel);
@@ -388,7 +397,7 @@ cc.Class({
     enter: function (isRefresh) {
         if (isRefresh) {
             this._super(true);
-            this.setTabsColor(0);
+            this.setTabsColor(TAB_REWARD);
             this.initArenaRewardWnd();
         } else {
             this._super(false);

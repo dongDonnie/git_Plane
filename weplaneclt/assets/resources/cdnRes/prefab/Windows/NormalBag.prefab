@@ -839,7 +839,6 @@
     "_fontSize": 0,
     "_showShadow": false,
     "btnState": true,
-    "btnPress": false,
     "_N$fontColor": 0,
     "_N$textLabel": "",
     "_id": ""
@@ -1629,7 +1628,6 @@
     "_fontSize": 0,
     "_showShadow": false,
     "btnState": true,
-    "btnPress": false,
     "_N$fontColor": 0,
     "_N$textLabel": "",
     "_id": ""
@@ -2260,6 +2258,7 @@
     "_createItemFunc": null,
     "_updateItemFunc": null,
     "_completeFunc": null,
+    "_completeAllFunc": null,
     "_id": ""
   },
   {
@@ -2842,7 +2841,6 @@
     "_fontSize": 30,
     "_showShadow": false,
     "btnState": true,
-    "btnPress": false,
     "_N$fontColor": 0,
     "_N$textLabel": "",
     "_id": ""
@@ -3405,6 +3403,7 @@
     "_createItemFunc": null,
     "_updateItemFunc": null,
     "_completeFunc": null,
+    "_completeAllFunc": null,
     "_id": ""
   },
   {
@@ -3494,7 +3493,7 @@
       "__id__": 1
     },
     "_enabled": true,
-    "alignMode": 2,
+    "alignMode": 1,
     "_target": null,
     "_alignFlags": 21,
     "_left": 0,

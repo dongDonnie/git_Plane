@@ -92,12 +92,24 @@ cc.Class({
 
     initBuySpWnd: function () {
         let title = i18n.t('label.4000230')
-        let shareName = i18n.t("label.4000304");
+        let shareName = "";
+        let leftShareTimesTipStr = "";
+        if (GlobalVar.getShareControl() == 1){
+            shareName = "  " + i18n.t("label.4000304");
+            this.btnShare.node.getChildByName("spriteShare").active = true;
+            this.btnShare.node.getChildByName("spriteVideo").active = false;
+            leftShareTimesTipStr = i18n.t("label.4000312").replace("%d", leftShareTime);
+        }else if (GlobalVar.getShareControl() == 6){
+            shareName = "  " + i18n.t("label.4000336");
+            this.btnShare.node.getChildByName("spriteShare").active = false;
+            this.btnShare.node.getChildByName("spriteVideo").active = true;
+            leftShareTimesTipStr = i18n.t("label.4000340").replace("%d", leftShareTime);
+        }
         let purchaseName = i18n.t("label.4000214");
         let curTime = GlobalVar.me().spData.getSpFreeCount();
         let maxTime = GlobalVar.tblApi.getDataBySingleKey('TblParam', GameServerProto.PTPARAM_SP_FREE_GET_MAX).dValue;
         let leftShareTime = maxTime - curTime;
-        let leftShareTimesTipStr = i18n.t("label.4000312").replace("%d", leftShareTime);
+        // let leftShareTimesTipStr = i18n.t("label.4000312").replace("%d", leftShareTime);
 
         let spData = GlobalVar.me().getSpData();
         let vipLevel = GlobalVar.me().getVipLevel();
@@ -147,21 +159,19 @@ cc.Class({
         }
 
         this.canOperata = true;
-        if (cc.sys.platform == cc.sys.WECHAT_GAME){
-            // CommonWnd.showMessage(null, CommonWnd.oneConfirm, i18n.t('label.4000216'), i18n.t('label.4000317'));
-            // setTimeout(() => {
-            //     weChatAPI.shareNeedClick(121, function () {
-            //         GlobalVar.handlerManager().spHandler.sendSpBuyReq(1);
-            //     });
-            // }, 1000);
+        if (cc.sys.platform == cc.sys.WECHAT_GAME && GlobalVar.getShareControl() == 1){
             CommonWnd.showMessage(null, CommonWnd.oneConfirm, i18n.t('label.4000216'), i18n.t('label.4000317'), null, function () {
                 weChatAPI.shareNeedClick(131, function () {
                     GlobalVar.handlerManager().spHandler.sendSpBuyReq(1);
                 });
             });
-        }else{
+        } else if (cc.sys.platform == cc.sys.WECHAT_GAME && GlobalVar.getShareControl() == 6){
+            weChatAPI.showRewardedVideoAd(231, function () {
+                GlobalVar.handlerManager().spHandler.sendSpBuyReq(1);
+            });
+        } else{
             let platformApi = GlobalVar.getPlatformApi();
-            if (cc.isValid(platformApi)){
+            if (platformApi){
                 platformApi.shareNormal(131, function () {
                     GlobalVar.handlerManager().spHandler.sendSpBuyReq(1);
                 });

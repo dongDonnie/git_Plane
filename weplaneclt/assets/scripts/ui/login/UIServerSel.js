@@ -180,17 +180,44 @@ var UIServerSel = cc.Class({
 
     initSelServerWnd: function () {
         this.clickServerWnd = false;
-        let serverModel = this.node.getChildByName("nodeSelServerWnd").getChildByName("btnServerModel");
+        let serverModel = this.node.getChildByName("nodeSelServerWnd").getChildByName("btnServerModel1");
         let defaultServerID = null;
         let defaultServerIndex = -1;
         defaultServerID = (this.userData.server && this.userData.server[0]) || defaultServerID;
         defaultServerIndex = this.findServerIndexByID(defaultServerID)
-        if (!defaultServerID || defaultServerIndex == -1) {
+        if (!defaultServerID || defaultServerIndex == -1) { //取得默认服务器
             defaultServerID = this.serverList[0].server_id;
             defaultServerIndex = 0;
         }
-
+        for (let i = 0; i< this.userData.server.length; i++){ //删除历史登录服中不存在的服
+            let serverIndex = this.findServerIndexByID(this.userData.server[i])
+            if (serverIndex == -1){
+                this.userData.server.splice(i, 1);
+                i -= 1;
+            }
+        }
+        if (this.userData.server.length > 2){
+            let nodeSelServerWnd = this.node.getChildByName("nodeSelServerWnd");
+            nodeSelServerWnd.getChildByName("spriteUnderBg2").y = 182 - 94;
+            nodeSelServerWnd.getChildByName("spriteAllServer").y = 188 - 94;
+            nodeSelServerWnd.getChildByName("scrollview").y = -90 - 47
+            nodeSelServerWnd.getChildByName("scrollview").height = 400;
+            nodeSelServerWnd.getChildByName("scrollview").getChildByName("view").height = 400;
+            nodeSelServerWnd.getChildByName("scrollview").getComponent(cc.ScrollView).content.y = 200;
+        }
         this.updateServer(serverModel, this.serverList[defaultServerIndex]);
+        for (let i = 1; i< this.userData.server.length; i++){
+            let serverIndex = this.findServerIndexByID(this.userData.server[i])
+            let server = this.node.getChildByName("nodeSelServerWnd").getChildByName("btnServerModel" + (i + 1));
+            if (!server){
+                server = cc.instantiate(serverModel);
+                server.name = "btnServerModel" + (i + 1);
+                this.node.getChildByName("nodeSelServerWnd").addChild(server);
+            }
+            server.x = (i%2) == 0?-147:147;
+            server.y = 266 - parseInt(i/2)*94;
+            this.updateServer(server, this.serverList[serverIndex]);
+        }
 
         let content = this.node.getChildByName("nodeSelServerWnd").getChildByName("scrollview").getComponent(cc.ScrollView).content;
         content.removeAllChildren();

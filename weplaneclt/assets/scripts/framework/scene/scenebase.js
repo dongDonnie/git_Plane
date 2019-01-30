@@ -18,25 +18,25 @@ var SceneBase = cc.Class({
     },
 
     openScene: function () {
-        let platformApi = GlobalVar.getPlatformApi();
-        if (platformApi) {
-            platformApi.setOnShowListener(this.showEvent);
-            platformApi.setOnHideListener(this.hideEvent);
-        }
-        // if (cc.sys.platform === cc.sys.WECHAT_GAME) {
-        //     wx.onShow(this.showEvent);
-        //     wx.onHide(this.hideEvent);
-        // }else if (window && window["wywGameId"]=="5469"){
-        //     console.log("window:", window);
-        //     // window["wywGameListener"]["enterBackCallback"] = function () {
-        //     //     console.log("woowowowowow");
-        //     // };
-        //     // window["wywGameListener"]["enterForeCallback"] = function () {
-        //     //     console.log("kakakakakakak");
-        //     // };
-        //     // window.Game.onEnterForeground(this.showEvent)
-        //     // window.Game.onEnterBackground(this.hideEvent)
+        // let platformApi = GlobalVar.getPlatformApi();
+        // if (platformApi) {
+        //     platformApi.setOnShowListener(this.showEvent);
+        //     platformApi.setOnHideListener(this.hideEvent);
         // }
+        if (cc.sys.platform === cc.sys.WECHAT_GAME) {
+            wx.onShow(this.showEvent);
+            wx.onHide(this.hideEvent);
+        }else if (window && window["wywGameId"]=="5469"){
+            console.log("window:", window);
+            // window["wywGameListener"]["enterBackCallback"] = function () {
+            //     console.log("woowowowowow");
+            // };
+            // window["wywGameListener"]["enterForeCallback"] = function () {
+            //     console.log("kakakakakakak");
+            // };
+            // window.Game.onEnterForeground(this.showEvent)
+            // window.Game.onEnterBackground(this.hideEvent)
+        }
     },
 
     showEvent: function (res) {
@@ -45,6 +45,7 @@ var SceneBase = cc.Class({
         if (platformApi) {
             platformApi.deviceKeepScreenOn();
         }
+        GlobalVar.networkManager().checkConnection();
     },
 
     hideEvent: function () {
@@ -55,18 +56,18 @@ var SceneBase = cc.Class({
     },
 
     releaseScene: function () {
-        let platformApi = GlobalVar.getPlatformApi();
-        if (platformApi) {
-            platformApi.setOffShowListener(this.showEvent);
-            platformApi.setOffHideListener(this.hideEvent);
-        }
-        // if (cc.sys.platform === cc.sys.WECHAT_GAME) {
-        //     wx.offShow(this.showEvent);
-        //     wx.offHide(this.hideEvent);
-        // }else if (window && window["wywGameId"]=="5469") {
-        //     // window.Game.offEnterForeground(this.showEvent)
-        //     // window.Game.offEnterBackground(this.hideEvent)
+        // let platformApi = GlobalVar.getPlatformApi();
+        // if (platformApi) {
+        //     platformApi.setOffShowListener(this.showEvent);
+        //     platformApi.setOffHideListener(this.hideEvent);
         // }
+        if (cc.sys.platform === cc.sys.WECHAT_GAME) {
+            wx.offShow(this.showEvent);
+            wx.offHide(this.hideEvent);
+        }else if (window && window["wywGameId"]=="5469") {
+            // window.Game.offEnterForeground(this.showEvent)
+            // window.Game.offEnterBackground(this.hideEvent)
+        }
     },
 
     loadPrefab: function (prefabName, callback) {
@@ -106,7 +107,7 @@ var SceneBase = cc.Class({
                     callback();
                 }
                 let block = cc.find("Canvas/BlockNode");
-                if(isValid(block)){
+                if(cc.isValid(block)){
                     block.active = false;
                 }
             } else {

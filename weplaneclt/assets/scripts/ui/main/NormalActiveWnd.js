@@ -125,7 +125,7 @@ cc.Class({
 
             let path = "cdnRes/active/" + data.NameImg;
             GlobalVar.resManager().loadRes(ResMapping.ResType.SpriteFrame, path, function (frame) {
-                if(cc.isValid(activeTab)){
+                if (cc.isValid(activeTab)) {
                     activeTab.getChildByName("spriteBg").getComponent("RemoteSprite").spriteFrame = frame;
                 }
             });
@@ -299,7 +299,6 @@ cc.Class({
         let nodeActiveContent = this.node.getChildByName("nodeActiveContent");
         let nodeContent = nodeActiveContent.getChildByName("nodeType2");
 
-
         let updateModel = function (model, index) {
             // model.active = true;
             model.opacity = 255;
@@ -345,7 +344,13 @@ cc.Class({
 
             let labelRequire = model.getChildByName("labelRequire");
             let requireData = GlobalVar.tblApi.getDataBySingleKey('TblAMSRule', rule.RuleID);
-            let requireStr = requireData.strRuleName.replace("{0}", rule.Compare.replace(">=", "达到").replace("==", "").replace("<=", "小于") + rule.Var > 10000?(parseInt(rule.Var/10000)):rule.Var);
+            let requireStr = "";
+            if (isShare || isAD) {
+                let curStep = StoreageData.getShareTimesWithKey(data.Act.Actid, data.Act.Limit, data.Act.EndTime);
+                requireStr = requireData.strRuleName.replace("{0}", (curStep > rule.Var ? rule.Var : curStep) + "/" + rule.Var)
+            } else {
+                requireStr = requireData.strRuleName.replace("{0}", rule.Compare.replace(">=", "达到").replace("==", "").replace("<=", "小于") + rule.Var > 10000 ? (parseInt(rule.Var / 10000)) : rule.Var);
+            }
             labelRequire.getComponent(cc.Label).string = requireStr;
 
             model.getChildByName("btnRecv").active = true;
@@ -359,13 +364,13 @@ cc.Class({
             } else {
                 let btnText = "领取";
                 let fontSize = 28;
-                if ((!isShare && !isAD) || isComplete){
+                if ((!isShare && !isAD) || isComplete) {
                     btnText = "领取";
-                } else if (isShare){
+                } else if (isShare) {
                     btnRecv.getChildByName("spriteShare").active = true;
                     btnText = "  分享到群"
                     fontSize = 22;
-                } else if (isAD){
+                } else if (isAD) {
                     btnText = "  观看视频"
                     fontSize = 22;
                     btnRecv.getChildByName("spriteVideo").active = true;
@@ -467,7 +472,7 @@ cc.Class({
                     nodeBtn.getChildByName("labelShare").active = true;
 
                     let curStep = StoreageData.getShareTimesWithKey(data.Act.Actid, data.Act.Limit, data.Act.EndTime);
-                    curStep = curStep > rule.Var * (curJoinTime + 1) ? rule.Var * (curJoinTime + 1): curStep;
+                    curStep = curStep > rule.Var * (curJoinTime + 1) ? rule.Var * (curJoinTime + 1) : curStep;
                     // curStep = curStep > data.Act.LimitNum ? data.Act.LimitNum : curStep;
                     console.log("curStep:", curStep, "  rule.Var:", rule.Var, "  curJoinTime:", curJoinTime);
                     // if (curStep == rule.Var * (curJoinTime + 1)) {
@@ -508,7 +513,7 @@ cc.Class({
             } else {
                 nodeCost.getChildByName("labelCost").getComponent(cc.Label).string = costItem.Count;
             }
-        } 
+        }
 
         // 抽奖提示
         nodeBtn.getChildByName("btnPurchase").getChildByName("spriteVideo").active = false;
@@ -519,12 +524,12 @@ cc.Class({
         } else {
             nodeBtn.getChildByName("btnPurchase").getComponent(cc.Button).interactable = true
             let btnText = "购 买";
-            if ((isFree && !isShare && !isAD) || isShareComplete){
+            if ((isFree && !isShare && !isAD) || isShareComplete) {
                 btnText = "抽 奖";
-            } else if (isShare && !isShareComplete){
+            } else if (isShare && !isShareComplete) {
                 btnText = "  分享到群";
                 nodeBtn.getChildByName("btnPurchase").getChildByName("spriteShare").active = true;
-            }else if (isAD){
+            } else if (isAD) {
                 btnText = "  观看视频";
                 nodeBtn.getChildByName("btnPurchase").getChildByName("spriteVideo").active = true;
             }
@@ -640,12 +645,12 @@ cc.Class({
         } else {
             nodeBuy.getChildByName("btnPurchase").getComponent(cc.Button).interactable = true;
             let btnText = "购 买";
-            if ((isFree && !isShare && !isAD) || isShareComplete){
+            if ((isFree && !isShare && !isAD) || isShareComplete) {
                 btnText = "抽 奖";
-            } else if (isShare && !isShareComplete){
+            } else if (isShare && !isShareComplete) {
                 nodeBuy.getChildByName("btnPurchase").getChildByName("spriteShare").active = true;
                 btnText = "  分享到群"
-            } else if (isAD){
+            } else if (isAD) {
                 btnText = "  观看视频"
                 nodeBuy.getChildByName("btnPurchase").getChildByName("spriteVideo").active = true;
             }
@@ -765,7 +770,7 @@ cc.Class({
                         self.refreshActiveContent(data);
                     }
                 };
-                if (cc.sys.platform == cc.sys.WECHAT_GAME){
+                if (cc.sys.platform == cc.sys.WECHAT_GAME) {
                     if (rule.Param == 0) {
                         weChatAPI.shareNormal(113, shareSuccessFunc);
                     } else {
@@ -773,14 +778,14 @@ cc.Class({
                             weChatAPI.shareNeedClick(113, shareSuccessFunc);
                         }, null, i18n.t('label.4000304'));
                     }
-                }else{
+                } else {
                     let platformApi = GlobalVar.getPlatformApi();
                     if (platformApi) {
                         platformApi.shareNormal(113, shareSuccessFunc);
                     }
                 }
             }
-        }else if (rule && rule.RuleID == GameServerProto.PT_AMS_RULEID_AD) {
+        } else if (rule && rule.RuleID == GameServerProto.PT_AMS_RULEID_AD) {
             let curStep = StoreageData.getShareTimesWithKey(data.Act.Actid, data.Act.Limit, data.Act.EndTime);
             if (curStep >= rule.Var * (curJoinTime + 1)) {
                 GlobalVar.handlerManager().activeHandler.sendActiveFenReq(customData.actid, customData.id, customData.num);
@@ -795,12 +800,10 @@ cc.Class({
                 };
                 let platformApi = GlobalVar.getPlatformApi();
                 if (platformApi) {
-                    platformApi.showRewardedVideoAd(213, shareSuccessFunc, function () {
-                        platformApi.shareNormal(113, shareSuccessFunc);
-                    });
+                    platformApi.showRewardedVideoAd(213, shareSuccessFunc);
                 }
             }
-        }else{
+        } else {
             GlobalVar.handlerManager().activeHandler.sendActiveFenReq(customData.actid, customData.id, customData.num);
         }
     },
@@ -871,7 +874,7 @@ cc.Class({
                         self.refreshActiveContent(data);
                     }
                 };
-                if (cc.sys.platform == cc.sys.WECHAT_GAME){
+                if (cc.sys.platform == cc.sys.WECHAT_GAME) {
                     if (rule.Param == 0) {
                         weChatAPI.shareNormal(113, shareSuccessFunc);
                     } else {
@@ -879,14 +882,14 @@ cc.Class({
                             weChatAPI.shareNeedClick(113, shareSuccessFunc);
                         }, null, i18n.t('label.4000304'));
                     }
-                }else{
+                } else {
                     let platformApi = GlobalVar.getPlatformApi();
                     if (platformApi) {
                         platformApi.shareNormal(113, shareSuccessFunc);
                     }
                 }
             }
-        } else if (rule && rule.RuleID == GameServerProto.PT_AMS_RULEID_AD){
+        } else if (rule && rule.RuleID == GameServerProto.PT_AMS_RULEID_AD) {
             let curStep = StoreageData.getShareTimesWithKey(data.Act.Actid, data.Act.Limit, data.Act.EndTime);
             if (curStep >= rule.Var * (curJoinTime + 1)) {
                 GlobalVar.handlerManager().activeHandler.sendActiveJoinReq(curTabActID);
@@ -901,9 +904,7 @@ cc.Class({
                 };
                 let platformApi = GlobalVar.getPlatformApi();
                 if (platformApi) {
-                    platformApi.showRewardedVideoAd(213, shareSuccessFunc, function (data) {
-                        platformApi.shareNormal(113, shareSuccessFunc);
-                    });
+                    platformApi.showRewardedVideoAd(213, shareSuccessFunc);
                 }
             }
         } else {
@@ -933,7 +934,7 @@ cc.Class({
                         self.refreshActiveContent(data);
                     }
                 };
-                if (cc.sys.platform == cc.sys.WECHAT_GAME){
+                if (cc.sys.platform == cc.sys.WECHAT_GAME) {
                     if (rule.Param == 0) {
                         weChatAPI.shareNormal(113, shareSuccessFunc);
                     } else {
@@ -945,14 +946,14 @@ cc.Class({
                             weChatAPI.shareNeedClick(113, shareSuccessFunc);
                         }, null, i18n.t('label.4000304'));
                     }
-                }else{
+                } else {
                     let platformApi = GlobalVar.getPlatformApi();
                     if (platformApi) {
                         platformApi.shareNormal(113, shareSuccessFunc);
                     }
                 }
             }
-        } else if (rule && rule.RuleID == GameServerProto.PT_AMS_RULEID_AD){
+        } else if (rule && rule.RuleID == GameServerProto.PT_AMS_RULEID_AD) {
             let curStep = StoreageData.getShareTimesWithKey(data.Act.Actid, data.Act.Limit, data.Act.EndTime);
             if (curStep >= rule.Var * (curJoinTime + 1)) {
                 GlobalVar.handlerManager().activeHandler.sendActiveJoinReq(curTabActID);
@@ -967,9 +968,7 @@ cc.Class({
                 };
                 let platformApi = GlobalVar.getPlatformApi();
                 if (platformApi) {
-                    platformApi.showRewardedVideoAd(213, shareSuccessFunc, function (data) {
-                        platformApi.shareNormal(113, shareSuccessFunc);
-                    });
+                    platformApi.showRewardedVideoAd(213, shareSuccessFunc);
                 }
             }
         } else {
@@ -1004,7 +1003,7 @@ cc.Class({
         let self = this;
         let data = GlobalVar.me().activeData.getActiveDataByActID(this.activeList[this.curActiveIndex].Actid)
         // this.activeContents[this.contentIndex - 1].runAction(cc.sequence(cc.scaleTo(0.1, 1.1), cc.scaleTo(0.05, 1), cc.callFunc(() => {
-            self["refreshContentType" + self.contentIndex](data);
+        self["refreshContentType" + self.contentIndex](data);
         // })));
     },
     recvGetDataMsg: function (event) {

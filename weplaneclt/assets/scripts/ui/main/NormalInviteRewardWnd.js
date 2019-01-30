@@ -4,6 +4,9 @@ const WndTypeDefine = require("wndtypedefine");
 const RootBase = require("RootBase");
 const i18n = require('LanguageData');
 const GameServerProto = require("GameServerProto");
+const CommonWnd = require("CommonWnd");
+const EventMsgID = require("eventmsgid");
+const ResMapping = require('resmapping')
 
 cc.Class({
     extends: RootBase,
@@ -20,15 +23,17 @@ cc.Class({
         btnShare: {
             default: null,
             type: cc.Button,
-        }
+        },
+        labelRewardPrice: {
+            default: null,
+            type: cc.Label,
+        },
     },
 
     onLoad: function () {
         this._super();
         this.typeName = WndTypeDefine.WindowType.E_DT_NORMAL_INVITE_REWARD_WND;
         this.animeStartParam(0, 0);
-
-        this.initItemShow();
 
         this.curInviteCount = null;
         this.inviteTicket = null;
@@ -45,52 +50,74 @@ cc.Class({
         if (name == "Escape") {
             this._super("Escape");
             GlobalVar.eventManager().removeListenerWithTarget(this);
-            WindowManager.getInstance().popView();
+            WindowManager.getInstance().popView(false, null, false, false);
         } else if (name == "Enter") {
             this._super("Enter");
             this.registerEvent();
+            // this.initRecvRewardFinish = false;
         }
     },
 
     registerEvent: function () {
-        // GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_GET_ARENA_CHALLENGE_COUNT_FREE_GET_DATA, this.getArenaChallengeCountFreeGetData, this);
-        // GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_GET_ARENA_CHALLENGE_COUNT_BUY_DATA, this.getArenaChallengeCountBuyData, this);
+        GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_GET_INVITE_REWARD_DATA, this.getInviteRewardData, this);
     },
 
     initItemShow: function (data) {
-        let itemDatas = [
-            { ItemID: 1, Count: 100000},
-            { ItemID: 3, Count: 300},
-            { ItemID: 4, Count: 100},
-        ]
-        for (let i = 0; i < 3; i++){
-            this.node.getChildByName("nodeItemReward").getChildByName("ItemObject" + (i+1)).getComponent("ItemObject").updateItem(itemDatas[i].ItemID, itemDatas[i].Count);
-            this.node.getChildByName("nodeItemReward").getChildByName("ItemObject" + (i+1)).getComponent("ItemObject").setClick(true, 2);
+        let itemDatas = null;
+        let inviteRewardData = GlobalVar.tblApi.getDataBySingleKey("TblFuliInvite", GlobalVar.me().shareData.getInviteGiftBagState() + 1);
+        itemDatas = inviteRewardData && inviteRewardData.oVecItems;
+        if (itemDatas){
+            for (let i = 0; i < 3; i++){
+                if (itemDatas[i]){
+                    this.node.getChildByName("nodeItemReward").getChildByName("ItemObject" + (i+1)).active = true;
+                    this.node.getChildByName("nodeItemReward").getChildByName("ItemObject" + (i+1)).getComponent("ItemObject").updateItem(itemDatas[i].wItemID, itemDatas[i].nCount);
+                    this.node.getChildByName("nodeItemReward").getChildByName("ItemObject" + (i+1)).getComponent("ItemObject").setClick(true, 2);
+                }else{
+                    this.node.getChildByName("nodeItemReward").getChildByName("ItemObject" + (i+1)).active = false;
+                }
+            }
+            this.node.getChildByName("nodeLayout").active = true;
+            this.labelRewardPrice.string = inviteRewardData.strName;
         }
     },
     initPlayHeader: function () {
         let self = this;
+        let inviteGiftBagState = GlobalVar.me().shareData.getInviteGiftBagState() + 1;
+        if (inviteGiftBagState >= GlobalVar.tblApi.getLength("TblFuliInvite")){
+            self.initRecvReward();
+            return;
+        }
         let platformApi = GlobalVar.getPlatformApi();
         if (platformApi){
-            platformApi.getInviteUserList("fuli_invite", function(data){
+            platformApi.getInviteUserList("fuli_invite" + inviteGiftBagState, function(data){
+                console.log("get invite data:", data);
                 self.curInviteCount = data.total;
                 self.inviteTicket = data.ticket;
-                self.maxInviteCount = GlobalVar.tblApi.getDataBySingleKey('TblParam', GameServerProto.PTPARAM_FULI_SHARE_INVITE_COUNT_LIMIT).dValue;
+                self.maxInviteCount = GlobalVar.tblApi.getDataBySingleKey("TblFuliInvite", GlobalVar.me().shareData.getInviteGiftBagState() + 1).nCond;
                 for (let i = 0; i< data.total; i++){
                     if (i >= 3){
                         break;
                     }
-                    let url = data.list[i].avatar + "?a=a.png";
-                    let index = i;
-                    if (!self.nodeInvitedPeople[index]) return;
-                    cc.loader.load(url, function (err, tex) {
-                        if (err) {
-                            cc.error("LoadURLSpriteFrame err." + url);
-                            return;
-                        }
-                        let spriteFrame = new cc.SpriteFrame(tex);
-                        self.nodeInvitedPeople[index].spriteFrame = spriteFrame;
-                    })
+                    if (data.list[i].avatar == ""){
+                        let index = i;
+                        GlobalVar.resManager().loadRes(ResMapping.ResType.SpriteFrame, 'cdnRes/common/common_default_head_img', function (frame) {
+                            if (!self.nodeInvitedPeople[index]) return;
+                            self.nodeInvitedPeople[index].spriteFrame = frame;
+                        });
+                    }else{
+                        let url = data.list[i].avatar + "?a=a.png";
+                        let index = i;
+                        if (!self.nodeInvitedPeople[index]) return;
+                        cc.loader.load(url, function (err, tex) {
+                            if (err) {
+                                cc.error("LoadURLSpriteFrame err." + url);
+                                return;
+                            }
+                            let spriteFrame = new cc.SpriteFrame(tex);
+                            self.nodeInvitedPeople[index].spriteFrame = spriteFrame;
+                        })
+                    }
+                    self.nodeInvitedPeople[i].node.parent.getChildByName("spritePlus").active = false;
                 }
                 let leftNeed = self.maxInviteCount - self.curInviteCount;
                 leftNeed = leftNeed>0?leftNeed:0;
@@ -104,13 +131,24 @@ cc.Class({
     },
 
     initRecvReward: function () {
-        if (GlobalVar.me().shareData.getInviteGiftBagState()){
-            this.btnShare.node.getComponent("ButtonObject").setText("label.4000333");
+        this.btnShare.interactable = true;
+        if (GlobalVar.me().shareData.getInviteGiftBagState() >= GlobalVar.tblApi.getLength("TblFuliInvite")){
+            this.btnShare.node.getComponent("ButtonObject").setText(i18n.t("label.4000333"));
             this.btnShare.node.getChildByName("spriteShare").active = false;
             this.btnShare.interactable = false;
         }else{
-            this.btnShare.node.getComponent("ButtonObject").setText("label.4000332");
+            this.btnShare.node.getComponent("ButtonObject").setText(i18n.t("label.4000332"));
             this.btnShare.node.getChildByName("spriteShare").active = false;
+        }
+    },
+
+    resetRecvReward: function () {
+        this.btnShare.interactable = true;
+        this.btnShare.node.getComponent("ButtonObject").setText(i18n.t("label.4000335"));
+        this.btnShare.node.getChildByName("spriteShare").active = true;
+        for (let i = 0; i< this.nodeInvitedPeople.length; i++){
+            this.nodeInvitedPeople[i].spriteFrame = "";
+            this.nodeInvitedPeople[i].node.parent.getChildByName("spritePlus").active = true;
         }
     },
 
@@ -126,10 +164,26 @@ cc.Class({
                 let param = "";
                 param += "&from_serverid=" + GlobalVar.me().loginData.getLoginReqDataServerID();
                 param += "&from_openid=" + GlobalVar.me().loginData.getLoginReqDataAccount();
-                param += "&from_btn=" + "fuli_invite";
+                param += "&from_btn=" + "fuli_invite" + (GlobalVar.me().shareData.getInviteGiftBagState() + 1);
                 platformApi.shareNormal(137, null, null, null, null, param);
             }
         }
+    },
+
+    getInviteRewardData: function (event) {
+        if (event.ErrCode != GameServerProto.PTERR_SUCCESS){
+            GlobalVar.comMsg.errorWarning(event.ErrCode);
+            return;
+        }
+        CommonWnd.showTreasureExploit(event.Item);
+        this.initItemShow();
+        this.resetRecvReward();
+        this.curInviteCount = null;
+        this.inviteTicket = null;
+        this.maxInviteCount = null;
+        this.initRecvRewardFinish = false;
+        this.initPlayHeader();
+        // this.initRecvReward();
     },
 
     onBtnClose: function(){
@@ -139,6 +193,7 @@ cc.Class({
     enter: function (isRefresh) {
         if (isRefresh) {
             this._super(true);
+            this.initItemShow();
             this.initPlayHeader();
         } else {
             this._super(false);

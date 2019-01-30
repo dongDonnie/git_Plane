@@ -25,7 +25,7 @@ cc.Class({
 
     onLoad: function () {
         this.waitForRevive = false;
-        if (!GlobalVar.getShareSwitch()){
+        if (!GlobalVar.getShareSwitch() || GlobalVar.getShareControl() == 6){
             this.node.getChildByName("spriteRevive").getChildByName("labelShareTip").active = false;
             this.node.getChildByName("spriteRevive").getChildByName("btnShare").active = false;
             this.node.getChildByName("spriteRevive").getChildByName("btnRevive").x = 0;
@@ -86,7 +86,7 @@ cc.Class({
             }
 
             let platformApi = GlobalVar.getPlatformApi();
-            if (cc.isValid(platformApi)){
+            if (platformApi){
                 platformApi.shareNormal(materialID, function () {
                     GlobalVar.handlerManager().campHandler.sendCampReviveReq(1);
                 }, function () {

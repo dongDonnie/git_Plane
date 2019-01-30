@@ -5213,7 +5213,7 @@
     "alignMode": 2,
     "_target": null,
     "_alignFlags": 8,
-    "_left": -2.1316282072803006e-14,
+    "_left": -7.105427357601002e-15,
     "_right": 40.61,
     "_top": 18.5,
     "_bottom": 0,
@@ -6817,7 +6817,7 @@
       "__id__": 1
     },
     "_enabled": true,
-    "alignMode": 0,
+    "alignMode": 1,
     "_target": null,
     "_alignFlags": 45,
     "_left": 0,

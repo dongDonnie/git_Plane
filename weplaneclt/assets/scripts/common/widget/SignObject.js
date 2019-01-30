@@ -73,6 +73,13 @@ cc.Class({
             this.btnResign.node.active = true;
             this.btnBan.node.active = false;
             this.spriteRecvd.active = false;
+            if (this.meetVipCondition(this.data.byVIPLevel)) {
+                this.btnResign.node.getChildByName('common_ad_icon').active = false;
+                this.btnResign.getComponent('ButtonObject').textLabel = '补签';
+            } else {
+                this.btnResign.node.getChildByName('common_ad_icon').active = true;
+                this.btnResign.getComponent('ButtonObject').textLabel = '  补签';
+            }
         } else if (this.data.byDay == today) {  // 领取
             this.btnRecv.node.active = true;
             this.btnResign.node.active = false;
@@ -97,7 +104,7 @@ cc.Class({
                 // GlobalVar.handlerManager().signHandler.sendSignReq(this.data.byDay, 1);
                 GlobalVar.handlerManager().signHandler.sendSignReq(this.data.byDay);
             } else {
-                if (doubleFlag) {
+                if (doubleFlag && GlobalVar.getShareControl() == 1) {
                     platformApi.shareNormal(127, function () {
                         GlobalVar.handlerManager().signHandler.sendSignReq(self.data.byDay, 1);
                     });
@@ -119,10 +126,6 @@ cc.Class({
             } else {
                 platformApi.showRewardedVideoAd(227, function () {
                     GlobalVar.handlerManager().signHandler.sendSignReq(self.data.byDay);
-                },function () {
-                    platformApi.shareNormal(127, function () {
-                        GlobalVar.handlerManager().signHandler.sendSignReq(self.data.byDay);
-                    });
                 });
             }
         } else {

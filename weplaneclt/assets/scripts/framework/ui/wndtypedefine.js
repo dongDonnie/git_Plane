@@ -83,6 +83,8 @@ WndTypeDefine.WindowType = {
     E_DT_NORMAL_PIECE_WND: "NormalPieceWnd",
     E_DT_NORMAL_BOX_REWARD_WND: "NormalBoxRewardWnd",
     E_DT_NORMAL_INVITE_REWARD_WND: "NormalInviteRewardWnd",
+    E_DT_NORMAL_SPECIAL_ACTIVE_WND: "NormalSpecialActiveWnd",
+    E_DT_NORMAL_TREASURY_RANK_WND: "NormalTreasuryRankWnd",
 };
 
 WndTypeDefine.WindowTypeID = {

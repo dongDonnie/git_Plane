@@ -57,6 +57,7 @@ cc.Class({
             }
             GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_GET_TREASURE_MINING_RESULT, this.showTreasureMiningResult, this);
             GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_GET_TREASURE_MINING_REWARD_RESULT, this.showMiningRewardResult, this);
+            GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_GET_RICHTREASURE_RESULT, this.showSurplusTimes.bind(this), this);
             this.showSurplusTimes();
         }
     },
@@ -124,6 +125,10 @@ cc.Class({
 
     showSurplusTimes: function () { //显示剩余开采次数
         var data = GlobalVar.me().drawData.data.richTreasureData;
+        if (!data){
+            GlobalVar.me().drawHandler.sendTreasureData();
+            return;
+        }
         if (data.ErrCode && data.ErrCode != GameServerProto.PTERR_SUCCESS) {
             GlobalVar.comMsg.errorWarning(data.ErrCode);
             return;

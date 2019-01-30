@@ -25,34 +25,32 @@ StoredData.setItem = function (key, value) {
     }
 },
 
-    StoredData.getItem = function (key) {
-        if (cc.sys.platform == cc.sys.WECHAT_GAME) {
-            try {
-                let value = wx.getStorageSync(key);
-                if (value) {
-                    return value;
-                }
-            } catch (e) {
-                console.log("微信本地取值失败:", e);
-                return null;
-            }
-        } else if (window && window["wywGameId"] == "5469") {
-            // try {
-            //     let value = BK.localStorage.getItem(key);
-            //     if (value) {
-            //       return value;
-            //     }
-            // } catch (e) {
-            //     console.log("玩一玩本地取值失败:", e);
-            //     return null;
-            // }
-            return cc.sys.localStorage.getItem(key);
-        } else {
-            return cc.sys.localStorage.getItem(key);
+StoredData.getItem = function (key) {
+    if (cc.sys.platform == cc.sys.WECHAT_GAME) {
+        try {
+            let value = wx.getStorageSync(key);
+            return value;
+        } catch (e) {
+            console.log("微信本地取值失败:", e);
+            return null;
         }
-    },
+    } else if (window && window["wywGameId"] == "5469") {
+        // try {
+        //     let value = BK.localStorage.getItem(key);
+        //     if (value) {
+        //       return value;
+        //     }
+        // } catch (e) {
+        //     console.log("玩一玩本地取值失败:", e);
+        //     return null;
+        // }
+        return cc.sys.localStorage.getItem(key);
+    } else {
+        return cc.sys.localStorage.getItem(key);
+    }
+},
 
-    StoredData.Type.UserName = "username";
+StoredData.Type.UserName = "username";
 StoredData.Type.Password = "password";
 StoredData.Type.Version = "version";
 StoredData.Type.BgmOnOff = "bgmOnOff";
@@ -107,7 +105,7 @@ StoredData.setBgmOnOff = function (onOff) {
 
 StoredData.getBgmOnOff = function () {
     let onOff = StoredData.getItem(StoredData.Type.BgmOnOff);
-    return (onOff === "false" ? false : true);
+    return (onOff === "off" ? "off" : "on");
 }
 
 StoredData.setEffectOnOff = function (onOff) {
@@ -116,7 +114,8 @@ StoredData.setEffectOnOff = function (onOff) {
 
 StoredData.getEffectOnOff = function () {
     let onOff = StoredData.getItem(StoredData.Type.EffectOnOff);
-    return (onOff === "false" ? false : true);
+    // return (onOff == 0?false:true);
+    return (onOff === "off" ? "off" : "on");
 }
 
 StoredData.setEndlessMode = function (index) {
@@ -153,17 +152,17 @@ StoredData.cleanShareTimesWithKey = function (key, saveType, endTime) {
     shareTimesData[key][GlobalVar.me().roleID].times = 0;
     console.log("保存分享次数到本地：", shareTimesData);
     StoredData.setItem(StoredData.Type.ShareTimes, JSON.stringify(shareTimesData));
-},
-    StoredData.setShareTimesWithKey = function (key, saveType, endTime) {
-        let shareTimesData = StoredData.getShareDataWithKey(key, saveType, endTime);
-        shareTimesData[key][GlobalVar.me().roleID].times += 1;
-        console.log("保存分享次数到本地：", shareTimesData);
-        StoredData.setItem(StoredData.Type.ShareTimes, JSON.stringify(shareTimesData));
-        return shareTimesData[key][GlobalVar.me().roleID].times;
-    };
+};
+StoredData.setShareTimesWithKey = function (key, saveType, endTime) {
+    let shareTimesData = StoredData.getShareDataWithKey(key, saveType, endTime);
+    shareTimesData[key][GlobalVar.me().roleID].times += 1;
+    // console.log("保存分享次数到本地：", shareTimesData);
+    StoredData.setItem(StoredData.Type.ShareTimes, JSON.stringify(shareTimesData));
+    return shareTimesData[key][GlobalVar.me().roleID].times;
+};
 StoredData.getShareTimesWithKey = function (key, saveType, endTime) {
     let shareTimesData = StoredData.getShareDataWithKey(key, saveType, endTime);
-    console.log("从本地获取分享次数数据:", shareTimesData);
+    // console.log("从本地获取分享次数数据:", shareTimesData);
     StoredData.setItem(StoredData.Type.ShareTimes, JSON.stringify(shareTimesData));
     return shareTimesData[key][GlobalVar.me().roleID].times;
 };
@@ -190,7 +189,7 @@ StoredData.getShareDataWithKey = function (key, saveType, endTime) {
         roleData.times = 0;
         roleData.endTime = endTime;
         roleData.saveType = saveType;
-    } else if (roleData.saveType == GameServerProto.PT_AMS_ACT_LIMIT_DAILY) {
+    } else if (roleData.saveType == GameServerProto.PT_AMS_ACT_LIMIT_DAILY) { //活动的每日刷新以及其他的每日刷新 (凌晨5点刷新)
         let a = parseInt((curTime - 5 * 3600 + 8 * 3600) / (3600 * 24));
         let b = parseInt((roleData.timeStamp - 5 * 3600 + 8 * 3600) / (3600 * 24));
         if (a > b) {
@@ -199,26 +198,35 @@ StoredData.getShareDataWithKey = function (key, saveType, endTime) {
             roleData.saveType = saveType;
             roleData.endTime = endTime;
         }
-    } else if (roleData.saveType == GameServerProto.PT_AMS_ACT_LIMIT_LONG) {
+    } else if (roleData.saveType == GameServerProto.PT_AMS_ACT_LIMIT_LONG) { //活动的一定时间刷新
         if (curTime > roleData.endTime) {
             roleData.timeStamp = curTime;
             roleData.endTime = endTime;
             roleData.times = 0;
             roleData.saveType = saveType;
         }
-    } else if (roleData.saveType == 0) {
+    } else if (roleData.saveType == 0) { //保存本地不删除
 
+    } else if (roleData.saveType == 99) { //0点刷新
+        let a = parseInt((curTime + 8 * 3600) / (3600 * 24));
+        let b = parseInt((roleData.timeStamp + 8 * 3600) / (3600 * 24));
+        if (a > b) {
+            roleData.timeStamp = curTime;
+            roleData.times = 0;
+            roleData.saveType = saveType;
+            roleData.endTime = endTime;
+        }
     }
     shareTimesData[key][GlobalVar.me().roleID] = roleData;
     return shareTimesData;
 },
 
-    StoredData.setTotalShareTimes = function () {
-        let totalTimesData = StoredData.getTotalShareData();
-        totalTimesData[GlobalVar.me().roleID].times += 1;
-        console.log("保存总分享次数到本地:", totalTimesData);
-        StoredData.setItem(StoredData.Type.TotalShareTimes, JSON.stringify(totalTimesData));
-    };
+StoredData.setTotalShareTimes = function () {
+    let totalTimesData = StoredData.getTotalShareData();
+    totalTimesData[GlobalVar.me().roleID].times += 1;
+    console.log("保存总分享次数到本地:", totalTimesData);
+    StoredData.setItem(StoredData.Type.TotalShareTimes, JSON.stringify(totalTimesData));
+};
 StoredData.getTotalShareTimes = function () {
     let totalTimesData = StoredData.getTotalShareData();
     console.log("判断后的分享数据:", totalTimesData);
@@ -366,13 +374,10 @@ StoredData.getResFileMap = function () {
 };
 
 StoredData.setVibrateSwitch = function (onOff) {
-    StoredData.setItem(StoredData.Type.VibrateSwitch, onOff?1:0);
+    StoredData.setItem(StoredData.Type.VibrateSwitch, onOff);
 };
 
 StoredData.getVibrateSwitch = function () {
-    let data = StoredData.getItem(StoredData.Type.VibrateSwitch);
-    if (data != null){
-        return !!parseInt(data);
-    }
-    return true;
+    let onOff = StoredData.getItem(StoredData.Type.VibrateSwitch);
+    return (onOff === "off" ? "off" : "on");
 };

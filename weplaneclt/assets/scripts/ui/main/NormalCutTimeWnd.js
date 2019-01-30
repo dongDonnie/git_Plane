@@ -90,6 +90,15 @@ cc.Class({
         let curTimes = GlobalVar.me().drawData.getFreeReduceCount();
         this.labelHasTimes.string = i18n.t('label.4000306').replace('%left', maxTimes - curTimes).replace('%max', maxTimes);
         this.setCountDown();
+        
+        let platformApi = GlobalVar.getPlatformApi();
+        if (platformApi && (platformApi.canShowRewardVideo() || GlobalVar.getShareControl() == 6)){
+            this.node.getChildByName("btnConfirm").getChildByName("spriteVideo").active = true;
+            this.node.getChildByName("btnConfirm").getChildByName("spriteShare").active = false;
+        }else if (platformApi && !platformApi.canShowRewardVideo()){
+            this.node.getChildByName("btnConfirm").getChildByName("spriteVideo").active = false;
+            this.node.getChildByName("btnConfirm").getChildByName("spriteShare").active = true;
+        }
     },
 
     registerEvent: function () {
@@ -114,10 +123,6 @@ cc.Class({
             if (platformApi){
                 platformApi.showRewardedVideoAd(204, function () {
                     GlobalVar.handlerManager().drawHandler.sendTreasureTimeReduceReq();
-                }, function () {
-                    platformApi.shareNormal(104, function () {
-                        GlobalVar.handlerManager().drawHandler.sendTreasureTimeReduceReq();
-                    })
                 });
             }else if (GlobalVar.configGMSwitch()){
                 GlobalVar.handlerManager().drawHandler.sendTreasureTimeReduceReq();

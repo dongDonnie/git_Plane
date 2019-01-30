@@ -326,10 +326,6 @@ cc.Class({
             if (platfromApi){
                 platfromApi.showRewardedVideoAd(238, function () {
                     GlobalVar.handlerManager().bagHandler.sendItemUseReq(itemData.Slot, 1, itemData.Type);
-                }, function () {
-                    platfromApi.shareNormal(238, function () {
-                        GlobalVar.handlerManager().bagHandler.sendItemUseReq(itemData.Slot, 1, itemData.Type);
-                    })
                 })
             }else if (GlobalVar.configGMSwitch()){
                 GlobalVar.handlerManager().bagHandler.sendItemUseReq(itemData.Slot, 1, itemData.Type);

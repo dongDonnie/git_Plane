@@ -170,47 +170,48 @@ cc.Class({
 
     },
 
-    setProp: function (lv, props) {
+    setProp: function (lv, props, plus) {
+        plus = typeof plus !== 'undefined' ? plus : 1;
         for (let i = 0; i < props.length; i++) {
             if (typeof props[i] === 'undefined') {
                 continue;
             }
             switch (props[i].ID) {
                 case 1:
-                    this.prop[Defines.PropName.Life] = props[i].Value;
+                    this.prop[Defines.PropName.Life] = props[i].Value * plus;
                     break;
                 case 3:
-                    this.prop[Defines.PropName.Attack] = props[i].Value;
+                    this.prop[Defines.PropName.Attack] = props[i].Value * plus;
                     break;
                 case 4:
-                    this.prop[Defines.PropName.Defense] = props[i].Value;
+                    this.prop[Defines.PropName.Defense] = props[i].Value * plus;
                     break;
                 case 5:
-                    this.prop[Defines.PropName.CriticalDamage] = props[i].Value;
+                    this.prop[Defines.PropName.CriticalDamage] = props[i].Value * plus;
                     break;
                 case 6:
-                    this.prop[Defines.PropName.CriticalRate] = props[i].Value;
+                    this.prop[Defines.PropName.CriticalRate] = props[i].Value * plus;
                     break;
                 case 11:
-                    this.prop[Defines.PropName.PetAttack] = props[i].Value;
+                    this.prop[Defines.PropName.PetAttack] = props[i].Value * plus;
                     break;
                 case 12:
-                    this.prop[Defines.PropName.SkillAttack] = props[i].Value;
+                    this.prop[Defines.PropName.SkillAttack] = props[i].Value * plus;
                     break;
                 case 13:
-                    this.prop[Defines.PropName.MissileAttack] = props[i].Value;
+                    this.prop[Defines.PropName.MissileAttack] = props[i].Value * plus;
                     break;
                 case 14:
-                    this.prop[Defines.PropName.AssistAttack] = props[i].Value;
+                    this.prop[Defines.PropName.AssistAttack] = props[i].Value * plus;
                     break;
                 case 15:
-                    this.prop[Defines.PropName.LifeGrow] = props[i].Value;
+                    this.prop[Defines.PropName.LifeGrow] = props[i].Value * plus;
                     break;
                 case 16:
-                    this.prop[Defines.PropName.AttackGrow] = props[i].Value;
+                    this.prop[Defines.PropName.AttackGrow] = props[i].Value * plus;
                     break;
                 case 17:
-                    this.prop[Defines.PropName.DefenseGrow] = props[i].Value;
+                    this.prop[Defines.PropName.DefenseGrow] = props[i].Value * plus;
                     break;
             }
         }
@@ -219,7 +220,7 @@ cc.Class({
         this.prop[Defines.PropName.Attack] *= (1.0 + this.prop[Defines.PropName.AttackGrow] / 10000.0);
         this.prop[Defines.PropName.Defense] *= (1.0 + this.prop[Defines.PropName.DefenseGrow] / 10000.0);
 
-        this.hp = this.maxHp = (this.prop[Defines.PropName.Life] + this.prop[Defines.PropName.Defense] * 5) * 3;
+        this.hp = this.maxHp = (this.prop[Defines.PropName.Life] + this.prop[Defines.PropName.Defense] * 5) * 2;
 
         this.lv = lv;
     },
@@ -407,17 +408,32 @@ cc.Class({
     },
 
     selfDestroy() {
+        let prefab = GlobalVar.resManager().loadRes(ResMapping.ResType.Prefab, 'cdnRes/battlemodel/prefab/effect/lBomb');
+        if (prefab != null) {
+            this.partObject.active = false;
+            let Bomb = cc.instantiate(prefab);
+            Bomb.setScale(1.5);
+            this.addChild(Bomb, 8);
+            Bomb.setPosition(this.partObject.getPosition());
+            GlobalVar.soundManager().playEffect('cdnRes/audio/battle/effect/explode_boss');
+        }
         this.runAction(
             cc.sequence(
-                cc.fadeOut(0.5),
+                cc.delayTime(0.5),
                 cc.removeSelf(true),
             )
         );
+        // this.runAction(
+        //     cc.sequence(
+        //         cc.fadeOut(0.5),
+        //         cc.removeSelf(true),
+        //     )
+        // );
         for (let i = 0; i < 2; i++) {
             if (cc.isValid(this.assistEntity[i])) {
                 this.assistEntity[i].runAction(
                     cc.sequence(
-                        cc.fadeOut(0.5),
+                        cc.fadeOut(0.1),
                         cc.removeSelf(true),
                     )
                 );
@@ -425,7 +441,7 @@ cc.Class({
             if (cc.isValid(this.wingmanEntity[i])) {
                 this.wingmanEntity[i].runAction(
                     cc.sequence(
-                        cc.fadeOut(0.5),
+                        cc.fadeOut(0.1),
                         cc.removeSelf(true),
                     )
                 );

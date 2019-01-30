@@ -162,7 +162,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 112,
+      "width": 168,
       "height": 28
     },
     "_anchorPoint": {
@@ -209,8 +209,8 @@
     "_srcBlendFactor": 1,
     "_dstBlendFactor": 771,
     "_useOriginalSize": false,
-    "_string": "购买精华",
-    "_N$string": "购买精华",
+    "_string": "购买挂载精华",
+    "_N$string": "购买挂载精华",
     "_fontSize": 28,
     "_lineHeight": 28,
     "_enableWrapText": true,
@@ -2803,7 +2803,7 @@
       "__id__": 1
     },
     "_enabled": true,
-    "alignMode": 0,
+    "alignMode": 1,
     "_target": null,
     "_alignFlags": 18,
     "_left": 0,

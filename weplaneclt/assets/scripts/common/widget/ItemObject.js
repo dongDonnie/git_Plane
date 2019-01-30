@@ -164,20 +164,20 @@ var ItemObject = cc.Class({
         var self = this;
         cc.log('itemID: ', this.itemID);
         // cc.log(this.btnCallBackType);
+        let itemCount = GlobalVar.me().bagData.getItemCountById(this.itemID) || 0;
         if (this.btnCallBackType == 0) {
             WindowManager.getInstance().pushView(WndTypeDefine.WindowType.E_DT_NORMALITEMINFO, function (wnd, name, type) {
-                wnd.getComponent(type).updateInfo(self.itemID, self.itemData.wQuality, self.itemLevel, self.getLabelNumberData(), self.getSlot());
+                wnd.getComponent(type).updateInfo(self.itemID, self.itemData.wQuality, self.itemLevel, itemCount, self.getSlot());
                 wnd.getComponent(type).setTitle("道具详情");
             });
         } else if (this.btnCallBackType == 1) {
-            let itemCount = GlobalVar.me().bagData.getItemCountById(this.itemID);
             WindowManager.getInstance().pushView(WndTypeDefine.WindowType.E_DT_NORMALITEMGETWAY, function (wnd, name, type) {
                 // wnd.getComponent(type).updateInfo(self.itemID, self.getLabelNumberData(), 0, self.getSlot());
                 wnd.getComponent(type).updateInfo(self.itemID, itemCount, self.itemLevel, self.getSlot());
             });
         } else if (this.btnCallBackType == 2) {
             WindowManager.getInstance().pushView(WndTypeDefine.WindowType.E_DT_NORMALITEMINFO, function (wnd, name, type) {
-                wnd.getComponent(type).updateInfo(self.itemID, self.itemData.wQuality, self.itemLevel, self.getLabelNumberData(), self.getSlot(), true);
+                wnd.getComponent(type).updateInfo(self.itemID, self.itemData.wQuality, self.itemLevel, itemCount, self.getSlot(), true);
                 wnd.getComponent(type).setTitle("道具详情");
             })
         } else if (this.btnCallBackType == 10) {
@@ -387,6 +387,10 @@ var ItemObject = cc.Class({
     },
     getLabelNumberData: function () {
         return this.labelNumber.string;
+    },
+
+    getBagNumberData:  function () {
+        return GlobalVar.me().bagData.getItemCountById(this.itemID) || 0;
     },
 
     setRichtextNumber: function (front, back) {

@@ -1,6 +1,7 @@
 const GlobalFunc = require('GlobalFunctions');
 const UIBase = require("uibase");
 const BattleDefines = require('BattleDefines');
+const i18n = require('LanguageData');
 
 cc.Class({
     extends: UIBase,
@@ -164,9 +165,11 @@ cc.Class({
         }
     },
     setSelfLevel: function (level) {
-        this.labelSelfLevel.string = typeof level !== 'undefined' ? level : 'O';
+        level = typeof level !== 'undefined' ? level : 0;
+        this.labelSelfLevel.string = i18n.t('label.level').replace("%d", level);
     },
     setRivalLevel: function (level) {
-        this.labelRivalLevel.string = typeof level !== 'undefined' ? level : 'O';
+        level =typeof level !== 'undefined' ? level : 0;
+        this.labelRivalLevel.string = i18n.t('label.level').replace("%d", level);
     },
 });

@@ -70,15 +70,15 @@ var ScenarioManager = cc.Class({
     },
 
     mapUpdate(dt){
-        if (this.battleManager.isEndlessFlag && !!this.battleEndlessMode) {
+        if (this.battleManager.isEndlessFlag && cc.isValid(this.battleEndlessMode)) {
             this.battleEndlessMode.mapUpdate(dt);
         }
 
-        if (this.battleManager.isShowFlag && !!this.battleCampaignMode) {
+        if (this.battleManager.isShowFlag && cc.isValid(this.battleCampaignMode)) {
             this.battleCampaignMode.mapUpdate(dt);
         }
 
-        if (this.battleManager.isCampaignFlag && !!this.battleCampaignMode && !this.end) {
+        if (this.battleManager.isCampaignFlag && cc.isValid(this.battleCampaignMode) && !this.end) {
             this.battleCampaignMode.mapUpdate(dt);
         }
     },

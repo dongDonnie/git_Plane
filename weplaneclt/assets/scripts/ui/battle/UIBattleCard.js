@@ -79,11 +79,16 @@ cc.Class({
         }
 
         if (nodeButton.getChildByName("nodeShare").active){
-            let todayRecvTimes = StoreageData.getShareTimesWithKey("drawCard", 1);
-            if (todayRecvTimes < 2){
-                nodeButton.getChildByName("nodeShare").getChildByName("btnRecvAll").getComponent("ButtonObject").setText("观看视频");
+            // let todayRecvTimes = StoreageData.getShareTimesWithKey("drawCard", 1);
+            // if (todayRecvTimes < 2){
+            let platformApi = GlobalVar.getPlatformApi();
+            if (platformApi && (platformApi.canShowRewardVideo() || GlobalVar.getShareControl() == 6)) {
+                nodeButton.getChildByName("nodeShare").getChildByName("btnRecvAll").getChildByName("spriteShare").active = false;
+                nodeButton.getChildByName("nodeShare").getChildByName("btnRecvAll").getChildByName("spriteVideo").active = true;
+                nodeButton.getChildByName("nodeShare").getChildByName("btnRecvAll").getComponent("ButtonObject").setText("  观看视频");
                 nodeButton.getChildByName("nodeShare").getChildByName("label").getComponent(cc.Label).string = "首通视频可全部领取";
             }
+            // }
         }
     },
 
@@ -111,22 +116,15 @@ cc.Class({
                 let self = this;
                 let platformApi = GlobalVar.getPlatformApi();
                 if (platformApi){
-                    let todayRecvTimes = StoreageData.getShareTimesWithKey("drawCard", 1);
-                    if (todayRecvTimes < 2){
+                    // let todayRecvTimes = StoreageData.getShareTimesWithKey("drawCard", 1);
+                    if (platformApi.canShowRewardVideo() || GlobalVar.getShareControl() == 6){
                         platformApi.showRewardedVideoAd(206, function () {
                             self.canClickedRecvBtn = true;
                             GlobalVar.handlerManager().campHandler.sendFreeDrawReq();
-                            StoreageData.setShareTimesWithKey("drawCard", 1)
-                        }, function () {
-                            platformApi.shareNormal(106, function() {
-                                self.canClickedRecvBtn = true;
-                                GlobalVar.handlerManager().campHandler.sendFreeDrawReq();
-                            }, function () {
-                                self.canClickedRecvBtn = false;
-                            });
+                            // StoreageData.setShareTimesWithKey("drawCard", 1)
                         }, function () {
                             self.canClickedRecvBtn = false;
-                        })
+                        }, true, true);
                         self.canClickedRecvBtn = true;
                     }else{
                         platformApi.shareNormal(106, function() {

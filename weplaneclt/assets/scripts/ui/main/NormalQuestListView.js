@@ -591,7 +591,7 @@ cc.Class({
         };
 
         let platformApi = GlobalVar.getPlatformApi();
-        if ((index == 1 || index == 2) && platformApi && GlobalVar.me().vipLevel < 3) {
+        if (platformApi && GlobalVar.me().vipLevel < 3 && !platformApi.canShowRewardVideo() && GlobalVar.getShareControl() == 1) {
             confirmText = i18n.t('label.4000304');
             mode = 1;
             confirm = function () {
@@ -599,17 +599,13 @@ cc.Class({
                     GlobalVar.handlerManager().campHandler.sendGetCampChapterRewardReq(campType, chapterId, pos - 1);
                 })
             };
-        } else if (index == 3 && platformApi && GlobalVar.me().vipLevel < 3) {
+        } else if (platformApi && GlobalVar.me().vipLevel < 3 && (platformApi.canShowRewardVideo() || GlobalVar.getShareControl() == 6)) {
             confirmText = i18n.t('label.4000328');
             mode = 2;
             confirm = function () {
                 platformApi.showRewardedVideoAd(226, function () {
                     GlobalVar.handlerManager().campHandler.sendGetCampChapterRewardReq(campType, chapterId, pos - 1);
-                }, function () {
-                    platformApi.shareNormal(126, function () {
-                        GlobalVar.handlerManager().campHandler.sendGetCampChapterRewardReq(campType, chapterId, pos - 1);
-                    })
-                })
+                }, null, true, true);
             };
         }
         if (!GlobalVar.getShareSwitch()){

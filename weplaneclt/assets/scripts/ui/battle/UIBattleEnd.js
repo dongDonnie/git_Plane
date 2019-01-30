@@ -76,6 +76,7 @@ cc.Class({
         this.setEndNode();
         GlobalVar.me().memberData.setOneTimeChuZhanMemberID();
         GlobalVar.me().shareData.testPlayMemberID = 0;
+        this.timeoutID = null;
     },
 
     animeStartParam: function (paramScale, paramOpacity) {
@@ -90,6 +91,10 @@ cc.Class({
             GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_CAMP_RESULT_NTF, this.initBattleSuccessUI, this);
             GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_ENDLESS_RESULT_NTF, this.initEndlessEndUI, this);
             this.sendBattleEndMsg();
+            var self = this;
+            this.timeoutID = setTimeout(function () {
+                self.canQuitUIEnd = true;
+            }, 10000)
         }
     },
 
@@ -329,6 +334,22 @@ cc.Class({
             nodeRecvGold.getChildByName("nodeRecv").active = false;
         }
 
+        if (nodeRecvGold.getChildByName("nodeShare").active){
+            let nodeShare = nodeRecvGold.getChildByName("nodeShare");
+            if (GlobalVar.getShareControl() == 1){
+                nodeShare.getChildByName("nodeGetGold").getChildByName("label").getComponent(cc.Label).string = "  " + i18n.t('label.4000338');
+                nodeShare.getChildByName("btnRecvShare").getChildByName("spriteShare").active = true;
+                nodeShare.getChildByName("btnRecvShare").getChildByName("spriteVideo").active = false;
+            }else if (GlobalVar.getShareControl() == 6){
+                nodeShare.getChildByName("nodeGetGold").getChildByName("label").getComponent(cc.Label).string = "  " + i18n.t('label.4000339');
+                nodeShare.getChildByName("btnRecvShare").getChildByName("spriteShare").active = false;
+                nodeShare.getChildByName("btnRecvShare").getChildByName("spriteVideo").active = true;
+            }
+        }
+
+
+
+
         let rewardData = GlobalVar.tblApi.getDataBySingleKey('TblEndlessRank', GlobalVar.me().endlessData.getRankID());
         let itemObj = nodeEndless.getChildByName("spriteHintBg").getChildByName("spriteTreasureBoxBg").getChildByName("ItemBox").getComponent("ItemObject");
         itemObj.updateItem(rewardData.wRewardItem);
@@ -463,8 +484,19 @@ cc.Class({
             getGold = parseInt(this.labelFiveGetGold.string);
 
             let platformApi = GlobalVar.getPlatformApi();
-            if (cc.isValid(platformApi)) {
+            if (platformApi && GlobalVar.getShareControl() == 1) {
                 platformApi.shareNormal(107, function () {
+                    self.alreadRecvGoldBtnClick = true;
+                    nodeEndless.getChildByName("nodeRecvGold").active = false;
+                    nodeEndless.getChildByName("nodeGet").getChildByName("labelGetValue").getComponent(cc.Label).string = getGold;
+                    nodeEndless.getChildByName("nodeGet").active = true;
+                    nodeEndless.getChildByName("spriteContinueTip").active = true;
+                    self.node.getChildByName("btnEnd").active = true;
+                    GlobalVar.handlerManager().endlessHandler.sendEndlessGetGoldReq(getGold);
+                    // GlobalVar.sceneManager().gotoScene(SceneDefines.MAIN_STATE);
+                });
+            } else if (platformApi && GlobalVar.getShareControl() == 6) {
+                platformApi.showRewardedVideoAd(207, function () {
                     self.alreadRecvGoldBtnClick = true;
                     nodeEndless.getChildByName("nodeRecvGold").active = false;
                     nodeEndless.getChildByName("nodeGet").getChildByName("labelGetValue").getComponent(cc.Label).string = getGold;
@@ -565,6 +597,9 @@ cc.Class({
     },
 
     onDestroy: function () {
+        if (!!this.timeoutID) {
+            clearTimeout(this.timeoutID);
+        }
         GlobalVar.eventManager().removeListenerWithTarget(this);
     },
 });

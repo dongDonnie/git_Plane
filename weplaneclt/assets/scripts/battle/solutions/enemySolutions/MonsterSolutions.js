@@ -8,6 +8,28 @@ const MonsterSolutions = cc.Class({
     properties: {
     },
     statics: {
+        solution_0: function (info) {
+            //全屏即死
+            let ai = require('AIInterface');
+            let entity = ai.createMonster(info);
+            entity.addInvincibleTime(99999);
+            entity.setDropCrystal(false);
+            entity.setCollisionSwitch(true);
+            entity.setDropCount(false);
+            entity.setBaseAngle(-180);
+            entity.setSpeed(ai.speedTransfer(700, -90), true);
+            entity.setKillHero(true);
+            entity.setTimerHandler(function (idx) {
+                if (idx == 0) {
+                    let pos = this.getPosition();
+                    if (pos.y <= cc.winSize.height * 0.5) {
+                        ai.releaseEntity(this);
+                    }
+                }
+            });
+            entity.setTimer(0, 0, 9999, 0);
+            return entity;
+        },
         solution_1: function (info, speed, angle, speedacc, angleacc, SpfixDirection, Rotation) {
             //直线
             let ai = require('AIInterface');
@@ -316,7 +338,7 @@ const MonsterSolutions = cc.Class({
                 }
             });
             entity.setTimer(0, 0, 1, 0);
-            entity.setTimer(3, 0.016, 9999, 1);
+            entity.setTimer(3, 0.016, 99999, 1);
             return entity;
         },
         solution_12: function (info, speed, speedacc, pos_1, pos_2, pos_3, pos_4, pos_5, pos_6, fixDirection, autoskilldelay, scale) {
@@ -357,7 +379,7 @@ const MonsterSolutions = cc.Class({
                 }
             });
             entity.setTimer(0, 0, 1, 0);
-            entity.setTimer(3, 0.016, 9999, 1);
+            entity.setTimer(3, 0.016, 99999, 1);
             return entity;
         },
         solution_13: function (info, speed, speedacc, pos_1, pos_2, pos_3, pos_4, fixDirection, autoskilldelay, scale) {
@@ -396,7 +418,7 @@ const MonsterSolutions = cc.Class({
                 }
             });
             entity.setTimer(0, 0, 1, 0);
-            entity.setTimer(3, 0.016, 9999, 1);
+            entity.setTimer(3, 0.016, 99999, 1);
             return entity;
         },
         solution_14: function (info, destination, time, overDes, LfixDirection, autoskilldelay, r, angle, omega, omegaAcc, rSpeed, rSpeedAcc, CfixDirection, scale) {
@@ -505,7 +527,7 @@ const MonsterSolutions = cc.Class({
             let entity = ai.createMonster(info);
             let dstpos = entity.getPosition();
             entity.setOpacity(0);
-            entity.addInvincibleTime(9999);
+            entity.addInvincibleTime(99999);
             entity.setImmediatelyKill(2);
             //setImmediatelyKill（1——即死；2——50%）
             entity.setDropCrystal(false);
@@ -630,7 +652,7 @@ const MonsterSolutions = cc.Class({
 
             });
             entity.setTimer(0, 0, 1, 0);
-            entity.setTimer(9, 0.016, 9999, 1);
+            entity.setTimer(9, 0.016, 99999, 1);
             return entity;
         },
         solution_19: function (info, skills) {
@@ -759,6 +781,7 @@ const MonsterSolutions = cc.Class({
                     this.setTimer(2, 4, 1, 0);
                 }
                 if (idx == 9) {
+                    this.setDefend(true);
                     let destination = ai.posTransfer(cc.v3(0.5, 0.75));
                     this.shiftToStandby(destination, 1.5, 30, 0);
                     this.setMovementType(4);
@@ -767,7 +790,6 @@ const MonsterSolutions = cc.Class({
                 if (idx == 10) {
                     ai.setMonsterLoopAction(this, 'daiji_2')
                     ai.playAction(this, 'start_2', 1, cb);
-                    this.setDefend(true);
                 }
                 if (idx == 11) {
                     this.setDefend(false);
@@ -839,7 +861,7 @@ const MonsterSolutions = cc.Class({
                 }
             });
             entity.setTimer(0, 0, 1, 0);
-            entity.setTimer(23, 0.016, 9999, 0);
+            entity.setTimer(23, 0.016, 99999, 0);
             return entity;
         },
         solution_21: function (info, skills) {
@@ -1466,7 +1488,7 @@ const MonsterSolutions = cc.Class({
                 }
             });
             entity.setTimer(0, 0, 1, 0);
-            entity.setTimer(24, 0.016, 9999, 1);
+            entity.setTimer(24, 0.016, 99999, 1);
             return entity;
         },
         solution_26: function (info, skills) {
@@ -1490,7 +1512,7 @@ const MonsterSolutions = cc.Class({
                 if (idx == 1) {
                     this.bossAppear(false);
                     this.setDefend(false);
-                    this.setTimer(28, 4, 9999, 1);
+                    this.setTimer(28, 4, 99999, 1);
                 }
                 if (idx == 28) {
                     ai.useSkill(this, 801);
@@ -1651,7 +1673,7 @@ const MonsterSolutions = cc.Class({
                     let destination = ai.posTransfer(cc.v3(cc.v3(0.2 + 0.6 * Math.random(), 0.5 + 0.3 * Math.random())));
                     this.shiftToStandby(destination, 1, 5, 0);
                     this.setMovementType(4);
-                    this.setTimer(26, 1, 9999, 0);
+                    this.setTimer(26, 1, 99999, 0);
                     this.setTimer(27, 3.5, 1, 0);
                 }
                 if (idx == 26) {
@@ -1664,9 +1686,9 @@ const MonsterSolutions = cc.Class({
                 }
             });
             entity.setTimer(0, 0, 1, 0);
-            entity.setTimer(2, 0.016, 9999, 1);
-            entity.setTimer(14, 0.016, 9999, 1);
-            entity.setTimer(23, 0.016, 9999, 1);
+            entity.setTimer(2, 0.016, 99999, 1);
+            entity.setTimer(14, 0.016, 99999, 1);
+            entity.setTimer(23, 0.016, 99999, 1);
             return entity;
         },
         solution_27: function (info, skills) {
@@ -2314,8 +2336,8 @@ const MonsterSolutions = cc.Class({
                 }
             });
             entity.setTimer(0, 0, 1, 0);
-            entity.setTimer(16, 0.016, 9999, 0);
-            entity.setTimer(38, 0.016, 9999, 0);
+            entity.setTimer(16, 0.016, 99999, 0);
+            entity.setTimer(38, 0.016, 99999, 0);
             return entity;
         },
         solution_32: function (info, skills) {
@@ -2488,7 +2510,7 @@ const MonsterSolutions = cc.Class({
                     let posData = [vec_0, vec_1, vec_2, vec_3, vec_4, vec_5, vec_6];
                     this.setBezier(posData, 1000, 0, 0);
                     this.setMovementType(2);
-                    this.setTimer(30, 0.016, 9999, 0);
+                    this.setTimer(30, 0.016, 99999, 0);
                 }
                 if (idx == 30) {
                     let p = this.getBezierIsEnd()
@@ -2551,7 +2573,7 @@ const MonsterSolutions = cc.Class({
                 if (idx == 28) {
                     ai.setMonsterLoopAction(this, 'attack_3');
                     ai.playAction(this, 'attack_3', 0);
-                    this.setTimer(29, 1.5, 9999, 0);
+                    this.setTimer(29, 1.5, 99999, 0);
                 }
                 if (idx == 29) {
                     ai.useSkill(this, 901);
@@ -2567,8 +2589,8 @@ const MonsterSolutions = cc.Class({
                 }
             });
             entity.setTimer(0, 0, 1, 0);
-            entity.setTimer(1, 0.016, 9999, 0);
-            entity.setTimer(8, 0.016, 9999, 0);
+            entity.setTimer(1, 0.016, 99999, 0);
+            entity.setTimer(8, 0.016, 99999, 0);
             return entity;
         },
         solution_33: function (monsterInfo) {
@@ -2612,7 +2634,7 @@ const MonsterSolutions = cc.Class({
                     entity_1.setTimer(11, 0, 1, 0);
                 }
             }
-            entity_1.addInvincibleTime(9999);
+            entity_1.addInvincibleTime(99999);
             entity_1.setIsKill(false);
             entity_1.setDropCrystal(false);
             entity_1.setDeathShock(false);
@@ -2700,7 +2722,7 @@ const MonsterSolutions = cc.Class({
             entity_2.setDeathType(0);
             entity_2.setCloseDeathBomb(true);
             entity_2.setDropBuff(false);
-            entity_2.addInvincibleTime(9999);
+            entity_2.addInvincibleTime(99999);
             entity_2.setTimerHandler(function (idx) {
                 if (idx == 0) {
                     this.setCollisionSwitch(false);
@@ -3092,7 +3114,7 @@ const MonsterSolutions = cc.Class({
             entity.setDeathType(0);
             entity.setCloseDeathBomb(true);
             entity.setDropBuff(false);
-            entity.addInvincibleTime(9999);
+            entity.addInvincibleTime(99999);
             entity.opacity = (0);
             entity.setTimerHandler(function (idx) {
                 if (idx == 0) {
@@ -3179,7 +3201,7 @@ const MonsterSolutions = cc.Class({
             entity.setDeathType(0);
             entity.setCloseDeathBomb(true);
             entity.setDropBuff(false);
-            entity.addInvincibleTime(9999);
+            entity.addInvincibleTime(99999);
             entity.opacity = (0);
             entity.setTimerHandler(function (idx) {
                 if (idx == 0) {
@@ -3285,7 +3307,7 @@ const MonsterSolutions = cc.Class({
                     this.setTimer(1, 5, 1, 0);
                 }
                 if (idx == 3) {
-                    this.setTimer(4, 5, 9999, 0);
+                    this.setTimer(4, 5, 99999, 0);
                 }
                 if (idx == 4) {
                     this.setTimer(5, 1.2, 4, 0);
@@ -3779,7 +3801,7 @@ const MonsterSolutions = cc.Class({
                 }
             });
             entity.setTimer(0, 0, 1, 0);
-            entity.setTimer(8,0.016,9999,1);
+            entity.setTimer(8,0.016,99999,1);
             return entity;
         },
         solution_45: function (info, skills) {
@@ -4303,7 +4325,7 @@ const MonsterSolutions = cc.Class({
                 }
             });
             entity.setTimer(0, 0, 1, 0);
-            entity.setTimer(4, 0.016, 9999, 1);
+            entity.setTimer(4, 0.016, 99999, 1);
             return entity;
         },
         solution_132: function (info, skills) {
@@ -4337,7 +4359,7 @@ const MonsterSolutions = cc.Class({
                 }
             });
             entity.setTimer(0, 0, 1, 0);
-            entity.setTimer(4, 0.016, 9999, 1);
+            entity.setTimer(4, 0.016, 99999, 1);
             return entity;
         },
         solution_133: function (info, skills) {

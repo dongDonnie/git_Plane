@@ -124,6 +124,29 @@ gf.interceptStr = function (str, lens, strEnd) {
     return str;
 };
 
+gf.interceptStrNew = function (str, len, strEnd) {    
+    if (str == null)
+        return '';
+    if (strEnd == undefined) strEnd = '';
+    let en = true;
+    for (let i = 0; i < str.length; i++) {
+        let value = str.charCodeAt(i)
+        if (!(value >= 65 && value <= 90 || value >= 97 && value <= 122)) {
+            en = false;
+            break;
+        }
+    }
+    // let len = len;
+    if (en) {
+        len *= 1.5;
+    }
+    // let str = str;
+    if (str.length > len) {
+        str = str.substring(0, len) + strEnd;
+    }
+    return str;
+};
+
 gf.playDragonBonesAnimation = function (node, callback, ani, playtimes) {
     let block = cc.find("Canvas/BlockNode");
     if(cc.isValid(block)){

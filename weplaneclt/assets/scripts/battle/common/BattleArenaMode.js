@@ -63,11 +63,19 @@ const Mode = cc.Class({
         nodeBkg.y = cc.winSize.height / 2;
         this.battleManager.displayContainer.addChild(nodeBkg);
 
+        let fix = GlobalVar.me().getCombatPoint() / this.battleManager.battleMsg.OpponentEquip.CombatPoint;
+        let sPlus = 1;
+        let rPlus = 1;
+        if (fix >= 1) {
+            sPlus = Math.floor(fix);
+        } else {
+            rPlus = Math.floor(1 / fix);
+        }
         //self
         let memberID = GlobalVar.me().memberData.getStandingByFighterID();
         this.self = new ArenaEntity();
         this.self.newPart('Fighter/Fighter_' + memberID, Defines.ObjectType.OBJ_SELF, 'PlaneObject');
-        this.self.setProp(GlobalVar.me().level, GlobalVar.me().propData.getProps());
+        this.self.setProp(GlobalVar.me().level, GlobalVar.me().propData.getProps(), sPlus);
         this.battleManager.arenaSelfDisplay.addChild(this.self, Defines.Z.FIGHTER);
 
         for (let index in GlobalVar.me().guazaiData.guazaiWear) {
@@ -97,7 +105,7 @@ const Mode = cc.Class({
         //rival
         this.rival = new ArenaEntity();
         this.rival.newPart('Fighter/Fighter_' + this.battleManager.battleMsg.OpponentEquip.MemberID, Defines.ObjectType.OBJ_RIVAL, 'PlaneObject');
-        this.rival.setProp(GlobalVar.me().level, GlobalVar.me().propData.getProps());
+        this.rival.setProp(GlobalVar.me().level, GlobalVar.me().propData.getProps(), rPlus);
         this.battleManager.arenaRivalDisplay.addChild(this.rival, Defines.Z.FIGHTER);
 
         for (let i in this.battleManager.battleMsg.OpponentEquip.GuaZaiItemID) {
@@ -199,9 +207,11 @@ const Mode = cc.Class({
         } else if (this.battleManager.gameState == Defines.GameResult.INTERRUPT) {
             if (!this.win) {
                 this.self.hitWithDamage(this.self.maxHp);
-                this.rival.hitWithDamage(this.rival.hp * Math.random());
+                let per = Math.random();
+                this.rival.hitWithDamage(this.rival.hp * (per > 0 ? per : 0.1));
             } else {
-                this.self.hitWithDamage(this.self.hp * Math.random());
+                let per = Math.random();
+                this.self.hitWithDamage(this.self.hp * (per > 0 ? per : 0.1));
                 this.rival.hitWithDamage(this.rival.maxHp);
             }
             this.gameEnd();
@@ -390,9 +400,9 @@ const Mode = cc.Class({
             } else {
                 if (per <= 0.05) {
                     dmgMsg.dmg = 0;
-                } else if (per <= 0.3) {
+                } else if (per <= 0.2) {
                     dmgMsg.dmg *= per;
-                } else if (per <= 0.6) {
+                } else if (per <= 0.4) {
                     dmgMsg.dmg *= Math.random();
                 }
                 dmgMsg.dmg = Math.floor(dmgMsg.dmg);
@@ -403,9 +413,9 @@ const Mode = cc.Class({
             if (!this.win) {
                 if (per <= 0.05) {
                     dmgMsg.dmg = 0;
-                } else if (per <= 0.3) {
+                } else if (per <= 0.2) {
                     dmgMsg.dmg *= per;
-                } else if (per <= 0.6) {
+                } else if (per <= 0.4) {
                     dmgMsg.dmg *= Math.random();
                 }
                 dmgMsg.dmg = Math.floor(dmgMsg.dmg);

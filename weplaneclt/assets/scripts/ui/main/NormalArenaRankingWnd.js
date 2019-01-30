@@ -51,9 +51,6 @@ cc.Class({
 
     animeStartParam(num) {
         this.node.opacity = num;
-        if (num = 0){
-            this.node.setA(0);
-        }
     },
 
     animePlayCallBack(name) {
@@ -115,7 +112,7 @@ cc.Class({
             model.getChildByName("spriteBg").active = true;
             model.getChildByName("spriteBgSelect").active = false;
         }
-        model.getChildByName("labelPlayerName").getComponent(cc.Label).string = GlobalFunc.interceptStr(data.RoleName, 8, "...");
+        model.getChildByName("labelPlayerName").getComponent(cc.Label).string = GlobalFunc.interceptStrNew(data.RoleName, 4, "...");
         model.getChildByName("labelPlayerLevel").getComponent(cc.Label).string = "等级" + data.Level;
         model.getChildByName("labelPlayerCombat").getComponent(cc.Label).string = data.CombatPoint;
         model.x = 0;

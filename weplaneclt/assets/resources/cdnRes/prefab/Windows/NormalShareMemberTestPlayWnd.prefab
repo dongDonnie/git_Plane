@@ -45,27 +45,27 @@
         "__id__": 39
       },
       {
-        "__id__": 58
+        "__id__": 60
       }
     ],
     "_active": true,
     "_level": 1,
     "_components": [
       {
-        "__id__": 67
-      },
-      {
         "__id__": 69
       },
       {
-        "__id__": 70
+        "__id__": 71
       },
       {
-        "__id__": 71
+        "__id__": 72
+      },
+      {
+        "__id__": 73
       }
     ],
     "_prefab": {
-      "__id__": 72
+      "__id__": 74
     },
     "_opacity": 255,
     "_color": {
@@ -152,7 +152,7 @@
     "_position": {
       "__type__": "cc.Vec3",
       "x": 0,
-      "y": 0,
+      "y": -83,
       "z": 0
     },
     "_scale": {
@@ -253,7 +253,7 @@
     "_position": {
       "__type__": "cc.Vec3",
       "x": 0,
-      "y": -46,
+      "y": -129,
       "z": 0
     },
     "_scale": {
@@ -354,7 +354,7 @@
     "_position": {
       "__type__": "cc.Vec3",
       "x": 0,
-      "y": 272,
+      "y": 189,
       "z": 0
     },
     "_scale": {
@@ -454,7 +454,7 @@
     "_position": {
       "__type__": "cc.Vec3",
       "x": -310,
-      "y": -161,
+      "y": -244,
       "z": 0
     },
     "_scale": {
@@ -544,7 +544,7 @@
     "_position": {
       "__type__": "cc.Vec3",
       "x": -182,
-      "y": 108,
+      "y": 25,
       "z": 0
     },
     "_scale": {
@@ -645,7 +645,7 @@
     "_position": {
       "__type__": "cc.Vec3",
       "x": -119.2,
-      "y": 130.9,
+      "y": 47.900000000000006,
       "z": 0
     },
     "_scale": {
@@ -746,7 +746,7 @@
     "_position": {
       "__type__": "cc.Vec3",
       "x": 92.2,
-      "y": 128.7,
+      "y": 45.69999999999999,
       "z": 0
     },
     "_scale": {
@@ -862,7 +862,7 @@
     "_position": {
       "__type__": "cc.Vec3",
       "x": 281,
-      "y": 275,
+      "y": 192,
       "z": 0
     },
     "_scale": {
@@ -1365,24 +1365,24 @@
         "__id__": 46
       },
       {
-        "__id__": 49
+        "__id__": 51
       }
     ],
     "_active": true,
     "_level": 2,
     "_components": [
       {
-        "__id__": 53
-      },
-      {
-        "__id__": 54
+        "__id__": 55
       },
       {
         "__id__": 56
+      },
+      {
+        "__id__": 58
       }
     ],
     "_prefab": {
-      "__id__": 57
+      "__id__": 59
     },
     "_opacity": 255,
     "_color": {
@@ -1405,7 +1405,7 @@
     "_position": {
       "__type__": "cc.Vec3",
       "x": 0,
-      "y": -239,
+      "y": -322,
       "z": 0
     },
     "_scale": {
@@ -1505,8 +1505,8 @@
     "_srcBlendFactor": 1,
     "_dstBlendFactor": 771,
     "_useOriginalSize": false,
-    "_string": "观看视频",
-    "_N$string": "观看视频",
+    "_string": "免费试玩",
+    "_N$string": "免费试玩",
     "_fontSize": 30,
     "_lineHeight": 30,
     "_enableWrapText": true,
@@ -1607,8 +1607,8 @@
     "_srcBlendFactor": 1,
     "_dstBlendFactor": 771,
     "_useOriginalSize": false,
-    "_string": "观看视频",
-    "_N$string": "观看视频",
+    "_string": "免费试玩",
+    "_N$string": "免费试玩",
     "_fontSize": 30,
     "_lineHeight": 30,
     "_enableWrapText": true,
@@ -1636,7 +1636,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "common_ad_icon",
+    "_name": "videoIcon",
     "_objFlags": 0,
     "_parent": {
       "__id__": 39
@@ -1650,7 +1650,7 @@
       }
     ],
     "_prefab": {
-      "__id__": 48
+      "__id__": 50
     },
     "_opacity": 255,
     "_color": {
@@ -1697,7 +1697,7 @@
     "_id": ""
   },
   {
-    "__type__": "cc.Sprite",
+    "__type__": "913bdAcRwFEj6s5Vwr+C7f6",
     "_name": "",
     "_objFlags": 0,
     "node": {
@@ -1722,7 +1722,30 @@
     "_isTrimmedMode": true,
     "_state": 0,
     "_atlas": null,
+    "_defaultURL": "",
+    "frameList": [
+      {
+        "__id__": 48
+      },
+      {
+        "__id__": 49
+      }
+    ],
     "_id": ""
+  },
+  {
+    "__type__": "resPath",
+    "local": {
+      "__uuid__": "ad349e47-8353-4161-ab31-47549d827e93"
+    },
+    "url": ""
+  },
+  {
+    "__type__": "resPath",
+    "local": {
+      "__uuid__": "5564e87e-3ddf-41be-8ed4-de7b9c6c18b0"
+    },
+    "url": ""
   },
   {
     "__type__": "cc.PrefabInfo",
@@ -1747,14 +1770,14 @@
     "_level": 0,
     "_components": [
       {
-        "__id__": 50
+        "__id__": 52
       },
       {
-        "__id__": 51
+        "__id__": 53
       }
     ],
     "_prefab": {
-      "__id__": 52
+      "__id__": 54
     },
     "_opacity": 255,
     "_color": {
@@ -1807,7 +1830,7 @@
     "_name": "",
     "_objFlags": 0,
     "node": {
-      "__id__": 49
+      "__id__": 51
     },
     "_enabled": true,
     "alignMode": 0,
@@ -1834,7 +1857,7 @@
     "_name": "",
     "_objFlags": 0,
     "node": {
-      "__id__": 49
+      "__id__": 51
     },
     "_enabled": true,
     "_id": ""
@@ -1863,7 +1886,7 @@
     "_showShadow": true,
     "btnState": true,
     "_N$fontColor": 0,
-    "_N$textLabel": "观看视频",
+    "_N$textLabel": "免费试玩",
     "_id": ""
   },
   {
@@ -1878,7 +1901,7 @@
     "zoomScale": 1.2,
     "clickEvents": [
       {
-        "__id__": 55
+        "__id__": 57
       }
     ],
     "_N$interactable": true,
@@ -1998,24 +2021,24 @@
     },
     "_children": [
       {
-        "__id__": 59
+        "__id__": 61
       }
     ],
     "_active": true,
     "_level": 2,
     "_components": [
       {
-        "__id__": 62
-      },
-      {
-        "__id__": 63
+        "__id__": 64
       },
       {
         "__id__": 65
+      },
+      {
+        "__id__": 67
       }
     ],
     "_prefab": {
-      "__id__": 66
+      "__id__": 68
     },
     "_opacity": 255,
     "_color": {
@@ -2038,7 +2061,7 @@
     "_position": {
       "__type__": "cc.Vec3",
       "x": 0,
-      "y": -356,
+      "y": -439,
       "z": 0
     },
     "_scale": {
@@ -2068,18 +2091,18 @@
     "_name": "RICHTEXT_CHILD",
     "_objFlags": 0,
     "_parent": {
-      "__id__": 58
+      "__id__": 60
     },
     "_children": [],
     "_active": true,
     "_level": 3,
     "_components": [
       {
-        "__id__": 60
+        "__id__": 62
       }
     ],
     "_prefab": {
-      "__id__": 61
+      "__id__": 63
     },
     "_opacity": 255,
     "_color": {
@@ -2130,7 +2153,7 @@
     "_name": "",
     "_objFlags": 0,
     "node": {
-      "__id__": 59
+      "__id__": 61
     },
     "_enabled": true,
     "_srcBlendFactor": 1,
@@ -2160,7 +2183,7 @@
     "asset": {
       "__uuid__": "b17bb6c3-e072-4865-9057-df66945a3bcc"
     },
-    "fileId": "2dIdLCWV5IxYbHO8KxRE+w",
+    "fileId": "8aPaGgbhhBnolLjm8co3k8",
     "sync": false
   },
   {
@@ -2168,7 +2191,7 @@
     "_name": "",
     "_objFlags": 0,
     "node": {
-      "__id__": 58
+      "__id__": 60
     },
     "_enabled": true,
     "_N$string": "<u>放弃试玩，立即开始</u>",
@@ -2188,14 +2211,14 @@
     "_name": "",
     "_objFlags": 0,
     "node": {
-      "__id__": 58
+      "__id__": 60
     },
     "_enabled": true,
     "duration": 0.1,
     "zoomScale": 1.1,
     "clickEvents": [
       {
-        "__id__": 64
+        "__id__": 66
       }
     ],
     "_N$interactable": true,
@@ -2251,7 +2274,7 @@
     "hoverSprite": null,
     "_N$disabledSprite": null,
     "_N$target": {
-      "__id__": 58
+      "__id__": 60
     },
     "_id": ""
   },
@@ -2270,7 +2293,7 @@
     "_name": "",
     "_objFlags": 0,
     "node": {
-      "__id__": 58
+      "__id__": 60
     },
     "_enabled": true,
     "audioType": 7,
@@ -2304,7 +2327,7 @@
     "zoomScale": 1.2,
     "clickEvents": [
       {
-        "__id__": 68
+        "__id__": 70
       }
     ],
     "_N$interactable": true,
@@ -2431,10 +2454,10 @@
     "_enabled": true,
     "fixViewComplete": false,
     "MainView": {
-      "__id__": 67
+      "__id__": 69
     },
     "selfAnime": {
-      "__id__": 69
+      "__id__": 71
     },
     "selfAnimeName": "Scale",
     "openType": 0,

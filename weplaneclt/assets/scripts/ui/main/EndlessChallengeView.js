@@ -261,11 +261,12 @@ cc.Class({
 
             if (plusData.byStatusID == 4 && GlobalVar.getShareSwitch()) {
                 plus.getChildByName("nodeBuy").active = false;
-                plus.getChildByName("btnShare").active = true;
+                plus.getChildByName("btnShare").active = GlobalVar.getShareControl() != 6;
+                plus.getChildByName("btnVideo").active = GlobalVar.getShareControl() == 6;
             } else if (plusData.byStatusID == 3 && GlobalVar.getShareSwitch()) {
                 plus.getChildByName("nodeBuy").active = false;
-                plus.getChildByName("btnVideo").active = !StoreageData.getShareTimesWithKey("rewardedVideoLimit", 1);
-                plus.getChildByName("btnShare").active = !!StoreageData.getShareTimesWithKey("rewardedVideoLimit", 1);
+                plus.getChildByName("btnVideo").active = !StoreageData.getShareTimesWithKey("rewardedVideoLimit", 99) || GlobalVar.getShareControl() == 6;
+                plus.getChildByName("btnShare").active = !!StoreageData.getShareTimesWithKey("rewardedVideoLimit", 99) && GlobalVar.getShareControl() != 6;
             } else {
                 plus.getChildByName("nodeBuy").active = true;
                 plus.getChildByName("btnShare").active = false;
@@ -396,10 +397,6 @@ cc.Class({
         if (platformApi) {
             platformApi.showRewardedVideoAd(plus.data.byStatusID + 207, function () {
                 GlobalVar.handlerManager().endlessHandler.sendEndlessBuyStatusReq(plus.data.byStatusID, 1);
-            }, function () {
-                platformApi.shareNormal(plus.data.byStatusID + 107, function () {
-                    GlobalVar.handlerManager().endlessHandler.sendEndlessBuyStatusReq(plus.data.byStatusID, 1);
-                });
             });
         }
     },
@@ -644,12 +641,13 @@ cc.Class({
     onBtnGameStart: function () {
         //GlobalVar.comMsg.showMsg("调整中");
         let testPlayMemberID = -1;
-        // let random = Math.random();
-        if (GlobalVar.getShareSwitch()) {
+        let random = Math.random();
+        console.log(random);
+        if (GlobalVar.getShareSwitch() && random < 0.5) {
             let totalMemberData = GlobalVar.tblApi.getData('TblMember');
             let ids = [];
             for (let i in totalMemberData) {
-                if (totalMemberData[i].byGetType == 1 && totalMemberData[i].stPingJia.byStarNum >= 3) {
+                if (totalMemberData[i].byGetType == 1 && totalMemberData[i].stPingJia.byStarNum >= 3 && totalMemberData[i].dTestPlayUp > 0) {
                     ids.push(parseInt(i));
                 }
             }

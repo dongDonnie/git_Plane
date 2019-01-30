@@ -6,6 +6,7 @@ const GameServerProto = require("GameServerProto");
 const CommonWnd = require("CommonWnd");
 const i18n = require('LanguageData');
 const WndTypeDefine = require("wndtypedefine");
+const StoreageData = require("storagedata");
 const NOVIDEO_NEED_VIP_LEVEL = 1;
 
 var self = null;
@@ -101,13 +102,14 @@ cc.Class({
         if (GlobalVar.me().vipLevel >= NOVIDEO_NEED_VIP_LEVEL){
             // this.labelVipTips.node.color = cc.color(160, 160, 160);
             this.btnTreasure.node.getChildByName("spriteText").x = 0;
-            this.btnTreasure.node.getChildByName("spriteVideoIcon").active = false;
+            this.btnTreasure.node.getChildByName("spriteVideo").active = false;
+            this.btnTreasure.node.getChildByName("spriteShare").active = false;
         }else {
             this.labelVipTips.string = i18n.t('label.4000319').replace("%level", NOVIDEO_NEED_VIP_LEVEL);
-            // this.labelVipTips.node.active = true;
-            // this.labelVipTips.node.color = cc.color(255, 255, 255);
             this.btnTreasure.node.getChildByName("spriteText").x = 16;
-            this.btnTreasure.node.getChildByName("spriteVideoIcon").active = true;
+            let platformApi = GlobalVar.getPlatformApi();
+            this.btnTreasure.node.getChildByName("spriteVideo").active = platformApi && (platformApi.canShowRewardVideo() || GlobalVar.getShareControl() == 6);
+            this.btnTreasure.node.getChildByName("spriteShare").active = platformApi && (!platformApi.canShowRewardVideo() && GlobalVar.getShareControl() == 1);
         }
         if (curTime < maxTime){
             this.btnTreasure.node.color = cc.color(255, 255, 255);
@@ -129,14 +131,16 @@ cc.Class({
             GlobalVar.handlerManager().shareHandler.sendGetFreeDiamondReq();
         }else{
             let platformApi = GlobalVar.getPlatformApi();
-            if (cc.isValid(platformApi)){
-                platformApi.showRewardedVideoAd(215, function () {
-                    GlobalVar.handlerManager().shareHandler.sendGetFreeDiamondReq();
-                }, function () {
+            if (platformApi){
+                if (platformApi.canShowRewardVideo() || GlobalVar.getShareControl() == 6){
+                    platformApi.showRewardedVideoAd(215, function () {
+                        GlobalVar.handlerManager().shareHandler.sendGetFreeDiamondReq();
+                    }, null, true, true);
+                }else{
                     platformApi.shareNormal(115, function () {
                         GlobalVar.handlerManager().shareHandler.sendGetFreeDiamondReq();
                     }); 
-                });
+                }
             }else if (GlobalVar.configGMSwitch()){
                 GlobalVar.handlerManager().shareHandler.sendGetFreeDiamondReq();
             }

@@ -162,20 +162,20 @@ const HeroManager = cc.Class({
 
     newHero(member, displayNode, props) {
 
-        if (this.planeEntity != null) {
-            this.planeEntity.destroy();
-            this.planeEntity = null;
-        }
-        for (let i = 0; i < 2; i++) {
-            if (this.assistEntity[i] != null) {
-                this.assistEntity[i].destroy();
-                this.assistEntity[i] = null;
-            }
-            if (this.wingmanEntity[i] != null) {
-                this.wingmanEntity[i].destroy();
-                this.wingmanEntity[i] = null;
-            }
-        }
+        // if (this.planeEntity != null) {
+        //     this.planeEntity.destroy();
+        //     this.planeEntity = null;
+        // }
+        // for (let i = 0; i < 2; i++) {
+        //     if (this.assistEntity[i] != null) {
+        //         this.assistEntity[i].destroy();
+        //         this.assistEntity[i] = null;
+        //     }
+        //     if (this.wingmanEntity[i] != null) {
+        //         this.wingmanEntity[i].destroy();
+        //         this.wingmanEntity[i] = null;
+        //     }
+        // }
 
         this.planeEntity = new PlaneEntity();
         this.planeEntity.newPart('Fighter/Fighter_' + member, Defines.ObjectType.OBJ_HERO, 'PlaneObject', this.showType, 0, 0);

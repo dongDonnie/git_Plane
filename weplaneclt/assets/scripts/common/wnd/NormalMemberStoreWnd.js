@@ -29,12 +29,12 @@ cc.Class({
             type: cc.Label
         },
         lblTime: cc.Label,
-        lblFreshTime:cc.Label,
+        lblFreshTime: cc.Label,
 
     },
 
     ctor: function () {
-        
+
     },
 
     onLoad: function () {
@@ -62,13 +62,13 @@ cc.Class({
         } else {
             this._super(false);
         }
-        if (!!this.scheduleHandler) {
-            GlobalVar.gameTimer().delTimer(this.scheduleHandler);
-            this.scheduleHandler = null;
-        }
+        // if (!!this.scheduleHandler) {
+        //     GlobalVar.gameTimer().delTimer(this.scheduleHandler);
+        //     this.scheduleHandler = null;
+        // }
     },
 
-    onDestroy:  function () {
+    onDestroy: function () {
         if (!!this.scheduleHandler) {
             GlobalVar.gameTimer().delTimer(this.scheduleHandler);
             this.scheduleHandler = null;
@@ -89,13 +89,15 @@ cc.Class({
         if (name == "Escape") {
             this._super("Escape");
             GlobalVar.eventManager().removeListenerWithTarget(this);
-            WindowManager.getInstance().popView(false, null, true,true);
+            WindowManager.getInstance().popView(false, null, true, true);
             this.releaseConstData();
         } else if (name == "Enter") {
             this._super("Enter");
             this.registerEvents();
             this.curIndex = -1;
             this.isClickIn = true;
+            this.firstInStore = true;
+            this.firstInBreak = true;
             this.changePanel(null, 0);
             this.getConstData();
         }
@@ -111,7 +113,7 @@ cc.Class({
         this.TblItem = GlobalVar.tblApi.getData('TblItem');
     },
 
-    registerEvents: function(){
+    registerEvents: function () {
         GlobalVar.eventManager().addEventListener(EventMsgId.EVENT_MEMBER_PIECE_DATA, this.memberPieceBack, this);
         GlobalVar.eventManager().addEventListener(EventMsgId.EVENT_MEMBER_STORE_DATA, this.memberStoreData, this);
         GlobalVar.eventManager().addEventListener(EventMsgId.EVENT_MEMBER_STORE_FRESH, this.memberStoreFresh, this);
@@ -128,15 +130,16 @@ cc.Class({
     memberStoreFresh: function (data) {
         if (data.ErrCode == GameServerProto.PTERR_SUCCESS) {
             this.storeDatas.Items[data.ID].State = data.State;
-            this.freshStorePanel();
-
+            // this.freshStorePanel();
+            this.freshScroll();
+            this.firstInBreak = true;
             let itemdata = this.storeDatas.Items[data.ID];
             let item = {
                 ItemID: itemdata.ItemID,
                 Count: itemdata.Count,
             }
             CommonWnd.showTreasureExploit([item]);
-        } else if (data.ErrCode == GameServerProto.PTERR_PIECE_CRYSTAL_LACK){
+        } else if (data.ErrCode == GameServerProto.PTERR_PIECE_CRYSTAL_LACK) {
             // GlobalVar.comMsg.errorWarning(data.ErrCode);
             let self = this;
             CommonWnd.showMessage(null, CommonWnd.oneConfirm, i18n.t('label.4000216'), i18n.t('label.4000270'), null, function () {
@@ -164,17 +167,21 @@ cc.Class({
         if (data.ErrCode != GameServerProto.PTERR_SUCCESS) {
             GlobalVar.comMsg.errorWarning(data.ErrCode);
         } else {
-            this.piecesData = data.Piece;
+            this.piecesData = JSON.parse(JSON.stringify(data.Piece));
+            this.piecesData.sort(function (a, b) {
+                return a.ItemID - b.ItemID;
+            })
             this.memberPieceCrystalNtf()
+            if (data.PieceCryStalChg && data.PieceCryStalChg > 0) {
+                let tip = i18n.t('label.4000269').replace('%d', data.PieceCryStalChg);
+                GlobalVar.comMsg.showMsg(tip);
+                // this.freshScroll();
+                // return;
+            }
             if (this.isClickIn) {
                 this.isClickIn = false;
             } else {
                 this.freshBreakPanel();
-            }
-
-            if (data.PieceCryStalChg && data.PieceCryStalChg > 0) {
-                let tip = i18n.t('label.4000269').replace('%d', data.PieceCryStalChg);
-                GlobalVar.comMsg.showMsg(tip);
             }
         }
     },
@@ -188,7 +195,7 @@ cc.Class({
         item.getComponent("ItemObject").updateItem(itemId);
         if (num)
             item.getComponent("ItemObject").setLabelNumberData(num);
-            
+
         item.getComponent("ItemObject").setClick(true, 2)
     },
 
@@ -212,6 +219,9 @@ cc.Class({
     updateBreakPanel: function (grid, index) {
         grid.active = true;
         let item = this.piecesData[index];
+        if (!cc.isValid(item)) {
+            return;
+        }
         this.setIcon(grid, item.ItemID, item.Count);
         let mem = this.TblMemberPieceCrystal[item.ItemID];
         grid.getChildByName('lblCostCount').getComponent(cc.Label).string = mem.nCrystal;
@@ -221,21 +231,24 @@ cc.Class({
     },
 
     freshStorePanel: function () {
+        // if (this.firstInStore) {
         let scrollNode = this.funcPanel[0].getChildByName('scrollView');
         let updateCallback = this.updateStorePanel.bind(this);
         this.initScroll(scrollNode, this.itemPrefab[0], updateCallback, 6, 2, 10, 10);
+        // } else {
+        //     this.freshScroll();
+        // }
 
         this.lblFreshTime.string = "今日已刷新" + this.storeDatas.RefreshTimes + "次";
         let lblRefreshCostCount = this.lblFreshTime.node.getChildByName('lblRefreshCostCount').getComponent(cc.Label);
         let nodeRefreshCostIcon = this.lblFreshTime.node.getChildByName('nodeRefreshCostIcon').getComponent("RemoteSprite");
-        
+
         let refreshPlan = GlobalVar.me().storeData.getRefreshCostPlan();
         let refreshCardCount = GlobalVar.me().bagData.getItemCountById(refreshPlan.oVecCost1[0].wItemID);
         if (GlobalVar.me().bagData.getItemCountById(refreshPlan.oVecCost1[0].wItemID) > 0) {
             lblRefreshCostCount.string = refreshCardCount + "/" + refreshPlan.oVecCost1[0].nCount;
             nodeRefreshCostIcon.setFrame(0);
-        }
-        else {
+        } else {
             lblRefreshCostCount.string = refreshPlan.oVecCost2[0].nCount;
             nodeRefreshCostIcon.setFrame(1);
         }
@@ -243,7 +256,7 @@ cc.Class({
 
     setFreshTime: function () {
         let self = this;
-        let updateFresh =  function () {
+        let updateFresh = function () {
             let leftTime = self.Expires - GlobalVar.me().serverTime;
             if (leftTime <= 0) {
                 self.getStoreData();
@@ -264,25 +277,31 @@ cc.Class({
     },
 
     freshBreakPanel: function () {
+        // if (this.firstInBreak) {
         let scrollNode = this.funcPanel[1].getChildByName('scrollView');
         let updateCallback = this.updateBreakPanel.bind(this);
         this.initScroll(scrollNode, this.itemPrefab[1], updateCallback, this.piecesData.length, 1);
+        // } else {
+        //     this.freshScroll();
+        // }
     },
 
     changePanel: function (event, customData) {
         if (this.curIndex == customData) return;
         this.curIndex = customData;
 
-        for (let i = 0; i < this.toggles.length; i++){
+        for (let i = 0; i < this.toggles.length; i++) {
             this.toggles[i].getComponent('RemoteSprite').setFrame(0);
             this.funcPanel[i].active = false;
         }
         this.toggles[customData].getComponent('RemoteSprite').setFrame(1);
         this.funcPanel[customData].active = true;
         this.funcPanel[0].parent.active = true;
-        if (customData == 0) {
+        if (customData == 0 && this.firstInStore) {
+            this.firstInStore = false;
             this.getStoreData();
-        } else if (customData == 1) {
+        } else if (customData == 1 && this.firstInBreak) {
+            this.firstInBreak = false;
             GlobalVar.handlerManager().memberHandler.sendMemberPieceDataReq();
         }
     },
@@ -303,8 +322,28 @@ cc.Class({
         scroll.loopScroll.registerUpdateItemFunc(function (grid, index) {
             updateItem(grid, index);
         });
-        scroll.loopScroll.registerCompleteFunc();
         scroll.loopScroll.resetView();
+    },
+
+    freshScroll: function () {
+        if (this.funcPanel[0].active == true) {
+            this.lblFreshTime.string = "今日已刷新" + this.storeDatas.RefreshTimes + "次";
+            let lblRefreshCostCount = this.lblFreshTime.node.getChildByName('lblRefreshCostCount').getComponent(cc.Label);
+            let nodeRefreshCostIcon = this.lblFreshTime.node.getChildByName('nodeRefreshCostIcon').getComponent("RemoteSprite");
+
+            let refreshPlan = GlobalVar.me().storeData.getRefreshCostPlan();
+            let refreshCardCount = GlobalVar.me().bagData.getItemCountById(refreshPlan.oVecCost1[0].wItemID);
+            if (GlobalVar.me().bagData.getItemCountById(refreshPlan.oVecCost1[0].wItemID) > 0) {
+                lblRefreshCostCount.string = refreshCardCount + "/" + refreshPlan.oVecCost1[0].nCount;
+                nodeRefreshCostIcon.setFrame(0);
+            } else {
+                lblRefreshCostCount.string = refreshPlan.oVecCost2[0].nCount;
+                nodeRefreshCostIcon.setFrame(1);
+            }
+            this.funcPanel[0].getChildByName('scrollView').getComponent(cc.ScrollView).loopScroll.refreshViewItem();
+        } else if (this.funcPanel[1].active == true) {
+            this.funcPanel[1].getChildByName('scrollView').getComponent(cc.ScrollView).loopScroll.refreshViewItem();
+        }
     },
 
     playAnimations: function (item, index, targetX, targetY, colNum, callback) {
@@ -329,7 +368,7 @@ cc.Class({
         let msg = {
             Type: GameServerProto.PT_STORE_MEMBER,
             Expires: this.Expires,
-            ID : customData,
+            ID: customData,
         }
         GlobalVar.handlerManager().storeHandler.sendReq(GameServerProto.GMID_STORE_BUY_REQ, msg);
     },

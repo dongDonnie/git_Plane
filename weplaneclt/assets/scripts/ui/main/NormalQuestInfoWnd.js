@@ -424,39 +424,46 @@ cc.Class({
 
         let self = this;
 
-        let tryGetTestMember =  function () {
+        let tryGetTestMember = function () {
+            GlobalVar.me().shareData.testPlayMemberID = 0;
             let testPlayMemberID = -1;
             let random = Math.random();
-            if (!config.NEED_GUIDE && self.tblData.wIconID != 1 && self.campData.Played == 0 && GlobalVar.getShareSwitch() && random < 0.5) {
-                let totalMemberData = GlobalVar.tblApi.getData('TblMember');
-                let ids = [];
-                for (let i in totalMemberData) {
-                    if (totalMemberData[i].byGetType == 1 && totalMemberData[i].stPingJia.byStarNum >= 3) {
-                        ids.push(parseInt(i));
-                    }
-                }
-                let highestStar = 0;
-                for (let i = 0; i < ids.length; i++) {
-                    let memberData = GlobalVar.me().memberData.getMemberByID(ids[i]);
-                    if (memberData || GlobalVar.me().memberData.unLockHotFlag[ids[i]]) {
-                        if (highestStar < totalMemberData[ids[i]].stPingJia.byStarNum) {
-                            highestStar = totalMemberData[ids[i]].stPingJia.byStarNum;
+            console.log(random);
+            if (!config.NEED_GUIDE && self.campData.Played == 0 && GlobalVar.getShareSwitch()) {
+                if (self.tblData.wIconID == 1 && random > 0.5) {
+                    GlobalVar.handlerManager().campHandler.sendCampBeginReq(self.tblData.byChapterID, self.tblData.wCampaignID);
+                    return;
+                }else {
+                    let totalMemberData = GlobalVar.tblApi.getData('TblMember');
+                    let ids = [];
+                    for (let i in totalMemberData) {
+                        if (totalMemberData[i].byGetType == 1 && totalMemberData[i].stPingJia.byStarNum >= 3 && totalMemberData[i].dTestPlayUp > 0) {
+                            ids.push(parseInt(i));
                         }
-                        ids.splice(i, 1);
-                        i -= 1;
                     }
-                }
-                for (let i = 0; i < ids.length; i++) {
-                    if (totalMemberData[ids[i]].stPingJia.byStarNum <= highestStar) {
-                        ids.splice(i, 1);
-                        i -= 1;
+                    let highestStar = 0;
+                    for (let i = 0; i < ids.length; i++) {
+                        let memberData = GlobalVar.me().memberData.getMemberByID(ids[i]);
+                        if (memberData || GlobalVar.me().memberData.unLockHotFlag[ids[i]]) {
+                            if (highestStar < totalMemberData[ids[i]].stPingJia.byStarNum) {
+                                highestStar = totalMemberData[ids[i]].stPingJia.byStarNum;
+                            }
+                            ids.splice(i, 1);
+                            i -= 1;
+                        }
                     }
-                }
+                    for (let i = 0; i < ids.length; i++) {
+                        if (totalMemberData[ids[i]].stPingJia.byStarNum <= highestStar) {
+                            ids.splice(i, 1);
+                            i -= 1;
+                        }
+                    }
 
-                let randomID = ids[parseInt(Math.random() * ids.length)] || -1;
-                testPlayMemberID = randomID;
+                    let randomID = ids[parseInt(Math.random() * ids.length)] || -1;
+                    testPlayMemberID = randomID;
+                }
             }
-            GlobalVar.me().shareData.testPlayMemberID = 0;
+            
             if (testPlayMemberID != -1) {
                 CommonWnd.showShareMemberTestPlayWnd(testPlayMemberID, function () {
                     GlobalVar.handlerManager().campHandler.sendCampBeginReq(self.tblData.byChapterID, self.tblData.wCampaignID);
@@ -574,7 +581,7 @@ cc.Class({
             }
         }
         CommonWnd.showTreasureExploit(getItems);
-        this.close();
+        // this.close();
     },
 
     onDestroy: function () {

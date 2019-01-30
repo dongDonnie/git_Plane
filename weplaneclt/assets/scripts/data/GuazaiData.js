@@ -290,6 +290,7 @@ var GuazaiData = cc.Class({
             self.guazaiWear[ack.OnGuaZai.Slot] = ack.OnGuaZai;
             self.updateHotPoint();
             GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_GUAZAI_DIRTY_NTF, msg.data);
+            GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_GUAZAI_PUTON_NTF, msg.data);
         }
         else
             GlobalVar.comMsg.errorWarning(msg.data.ErrCode);
@@ -297,13 +298,13 @@ var GuazaiData = cc.Class({
 
     saveLvUpData: function (msg) {
         if (msg.data.ErrCode == 0) {
-            let event = {
-                levelUpFlag: self.guazaiWear[msg.data.GuaZai.Slot].GuaZai.Level < msg.data.GuaZai.GuaZai.Level,
-            }
+            let levelUpFlag = self.guazaiWear[msg.data.GuaZai.Slot].GuaZai.Level < msg.data.GuaZai.GuaZai.Level;
+            msg.data.GuaZai.levelUpFlag = levelUpFlag;
             self.guazaiWear[msg.data.GuaZai.Slot] = msg.data.GuaZai;
             self.updateHotPoint();
             GlobalVar.me().bagData.updateItemDataByGMDT_ITEM_CHANGE(msg.data.ItemChange);
-            GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_GUAZAI_LEVEL_UP, event);
+            GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_GUAZAI_LEVEL_UP, msg.data);
+            // GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_GUAZAI_ADDEXP_NTF, msg.data);
             GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_GUAZAI_DIRTY_NTF, msg.data);
         }
         else
@@ -317,7 +318,7 @@ var GuazaiData = cc.Class({
             GlobalVar.me().bagData.updateItemDataByGMDT_ITEM_CHANGE(msg.data.ItemChange);
             GlobalVar.me().setGold(msg.data.Gold);
             GlobalVar.me().setDiamond(msg.data.Diamond);
-            GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_GUAZAI_QUALITY_UP);
+            GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_GUAZAI_QUALITY_UP, msg.data);
             GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_GUAZAI_DIRTY_NTF, msg.data);
         }
         else

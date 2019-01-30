@@ -122,7 +122,7 @@ cc.Class({
     onLoad: function () {
         this._super();
         self.lblRefreshTime.node.active = false;
-        this.itemNodeArray = [];  //保存需要运动的那几个节点
+        this.itemNodeArray = []; //保存需要运动的那几个节点
         this.animeStartParam(0, 0);
         this.refreshComplete = true;
         this.firstEnter = true;
@@ -147,7 +147,7 @@ cc.Class({
         this.describe = data.describe;
         this.msgId = data.msgId;
         this.type = data.type;
-        this.hasData = true;   //确保有数据过后才开始初始化窗口
+        this.hasData = true; //确保有数据过后才开始初始化窗口
         // this.firstEnter = true;
         self = this;
         this.refreshComplete = false;
@@ -163,7 +163,7 @@ cc.Class({
             this.firstEnter = false;
         }
 
-        if (this.refreshComplete){
+        if (this.refreshComplete) {
             return;
         }
         // this.refreshComplete = true;
@@ -177,19 +177,19 @@ cc.Class({
         // }
         // this.updateItem(node, this.itemArray[i], this.itemArray[i + 1]);
 
-        for (let i = 0; i<4; i++){
+        for (let i = 0; i < 4; i++) {
             let node = this.pnlMain.node.children[i];
             if (!node) {
                 node = cc.instantiate(this.nodeGoods);
-                node.getChildByName("ShopGoods1").getChildByName("btno_Buy1").newTag = i*2;
-                node.getChildByName("ShopGoods2").getChildByName("btno_Buy2").newTag = i*2+1;
+                node.getChildByName("ShopGoods1").getChildByName("btno_Buy1").newTag = i * 2;
+                node.getChildByName("ShopGoods2").getChildByName("btno_Buy2").newTag = i * 2 + 1;
                 this.pnlMain.node.addChild(node);
             }
-            this.updateItem(node, this.itemArray[i*2], this.itemArray[i*2+1], i);
+            this.updateItem(node, this.itemArray[i * 2], this.itemArray[i * 2 + 1], i);
         }
 
         let self = this;
-        for (let i = 0; i< this.pnlMain.node.children.length; i++){
+        for (let i = 0; i < this.pnlMain.node.children.length; i++) {
             let node = this.pnlMain.node.children[i];
             let node1 = node.getChildByName("ShopGoods1");
             let node2 = node.getChildByName("ShopGoods2");
@@ -197,12 +197,12 @@ cc.Class({
             node2.active = true;
             node1.x = -1000;
             node2.x = 1000;
-            node1.runAction(cc.sequence(cc.delayTime(i *0.1), cc.moveBy(0.3, 852.5, 0), cc.callFunc(function (target) {
+            node1.runAction(cc.sequence(cc.delayTime(i * 0.1), cc.moveBy(0.3, 852.5, 0), cc.callFunc(function (target) {
                 target.x = -147.5;
             })));
-            node2.runAction(cc.sequence(cc.delayTime(i *0.1), cc.moveBy(0.3, -852.5, 0), cc.callFunc(function (target) {
+            node2.runAction(cc.sequence(cc.delayTime(i * 0.1), cc.moveBy(0.3, -852.5, 0), cc.callFunc(function (target) {
                 target.x = 147.5;
-                if (i == 3){
+                if (i == 3) {
                     self.refreshComplete = true;
                 }
             })));
@@ -220,7 +220,7 @@ cc.Class({
         // this.imgBg.node.getChildByName("btnoRefresh").getComponent(cc.Widget).updateAlignment();
     },
 
-    updateItem: function (node, item1, item2, index) {    //更新icon
+    updateItem: function (node, item1, item2, index) { //更新icon
         // console.log(item1);
         var node1 = node.getChildByName("ShopGoods1");
         var itemLeft = GlobalVar.tblApi.getDataBySingleKey('TblItem', item1.itemId);
@@ -235,18 +235,18 @@ cc.Class({
             node1.getChildByName("spriteAlreadBuy").active = true;
             node1.getChildByName("nodeCostIcon1").active = false;
             node1.getChildByName("lblCostCount1").active = false;
-        }else{
-            if (item1.costType == GameServerProto.PT_MONEY_FREE){
+        } else {
+            if (item1.costType == GameServerProto.PT_MONEY_FREE) {
                 node1.getChildByName("nodeCostIcon1").active = false;
                 node1.getChildByName("lblCostCount1").active = false;
-                if (GlobalVar.getShareSwitch()){
+                if (GlobalVar.getShareSwitch()) {
                     node1.getChildByName("btno_Buy1").getChildByName("spriteVideo").active = true;
-                    node1.getChildByName("btno_Buy1").getComponent("ButtonObject").setText("  " + i18n.t('label.4000328'));
-                }else{
+                    node1.getChildByName("btno_Buy1").getComponent("ButtonObject").setText("  " + i18n.t('label.4000336'));
+                } else {
                     node1.getChildByName("btno_Buy1").getChildByName("spriteVideo").active = false;
                     node1.getChildByName("btno_Buy1").getComponent("ButtonObject").setText(i18n.t('label.4000241'));
                 }
-            }else{
+            } else {
                 node1.getChildByName("btno_Buy1").getChildByName("spriteVideo").active = false;
                 node1.getChildByName("btno_Buy1").getComponent("ButtonObject").setText(i18n.t('label.4000214'));
                 node1.getChildByName("nodeCostIcon1").active = true;
@@ -256,7 +256,7 @@ cc.Class({
             node1.getChildByName("btno_Buy1").active = true;
             node1.getChildByName("spriteAlreadBuy").active = false;
         }
-        node1.getChildByName("btno_Buy1").getComponent(cc.Button).clickEvents[0].customEventData = item1.Type;
+        node1.getChildByName("btno_Buy1").getComponent(cc.Button).clickEvents[0].customEventData = item1.costType;
         var node2 = node.getChildByName("ShopGoods2");
         var itemRight = GlobalVar.tblApi.getDataBySingleKey('TblItem', item2.itemId);
         this.setString(node2.getChildByName("lblShopGoods2").getComponent(cc.Label), itemRight.strName);
@@ -270,18 +270,18 @@ cc.Class({
             node2.getChildByName("spriteAlreadBuy").active = true;
             node2.getChildByName("nodeCostIcon2").active = false;
             node2.getChildByName("lblCostCount2").active = false;
-        }else{
-            if (item2.costType == GameServerProto.PT_MONEY_FREE){
+        } else {
+            if (item2.costType == GameServerProto.PT_MONEY_FREE) {
                 node2.getChildByName("nodeCostIcon2").active = false;
                 node2.getChildByName("lblCostCount2").active = false;
-                if (GlobalVar.getShareSwitch()){
+                if (GlobalVar.getShareSwitch()) {
                     node2.getChildByName("btno_Buy2").getChildByName("spriteVideo").active = true;
-                    node2.getChildByName("btno_Buy2").getComponent("ButtonObject").setText("  " + i18n.t('label.4000328'));
-                }else{
+                    node2.getChildByName("btno_Buy2").getComponent("ButtonObject").setText("  " + i18n.t('label.4000336'));
+                } else {
                     node2.getChildByName("btno_Buy2").getChildByName("spriteVideo").active = false;
                     node2.getChildByName("btno_Buy2").getComponent("ButtonObject").setText(i18n.t('label.4000241'));
                 }
-            }else{
+            } else {
                 node2.getChildByName("btno_Buy2").getChildByName("spriteVideo").active = false;
                 node2.getChildByName("btno_Buy2").getComponent("ButtonObject").setText(i18n.t('label.4000214'));
                 node2.getChildByName("nodeCostIcon2").active = true;
@@ -291,7 +291,7 @@ cc.Class({
             node2.getChildByName("btno_Buy2").active = true;
             node2.getChildByName("spriteAlreadBuy").active = false;
         }
-        node2.getChildByName("btno_Buy2").getComponent(cc.Button).clickEvents[0].customEventData = item2.Type;
+        node2.getChildByName("btno_Buy2").getComponent(cc.Button).clickEvents[0].customEventData = item2.costType;
         // node1.x = -1000;
         // node2.x = 1000;
         // node1.x = -147.5;
@@ -319,13 +319,15 @@ cc.Class({
     },
 
     onDestroy: function () {
-        GlobalVar.gameTimer().delTimer(this.scheduleHandler);
+        if (cc.isValid(this.scheduleHandler)) {
+            clearInterval(this.scheduleHandler);
+            this.scheduleHandler = null;
+        }
+        GlobalVar.eventManager().removeListenerWithTarget(this);
     },
 
     enter: function (isRefresh) {
-        this.scheduleHandler = GlobalVar.gameTimer().startTimer(function () {
-            self.updateRefreshTime();
-        }, 1);
+        this.scheduleHandler = setInterval(this.updateRefreshTime.bind(this), 1000);
 
         if (isRefresh) {
             this._super(true);
@@ -336,8 +338,8 @@ cc.Class({
     },
 
     escape: function (isRefresh) {
-        if (!!this.scheduleHandler) {
-            GlobalVar.gameTimer().delTimer(this.scheduleHandler);
+        if (cc.isValid(this.scheduleHandler)) {
+            clearInterval(this.scheduleHandler);
             this.scheduleHandler = null;
         }
 
@@ -358,7 +360,7 @@ cc.Class({
             this.registerEvents();
             this.requestStoreData();
 
-            for (let i = 0; i< this.pnlMain.node.children.length; i++){
+            for (let i = 0; i < this.pnlMain.node.children.length; i++) {
                 let node = this.pnlMain.node.children[i];
                 let node1 = node.getChildByName("ShopGoods1");
                 let node2 = node.getChildByName("ShopGoods2");
@@ -369,14 +371,14 @@ cc.Class({
         }
     },
 
-    requestStoreData: function(){
+    requestStoreData: function () {
         let msg = {
             Type: this.storeType,
         };
         GlobalVar.handlerManager().storeHandler.sendReq(GameServerProto.GMID_STORE_DATA_REQ, msg);
     },
 
-    registerEvents: function(){
+    registerEvents: function () {
 
         GlobalVar.eventManager().addEventListener(EventMsgId.EVENT_STORE_DATA_NTF, this.onStoreDataGet, this);
         GlobalVar.eventManager().addEventListener(EventMsgId.EVENT_STORE_BUY_NTF, this.onStoreBuyDataGet, this);
@@ -390,8 +392,8 @@ cc.Class({
             return;
         // this.refreshComplete = true;
         // if (this.countTime / 10 <= this.itemArray.length - 1) {
-            // this.countTime++;
-            // this.refreshComplete = false;
+        // this.countTime++;
+        // this.refreshComplete = false;
         // }
         //this.lblRefresh.node.color=LabelColor.CCBlue;
         // if (this.countTime % 20 == 0)
@@ -403,8 +405,7 @@ cc.Class({
         if (GlobalVar.me().bagData.getItemCountById(refreshPlan.oVecCost1[0].wItemID) > 0) {
             this.setString(this.lblRefreshCostNum, refreshCardCount + "/" + refreshPlan.oVecCost1[0].nCount);
             this.setIcon(this.nodeRefreshCostIcon, refreshPlan.oVecCost1[0].wItemID);
-        }
-        else {
+        } else {
             this.setString(this.lblRefreshCostNum, refreshPlan.oVecCost2[0].nCount);
             this.setIcon(this.nodeRefreshCostIcon, refreshPlan.oVecCost2[0].wItemID);
         }
@@ -437,7 +438,7 @@ cc.Class({
         item.getComponent("ItemObject").updateItem(itemId);
         if (num)
             item.getComponent("ItemObject").setLabelNumberData(num);
-            
+
         item.getComponent("ItemObject").setClick(true, 2)
     },
 
@@ -454,7 +455,7 @@ cc.Class({
         }
         var leftTime = this.time - this.serverTime;
         // if (leftTime < 0)
-        if (leftTime < 0 && this.refreshComplete){
+        if (leftTime < 0 && this.refreshComplete) {
             this.requestStoreData();
             this.hasData = false;
             this.refreshComplete = false;
@@ -476,18 +477,17 @@ cc.Class({
                 msg.Expires = self.time;
                 msg.ID = event.target.newTag;
                 break;
-            default: break;
+            default:
+                break;
         }
 
         let platformApi = GlobalVar.getPlatformApi();
-        if (!platformApi || !GlobalVar.getShareSwitch() || Type != GameServerProto.PT_MONEY_FREE){
+        if (!platformApi || !GlobalVar.getShareSwitch() || Type != GameServerProto.PT_MONEY_FREE) {
             GlobalVar.handlerManager().storeHandler.sendReq(req, msg);
-        }else if (platformApi){
+        } else if (platformApi) {
             platformApi.showRewardedVideoAd(235, function () {
                 GlobalVar.handlerManager().storeHandler.sendReq(req, msg);
-            }, function () {
-                GlobalVar.comMsg.showMsg(i18n.t('label.4000321'));
-            });
+            }, null, false);
         }
     },
 
@@ -510,7 +510,7 @@ cc.Class({
                     this.itemNodeArray[i].getChildByName("btno_Buy2").active = false;
                 }
                 this.itemNodeArray[i].getChildByName("spriteAlreadBuy").active = true;
-            }else{
+            } else {
                 if (i % 2 == 0) {
                     this.itemNodeArray[i].getChildByName("btno_Buy1").active = true;
                 } else {
@@ -525,8 +525,8 @@ cc.Class({
         if (!this.refreshComplete)
             return;
         let refreshLimitTimes = GlobalVar.tblApi.getDataBySingleKey('TblVipRight', GlobalVar.me().vipLevel).wStoreRefreshLimit;
-        
-        if (self.refreshTimes >= refreshLimitTimes){
+
+        if (self.refreshTimes >= refreshLimitTimes) {
             GlobalVar.comMsg.showMsg("今日刷新次数用尽(" + refreshLimitTimes + "次)");
             return;
         }
@@ -539,7 +539,9 @@ cc.Class({
             }
         }
         var req = GameServerProto.GMID_STORE_REFRESH_REQ;
-        var msg = { Type: 1 };
+        var msg = {
+            Type: 1
+        };
         GlobalVar.handlerManager().storeHandler.sendReq(req, msg);
     },
 
@@ -558,28 +560,28 @@ cc.Class({
     runRefreshAnime: function () {
         // self.nodeRefreshCompleteNum = 0;
         // for (let i = 0; i < self.pnlMain.node.children.length; i++) {
-            // let node = self.pnlMain.node.children[i];
-            // let node1 = node.getChildByName("ShopGoods1");
-            // let node2 = node.getChildByName("ShopGoods2");
-            // node1.stopAllActions();
-            // node1.x = -147.5;
-            // node1.runAction(cc.sequence(cc.delayTime(0.2 * i), cc.moveBy(0.2, -852.5, 0), cc.callFunc(function (target) {
-            //     self.nodeRefreshCompleteNum++;
-            //     if (self.nodeRefreshCompleteNum >= 8) {   //8个节点动作全部完成，开始刷新和下一步动作
-            //         self.dirty = true;
-            //         self.countTime = -1;
-            //     }
-            // })));
-            // node2.stopAllActions();
-            // node2.x = 147.5;
-            // node2.runAction(cc.sequence(cc.delayTime(0.2 * i), cc.moveBy(0.2, 852.5, 0), cc.callFunc(function () {
-            //     self.nodeRefreshCompleteNum++;
-            //     if (self.nodeRefreshCompleteNum >= 8) {
-            //         self.dirty = true;
-            //         self.countTime = -1;
-            //     }
-            // })));
-            // self.countTime = -1;
+        // let node = self.pnlMain.node.children[i];
+        // let node1 = node.getChildByName("ShopGoods1");
+        // let node2 = node.getChildByName("ShopGoods2");
+        // node1.stopAllActions();
+        // node1.x = -147.5;
+        // node1.runAction(cc.sequence(cc.delayTime(0.2 * i), cc.moveBy(0.2, -852.5, 0), cc.callFunc(function (target) {
+        //     self.nodeRefreshCompleteNum++;
+        //     if (self.nodeRefreshCompleteNum >= 8) {   //8个节点动作全部完成，开始刷新和下一步动作
+        //         self.dirty = true;
+        //         self.countTime = -1;
+        //     }
+        // })));
+        // node2.stopAllActions();
+        // node2.x = 147.5;
+        // node2.runAction(cc.sequence(cc.delayTime(0.2 * i), cc.moveBy(0.2, 852.5, 0), cc.callFunc(function () {
+        //     self.nodeRefreshCompleteNum++;
+        //     if (self.nodeRefreshCompleteNum >= 8) {
+        //         self.dirty = true;
+        //         self.countTime = -1;
+        //     }
+        // })));
+        // self.countTime = -1;
         // }
         self.dirty = true;
     },
@@ -602,8 +604,7 @@ cc.Class({
                     this.itemNodeArray[i].x += 30;
                 else
                     this.itemNodeArray[i].x = -147.5;
-            }
-            else {
+            } else {
                 if (this.itemNodeArray[i].x - 30 >= 147.5)
                     this.itemNodeArray[i].x -= 30;
                 else
@@ -613,10 +614,10 @@ cc.Class({
     },
 
     close: function () {
-        if (!this.refreshComplete){
+        if (!this.refreshComplete) {
             return;
         }
-        for (let i = 0; i< this.pnlMain.node.children.length; i++){
+        for (let i = 0; i < this.pnlMain.node.children.length; i++) {
             let node = this.pnlMain.node.children[i];
             let node1 = node.getChildByName("ShopGoods1");
             let node2 = node.getChildByName("ShopGoods2");

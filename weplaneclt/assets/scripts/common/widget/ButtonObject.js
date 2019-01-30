@@ -112,10 +112,7 @@ var ButtonObject = cc.Class({
         }
     },
     onTouchEnd: function (event) {
-        if (GlobalVar.windowManager().getTopViewType() == WndTypeDefine.WindowType.E_DT_NORMAL_LEVEL_UP_WND ||
-            GlobalVar.windowManager().getTopViewType() == WndTypeDefine.WindowType.E_DT_NORMALTREASUREEXPLOIT) {
-            ButtonObject.isPress = null;
-        }
+
         if (cc.isValid(ButtonObject.isPress)) {
             if (ButtonObject.isPress.uuid != event.target.uuid) {
                 event.target.getComponent(cc.Button)._pressed = false;
@@ -123,11 +120,21 @@ var ButtonObject = cc.Class({
                 ButtonObject.isPress = null;
             }
         } else {
-            ButtonObject.isPress = null;
+            if (GlobalVar.windowManager().getTopViewType() == WndTypeDefine.WindowType.E_DT_NORMAL_LEVEL_UP_WND ||
+                GlobalVar.windowManager().getTopViewType() == WndTypeDefine.WindowType.E_DT_NORMALTREASUREEXPLOIT) {
+                ButtonObject.isPress = null;
+            } else {
+                if (cc.isValid(event.target)) {
+                    let btn = event.target.getComponent(cc.Button);
+                    if (cc.isValid(btn)) {
+                        btn._pressed = false;
+                    }
+                }
+            }
         }
 
         if (config.NEED_GUIDE) {
-            Guide.getInstance().clickBtn(event.currentTarget.name);
+            Guide.getInstance().clickBtn(event.currentTarget);
         }
     },
     onTouchCancel: function (event) {

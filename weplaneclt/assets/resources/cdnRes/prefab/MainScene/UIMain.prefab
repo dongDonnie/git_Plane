@@ -63,8 +63,8 @@
     },
     "_position": {
       "__type__": "cc.Vec3",
-      "x": 0,
-      "y": 0,
+      "x": 320,
+      "y": 568,
       "z": 0
     },
     "_scale": {
@@ -23653,7 +23653,7 @@
       "__id__": 1
     },
     "_enabled": true,
-    "alignMode": 0,
+    "alignMode": 1,
     "_target": null,
     "_alignFlags": 45,
     "_left": 0,

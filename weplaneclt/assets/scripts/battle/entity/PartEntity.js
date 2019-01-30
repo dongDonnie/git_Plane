@@ -323,20 +323,23 @@ cc.Class({
         this.magnetTime = time;
     },
 
-    hitWithDamage(dmg, immediately, param) {
+    hitWithDamage(dmg, immediately, param, skip) {
         immediately = typeof immediately !== 'undefined' ? immediately : 0;
         param = typeof param !== 'undefined' ? param : 0;
+        skip = typeof skip !== 'undefined' ? skip : 0;
 
-        if (!!BattleManager.getInstance().dashMode) {
-            return;
-        }
+        if (!skip) {
+            if (!!BattleManager.getInstance().dashMode) {
+                return;
+            }
 
-        if (this.invincibleTime > 0) {
-            return;
-        }
+            if (this.invincibleTime > 0) {
+                return;
+            }
 
-        if (this.protectTime > 0) {
-            return;
+            if (this.protectTime > 0) {
+                return;
+            }
         }
 
         if (immediately == 1) {

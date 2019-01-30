@@ -2242,7 +2242,7 @@
     "asset": {
       "__uuid__": "82f13b24-4cab-4c54-b33a-b4249733e856"
     },
-    "fileId": "4bta8E3ZtNx4e4MPkeo4i/",
+    "fileId": "0f5J6+cHtBxao4noPMUpLR",
     "sync": false
   },
   {
@@ -2342,7 +2342,7 @@
     "asset": {
       "__uuid__": "82f13b24-4cab-4c54-b33a-b4249733e856"
     },
-    "fileId": "12O7M33ddCoZC1aViE0Vbd",
+    "fileId": "d7TAdFYL1F+b4KdkohnKH1",
     "sync": false
   },
   {
@@ -8067,7 +8067,7 @@
       "__id__": 1
     },
     "_enabled": true,
-    "alignMode": 2,
+    "alignMode": 1,
     "_target": null,
     "_alignFlags": 18,
     "_left": -315,

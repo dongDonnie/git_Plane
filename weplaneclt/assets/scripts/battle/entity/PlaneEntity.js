@@ -114,12 +114,12 @@ cc.Class({
         this.prop[Defines.PropName.Life] *= (1.0 + this.prop[Defines.PropName.LifeGrow] / 10000.0);
         this.prop[Defines.PropName.Attack] *= (1.0 + this.prop[Defines.PropName.AttackGrow] / 10000.0);
         this.prop[Defines.PropName.Defense] *= (1.0 + this.prop[Defines.PropName.DefenseGrow] / 10000.0);
-        
+
         this.hp = this.maxHp = this.prop[Defines.PropName.Life] + this.prop[Defines.PropName.Defense] * 5;
 
         var member = GlobalVar.me().memberData.getMemberByID(id);
         if (member == null) {
-            this.prop[Defines.PropName.Attack] *= 3;
+            this.prop[Defines.PropName.Attack] *= GlobalVar.tblApi.getDataBySingleKey('TblMember', id).dTestPlayUp;
             member = GlobalVar.me().memberData.getMemberByID(GlobalVar.me().memberData.getStandingByFighterConf().ChuZhanMemberID);
         }
         this.lv = member.Level;
@@ -388,8 +388,8 @@ cc.Class({
         }
     },
 
-    hitWithDamage(dmg, immediately, param) {
-        this._super(dmg, immediately, param);
+    hitWithDamage(dmg, immediately, param, skip) {
+        this._super(dmg, immediately, param, skip);
         if (this.hp <= 0 && this.objectType == Defines.ObjectType.OBJ_HERO) {
             // if(BattleManager.getInstance().isEndlessFlag){
             //     BattleManager.getInstance().result = 2;

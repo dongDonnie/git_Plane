@@ -174,6 +174,7 @@ cc.Class({
             GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_MEMBER_STANDINGBY_NTF, this.onSetFighter, this);
             GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_MEMBER_ACTIVE_NTF, this.onActiveFighter, this);
             GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_MEMBER_PIECE_CHANGE_NTF, this.onMemberPieceChange, this);
+            GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_BAG_ADDITEM_NTF, this.updateFighterNumber, this);
             if (GlobalFunc.isAllScreen() && !this.fixViewComplete) {
                 this.fixViewComplete = true;
                 this.fixFighter();
@@ -202,6 +203,11 @@ cc.Class({
             this.getNodeByName('btnMixDrive').active = level >= openLevel;
             level >= openLevel && (this.hotMixDrive.active = GlobalVar.me().memberData.getMixDriveHotFlag());
         }
+    },
+
+    updateFighterNumber: function () {
+        let fighterData = GlobalVar.tblApi.getDataBySingleKey('TblMember', this.memberID);
+        this.updateActiveCondition(fighterData.byGetType, fighterData.wGetPieceID, fighterData.nGetPieceNumber);
     },
 
     enter: function (isRefresh) {
@@ -349,7 +355,7 @@ cc.Class({
         if (msg.data.ErrCode == 66) {
             let self = this;
             let item = self.itemObject.getComponent("ItemObject");
-            CommonWnd.showItemGetWay(item.itemID, item.getLabelNumberData(), item.getSlot());
+            CommonWnd.showItemGetWay(item.itemID, item.getBagNumberData(), item.getSlot());
             return;
         }
         if (msg.data.ErrCode == 0) {
@@ -365,6 +371,7 @@ cc.Class({
         let member = GlobalVar.me().memberData.getMemberByID(this.memberID);
         this.updataFighter(member.MemberID, member.Quality, member.Level);
         this.hangarScroll.getComponent("SpecialScroll").updateFighter();
+        this.hotMixDrive.active = GlobalVar.me().memberData.getMixDriveHotFlag();
     },
 
     setFighter: function () {

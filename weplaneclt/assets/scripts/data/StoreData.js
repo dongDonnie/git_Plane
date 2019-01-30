@@ -95,8 +95,10 @@ var StoreData = cc.Class({
     
     // 根据msgID的不同对收到的ack数据分类，方便扩展成各种商店
     saveData: function (msgId, data) {         
-        if (data.data.ErrCode !== GameServerProto.PTERR_SUCCESS)
+        if (data.data.ErrCode !== GameServerProto.PTERR_SUCCESS){
+            GlobalVar.comMsg.errorWarning(data.data.ErrCode);
             return;
+        }
 
         if (msgId == GameServerProto.GMID_STORE_DATA_ACK) {
             if (data.data.Type == GameServerProto.PT_STORE_NORMAL) {

@@ -38,10 +38,9 @@ var UIMain = cc.Class({
         }
         if (cc.sys.platform === cc.sys.WECHAT_GAME) {
             if (GlobalVar.firstTimeLaunch) {
-                this.checkInvite();
+                // this.checkInvite();
                 this.reportMaterialClick();
                 this.listenOfficeAccountJump();
-                weChatAPI.getShareConfig();
                 weChatAPI.setWithShareTicket(true);
                 weChatAPI.getMaterials(function (data) {
                     console.log("Materials:", data);
@@ -67,10 +66,6 @@ var UIMain = cc.Class({
                 });
                 weChatAPI.createRewardedVideoAd();
                 weChatAPI.createBannerAdList();
-
-                if (GlobalVar.me().loginData.getLoginReqDataServerID()) {
-                    weChatAPI.reportServerLogin(GlobalVar.me().loginData.getLoginReqDataAccount(), GlobalVar.me().loginData.getLoginReqDataServerID(), GlobalVar.me().serverTime * 100);
-                }
             }
 
             if (GlobalVar.me().roleID == GlobalVar.me().roleName) {
@@ -90,11 +85,14 @@ var UIMain = cc.Class({
             this.getNodeByName("btnoMoreFunGame").active = false;
         }
 
+        let nodeFeed = this.getNodeByName("btnoRecharge");
+        let nodefirst = this.getNodeByName("btnoFirstCharge");
         if (!GlobalVar.srcSwitch()) {
-            let nodeFeed = this.getNodeByName("btnoRecharge");
             nodeFeed.active = true;
-            let nodefirst = this.getNodeByName("btnoFirstCharge");
             nodefirst.active = true;
+        } else {
+            nodeFeed.active = false;
+            nodefirst.active = false;
         }
         if (!GlobalVar.getShareSwitch()) {
             this.getNodeByName('btnoFreeDiamond').active = false;
@@ -143,55 +141,70 @@ var UIMain = cc.Class({
         if (config.NEED_GUIDE) {
             return;
         }
-        let self = this;
-        this.showNotice = false;
-        this.showShareDaily = false;
+        let isShowNotice = false;
+        let isShowShareDaily = false;
+        let isShowInviteReward = false;
 
         if (!GlobalVar.me().alreadedShowNotice) {
             let noticeCount = GlobalVar.me().noticeData.getNoticeCount();
-
             GlobalVar.me().alreadedShowNotice = true;
             if (noticeCount > 0) {
-                this.showNotice = true;
-                if (this.showShareDaily) {
-                    setTimeout(() => {
-                        CommonWnd.showNoticeWnd();
-                    }, 250);
-                } else {
-                    CommonWnd.showNoticeWnd();
-                }
+                isShowNotice = true;
             }
         }
-
         if (!GlobalVar.me().shareData.getShareDailyState() && GlobalVar.getShareSwitch() && GlobalVar.me().level >= 7 &&
             StoreageData.getShareTimesWithKey("shareDailyLimit", 1) == 1 && GlobalVar.firstTimeLaunch) {
-            this.showShareDaily = true;
-            if (this.showNotice) {
-                setTimeout(() => {
-                    CommonWnd.showShareDailyWnd();
-                }, 250);
+            isShowShareDaily = true;
+            CommonWnd.showShareDailyWnd();
+        }
+        if (GlobalVar.getShareSwitch() && GlobalVar.getShareControl() == 1 && StoreageData.getShareTimesWithKey("firstTimeLaunchGame", 0) && GlobalVar.me().shareData.getInviteGiftBagState() < (GlobalVar.tblApi.getLength("TblFuliInvite")) && GlobalVar.firstTimeLaunch) {
+            isShowInviteReward = true;
+        } else if (!StoreageData.getShareTimesWithKey("firstTimeLaunchGame", 0)) {
+            StoreageData.setShareTimesWithKey("firstTimeLaunchGame", 0);
+        }
+
+        if (isShowNotice) {
+            if (isShowShareDaily) {
+                if (isShowInviteReward) {
+                    CommonWnd.showNoticeWnd(function () {
+                        CommonWnd.showShareDailyWnd(function () {
+                            CommonWnd.showInviteRewardWnd();
+                        });
+                    });
+                } else {
+                    CommonWnd.showNoticeWnd(function () {
+                        CommonWnd.showShareDailyWnd();
+                    });
+                }
+            } else if (isShowInviteReward) {
+                CommonWnd.showNoticeWnd(function () {
+                    CommonWnd.showInviteRewardWnd();
+                });
+            } else {
+                CommonWnd.showNoticeWnd();
+            }
+        } else if (isShowShareDaily) {
+            if (isShowInviteReward) {
+                CommonWnd.showShareDailyWnd(function () {
+                    CommonWnd.showInviteRewardWnd();
+                });
             } else {
                 CommonWnd.showShareDailyWnd();
             }
+        } else if (isShowInviteReward) {
+            CommonWnd.showInviteRewardWnd();
         }
 
-        if (!this.showNotice && !this.showShareDaily) {
+        setTimeout(() => {
             let block = cc.find("Canvas/BlockNode");
             if (cc.isValid(block)) {
                 block.active = false;
             }
-        } else {
-            setTimeout(() => {
-                let block = cc.find("Canvas/BlockNode");
-                if (cc.isValid(block)) {
-                    block.active = false;
-                }
-            }, 500);
-        }
+        }, 500);
 
         // 请求公众号奖励
         if (GlobalVar.isFromOfficialAccount) {
-            if (GlobalVar.me().getLevel() >= 4 && GlobalVar.me().fuLiGCBag.OfficialAccountDraingetFlag == 0) {
+            if (GlobalVar.me().getLevel() >= 4 && GlobalVar.me().fuLiGCBag.OfficialAccountDraingetFlag == 0 && GlobalVar.getShareSwitch()) {
                 GlobalVar.handlerManager().followRewardHandler.sendOfficeAccountReq();
             }
         }
@@ -256,6 +269,8 @@ var UIMain = cc.Class({
         GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_BOX_REWARD_GET, this.OnGetBoxReward, this);
         // 邀请礼包奖励
         GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_GET_INVITE_REWARD_DATA, this.onGetInviteRewardData, this);
+
+        GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_GETACTIVE_DATA, this.getActiveData, this);
     },
 
     checkFlagSetHotPoint: function () {
@@ -279,6 +294,7 @@ var UIMain = cc.Class({
 
         this.setArenaFlag();
         this.setAdTaskFlag();
+        this.setAdExpFlag();
     },
 
     judgeLevelUp: function () {
@@ -311,11 +327,11 @@ var UIMain = cc.Class({
         // let heZiDiamond = GlobalVar.isAndroid && GlobalVar.me().fuLiGCBag.HeZiDiamondReward == 0 && GlobalVar.me().level >= 4;
         // let account = GlobalVar.me().fuLiGCBag.OfficialAccountDraingetFlag == 0 && GlobalVar.me().level >= 4;
         // let superReward = !GlobalVar.me().shareData.getSuperRewardState();
-        // let inviteGift = GlobalVar.isAndroid && GlobalVar.me().shareData.getInviteGiftBagState() == 0;
+        // let inviteGift = GlobalVar.isAndroid && GlobalVar.me().shareData.getInviteGiftBagState() < (GlobalVar.tblApi.getLength("TblFuliInvite"));
         // let flag = task || shareDaily || heZiDiamond || account || superReward || inviteGift;
         let drawer1 = this.getNodeByName('drawer1');
         let flag = false;
-        for (let i = 0; i < drawer1.childrenCount; i++){
+        for (let i = 0; i < drawer1.childrenCount; i++) {
             let child = drawer1.children[i];
             if (child.active && child.getChildByName('spriteHot').active) {
                 flag = true;
@@ -420,6 +436,11 @@ var UIMain = cc.Class({
         this.setFreeFuliFlag();
     },
 
+    setAdExpFlag: function () {
+        let flag = GlobalVar.me().adData.getAdExpHotFlag();
+        this.setFlagByNodeName('btnoAdExp', flag);
+    },
+
     setLimitStoreFlag: function (event) {
         let flags = GlobalVar.me().statFlags;
         this.setFlagByNodeName("btnoLimitStore", flags.FuLiLimitGiftFlag);
@@ -496,7 +517,7 @@ var UIMain = cc.Class({
                 return;
             }
             this.onShowFunc = function (res) {
-                console.log("主城上报文案点击");
+                console.log("主城上报文案点击:", res.query.materialID);
                 if (res.query.materialID >= 0) {
                     platformApi.reportClickMaterial(res.query.materialID);
                 }
@@ -512,9 +533,8 @@ var UIMain = cc.Class({
                 return;
             }
             this.onOAShowFunc = function (launchInfo) {
-                launchInfo.query['vpnaFlag'] = 1;
                 if (launchInfo.query['vpnaFlag'] == 1) {
-                    if (GlobalVar.me().getLevel() >= 4 && GlobalVar.me().fuLiGCBag.OfficialAccountDraingetFlag == 0) {
+                    if (GlobalVar.me().getLevel() >= 4 && GlobalVar.me().fuLiGCBag.OfficialAccountDraingetFlag == 0 && GlobalVar.getShareSwitch()) {
                         GlobalVar.handlerManager().followRewardHandler.sendOfficeAccountReq();
                     }
                 }
@@ -738,8 +758,10 @@ var UIMain = cc.Class({
             return;
         }
 
-        let btnoInvite = this.getNodeByName("btnoInvite");
-        btnoInvite && (btnoInvite.active = false);
+        if (GlobalVar.getShareSwitch() && GlobalVar.me().shareData.getInviteGiftBagState() >= (GlobalVar.tblApi.getLength("TblFuliInvite"))) {
+            let btnoInvite = this.getNodeByName("btnoInvite");
+            btnoInvite && (btnoInvite.active = false);
+        }
     },
 
     onDestroy: function () {
@@ -788,7 +810,7 @@ var UIMain = cc.Class({
         CommonWnd.showArenaMainWnd();
     },
     onInviteBtnClick: function (event) {
-        if (GlobalVar.me().shareData.getInviteGiftBagState()) {
+        if (GlobalVar.me().shareData.getInviteGiftBagState() >= (GlobalVar.tblApi.getLength("TblFuliInvite"))) {
             GlobalVar.comMsg.showMsg("已经领取");
         } else {
             CommonWnd.showInviteRewardWnd();
@@ -914,6 +936,8 @@ var UIMain = cc.Class({
 
     onAdExpBtnClick: function (event) {
         CommonWnd.showAdExp();
+        GlobalVar.me().adData.setAdExpHotFlag(false);
+        this.setAdExpFlag();
     },
 
     onAdTaskBtnClick: function (event) {
@@ -1025,6 +1049,42 @@ var UIMain = cc.Class({
         drawer1.runAction(seq);
     },
 
+    onBtnTreasuryActive: function () {
+        let treasuryAmsData = GlobalVar.me().activeData.getActiveListDataByType(GameServerProto.PT_AMS_ACT_TYPE_TREASURY);
+        if (treasuryAmsData){
+            let data = GlobalVar.me().activeData.getActiveDataByActID(treasuryAmsData.Actid);
+            if (!data){
+                GlobalVar.handlerManager().activeHandler.sendGetActiveDataReq(treasuryAmsData.Actid);
+            }else{
+                CommonWnd.showSpecialActiveWnd(GameServerProto.PT_AMS_ACT_TYPE_TREASURY);
+            }
+        }
+    },
+
+    onBtnVastActive: function () {
+        let vastAmsData = GlobalVar.me().activeData.getActiveListDataByType(GameServerProto.PT_AMS_ACT_TYPE_VAST);
+        if (vastAmsData){
+            let data = GlobalVar.me().activeData.getActiveDataByActID(vastAmsData.Actid);
+            if (!data){
+                GlobalVar.handlerManager().activeHandler.sendGetActiveDataReq(vastAmsData.Actid);
+            }else{
+                CommonWnd.showSpecialActiveWnd(GameServerProto.PT_AMS_ACT_TYPE_VAST);
+            }
+        }
+    },
+
+    getActiveData: function (event) {
+        if (event.ErrCode != GameServerProto.PTERR_SUCCESS){
+            GlobalVar.comMsg.errorWarning(event.ErrCode);
+            return;
+        }
+        if (event.Act.Type == GameServerProto.PT_AMS_ACT_TYPE_TREASURY){
+            CommonWnd.showSpecialActiveWnd(GameServerProto.PT_AMS_ACT_TYPE_TREASURY);
+        }else if (event.Act.Type == GameServerProto.PT_AMS_ACT_TYPE_VAST){
+            CommonWnd.showSpecialActiveWnd(GameServerProto.PT_AMS_ACT_TYPE_VAST);
+        }
+    },
+
     skipGuide: function () {
         config.NEED_GUIDE = false;
         cc.find('Canvas/GuideNode').active = false;
@@ -1038,7 +1098,6 @@ var UIMain = cc.Class({
         // this.getNodeByName('btnoBattleDemo').active = true;
         // this.getNodeByName('btnoBattleEditor').active = config.GM_SWITCH;
         cc.find('Canvas/GuideNode/skip').active = config.GM_SWITCH;
-        this.getNodeByName('btnoTest').active = config.GM_SWITCH;
         // }
     },
 
@@ -1052,6 +1111,8 @@ var UIMain = cc.Class({
         this.getNodeByName('layout').active = !config.NEED_GUIDE;
         this.getNodeByName('layout1').active = !config.NEED_GUIDE;
         this.getNodeByName('layout2').active = !config.NEED_GUIDE;
+
+        this.getNodeByName('btnoFuli').active = GlobalVar.getShareSwitch();
 
         let level = GlobalVar.me().level;
         let openLevel = GlobalVar.tblApi.getDataBySingleKey('TblSystem', GameServerProto.PT_SYSTEM_STORE).wOpenLevel;
@@ -1085,7 +1146,9 @@ var UIMain = cc.Class({
 
         // 关注礼包
         let btnoFollow = this.getNodeByName("btnoFollow");
-        if (GlobalVar.me().fuLiGCBag.OfficialAccountDraingetFlag == 0 && GlobalVar.me().getLevel() >= 4) {
+        if (GlobalVar.me().fuLiGCBag.OfficialAccountDraingetFlag == 0 && GlobalVar.me().getLevel() >= 4
+            && weChatAPI.shareSetting.vpnaFlag == 1 && GlobalVar.getShareSwitch()) {
+
             btnoFollow && (btnoFollow.active = true);
         } else {
             btnoFollow && (btnoFollow.active = false);
@@ -1093,7 +1156,7 @@ var UIMain = cc.Class({
         // 每日补给
         let btnBoxReward = this.getNodeByName("btnoBoxReward");
         console.log("isAndroid = " + GlobalVar.isAndroid);
-        if (GlobalVar.isAndroid && GlobalVar.me().getLevel() >= 4) {
+        if (GlobalVar.isAndroid && GlobalVar.me().getLevel() >= 4 && weChatAPI.shareSetting.heziFlag == 1 && GlobalVar.getShareSwitch()) {
             btnBoxReward && (btnBoxReward.active = true);
         }
         else {
@@ -1110,7 +1173,7 @@ var UIMain = cc.Class({
 
         //邀请礼包
         let btnNewPlayer1 = this.getNodeByName("btnoInvite");
-        if (GlobalVar.isAndroid && GlobalVar.me().shareData.getInviteGiftBagState() == 0) {
+        if (GlobalVar.getShareSwitch() && GlobalVar.me().shareData.getInviteGiftBagState() < (GlobalVar.tblApi.getLength("TblFuliInvite"))) {
             btnNewPlayer1 && (btnNewPlayer1.active = true);
         } else {
             btnNewPlayer1 && (btnNewPlayer1.active = false);

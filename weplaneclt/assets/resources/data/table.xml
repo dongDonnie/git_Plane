@@ -1157,6 +1157,13 @@
         <col name="Description" type="comment" />
     </table>
     
+    <table name="TblFuliInvite" file="data/fuliinvite.tbl" key="ID">
+        <col name="ID" type="UINT8" />
+        <col name="Name" type="string" />
+        <col name="Cond" type="INT32" />
+        <col name="Items" type="TblItemCount" vector="true" />
+    </table>
+  
     <table name="TblFuLiSeven" file="data/fuliseven.tbl" multikey="Act,Day" serveronly="true">
         <col name="Act" type="UINT8" />
         <col name="Day" type="UINT8" />
@@ -2203,4 +2210,5 @@
         <col name="Description" type="comment" />
     </table>
     
+
 </tables>

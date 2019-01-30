@@ -17,8 +17,8 @@ var SoundManager = cc.Class({
         this.tempBGM.name = '';
         this.tempBGM.loop = false;
         this.tempBGM.callback = null;
-        this.bPlayBGM = StoreageData.getBgmOnOff();
-        this.bPlayEffect = StoreageData.getEffectOnOff();
+        this.bPlayBGM = StoreageData.getBgmOnOff() === "off" ? false : true;
+        this.bPlayEffect = StoreageData.getEffectOnOff() === "off" ? false : true;
         this.curEffectName = '';
     },
 
@@ -31,8 +31,8 @@ var SoundManager = cc.Class({
         this.tempBGM.name = '';
         this.tempBGM.loop = false;
         this.tempBGM.callback = null;
-        this.bPlayBGM = StoreageData.getBgmOnOff();
-        this.bPlayEffect = StoreageData.getEffectOnOff();
+        this.bPlayBGM = StoreageData.getBgmOnOff() === "off" ? false : true;
+        this.bPlayEffect = StoreageData.getEffectOnOff() === "off" ? false : true;
         this.curEffectName = '';
     },
 
@@ -54,6 +54,7 @@ var SoundManager = cc.Class({
 
     setBgmOnOff(bBgmOnOff) {
         this.bPlayBGM = typeof bBgmOnOff !== 'undefined' ? bBgmOnOff : true;
+        this.bPlayBGM = this.bPlayBGM == "off"?false:true;
         StoreageData.setBgmOnOff(bBgmOnOff);
         if (!this.bPlayBGM) {
             this.stopBGM();
@@ -64,6 +65,7 @@ var SoundManager = cc.Class({
 
     setEffectOnOff(bEffectOnOff) {
         this.bPlayEffect = typeof bEffectOnOff !== 'undefined' ? bEffectOnOff : true;
+        this.bPlayEffect = this.bPlayEffect == "off"?false:true;
         StoreageData.setEffectOnOff(bEffectOnOff);
     },
 
@@ -157,7 +159,6 @@ var SoundManager = cc.Class({
             return;
         }
         let audioIndex = cc.audioEngine.play(clip, loop, volume);
-        var self = this;
         cc.audioEngine.setFinishCallback(audioIndex, function () {
             if (!!callback) {
                 callback();

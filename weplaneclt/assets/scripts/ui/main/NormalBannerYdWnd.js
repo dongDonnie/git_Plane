@@ -51,7 +51,9 @@ cc.Class({
         this.canvasNode = cc.find("Canvas");
         
         this.treasureNode.getChildByName("btnNode").getComponent(cc.Widget).target = this.canvasNode;
+        this.treasureNode.getChildByName("btnNode").y = 0;
         this.openNode.getChildByName("btnNode").getComponent(cc.Widget).target = this.canvasNode;
+        this.openNode.getChildByName("btnNode").y = 0;    
 
         if (GlobalFunc.isAllScreen()) {
             this.openNode.getChildByName("btnNode").getComponent(cc.Widget).bottom = this.canvasNode.height/2 + 30;
@@ -176,11 +178,6 @@ cc.Class({
             platformApi.showRewardedVideoAd(224,
                 function() {
                     GlobalVar.handlerManager().bannerYdHandler.sendSuperInduceGetReq(1);
-                },
-                function() {
-                    platformApi.shareNormal(124, function () {
-                        GlobalVar.handlerManager().bannerYdHandler.sendSuperInduceGetReq(1);
-                    })
                 }
             );
         }

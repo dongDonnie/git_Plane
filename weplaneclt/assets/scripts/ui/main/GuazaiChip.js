@@ -108,6 +108,7 @@ cc.Class({
 
     registerEvent: function () {
         GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_GUAZAI_COMPOSE_ACK, this.composeAck, this);
+        GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_BAG_ADDITEM_NTF, this.refreshResCount, this);
     },
 
     composeAck: function (data) {

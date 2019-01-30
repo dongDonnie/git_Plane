@@ -25,7 +25,7 @@
       }
     ],
     "_active": true,
-    "_level": 2,
+    "_level": 1,
     "_components": [
       {
         "__id__": 183
@@ -63,8 +63,8 @@
     },
     "_position": {
       "__type__": "cc.Vec3",
-      "x": 0,
-      "y": 0,
+      "x": 320,
+      "y": 568,
       "z": 0
     },
     "_scale": {
@@ -1367,7 +1367,7 @@
     "_position": {
       "__type__": "cc.Vec3",
       "x": 0,
-      "y": 0,
+      "y": 568,
       "z": 0
     },
     "_scale": {
@@ -1903,7 +1903,7 @@
         "__id__": 153
       }
     ],
-    "_active": false,
+    "_active": true,
     "_level": 3,
     "_components": [],
     "_prefab": {
@@ -3883,7 +3883,7 @@
       "__id__": 115
     },
     "_children": [],
-    "_active": false,
+    "_active": true,
     "_level": 1,
     "_components": [
       {
@@ -3972,7 +3972,7 @@
     "asset": {
       "__uuid__": "34629115-bdc7-4df6-8270-66903e5a81c7"
     },
-    "fileId": "487HosNLhOIarDIv8o3/yp",
+    "fileId": "784FuJjQRF5b+ozmrmTslh",
     "sync": false
   },
   {
@@ -3983,7 +3983,7 @@
       "__id__": 115
     },
     "_children": [],
-    "_active": false,
+    "_active": true,
     "_level": 1,
     "_components": [
       {
@@ -4072,7 +4072,7 @@
     "asset": {
       "__uuid__": "34629115-bdc7-4df6-8270-66903e5a81c7"
     },
-    "fileId": "07UrVLiZdA85F5i9abyG/X",
+    "fileId": "0caGAVZxhE07KxYBB7e1hh",
     "sync": false
   },
   {
@@ -5068,7 +5068,7 @@
     "_position": {
       "__type__": "cc.Vec3",
       "x": 0,
-      "y": 0,
+      "y": 568,
       "z": 0
     },
     "_scale": {
@@ -5760,7 +5760,7 @@
       "__id__": 170
     },
     "_children": [],
-    "_active": false,
+    "_active": true,
     "_level": 4,
     "_components": [
       {
@@ -5849,7 +5849,7 @@
     "asset": {
       "__uuid__": "34629115-bdc7-4df6-8270-66903e5a81c7"
     },
-    "fileId": "2fO7VjzdxC2JjO7N1e+6xq",
+    "fileId": "c6qafIZZBJ45lly9QGMaXI",
     "sync": false
   },
   {
@@ -6006,7 +6006,7 @@
     "_left": 0,
     "_right": 0,
     "_top": 0,
-    "_bottom": 0,
+    "_bottom": 568,
     "_verticalCenter": 0,
     "_horizontalCenter": 0,
     "_isAbsLeft": true,
@@ -6117,7 +6117,7 @@
       "__id__": 1
     },
     "_enabled": true,
-    "alignMode": 0,
+    "alignMode": 1,
     "_target": null,
     "_alignFlags": 45,
     "_left": 0,

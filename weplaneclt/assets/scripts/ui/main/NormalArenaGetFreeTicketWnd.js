@@ -10,10 +10,6 @@ cc.Class({
     extends: RootBase,
 
     properties: {
-        nodeItemObj: {
-            default: null,
-            type: cc.Node,
-        },
         labelCost: {
             default: null,
             type: cc.Label,
@@ -33,7 +29,7 @@ cc.Class({
         this.typeName = WndTypeDefine.WindowType.E_DT_NORMAL_ARENA_GET_FREE_TICKET_WND;
         this.animeStartParam(0, 0);
 
-        this.nodeItemObj.getComponent("ItemObject").updateItem(GameServerProto.PT_ITEMID_ARENA_CHALLENGE_TICKET);
+        // this.nodeItemObj.getComponent("ItemObject").updateItem(GameServerProto.PT_ITEMID_ARENA_CHALLENGE_TICKET, 5);
         this.labelCost.string = GameServerProto.PT_ARENA_CHALLENGE_TICKET_PRICE;
 
         if (!GlobalVar.getShareSwitch()){
@@ -73,6 +69,7 @@ cc.Class({
     getArenaChallengeCountBuyData: function (event) {
         if (event.ErrCode != GameServerProto.PTERR_SUCCESS){
             GlobalVar.comMsg.errorWarning(event.ErrCode);
+            return;
         }
         GlobalVar.comMsg.showMsg("购买成功");
         this.initTicketCount();
@@ -80,6 +77,7 @@ cc.Class({
     getArenaChallengeCountFreeGetData: function (event) {
         if (event.ErrCode != GameServerProto.PTERR_SUCCESS){
             GlobalVar.comMsg.errorWarning(event.ErrCode);
+            return;
         }
         GlobalVar.comMsg.showMsg("购买成功");
         this.initTicketCount();
@@ -96,11 +94,6 @@ cc.Class({
         if (cc.isValid(platformApi)){
             platformApi.showRewardedVideoAd(228, function () {
                 GlobalVar.handlerManager().arenaHandler.sendArenaChallengeCountFreeGetReq();
-            }, function () {
-                platformApi.shareNormal(128, function () {
-                    GlobalVar.handlerManager().arenaHandler.sendArenaChallengeCountFreeGetReq();
-                }); 
-                // GlobalVar.comMsg.showMsg(i18n.t('label.4000321'));
             });
         }else if (GlobalVar.configGMSwitch()){
            GlobalVar.handlerManager().arenaHandler.sendArenaChallengeCountFreeGetReq();

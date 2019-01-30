@@ -111,11 +111,12 @@ var memberData = cc.Class({
 
     updateMixDriveHotPoint: function () {
         let mixOpenData = GlobalVar.tblApi.getData('TblMix');
+        let restMemberNum = this.getRestMemberIDList().length;
         this.mixDriveHotFlag = false;
         for (let i = 0; i < 4; i++) {
             if (GlobalVar.me().level >= mixOpenData[i+1].wLevelReq) {
                 let mixMemberId = this.getMixMemberIDByIndex(i);
-                if (!mixMemberId) {
+                if (!mixMemberId && restMemberNum > 0) {
                     this.mixDriveHotFlag = true;
                     break;
                 }

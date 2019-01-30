@@ -168,7 +168,7 @@ var Me = cc.Class({
         self.diamond = diamond;
         GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_DIAMOND_NTF);
     },
-    serVipExp: function (vipExp) {
+    setVipExp: function (vipExp) {
         self.vipExp = vipExp
     },
     setVipLevel: function (vipLevel) {
@@ -255,9 +255,6 @@ var Me = cc.Class({
     updatePlayerSp: function (curSp) {
         self.spData.data.Sp = curSp;
         //通知体力改变
-        let data = {
-            ErrCode: 0,
-        };
         GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_SPCHANGE_NTF);
     },
 
@@ -270,9 +267,13 @@ var Me = cc.Class({
     },
 
     saveDoubleReward: function (data) {
-        self.setGold(data.GoldCur);
-        self.updatePlayerSp(data.SpCur);
-        GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_LEVELUP_DOUBLE_REWARD, data);
+        if (data.ErrCode == 0) {
+            self.setGold(data.GoldCur);
+            self.updatePlayerSp(data.SpCur);
+            GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_LEVELUP_DOUBLE_REWARD, data);
+        } else {
+            GlobalVar.comMsg.errorWarning(data.ErrCode);
+        }
     },
 });
 

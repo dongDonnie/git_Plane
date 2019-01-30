@@ -84,6 +84,7 @@ var BagData = cc.Class({
                 self.itemData.Items.push(changeItem);
             }
         }
+        GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_BAG_ADDITEM_NTF, itemChange);
         this.updateHotPoint();
         GlobalVar.me().guazaiData.updateHotPoint();
         GlobalVar.me().leaderData.updateHotPoint();
@@ -251,7 +252,6 @@ var BagData = cc.Class({
         if (ack.ErrCode == GameServerProto.PTERR_SUCCESS){
             this.updateItemDataByGMDT_ITEM_CHANGE(ack.Items);
         }
-        GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_BAG_ADDITEM_NTF, ack.Items);
     },
 
     saveItemUseData: function(data){

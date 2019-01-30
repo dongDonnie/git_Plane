@@ -6,6 +6,7 @@ const i18n = require('LanguageData');
 const EventMsgID = require("eventmsgid");
 const GameServerProto = require("GameServerProto");
 const CommonWnd = require("CommonWnd");
+const StoreageData = require("storagedata");
 
 cc.Class({
     extends: RootBase,
@@ -114,10 +115,10 @@ cc.Class({
         this.labelLeftTimes.string = i18n.t('label.4000327').replace("%left", maxTimes - curTimes).replace("%max", maxTimes);
 
         if (GlobalVar.getShareSwitch()){
-            // this.btnVideo.node.active = !StoreageData.getShareTimesWithKey("rewardedVideoLimit", 1);
-            // this.btnShare.node.active = !!StoreageData.getShareTimesWithKey("rewardedVideoLimit", 1);
-            this.btnVideo.node.active = true;
-            this.btnShare.node.active = false;
+            this.btnVideo.node.active = !StoreageData.getShareTimesWithKey("rewardedVideoLimit", 99) || GlobalVar.getShareControl() == 6;
+            this.btnShare.node.active = !!StoreageData.getShareTimesWithKey("rewardedVideoLimit", 99) && GlobalVar.getShareControl() != 6;
+            // this.btnVideo.node.active = true;
+            // this.btnShare.node.active = false;
             this.nodeBuy.x = -126;
             this.nodeBuy.active = true;
         }else{
@@ -184,11 +185,6 @@ cc.Class({
         if (cc.isValid(platformApi)){
             platformApi.showRewardedVideoAd(229, function () {
                 GlobalVar.handlerManager().endlessHandler.sendEndlessBuyPowerPointReq(1);
-            }, function () {
-                platformApi.shareNormal(129, function () {
-                    GlobalVar.handlerManager().endlessHandler.sendEndlessBuyPowerPointReq(1);
-                }); 
-                // GlobalVar.comMsg.showMsg(i18n.t('label.4000321'));
             });
         }else if (GlobalVar.configGMSwitch()){
            GlobalVar.handlerManager().endlessHandler.sendEndlessBuyPowerPointReq(1);

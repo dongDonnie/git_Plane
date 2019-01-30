@@ -97,6 +97,7 @@ BattleDefines.MonsterType = cc.Enum({
     MT_OBJECT: 7,
 });
 
+BattleDefines.CAMPAIGNTIMEOUT = 360;
 BattleDefines.MAX_ENTITY_TIMER = 50;
 BattleDefines.BATTLE_FPS = 60;
 BattleDefines.BATTLE_FRAME_SECOND = 1.0 / 60.0;

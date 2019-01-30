@@ -4,6 +4,7 @@ const Defines = require('BattleDefines');
 const BattleManager = require('BattleManager');
 const EventMsgID = require("eventmsgid")
 const GameServerProto = require("GameServerProto");
+const SceneDefines = require("scenedefines");
 
 cc.Class({
     extends: UIBase,
@@ -26,18 +27,27 @@ cc.Class({
     onBtnShare: function (event) {
         let self = this;
         let platformApi = GlobalVar.getPlatformApi();
-        if (cc.isValid(platformApi)){
+        if (platformApi) {
             platformApi.shareNormal(116, function () {
                 // GlobalVar.handlerManager().endlessHandler.sendEndlessChargeRewardReq();
-                BattleManager.getInstance().dashMode = 1;
-                BattleManager.getInstance().isOpenDash = true;
-                BattleManager.getInstance().managers[Defines.MgrType.HERO].openDash(-1);
-                BattleManager.getInstance().managers[Defines.MgrType.SCENARIO].battleEndlessMode.setRushRank(true);
-                BattleManager.getInstance().gameState = Defines.GameResult.RESUME;
-                self.node.destroy();
+                let bmgr = BattleManager.getInstance();
+                if (!!bmgr.isEndlessFlag && GlobalVar.sceneManager().getCurrentSceneType() == SceneDefines.BATTLE_STATE) {
+                    bmgr.dashMode = 1;
+                    bmgr.isOpenDash = true;
+                    bmgr.managers[Defines.MgrType.HERO].openDash(-1);
+                    bmgr.managers[Defines.MgrType.SCENARIO].battleEndlessMode.setRushRank(true);
+                    bmgr.gameState = Defines.GameResult.RESUME;
+                    self.node.destroy();
+                }
             });
-        }else if (GlobalVar.configGMSwitch()){
+        } else if (GlobalVar.configGMSwitch()) {
             // GlobalVar.handlerManager().endlessHandler.sendEndlessChargeRewardReq();
+            // BattleManager.getInstance().dashMode = 1;
+            // BattleManager.getInstance().isOpenDash = true;
+            // BattleManager.getInstance().managers[Defines.MgrType.HERO].openDash(-1);
+            // BattleManager.getInstance().managers[Defines.MgrType.SCENARIO].battleEndlessMode.setRushRank(true);
+            // BattleManager.getInstance().gameState = Defines.GameResult.RESUME;
+            // self.node.destroy();
         }
     },
 
@@ -46,12 +56,15 @@ cc.Class({
             GlobalVar.comMsg.errorWarning(event.ErrCode);
             return;
         }
-        BattleManager.getInstance().dashMode = 1;
-        BattleManager.getInstance().isOpenDash = true;
-        BattleManager.getInstance().managers[Defines.MgrType.HERO].openDash(-1);
-        BattleManager.getInstance().managers[Defines.MgrType.SCENARIO].battleEndlessMode.setRushRank(true);
-        BattleManager.getInstance().gameState = Defines.GameResult.RESUME;
-        this.node.destroy();
+        let bmgr = BattleManager.getInstance();
+        if (!!bmgr.isEndlessFlag && GlobalVar.sceneManager().getCurrentSceneType() == SceneDefines.BATTLE_STATE) {
+            bmgr.dashMode = 1;
+            bmgr.isOpenDash = true;
+            bmgr.managers[Defines.MgrType.HERO].openDash(-1);
+            bmgr.managers[Defines.MgrType.SCENARIO].battleEndlessMode.setRushRank(true);
+            bmgr.gameState = Defines.GameResult.RESUME;
+            this.node.destroy();
+        }
     },
 
     onBtnClose: function (event) {

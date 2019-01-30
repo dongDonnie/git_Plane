@@ -180,7 +180,7 @@ cc.Class({
             GlobalVar.comMsg.errorWarning(event.ErrCode);
             return;
         }
-        this.initLoopScroll();
+        this.refreshLoopScroll();
         CommonWnd.showTreasureExploit(event.ItemShow);
     },
     getArenaStoreData: function (event) {
@@ -202,7 +202,7 @@ cc.Class({
             GlobalVar.comMsg.errorWarning(event.ErrCode);
             return;
         }
-        this.initLoopScroll();
+        this.refreshLoopScroll();
         let buyItem = GlobalVar.me().arenaData.arenaStoreData[event.ID]
         let item = [{ItemID: buyItem.ItemID, Count: buyItem.Count}]
         CommonWnd.showTreasureExploit(item);
@@ -228,17 +228,20 @@ cc.Class({
                 GlobalVar.handlerManager().arenaHandler.sendArenaStoreReq();
                 return;
             }
-            this.pointScroll.loopScroll.setTotalNum(storeData.length);
-            this.pointScroll.loopScroll.setColNum(2);
+            this.pointScroll.loopScroll.setTotalNum(parseInt(storeData.length / 2));
+            // this.pointScroll.loopScroll.setColNum(2);
             this.pointScroll.loopScroll.setCreateModel(this.nodePurchaseModel1);
+            this.pointScroll.loopScroll.setCreateInterval(150);
             this.pointScroll.loopScroll.saveCreatedModel(this.pointScroll.content.children);
             this.pointScroll.loopScroll.registerUpdateItemFunc(function(model, index){
-                self.updateArenaStoreModel(model, storeData[index]);
-                model.getChildByName("btnPurchase").getComponent(cc.Button).clickEvents[0].customEventData = index + "." + storeData[index].Type;
+                self.updateArenaStoreModel(model.getChildByName("nodeLeft"), storeData[index*2]);
+                self.updateArenaStoreModel(model.getChildByName("nodeRight"), storeData[index*2 + 1]);
+                model.getChildByName("nodeLeft").getChildByName("btnPurchase").getComponent(cc.Button).clickEvents[0].customEventData = index*2 + "." + storeData[index*2].Type;
+                model.getChildByName("nodeRight").getChildByName("btnPurchase").getComponent(cc.Button).clickEvents[0].customEventData = (index*2 + 1) + "." + storeData[index*2 + 1].Type;
             });
-            // this.pointScroll.loopScroll.setPlayAni(function (model, index, targetX, targetY, callback) {
-            //     self.playPointStoreModelAni(model, index, targetX, targetY, callback);
-            // })
+            this.pointScroll.loopScroll.setPlayAni(function (model, index, targetX, targetY, callback) {
+                self.playPointStoreModelAni(model, index, targetX, targetY, callback);
+            })
             this.pointScroll.loopScroll.resetView();
             this.pointScroll.scrollToTop();
         } else {
@@ -256,14 +259,35 @@ cc.Class({
             this.rankScroll.loopScroll.saveCreatedModel(this.rankScroll.content.children);
             this.rankScroll.loopScroll.registerUpdateItemFunc(function (model, index) {
                 self.updateRankStoreModel(model, sortData[index]);
-            })
-            // this.rankScroll.loopScroll.setPlayAni(function (model, index, targetX, targetY, callback) {
-            //     self.playRankStoreModelAni(model, index, targetX, targetY, callback);
-            // })
+            });
+            this.rankScroll.loopScroll.setPlayAni(function (model, index, targetX, targetY, callback) {
+                self.playRankStoreModelAni(model, index, targetX, targetY, callback);
+            });
             this.rankScroll.loopScroll.resetView();
             this.rankScroll.scrollToTop();
         }
     },
+    refreshLoopScroll: function () {
+        let self = this;
+        if (this.curIndex == TAB_POINT_STORE) {
+            let storeData = GlobalVar.me().arenaData.arenaStoreData;
+            if (!storeData){
+                GlobalVar.handlerManager().arenaHandler.sendArenaStoreReq();
+                return;
+            }
+            this.pointScroll.loopScroll.setTotalNum(storeData.length);
+            this.pointScroll.loopScroll.registerUpdateItemFunc(function(model, index){
+                self.updateArenaStoreModel(model.getChildByName("nodeLeft"), storeData[index*2]);
+                self.updateArenaStoreModel(model.getChildByName("nodeRight"), storeData[index*2 + 1]);
+                model.getChildByName("nodeLeft").getChildByName("btnPurchase").getComponent(cc.Button).clickEvents[0].customEventData = index*2 + "." + storeData[index*2].Type;
+                model.getChildByName("nodeRight").getChildByName("btnPurchase").getComponent(cc.Button).clickEvents[0].customEventData = (index*2 + 1) + "." + storeData[index*2 + 1].Type;
+            });
+            this.pointScroll.loopScroll.refreshViewItem();
+        }else{
+            this.rankScroll.loopScroll.refreshViewItem();
+        }
+    },
+
     updateArenaStoreModel: function (model, data) {
         // model.x = 0;
         let itemData = model.getChildByName("ItemObject").getComponent("ItemObject").updateItem(data.ItemID, data.Count);
@@ -300,12 +324,18 @@ cc.Class({
         }
     },
     playPointStoreModelAni: function (model, index, targetX, targetY, callback) {
-        model.stopAllActions();
+        let nodeLeft = model.getChildByName("nodeLeft");
+        let nodeRight = model.getChildByName("nodeRight");
+        nodeLeft.stopAllActions();
+        nodeRight.stopAllActions();
         model.y = targetY;
-        model.x = 1000 * ((index%2) - 0.5);
-        model.runAction(cc.sequence(cc.delayTime(parseInt(index / 2) * 0.1), cc.moveTo(0.15, targetX, targetY), cc.callFunc(()=>{
+        model.x = targetX;
+        nodeLeft.x = -1000;
+        nodeRight.x = 1000;
+        nodeLeft.runAction(cc.sequence(cc.moveTo(0.25, -136, 0), cc.callFunc(()=>{
             callback && callback();
-        })));
+        })))
+        nodeRight.runAction(cc.moveTo(0.25, 136, 0));
     },
     updateRankStoreModel: function (model, data) {
         // model.x = 0;
@@ -351,9 +381,7 @@ cc.Class({
         }else if (platformApi){
             platformApi.showRewardedVideoAd(235, function () {
                 GlobalVar.handlerManager().arenaHandler.sendArenaStoreBuyReq(id);
-            }, function () {
-                GlobalVar.comMsg.showMsg(i18n.t('label.4000321'));
-            });
+            }, null, false);
         }
     },
 

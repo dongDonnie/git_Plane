@@ -5,6 +5,7 @@ const Mapping = cc.Class({
         mapping: {},
 
         init: function() {
+            Mapping.mapping[0] = MonsterSolutions.solution_0;
             Mapping.mapping[1] = MonsterSolutions.solution_1;
             Mapping.mapping[2] = MonsterSolutions.solution_2;
             Mapping.mapping[3] = MonsterSolutions.solution_3;

@@ -164,7 +164,7 @@ cc.Class({
             curTime = GlobalVar.me().shareData.getFreeGoldCount();
             maxTime = GlobalVar.tblApi.getDataBySingleKey('TblParam', GameServerProto.PTPARAM_TREASURE_GOLD_FREE_MAX).dValue;
             leftTimeStr = leftTimeStr.replace("%left", maxTime - curTime).replace("%max", maxTime);
-            if (curTime >= 3){
+            if (curTime >= 3 || GlobalVar.getShareControl() == 6){
                 shareName = "  " + i18n.t("label.4000328");
                 this.btnShare.node.getChildByName("spriteVideo").active = true;
                 this.btnShare.node.getChildByName("spriteShare").active = false;
@@ -224,21 +224,13 @@ cc.Class({
             let self = this;
             let curTime = GlobalVar.me().shareData.getFreeGoldCount();
             //let maxTime = GlobalVar.tblApi.getDataBySingleKey('TblParam', GameServerProto.PTPARAM_TREASURE_GOLD_FREE_MAX).dValue;
-            if (curTime >= 3){
+            if (curTime >= 3 || GlobalVar.getShareControl() == 6){
                 platformApi.showRewardedVideoAd(materialID + 100, function () {
                     if (self._shareType == SHARE_TYPE_GOLD) {
                         GlobalVar.handlerManager().shareHandler.sendGetFreeGoldReq();
                     } else if (self._shareType == SHARE_TYPE_DIAMOND) {
                         GlobalVar.handlerManager().shareHandler.sendGetFreeDiamondReq();
                     }
-                }, function () {
-                    platformApi.shareNormal(materialID, function () {
-                        if (self._shareType == SHARE_TYPE_GOLD) {
-                        GlobalVar.handlerManager().shareHandler.sendGetFreeGoldReq();
-                    } else if (self._shareType == SHARE_TYPE_DIAMOND) {
-                        GlobalVar.handlerManager().shareHandler.sendGetFreeDiamondReq();
-                    }
-                    }); 
                 });
             }else{
                 platformApi.shareNormal(materialID, function () {

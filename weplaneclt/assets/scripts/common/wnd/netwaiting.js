@@ -79,10 +79,13 @@ var NetWaiting = cc.Class({
                     this.wait = true;
 
                     if (GlobalVar.sceneManager().getCurrentSceneType() == SceneDefines.LOGIN_STATE) {
-                        let uiserversel = cc.find("Canvas/UINode").getChildByName('UIServerSel');
-                        if (cc.isValid(uiserversel)) {
-                            if (!uiserversel.getComponent('UIServerSel').canSelect) {
-                                uiserversel.getComponent('UIServerSel').canSelect = true;
+                        let uiNode = cc.find("Canvas/UINode");
+                        if (cc.isValid(uiNode)) {
+                            let uiserversel = uiNode.getChildByName('UIServerSel');
+                            if (cc.isValid(uiserversel)) {
+                                if (!uiserversel.getComponent('UIServerSel').canSelect) {
+                                    uiserversel.getComponent('UIServerSel').canSelect = true;
+                                }
                             }
                         }
                     }
@@ -100,12 +103,12 @@ var NetWaiting = cc.Class({
     showReconnect: function (show) {
         show = typeof show !== 'undefined' ? show : true;
         if (cc.sys.platform === cc.sys.WECHAT_GAME) {
+            var self = this;
             if (GlobalVar.sceneManager().getCurrentSceneType() == SceneDefines.LOGIN_STATE) {
                 weChatAPI.getNetWorkStatus(function (type) {
                     let uiNode = cc.find("Canvas/UINode");
                     if (type === 'none' || !cc.isValid(uiNode)) {
-                        if (!this.reconnect) {
-                            var self = this;
+                        if (!self.reconnect) {
                             weChatAPI.showToast("网络状态异常, 请检查网络后点击确认重试", true, false, "确认", "取消", function () {
                                 self.reconnect = false;
                                 //cc.game.restart();
@@ -113,33 +116,40 @@ var NetWaiting = cc.Class({
                             }, function () {
                                 cc.game.end();
                             });
-                            this.reconnect = true;
+                            self.reconnect = true;
                         }
                     } else {
                         weChatAPI.showToast("服务器维护中", true, false);
-                        uiNode.getChildByName('UIServerSel').getComponent('UIServerSel').canSelect = true;
+                        if (cc.isValid(uiNode)) {
+                            let uiserversel = uiNode.getChildByName('UIServerSel');
+                            if (cc.isValid(uiserversel)) {
+                                if (!uiserversel.getComponent('UIServerSel').canSelect) {
+                                    uiserversel.getComponent('UIServerSel').canSelect = true;
+                                }
+                            }
+                        }
+                        //uiNode.getChildByName('UIServerSel').getComponent('UIServerSel').canSelect = true;
                     }
                 })
             } else if (GlobalVar.sceneManager().getCurrentSceneType() == SceneDefines.INIT_STATE) {
                 weChatAPI.getNetWorkStatus(function (type) {
                     if (type === 'none') {
-                        if (!this.reconnect) {
-                            var self = this;
+                        if (!self.reconnect) {
                             weChatAPI.showToast("没有网络链接, 请检查网络后重试", true, false, "确认", "取消", function () {
                                 self.reconnect = false;
                                 //cc.game.restart();
                                 GlobalVar.sceneManager().reStart();
                             });
-                            this.reconnect = true;
+                            self.reconnect = true;
                         }
                     } else {
+                        GlobalVar.sceneManager().startUp();
                         weChatAPI.showToast("服务器维护中", true, false);
                     }
                 })
             } else {
                 if (GlobalVar.sceneManager().getCurrentSceneType() != SceneDefines.LOADING_STATE) {
-                    if (!this.reconnect) {
-                        var self = this;
+                    if (!self.reconnect) {
                         weChatAPI.showToast("亲爱的指挥官，超新星爆发导致通讯中断，是否尝试重连本部？", true, false, "确认", "取消", function () {
                             self.reconnect = false;
                             //cc.game.restart();
@@ -148,7 +158,7 @@ var NetWaiting = cc.Class({
                             cc.game.end();
                         });
                     }
-                    this.reconnect = true;
+                    self.reconnect = true;
                 }
             }
         } else {

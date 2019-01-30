@@ -5,6 +5,7 @@ const RootBase = require("RootBase");
 const EventMsgID = require("eventmsgid");
 const GameServerProto = require("GameServerProto");
 const CommonWnd = require("CommonWnd");
+const i18n = require('LanguageData');
 
 cc.Class({
     extends: RootBase,
@@ -70,11 +71,15 @@ cc.Class({
     onBtnShare: function (event) {
 
         let platformApi = GlobalVar.getPlatformApi();
-        if (cc.isValid(platformApi)){
+        if (platformApi && GlobalVar.getShareControl() == 1){
             platformApi.shareNormal(117, function () {
                 GlobalVar.handlerManager().shareHandler.sendShareDailyReq();
             })
-        }else if (GlobalVar.configGMSwitch()){
+        } else if (platformApi && GlobalVar.getShareControl() == 6){
+            platformApi.showRewardedVideoAd(217, function () {
+                GlobalVar.handlerManager().shareHandler.sendShareDailyReq();
+            })
+        } else if (GlobalVar.configGMSwitch()){
             GlobalVar.handlerManager().shareHandler.sendShareDailyReq();
         }
     },
@@ -96,6 +101,11 @@ cc.Class({
 
     enter: function (isRefresh) {
         if (isRefresh) {
+            if (GlobalVar.getShareControl() == 6){
+                this.node.getChildByName("btnShare").getChildByName("spriteShare").active = false;
+                this.node.getChildByName("btnShare").getChildByName("spriteVideo").active = true;
+                this.node.getChildByName("btnShare").getComponent("ButtonObject").setText("  "+ i18n.t('label.4000336'));
+            }
             this._super(true);
         } else {
             this._super(false);

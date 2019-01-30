@@ -72,6 +72,9 @@ const BattleManager = cc.Class({
         sBombPlayArray: [],
 
         bossAppear: false,
+
+        judgementSwitch: false,
+        judgementTime: 0,
     },
 
     ctor() {
@@ -103,6 +106,8 @@ const BattleManager = cc.Class({
         this.collision = new Collision();
 
         this.currentTime = 0;
+        this.judgementSwitch = false;
+        this.judgementTime = 0;
 
         if (!this.isDemo) {
             if (this.isEndlessFlag) {
@@ -310,7 +315,7 @@ const BattleManager = cc.Class({
             bmgr.managers[Defines.MgrType.HERO].update(Defines.BATTLE_FRAME_SECOND);
 
             if (bmgr.isEndlessFlag) {
-                if ((GlobalVar.getShareSwitch() || GlobalVar.getVideoAdSwitch()) && GlobalVar.me().endlessData.getRankID() > 1 &&
+                if ((GlobalVar.getShareControl() == 1) && GlobalVar.me().endlessData.getRankID() > 1 &&
                     GlobalVar.me().endlessData.getEndlessChargeRewardTimes() < GlobalVar.tblApi.getDataBySingleKey('TblParam', GameServerProto.PTPARAM_ENDLESS_CHARGE_DAYMAX).dValue) {
                     bmgr.gameState = Defines.GameResult.DASHOPEN;
                 } else {
@@ -336,6 +341,7 @@ const BattleManager = cc.Class({
             bmgr.managers[Defines.MgrType.HERO].pauseEntity();
             bmgr.pauseEffect();
         } else if (bmgr.gameState == Defines.GameResult.DEADDELAY) {
+            bmgr.judgementTime = 0;
             bmgr.currentTime += Defines.BATTLE_FRAME_SECOND;
             if (bmgr.isEditorFlag == false) {
                 bmgr.collision.update(Defines.BATTLE_FRAME_SECOND);
@@ -686,7 +692,7 @@ const BattleManager = cc.Class({
     },
 
     screenShake: function (type) {
-        if (!StoreageData.getVibrateSwitch()) {
+        if (StoreageData.getVibrateSwitch() == 'off') {
             return;
         }
         type = typeof type !== 'undefined' ? type : 0;
@@ -1008,6 +1014,30 @@ const BattleManager = cc.Class({
                 }
             }
         });
+    },
+
+    judgement: function () {
+        if (this.heroManager.getInstance().planeEntity.hp <= 0) {
+            this.judgementTime = 0;
+            return;
+        }
+        let monsterId = 200;
+        let tblMonster = GlobalVar.tblApi.getDataBySingleKey('TblBattleMonster', monsterId);
+        if (!tblMonster) {
+            return null;
+        }
+        let monsterInfo = {
+            mId: monsterId,
+            lv: 10000,
+            pos: cc.v3(0.5, 1.1),
+        };
+        const MM = require('MonsterMapping');
+        let func = MM.getSolution(tblMonster.dwSolution);
+        if (!!func) {
+            let entity = func(monsterInfo);
+            return entity;
+        }
+        return null;
     },
 
     setBossHpBar: function (entity) {

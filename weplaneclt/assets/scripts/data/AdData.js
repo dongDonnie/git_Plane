@@ -24,6 +24,7 @@ var AdData = cc.Class({
         self._spriteFrameMap = {};//key:url, value: cc.spriteFrame
         self._resFileMap = null;
         self._adexp = null;    // 抽屉广告
+        self._adexpHotFlag = true;
 
         self._taskData = null; // 积分墙广告
         self._taskComplete = [];
@@ -69,6 +70,14 @@ var AdData = cc.Class({
             console.log('getAdexpInfo fail:', res);
         }
         weChatAPI.pullAdcExpInfo(successCallback, failCallback);
+    },
+
+    setAdExpHotFlag: function (flag) {
+        self._adexpHotFlag = flag;
+    },
+
+    getAdExpHotFlag: function () {
+        return self._adexpHotFlag;
     },
 
     getRemoteSpFrameAd: function () {

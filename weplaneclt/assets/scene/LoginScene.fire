@@ -41,9 +41,9 @@
     },
     "_scale": {
       "__type__": "cc.Vec3",
-      "x": 0.22864955357142858,
-      "y": 0.22864955357142858,
-      "z": 0.22864955357142858
+      "x": 0.3346033230633803,
+      "y": 0.3346033230633803,
+      "z": 0.3346033230633803
     },
     "_quat": {
       "__type__": "cc.Quat",
@@ -3799,7 +3799,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "spriteUnderBg",
+    "_name": "spriteUnderBg2",
     "_objFlags": 0,
     "_parent": {
       "__id__": 79
@@ -3904,7 +3904,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "btnServerModel",
+    "_name": "btnServerModel1",
     "_objFlags": 0,
     "_parent": {
       "__id__": 79
@@ -4494,7 +4494,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 568,
-      "height": 510
+      "height": 490
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -4504,7 +4504,7 @@
     "_position": {
       "__type__": "cc.Vec3",
       "x": 0,
-      "y": -116,
+      "y": -90,
       "z": 0
     },
     "_scale": {
@@ -4562,7 +4562,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 568,
-      "height": 510
+      "height": 490
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -4626,7 +4626,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 568,
-      "height": 275
+      "height": 87
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -4636,7 +4636,7 @@
     "_position": {
       "__type__": "cc.Vec3",
       "x": 0,
-      "y": 257,
+      "y": 245,
       "z": 0
     },
     "_scale": {
@@ -4672,7 +4672,7 @@
     "_layoutSize": {
       "__type__": "cc.Size",
       "width": 568,
-      "height": 275
+      "height": 87
     },
     "_resize": 1,
     "_N$layoutType": 3,
@@ -7176,7 +7176,7 @@
       "__id__": 136
     },
     "_enabled": true,
-    "alignMode": 0,
+    "alignMode": 1,
     "_target": null,
     "_alignFlags": 45,
     "_left": 0,
@@ -8835,7 +8835,7 @@
       "__id__": 5
     },
     "_enabled": true,
-    "alignMode": 0,
+    "alignMode": 1,
     "_target": null,
     "_alignFlags": 45,
     "_left": 0,
@@ -8924,7 +8924,7 @@
       "__id__": 250
     },
     "_enabled": true,
-    "alignMode": 0,
+    "alignMode": 1,
     "_target": null,
     "_alignFlags": 45,
     "_left": 0,
@@ -9013,7 +9013,7 @@
       "__id__": 252
     },
     "_enabled": true,
-    "alignMode": 0,
+    "alignMode": 1,
     "_target": null,
     "_alignFlags": 45,
     "_left": 0,

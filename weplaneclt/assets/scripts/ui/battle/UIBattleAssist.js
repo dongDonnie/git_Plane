@@ -20,7 +20,7 @@ cc.Class({
         let self = this;
 
         let platformApi = GlobalVar.getPlatformApi();
-        if (cc.isValid(platformApi)){
+        if (platformApi){
             platformApi.shareNormal(105, function () {
                 GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_GET_ASSIST_SHARE_SUCCESS);
                 self.onBtnClose();

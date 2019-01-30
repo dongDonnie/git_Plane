@@ -2542,6 +2542,7 @@
     "_createItemFunc": null,
     "_updateItemFunc": null,
     "_completeFunc": null,
+    "_completeAllFunc": null,
     "_id": ""
   },
   {
@@ -8948,7 +8949,7 @@
       "__id__": 1
     },
     "_enabled": true,
-    "alignMode": 0,
+    "alignMode": 1,
     "_target": null,
     "_alignFlags": 18,
     "_left": 0,

@@ -220,7 +220,7 @@ var UIBattle = cc.Class({
 
     setTopScore: function (num) {
         num = typeof num !== 'undefined' ? num : 0;
-        if (num > 999999){
+        if (num > 999999) {
             num = parseInt(num / 10000) + ";<";
         }
         this.getNodeByName("labelTopScoreNum").getComponent(cc.Label).string = num;
@@ -437,7 +437,7 @@ var UIBattle = cc.Class({
     },
 
     onSkillClick() {
-        if (this.battleManager.gameState == Defines.GameResult.RUNNING) {
+        if (this.battleManager.gameState == Defines.GameResult.RUNNING && !this.battleManager.bossAppear) {
             if (this.barSkillCD.progress == 0) {
                 let cd = require('AIInterface').useSuperSkill();
                 if (cd != -1) {
@@ -450,13 +450,13 @@ var UIBattle = cc.Class({
     },
 
     onAssistClick() {
-        if (this.battleManager.gameState == Defines.GameResult.RUNNING) {
+        if (this.battleManager.gameState == Defines.GameResult.RUNNING && !this.battleManager.bossAppear) {
             if (this.barAssistCD.progress != 0) {
                 return;
             }
             if (this.assistBtnStatusCount > 0 && this.assistBtnStatus > 0) {
                 GlobalVar.handlerManager().endlessHandler.sendEndlessUseStatusReq(this.assistBtnStatus)
-            } else if (this.assistBtnStatusCount == 0 && GlobalVar.getShareSwitch()) {
+            } else if (this.assistBtnStatusCount == 0 && GlobalVar.getShareSwitch() && GlobalVar.getShareControl() == 1) {
                 if (StoreageData.getBattleAssitTimes() >= 5) {
                     GlobalVar.comMsg.showMsg(i18n.t('label.4000313'));
                     return;
@@ -504,7 +504,7 @@ var UIBattle = cc.Class({
         if (cc.sys.platform != cc.sys.WECHAT_GAME) {
             return;
         }
-        
+
         if (!this.battleManager.isEndlessFlag) {
             return;
         }

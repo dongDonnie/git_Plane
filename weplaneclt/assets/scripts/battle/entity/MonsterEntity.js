@@ -28,6 +28,7 @@ cc.Class({
         clearBulletWhenDead: false,
         isKill: true,
         isDefend: false,
+        killHero: false,
 
         monsterHpBar: null,
 
@@ -80,6 +81,7 @@ cc.Class({
         this.immediatelyKill = 0;
         this.clearBulletWhenDead = false;
         this.isKill = true;
+        this.killHero = false;
         this.deathType = 0;
         this.isDefend = false;
         this.flyCurTime = 0;
@@ -416,7 +418,15 @@ cc.Class({
                 let s = Math.max(Math.max(size.width, size.height) / Math.min(Bomb.width, Bomb.height), max);
                 Bomb.setScale(s);
                 BattleManager.getInstance().displayContainer.addChild(Bomb, bZ);
-                Bomb.runAction(cc.sequence(cc.delayTime(0.4), cc.removeSelf(true)));
+                if (!!this.killHero) {
+                    var self = this;
+                    Bomb.runAction(cc.sequence(cc.delayTime(0.1), cc.callFunc(function () {
+                        self.heroManager.planeEntity.hitWithDamage(0, 1, 0, 1);
+                    }), cc.delayTime(0.3), cc.removeSelf(true)));
+                } else {
+                    Bomb.runAction(cc.sequence(cc.delayTime(0.4), cc.removeSelf(true)));
+                }
+
                 Bomb.setPosition(this.getPosition());
 
                 if (this.tbl.dwType >= 4 && this.tbl.dwType <= 6) {
@@ -841,6 +851,10 @@ cc.Class({
     },
 
     bossAppear: function (open) {
-        BattleManager.getInstance().bossAppear = typeof open !== 'undefined' ? open : false;
+        //BattleManager.getInstance().bossAppear = typeof open !== 'undefined' ? open : false;
+    },
+
+    setKillHero: function (yes) {
+        this.killHero = typeof yes !== 'undefined' ? yes : true;
     },
 });

@@ -79,10 +79,16 @@ cc.Class({
                 ItemID: this.itemId,
                 Count: num,
             }
-            CommonWnd.showMessage(null, CommonWnd.oneConfirm, i18n.t('label.4000216'), i18n.t('label.4000271'), null, function () {
+            // let openLevel = GlobalVar.tblApi.getDataBySingleKey('TblSystem', 28).wOpenLevel;
+            // if (GlobalVar.me().getLevel() >= openLevel) {
+            //     CommonWnd.showMessage(null, CommonWnd.oneConfirm, i18n.t('label.4000216'), i18n.t('label.4000271'), null, function () {
+            //         GlobalVar.handlerManager().memberHandler.sendPieceBreakReq(GameServerProto.GMID_MEMBER_PIECE_BREAK_REQ, msg);
+            //         self.close();
+            //     })
+            // } else {
                 GlobalVar.handlerManager().memberHandler.sendPieceBreakReq(GameServerProto.GMID_MEMBER_PIECE_BREAK_REQ, msg);
-                self.close()
-            })
+                self.close();
+            // }
         } else if (this.mode == 1) {
             
         } else {

@@ -8550,7 +8550,7 @@
       "__id__": 1
     },
     "_enabled": false,
-    "alignMode": 0,
+    "alignMode": 1,
     "_target": null,
     "_alignFlags": 18,
     "_left": 0,

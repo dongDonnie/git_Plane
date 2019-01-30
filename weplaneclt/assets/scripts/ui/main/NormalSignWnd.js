@@ -135,7 +135,7 @@ cc.Class({
         } else {
             this.nodeDesc.active = false;
             this.nodeTip.active = !GlobalVar.isIOS;
-            this.nodeStrut.parent.active = true;
+            this.nodeStrut.parent.active = GlobalVar.getShareControl() != 6;
         }
     },
 
@@ -255,10 +255,6 @@ cc.Class({
                 } else {  // 看视频
                     platformApi.showRewardedVideoAd(227, function () {
                         GlobalVar.handlerManager().signHandler.sendSignHeapReq(destDay);
-                    }, function () {
-                        platformApi.shareNormal(127, function () {
-                            GlobalVar.handlerManager().signHandler.sendSignHeapReq(destDay);
-                        });
                     });
                 }
             } else {

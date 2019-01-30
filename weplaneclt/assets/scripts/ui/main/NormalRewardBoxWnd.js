@@ -54,6 +54,10 @@ cc.Class({
         if (this.confirmCallBack) {
             this.confirmCallBack();
         }
+        let block = cc.find("Canvas/BlockNode");
+        if (cc.isValid(block)) {
+            block.active = false;
+        }
         WindowManager.getInstance().popView(false, null, false, false);
     },
 

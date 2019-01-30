@@ -5,6 +5,7 @@ const SceneDefines = require('scenedefines');
 const ResMapping = require("resmapping");
 const weChatAPI = require("weChatAPI");
 const i18n = require('LanguageData');
+const BattleManager = require('BattleManager');
 
 var LoadingState = {
     E_PREPARE: 0,
@@ -58,9 +59,16 @@ var LoadingScene = cc.Class({
         this.sceneComplete = 0;
         this.loadComplete = 0;
         this.timeoutID = -1;
+        this.progressTime = 3;
     },
 
     onLoad: function () {
+        if(GlobalVar.sceneManager().nextScene==SceneDefines.BATTLE_STATE){
+            if(BattleManager.getInstance().isArenaFlag){
+                this.progressTime = 1;
+            }
+        }
+        
         this.openScene();
         GlobalVar.windowManager().releaseView();
         GlobalVar.resManager().clearCache();
@@ -220,7 +228,7 @@ var LoadingScene = cc.Class({
                 this.loadingBar.progress = 1;
                 this.loadingState = LoadingState.E_FINISH;
             } else {
-                let action = cc.progressLoading(3, /*0*/ this.loadingBar.progress, 1, null, function (per) {
+                let action = cc.progressLoading(this.progressTime, /*0*/ this.loadingBar.progress, 1, null, function (per) {
                     self.loadingBar.node.getChildByName("spriteLight").x = self.loadingBar.barSprite.node.width * per;
                     if (self.firstLoading) {
                         self.labelProgressPercent.string = Math.floor(per * 20 + 80) + "%";
@@ -230,7 +238,7 @@ var LoadingScene = cc.Class({
                 });
                 this.loadingBar.node.runAction(action);
                 if (this.firstLoading) {
-                    let actionFade = cc.progressLoading(3, this.loadingBarFade.progress, 1, null, function (per) {
+                    let actionFade = cc.progressLoading(this.progressTime, this.loadingBarFade.progress, 1, null, function (per) {
                         self.loadingBarFade.node.getChildByName("spriteLight").x = self.loadingBarFade.barSprite.node.width * per;
                     })
                     this.loadingBarFade.node.runAction(actionFade);
@@ -294,7 +302,7 @@ var LoadingScene = cc.Class({
                 self.loadComplete = 1;
             }
         } else {
-            let action = cc.progressLoading(3, this.loadingBar.progress, percent <= 1 ? percent : 1, function () {
+            let action = cc.progressLoading(self.progressTime, this.loadingBar.progress, percent <= 1 ? percent : 1, function () {
                 if (self.curCount >= self.totalCount && self.loadingState === LoadingState.E_PROGRESS) {
                     self.loadComplete = 1;
                 }
@@ -311,7 +319,7 @@ var LoadingScene = cc.Class({
 
         let percentFade = percent * 0.2 + 0.8;
         if (this.firstLoading) {
-            let actionFade = cc.progressLoading(3, this.loadingBarFade.progress, percentFade <= 1 ? percentFade : 1, null, function (per) {
+            let actionFade = cc.progressLoading(this.progressTime, this.loadingBarFade.progress, percentFade <= 1 ? percentFade : 1, null, function (per) {
                 self.loadingBarFade.node.getChildByName("spriteLight").x = self.loadingBar.barSprite.node.width * per;
             });
             this.loadingBarFade.node.runAction(actionFade);
