@@ -1,0 +1,54 @@
+{
+  "cocos-analytics": {
+    "appID": "13798",
+    "appSecret": "959b3ac0037d0f3c2fdce94f8421a9b2",
+    "channel": "",
+    "enable": false,
+    "version": ""
+  },
+  "collision-matrix": [
+    [
+      false
+    ],
+    [
+      false,
+      false,
+      null,
+      false
+    ],
+    [
+      false,
+      false,
+      false
+    ],
+    [
+      false,
+      false,
+      false,
+      false
+    ]
+  ],
+  "design-resolution-height": 1136,
+  "design-resolution-width": 640,
+  "excluded-modules": [
+    "TiledMap",
+    "Physics",
+    "3D"
+  ],
+  "fit-height": true,
+  "fit-width": true,
+  "group-list": [
+    "Default",
+    "Monster",
+    "Fighter",
+    "Bullet"
+  ],
+  "simulator-orientation": false,
+  "simulator-resolution": {
+    "height": 640,
+    "width": 960
+  },
+  "start-scene": "60219c41-b4d6-4a2a-9b10-6fec40ba89a0",
+  "use-customize-simulator": false,
+  "use-project-simulator-setting": false
+}

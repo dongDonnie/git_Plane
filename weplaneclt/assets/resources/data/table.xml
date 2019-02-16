@@ -505,7 +505,7 @@
         <col name="Description" type="string"/>
     </table>
 
-    <table name="TblMemberEquip" file="data/memberequip.tbl" key="ID" serveronly="true">
+    <table name="TblMemberEquip" file="data/memberequip.tbl" key="ID">
         <col name="ID" type="UINT16"/>
         <col name="EquipName" type="string"/>
         <col name="EquipPos" type="UINT8"/>
@@ -513,41 +513,36 @@
         <col name="Prop" type="TblProp" vector="true"/>
         <col name="QualityProp" type="TblProp" vector="true"/>
         <col name="UpGetItem" type="UINT16"/>
-        <col name="UpCostType" type="UINT8"/>
         <col name="UpCostItem" type="TblItemCount" vector="true"/>
-        <col name="UpCostGold" type="INT32"/>
-        <col name="UpCostDiamond" type="INT32"/>
-        <col name="ReturnGold" type="INT32"/>
+        <col name="UpCostXingBi" type="INT32"/>
         <col name="SplitGetItem" type="TblItemCount" vector="true"/>
         <col name="RebirthCostDiamond" type="INT32"/>
         <col name="RebirthGetItem" type="TblItemCount" vector="true"/>
-        <col name="CombatPoint" type="INT32"/>
-        <col name="QualityCombatPoint" type="INT32"/>
         <col name="StarID" type="UINT8"/>
-        <col name="LevelUpGoldCoe" type="double"/>
+        <col name="LevelUpCostCoe" type="double"/>
         <col name="Comment" type="comment"/>
     </table>
 
-    <table name="TblMemberEquipPos" file="data/memberequippos.tbl" key="Pos" serveronly="true">
+    <table name="TblMemberEquipPos" file="data/memberequippos.tbl" key="Pos">
         <col name="Pos" type="UINT8"/>
         <col name="Name" type="string" />
         <col name="Desc" type="string" />
         <col name="Comment" type="comment"/>
     </table>
 
-    <table name="TblMemberEquipLevel" file="data/memberequiplevel.tbl" key="Level" serveronly="true">
+    <table name="TblMemberEquipLevel" file="data/memberequiplevel.tbl" key="Level">
         <col name="Level" type="UINT16" />
-        <col name="GoldCost" type="INT32" vector="true"/>
+        <col name="Cost" type="INT32" vector="true"/>
         <col name="PropCoe" type="double"/>
         <col name="Comment" type="comment"/>
     </table>
 
-    <table name="TblMemberEquipLevelUp" file="data/memberequiplevelup.tbl" key="ID" serveronly="true">
+    <table name="TblMemberEquipLevelUp" file="data/memberequiplevelup.tbl" key="ID">
         <col name="ID" type="UINT8"/>
         <col name="Prob" type="TblCountProb" vector="true"/>
     </table>
 
-    <table name="TblMemberEquipTech" file="data/memberequiptech.tbl" multikey="Type,Level" serveronly="true">
+    <table name="TblMemberEquipTech" file="data/memberequiptech.tbl" multikey="Type,Level">
         <col name="Type" type="UINT8"/>
         <col name="Level" type="UINT8"/>
         <col name="Condition" type="UINT16" />
@@ -715,7 +710,8 @@
         <col name="Diamond" type="INT32"/>
     </table>
 
-    <table name="TblEndlessCampaign" file="data/endlesscampaign.tbl" key="CampaignID">
+    <table name="TblEndlessCampaign" file="data/endlesscampaign.tbl" multikey="Type,CampaignID">
+        <col name="Type" type="UINT8"/>
         <col name="CampaignID" type="UINT16"/>
         <col name="RandomType" type="UINT16"/>
         <col name="Mode" type="UINT16"/>
@@ -739,6 +735,7 @@
         <col name="ScoreReq" type="INT32"/>
         <col name="RewardItem" type="UINT16"/>
         <col name="RushRank" type="INT32"/>
+        <col name="CampaignType" type="UINT8"/>
         <col name="Comment" type="comment"/>
     </table>
     
@@ -1569,6 +1566,7 @@
         <col name="Model" type="string" />
         <col name="RebirthCostDiamond" type="INT32"/>
         <col name="RebirthGetItem" type="TblItemCount" vector="true"/>
+        <col name="SplitGetItem" type="TblItemCount" vector="true"/>
         <col name="Description" type="string" />
         <col name="Comment" type="comment" />
     </table>
@@ -1682,14 +1680,14 @@
         <col name="Comment" type="comment" />
     </table>
 
-    <table name="TblSpecial" file="data/special.tbl" key="ID" serveronly="true">
+    <table name="TblSpecial" file="data/special.tbl" key="ID">
         <col name="ID" type="UINT16" />
         <col name="Name" type="string" />
         <col name="OpenLimit" type="UINT16" />
         <col name="Icon" type="TblIcon" vector="true" />
     </table>
 
-    <table name="TblSpecialLevel" file="data/speciallevel.tbl" multikey="ID,Level" serveronly="true">
+    <table name="TblSpecialLevel" file="data/speciallevel.tbl" multikey="ID,Level">
         <col name="ID" type="UINT16" />
         <col name="Level" type="UINT16" />
         <col name="Prop" type="TblProp" vector="true" />
@@ -1697,7 +1695,7 @@
         <col name="QualityID" type="UINT16" />
     </table>
 
-    <table name="TblSpecialQuality" file="data/specialquality.tbl" key="ID" serveronly="true">
+    <table name="TblSpecialQuality" file="data/specialquality.tbl" key="ID">
         <col name="ID" type="UINT16" />
         <col name="UPCost" type="TblItemCount" vector="true" />
         <col name="Prop" type="TblProp" vector="true" />
@@ -1788,32 +1786,33 @@
         <col name="Comment" type="comment" />
     </table>
 
-    <table name="TblExplore" file="data/explore.tbl" key="AreaID" serveronly="true">
+    <table name="TblExplore" file="data/explore.tbl" key="AreaID">
         <col name="AreaID" type="UINT8" />
         <col name="Name" type="string" />
         <col name="CampaignID" type="UINT16" />
         <col name="RewardProgress" type="UINT16" />
         <col name="Reward" type="TblItemCount" vector="true" />
-        <col name="GoldExpProb" type="UINT16" />
+        <col name="BiExpProb" type="UINT16" />
         <col name="Exp" type="UINT16" />
-        <col name="Gold" type="UINT16" />
+        <col name="XingBi" type="UINT16" />
         <col name="Prob2" type="UINT16" />
         <col name="Prob4" type="UINT16" />
         <col name="Prob8" type="UINT16" />
         <col name="PackageID" type="UINT16" />
+        <col name="ShowPackage" type="TblItemCount" vector="true" />
         <col name="GemProb" type="UINT16" />
         <col name="GemPackageID" type="UINT16" />
         <col name="GemTime" type="UINT16" />
         <col name="Comment" type="comment" />
     </table>
 
-    <table name="TblExploreGemCost" file="data/exploregemcost.tbl" key="Times" serveronly="true">
+    <table name="TblExploreGemCost" file="data/exploregemcost.tbl" key="Times">
         <col name="Times" type="UINT16" />
         <col name="Diamond" type="INT32" />
         <col name="Comment" type="comment" />
     </table>
 
-    <table name="TblExploreTreasure" file="data/exploretreasure.tbl" key="ID" serveronly="true">
+    <table name="TblExploreTreasure" file="data/exploretreasure.tbl" key="ID">
         <col name="ID" type="UINT8" />
         <col name="CostItems" type="TblItemCount" vector="true" />
         <col name="PackageID" type="UINT16" />
@@ -1848,7 +1847,7 @@
         <col name="Comment" type="comment" />
     </table>
 
-    <table name="TblMainTask" file="data/maintask.tbl" setkey="Type" serveronly="true">
+    <table name="TblMainTask" file="data/maintask.tbl" setkey="Type">
         <col name="Type" type="UINT8" />
         <col name="ID" type="UINT16" />
         <col name="Var" type="INT32" />
@@ -1859,7 +1858,7 @@
         <col name="Comment" type="comment" />
     </table>
 
-    <table name="TblMainTaskReward" file="data/maintaskreward.tbl" key="Index" serveronly="true">
+    <table name="TblMainTaskReward" file="data/maintaskreward.tbl" key="Index">
         <col name="Index" type="UINT8" />
         <col name="Progress" type="UINT16" />
         <col name="Reward" type="TblItemCount" vector="true" />
@@ -1950,7 +1949,7 @@
         <col name="Comment" type="comment" />
     </table>
 
-    <table name="TblMemberEquipStar" file="data/memberequipstar.tbl" multikey="ID,StarLevel" serveronly="true">
+    <table name="TblMemberEquipStar" file="data/memberequipstar.tbl" multikey="ID,StarLevel">
         <col name="ID" type="UINT8" />
         <col name="StarLevel" type="UINT16" />
         <col name="NeedExp" type="INT32" />
@@ -2210,5 +2209,19 @@
         <col name="Description" type="comment" />
     </table>
     
-
+    <table name="TblFuliOnline" file="data/fulionline.tbl" key="TreasureChestID">
+        <col name="TreasureChestID" type="UINT8"/>
+        <col name="Cond" type="UINT32"/>
+        <col name="Reward" type="TblItemCount" vector="true"/>
+        <col name="Comment" type="comment"/> 
+    </table>
+  
+    <table name="TblYuanShiCompose" file="data/yuanshicompose.tbl" key="YuanShiID">
+        <col name="YuanShiID" type="UINT16"/>
+        <col name="Item" type="TblItemCount" />
+        <col name="SpecialItem" type="TblItemCount" />
+        <col name="Tab" type="UINT8" />
+        <col name="Comment" type="comment" />
+    </table>
+  
 </tables>

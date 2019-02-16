@@ -93,7 +93,7 @@ cc.Class({
             GlobalVar.eventManager().addEventListener(EventMsgId.EVENT_GUAZAI_SMELTER_NTF, this.composeBack, this);
             GlobalVar.eventManager().addEventListener(EventMsgId.EVENT_GUAZAI_REBIRTH_ACK, this.onGuazaiRebirthCallback, this);
             this.initData();
-            this.onChkboxChangedCallback(null, 'Melt');
+            // this.onChkboxChangedCallback(null, 'Melt');
         }
     },
 
@@ -519,18 +519,18 @@ cc.Class({
     },
 
     close: function () {
-        for (let i = 0; i < this.guazaiSmeltSlot.length; i++) {
-            let node = this.getNodeByName("nodeItem" + (i + 1));
-            let item = node.getChildByName("nodeAdd").getChildByName("ItemObject");
-            if (item) {
-                item.active = false;
-            }
-            this.seekNodeByName(node, "imgPlus").active = true;
-        }
+        // for (let i = 0; i < this.guazaiSmeltSlot.length; i++) {
+        //     let node = this.getNodeByName("nodeItem" + (i + 1));
+        //     let item = node.getChildByName("nodeAdd").getChildByName("ItemObject");
+        //     if (item) {
+        //         item.active = false;
+        //     }
+        //     this.seekNodeByName(node, "imgPlus").active = true;
+        // }
         this.initData();
-        this.getNodeByName("nodeMelt").active = false;
-        this.getNodeByName("nodeReborn").active = false;
-        this.getNodeByName('needItem').active = false;
+        // this.getNodeByName("nodeMelt").active = false;
+        // this.getNodeByName("nodeReborn").active = false;
+        // this.getNodeByName('needItem').active = false;
         this._super();
     },
 });

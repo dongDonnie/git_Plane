@@ -10,6 +10,10 @@ const BattleManager = require('BattleManager');
 const GameServerProto = require("GameServerProto");
 
 var self = null;
+const planeTypeArray = [30, 31, 32, 66, 67, 68];
+const guazaiTypeArray = [53, 54, 59];
+const yuanshiTypeArray = [69, 70]; 
+
 cc.Class({
     extends: RootBase,
 
@@ -62,6 +66,28 @@ cc.Class({
             default: 0,
             visible: false,
         },
+        //类型按钮 start
+        btnPlane: {
+            default: null,
+            type: cc.Node
+        },
+        btnGuaZai: {
+            default: null,
+            type: cc.Node
+        },
+        btnYuanShi: {
+            default: null,
+            type: cc.Node
+        },
+        btnOther: {
+            default: null,
+            type: cc.Node
+        },
+        bagType: {
+            default: "other",
+            visible: false,
+        },
+        //end
         bagData: [],
         gridStack: [],
     },
@@ -127,6 +153,7 @@ cc.Class({
         if (name == "Escape") {
             this._super("Escape");
             GlobalVar.eventManager().removeListenerWithTarget(this);
+            this.typeBtnShow("other");
             if (!this.deleteMode) {
                 WindowManager.getInstance().popView(false, null, false);
             } else {
@@ -174,7 +201,8 @@ cc.Class({
 
     onBagUnlockEvent: function (msg) {
         if (msg.data.ErrCode == 63) {
-            CommonWnd.showMessage(null, CommonWnd.oneConfirm, i18n.t('label.4000216'), i18n.t('label.4000221'));
+            // CommonWnd.showMessage(null, CommonWnd.oneConfirm, i18n.t('label.4000216'), i18n.t('label.4000221'));
+            CommonWnd.showNormalFreeGetWnd(GameServerProto.PTERR_DIAMOND_LACK);
             return;
         }
         this.showBag(GlobalVar.me().bagData.getData(), true);
@@ -199,24 +227,12 @@ cc.Class({
 
     showBag: function (data, needScrollToTop) {
         this.closing = false;
-        needScrollToTop = typeof needScrollToTop !== 'undefined' ? needScrollToTop : false;
+        this.needScrollToTop = typeof needScrollToTop !== 'undefined' ? needScrollToTop : false;
         this.bagData = [];
         if (this.showType == -1) {
-            // this.bagData = data.Items;
-            for (let i = 0; i<data.Items.length; i++){
-                if (data.Items[i].Type != GameServerProto.PT_ITEMTYPE_VALUE){
-                    this.bagData.push(data.Items[i]);
-                }
-            }
-            this.setSizeVisible(true);
-            this.gridCounts = data.Unlock + 100;
-            this.initBag(this.gridCounts);
-            this.initItem();
-            if (needScrollToTop) {
-                this.bagScroll.scrollToTop();
-            }
-            let str = this.bagData.length + "/" + this.gridCounts;
-            this.setSizeGrid(str);
+           
+            //this.showBagByType();
+            this.typeBtnShow("other");
         } else {
             for (let i = 0; i < data.Items.length; i++) {
                 if (data.Items[i].Type == this.showType) {
@@ -233,7 +249,7 @@ cc.Class({
             this.gridCounts = this.bagData.length <= 15 ? 15 : (parseInt(this.bagData.length / 5) * 5 + 5);
             this.initBag(this.gridCounts);
             this.initItem();
-            if (needScrollToTop) {
+            if (this.needScrollToTop) {
                 this.bagScroll.scrollToTop();
             }
         }
@@ -468,5 +484,100 @@ cc.Class({
             this._super(false);
         }
     },
+
+    //类型选择
+    onTypeSelectClick: function (event, customEventData) {
+        if(this.bagType == customEventData) return;
+        this.typeBtnShow(customEventData);
+    },  
+
+    typeBtnShow: function (customEventData) {
+        if(customEventData == "plane") {
+            this.bagType = "plane";
+            this.dealBtnSelect(this.btnPlane, 1);
+            this.dealBtnSelect(this.btnGuaZai, 0);
+            this.dealBtnSelect(this.btnYuanShi, 0);
+            this.dealBtnSelect(this.btnOther, 0);
+        }
+        else if(customEventData == "guazai") {
+            this.bagType = "guazai";
+            this.dealBtnSelect(this.btnPlane, 0);
+            this.dealBtnSelect(this.btnGuaZai, 1);
+            this.dealBtnSelect(this.btnYuanShi, 0);
+            this.dealBtnSelect(this.btnOther, 0);
+        }
+        else if(customEventData == "yuanshi") {
+            this.bagType = "yuanshi";
+            this.dealBtnSelect(this.btnPlane, 0);
+            this.dealBtnSelect(this.btnGuaZai, 0);
+            this.dealBtnSelect(this.btnYuanShi, 1);
+            this.dealBtnSelect(this.btnOther, 0);
+        }
+        else if(customEventData == "other") {
+            this.bagType = "other";
+            this.dealBtnSelect(this.btnPlane, 0);
+            this.dealBtnSelect(this.btnGuaZai, 0);
+            this.dealBtnSelect(this.btnYuanShi, 0);
+            this.dealBtnSelect(this.btnOther, 1);
+        }
+        this.showBagByType();
+    },
+
+    dealBtnSelect: function (btn, state) {
+        if(state == 1) {
+            btn.getComponent("RemoteSprite").setFrame(1);
+            btn.children[0].active = false;
+            btn.children[1].active = true;
+        }
+        else {
+            btn.getComponent("RemoteSprite").setFrame(0);
+            btn.children[0].active = true;
+            btn.children[1].active = false;
+        }
+    },
+
+    showBagByType: function () {
+        this.bagData = [];
+        let data = GlobalVar.me().bagData.getData();
+        let judgeTypeArray = null;
+        if(this.bagType == "plane") {
+            judgeTypeArray = planeTypeArray;
+        }
+        else if(this.bagType == "guazai") {
+            judgeTypeArray = guazaiTypeArray;
+        }
+        else if(this.bagType == "yuanshi") {
+            judgeTypeArray = yuanshiTypeArray;
+        }
+        else if(this.bagType == "other") {
+
+        }
+
+        for (let i = 0; i<data.Items.length; i++){
+            let type = data.Items[i].Type;
+            if (type != GameServerProto.PT_ITEMTYPE_VALUE){
+                if(!!!judgeTypeArray && planeTypeArray.indexOf(type) == -1 && guazaiTypeArray.indexOf(type) == -1 && yuanshiTypeArray.indexOf(type) == -1) {
+                    this.bagData.push(data.Items[i]);//其它
+                }
+                else if(!!judgeTypeArray && judgeTypeArray.indexOf(type) != -1) { 
+                    this.bagData.push(data.Items[i]);//非其它
+                }
+            }
+        }
+        this.setSizeVisible(true);
+        this.gridCounts = data.Unlock + 100;
+        this.initBag(this.gridCounts);
+        this.initItem();
+        if (this.needScrollToTop) {
+            this.bagScroll.scrollToTop();
+        }
+        let str = this.bagData.length + "/" + this.gridCounts;
+        this.setSizeGrid(str);
+    },
+
+    onRongLuClick: function () {
+        CommonWnd.showSmelterWnd();
+    },
+    
 
 });

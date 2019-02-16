@@ -98,6 +98,7 @@ var UIMain = cc.Class({
             this.getNodeByName('btnoFreeDiamond').active = false;
             this.getNodeByName('btnoShareDaily').active = false;
         }
+        
     },
 
     fixView: function () {
@@ -132,6 +133,8 @@ var UIMain = cc.Class({
         require('Guide').getInstance().enter(this.showDeskIcon.bind(this));
 
         GlobalVar.handlerManager().campHandler.sendGetCampBagReq(GameServerProto.PT_CAMPTYPE_MAIN);
+        GlobalVar.handlerManager().rewardCenterHandler.sendRewardCenterReq();
+        GlobalVar.handlerManager().limitTimeBoxHandler.sendGetLtbDataReq();
 
         this.showLaunchWindow();
         this.showDeskIcon();
@@ -235,6 +238,7 @@ var UIMain = cc.Class({
         GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_GET_SUPER_REWARD_DATA, this.hideSuperFuliBtn, this);
         GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_GET_SIGN_DATA, this.signMsgRecv, this);
         GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_LEVELUP_DOUBLE_REWARD, this.levelDoubleReward, this);
+        GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_GET_REWARD_CENTER_DATA, this.rewardCenterBack, this);
 
         //RENAME
         GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_GET_RENAME_ACK, this.getReNameData, this);
@@ -257,6 +261,9 @@ var UIMain = cc.Class({
         GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_TREASURE_FLAG_CHANGE, this.setTreasuryFlag, this);
         GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_GET_ARENA_DAY_REWARD_DATA, this.setArenaFlag, this);
         GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_REFRESH_AD_TASK_HOT_FLAG, this.setAdTaskFlag, this);
+        GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_LTB_HOT_FLAG, this.setLtbFlag, this);
+        GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_MAINTASK_FLAG_CHANGE, this.setMainTaskFlag, this);
+        
 
         //gm
         GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_GM_SWITCH_CHANGE, this.setMode, this);
@@ -271,6 +278,9 @@ var UIMain = cc.Class({
         GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_GET_INVITE_REWARD_DATA, this.onGetInviteRewardData, this);
 
         GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_GETACTIVE_DATA, this.getActiveData, this);
+
+        GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_GET_LTB_DATA, this.resetLtbShow, this);
+        GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_GET_LTB_REWARD, this.resetRewardLtbShow, this);
     },
 
     checkFlagSetHotPoint: function () {
@@ -289,12 +299,15 @@ var UIMain = cc.Class({
         this.setLimitStoreFlag();
         this.setSignFlag();
         this.setTreasuryFlag();
+        this.setMainTaskFlag();
         // 邮件要先获取邮件信息才可以判断是否有红点
         this.setMailFlag();
 
         this.setArenaFlag();
         this.setAdTaskFlag();
         this.setAdExpFlag();
+        this.setLtbFlag();
+    
     },
 
     judgeLevelUp: function () {
@@ -384,6 +397,10 @@ var UIMain = cc.Class({
         let flags = GlobalVar.me().statFlags;
         this.setFlagByNodeName("btnoDaily", flags.DailyFlag);
     },
+    setMainTaskFlag: function (event) {
+        let flags = GlobalVar.me().statFlags;
+        this.setFlagByNodeName("btnoDaily", flags.MainTaskFlag);
+    },
     setActiveFlag: function (event) {
         let flags = GlobalVar.me().statFlags;
         this.setFlagByNodeName("btnoActivity", flags.AMSFlag);
@@ -434,6 +451,16 @@ var UIMain = cc.Class({
         let flag = GlobalVar.me().adData.getTaskHotFlag();
         this.setFlagByNodeName("btnoAdTask", flag);
         this.setFreeFuliFlag();
+    },
+
+    setLtbFlag: function (event) {
+        let flags = GlobalVar.me().statFlags;
+        this.setFlagByNodeName("btnoLimitTimeBox", flags.FuliOnlineFlag);
+        if(!!flags.FuliOnlineFlag) {
+            let btnoLbx = this.getNodeByName("btnoLimitTimeBox");
+            let lblCountDown = btnoLbx.getChildByName("lblcountdown");
+            lblCountDown.active = false;
+        }
     },
 
     setAdExpFlag: function () {
@@ -731,6 +758,12 @@ var UIMain = cc.Class({
                 if (curRate > maxRate) {
                     curRate = maxRate;
                 }
+                if (parseInt(curRate) > 99999) {
+                    curRate = parseInt(curRate / 10000) + "万";
+                }
+                if (parseInt(maxRate) > 99999) {
+                    maxRate = parseInt(maxRate / 10000) + "万";
+                }
                 btnoTask.getChildByName("labelTaskRate").getComponent(cc.Label).string = "(" + curRate + "/" + maxRate + ")";
 
                 this.setFlagByNodeName("btnoTask", curRate == maxRate);
@@ -769,6 +802,12 @@ var UIMain = cc.Class({
             this.btnAuthorize.destroy();
             this.btnAuthorize = null;
         }
+
+        // 删除限时宝箱计时器
+        if(!!this.ltbTimeHandler) {
+            GlobalVar.gameTimer().delTimer(this.ltbTimeHandler);
+            this.ltbTimeHandler = null;
+        }
         // let platformApi = GlobalVar.getPlatformApi();
         // if (platformApi) {
         //     platformApi.setOffShowListener(this.onShowFunc);
@@ -790,8 +829,9 @@ var UIMain = cc.Class({
     },
 
     onSettingBtnClicked: function (event) {
-        CommonWnd.showSettingWnd();
+        // CommonWnd.showSettingWnd();
         // this.onInviteBtnClick();
+        CommonWnd.showSmelterWnd();
     },
     onArenaBtnClicked: function (event) {
         let arenaSystemData = GlobalVar.tblApi.getDataBySingleKey('TblSystem', GameServerProto.PT_SYSTEM_ARENA);
@@ -866,6 +906,9 @@ var UIMain = cc.Class({
         }
 
         CommonWnd.showEndlessView();
+    },
+    onChallengeBtnClick: function () {
+        CommonWnd.showChallengeWnd();
     },
     onPlayerInfoBtnClick: function (event) {
         CommonWnd.showPlayerInfoWnd();
@@ -983,6 +1026,11 @@ var UIMain = cc.Class({
         CommonWnd.showLimitStoreWithParam(1);
     },
 
+    //限时宝箱
+    onLimitTimeBoxBtnClick: function () {
+        CommonWnd.showLimitTimeBox();
+    },
+
     onGuazaiBtnTouched: function (event) {
         CommonWnd.showGuazai();
     },
@@ -1051,44 +1099,123 @@ var UIMain = cc.Class({
 
     onBtnTreasuryActive: function () {
         let treasuryAmsData = GlobalVar.me().activeData.getActiveListDataByType(GameServerProto.PT_AMS_ACT_TYPE_TREASURY);
-        if (treasuryAmsData){
-            let data = GlobalVar.me().activeData.getActiveDataByActID(treasuryAmsData.Actid);
-            if (!data){
-                GlobalVar.handlerManager().activeHandler.sendGetActiveDataReq(treasuryAmsData.Actid);
-            }else{
-                CommonWnd.showSpecialActiveWnd(GameServerProto.PT_AMS_ACT_TYPE_TREASURY);
-            }
+        if (treasuryAmsData) {
+            //     let data = GlobalVar.me().activeData.getActiveDataByActID(treasuryAmsData.Actid);
+            //     if (!data){
+            GlobalVar.handlerManager().activeHandler.sendGetActiveDataReq(treasuryAmsData.Actid);
+            //     }else{
+            //         CommonWnd.showSpecialActiveWnd(GameServerProto.PT_AMS_ACT_TYPE_TREASURY);
+            //     }
         }
     },
 
     onBtnVastActive: function () {
         let vastAmsData = GlobalVar.me().activeData.getActiveListDataByType(GameServerProto.PT_AMS_ACT_TYPE_VAST);
-        if (vastAmsData){
-            let data = GlobalVar.me().activeData.getActiveDataByActID(vastAmsData.Actid);
-            if (!data){
-                GlobalVar.handlerManager().activeHandler.sendGetActiveDataReq(vastAmsData.Actid);
-            }else{
-                CommonWnd.showSpecialActiveWnd(GameServerProto.PT_AMS_ACT_TYPE_VAST);
-            }
+        if (vastAmsData) {
+            // let data = GlobalVar.me().activeData.getActiveDataByActID(vastAmsData.Actid);
+            // if (!data){
+            GlobalVar.handlerManager().activeHandler.sendGetActiveDataReq(vastAmsData.Actid);
+            // }else{
+            //     CommonWnd.showSpecialActiveWnd(GameServerProto.PT_AMS_ACT_TYPE_VAST);
+            // }
+        }
+    },
+
+    onBtnRewardCenter: function () {
+        let rewardData = GlobalVar.me().rewardCenterData.data;
+        if (!rewardData) {
+            GlobalVar.handlerManager().rewardCenterHandler.sendRewardCenterReq();
+        } else {
+            CommonWnd.showRewardCenterWnd();
+        }
+    },
+
+    rewardCenterBack: function (data) {
+        if (data.Reward.length > 0) {
+            // CommonWnd.showRewardCenterWnd();
+            this.getNodeByName('btnoRewardCenter').active = true;
+        } else {
+            this.getNodeByName('btnoRewardCenter').active = false;
         }
     },
 
     getActiveData: function (event) {
-        if (event.ErrCode != GameServerProto.PTERR_SUCCESS){
+        if (event.ErrCode != GameServerProto.PTERR_SUCCESS) {
             GlobalVar.comMsg.errorWarning(event.ErrCode);
             return;
         }
-        if (event.Act.Type == GameServerProto.PT_AMS_ACT_TYPE_TREASURY){
+        if (event.Act.Type == GameServerProto.PT_AMS_ACT_TYPE_TREASURY) {
             CommonWnd.showSpecialActiveWnd(GameServerProto.PT_AMS_ACT_TYPE_TREASURY);
-        }else if (event.Act.Type == GameServerProto.PT_AMS_ACT_TYPE_VAST){
+        } else if (event.Act.Type == GameServerProto.PT_AMS_ACT_TYPE_VAST) {
             CommonWnd.showSpecialActiveWnd(GameServerProto.PT_AMS_ACT_TYPE_VAST);
         }
+    },
+
+    resetRewardLtbShow: function () {
+        //console.log("领取完奖励后回调end");
+        GlobalVar.me().statFlags.FuliOnlineFlag = false;
+        this.resetLtbShow();
+    },
+
+    resetLtbShow: function () {
+        let btnState = true; //今日宝箱是否领完
+        let bagid = GlobalVar.me().limitTimeBoxData.Step;
+        if(!!!bagid || bagid > GlobalVar.tblApi.getLength('TblFuliOnline')) {
+            btnState = false;
+        }
+        let btnoLbx = this.getNodeByName("btnoLimitTimeBox");
+        let lblCountDown = btnoLbx.getChildByName("lblcountdown");
+        let lblCountDown_lbl = lblCountDown.getComponent(cc.Label);
+        btnoLbx.active = true;
+        // console.log("宝箱是否显示")
+        // console.log(config.NEED_GUIDE)
+        // console.log(btnState);
+        let flags = GlobalVar.me().statFlags;
+        if (!!config.NEED_GUIDE || btnState == false) {
+            btnoLbx.active = false;
+        }
+        else if(!!!flags.FuliOnlineFlag) { 
+            if(!!this.ltbTimeHandler) {
+                GlobalVar.gameTimer().delTimer(this.ltbTimeHandler);
+                this.ltbTimeHandler = null;
+            }
+            let timepass = GlobalVar.me().limitTimeBoxData.OnlineTime;
+            let timeTarget = GlobalVar.tblApi.getDataBySingleKey('TblFuliOnline', bagid).dwCond;
+            let time = timeTarget - timepass;
+
+            if(time <= 0) { //可以领取
+                lblCountDown.active = false;
+            }
+            else {
+                lblCountDown.active = true;
+                let timeStr = GlobalVar.serverTime.secondToString(time);
+                lblCountDown_lbl.string = timeStr;
+                this.countDownLimitBox = function () {
+                    time = time - 1;
+                    if(time == 0) {
+                        lblCountDown.active = false;
+                        GlobalVar.gameTimer().delTimer(this.ltbTimeHandler);
+                        this.ltbTimeHandler = null;
+                    }
+                    else {
+                        let timeStr = GlobalVar.serverTime.secondToString(time);
+                        lblCountDown_lbl.string = timeStr;
+                    }
+                };
+                this.ltbTimeHandler = GlobalVar.gameTimer().startTimer(this.countDownLimitBox, 1);
+    
+            }
+        }
+
+        
+        this.setLtbFlag();
     },
 
     skipGuide: function () {
         config.NEED_GUIDE = false;
         cc.find('Canvas/GuideNode').active = false;
         this.showDeskIcon();
+        this.resetLtbShow();
     },
 
     setMode: function () {
@@ -1177,6 +1304,20 @@ var UIMain = cc.Class({
             btnNewPlayer1 && (btnNewPlayer1.active = true);
         } else {
             btnNewPlayer1 && (btnNewPlayer1.active = false);
+        }
+
+        let treasuryAmsData = GlobalVar.me().activeData.getActiveListDataByType(GameServerProto.PT_AMS_ACT_TYPE_TREASURY);
+        let btnoTreasureActive = this.getNodeByName("btnoTreasureActive");
+        btnoTreasureActive.active = !!(treasuryAmsData && !config.NEED_GUIDE);
+        let vastAmsData = GlobalVar.me().activeData.getActiveListDataByType(GameServerProto.PT_AMS_ACT_TYPE_VAST);
+        let btnoVastActive = this.getNodeByName("btnoVastActive");
+        btnoVastActive.active = !!(vastAmsData && !config.NEED_GUIDE)
+        
+        //限时宝箱
+        //没过引导不显示新手宝箱
+        let btnoLbx = this.getNodeByName("btnoLimitTimeBox");
+        if (!!config.NEED_GUIDE) {
+            btnoLbx.active = false;
         }
 
         this.setFreeFuliFlag();

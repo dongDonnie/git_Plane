@@ -1,0 +1,7 @@
+{
+  "ver": "1.0.0",
+  "uuid": "d7c7960e-23d3-4255-8f14-d2dac8f64525",
+  "atlasJson": "{\"imagePath\":\"R_clzj_tex.png\",\"width\":1024,\"SubTexture\":[{\"y\":1,\"frameY\":-1,\"frameWidth\":552,\"width\":550,\"frameX\":-1,\"frameHeight\":562,\"height\":560,\"name\":\"R_zjzM (4)\",\"x\":1},{\"y\":563,\"frameY\":-1,\"frameWidth\":239,\"width\":237,\"frameX\":-1,\"frameHeight\":326,\"height\":324,\"name\":\"R_zjzM (1)\",\"x\":1},{\"y\":889,\"frameY\":-1,\"frameWidth\":42,\"width\":40,\"frameX\":-1,\"frameHeight\":89,\"height\":87,\"name\":\"R_zjzM (2)\",\"x\":1},{\"y\":563,\"frameY\":-1,\"frameWidth\":56,\"width\":54,\"frameX\":-1,\"frameHeight\":174,\"height\":172,\"name\":\"R_zjzM (3)\",\"x\":240}],\"height\":1024,\"name\":\"R_clzj\"}",
+  "texture": "fc9d0fc9-ae64-4ba2-8401-d222ff9619cb",
+  "subMetas": {}
+}

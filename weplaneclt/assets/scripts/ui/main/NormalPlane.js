@@ -7,6 +7,7 @@ const CommonWnd = require("CommonWnd");
 const GlobalFunc = require('GlobalFunctions');
 const BattleManager = require('BattleManager');
 const GameServerProto = require("GameServerProto");
+const i18n = require('LanguageData');
 
 cc.Class({
     extends: RootBase,
@@ -160,6 +161,11 @@ cc.Class({
                         let member = GlobalVar.me().memberData.getMemberByID(id);
                         wnd.getComponent(type).updataFighter(member.MemberID, member.Quality);
                         wnd.getComponent(type).updateDriveCardShow();
+                    }, true, false);
+                } else if (this.nextWndFlag == 3) {
+                    WindowManager.getInstance().insertView(WndTypeDefine.WindowType.E_DT_NORMAL_MASTERY_WND, WndTypeDefine.WindowType.E_DT_NORMALROOT_WND, function (wnd, name, type) {
+                        let member = GlobalVar.me().memberData.getMemberByID(self.memberID);
+                        wnd.getComponent(type).updateFighter(member);
                     }, true, false);
                 }
             } else {
@@ -401,6 +407,18 @@ cc.Class({
         this.deleteMode = false;
         this.nextWndFlag = 2;
         this.animePlay(0);
+    },
+
+    showMastery: function () {
+        let level = GlobalVar.me().getLevel();
+        let system = GlobalVar.tblApi.getDataBySingleKey('TblSystem', GameServerProto.PT_SYSTEM_MEMBER_SPECIAL);
+        if (level >= system.wOpenLevel) {
+            this.deleteMode = false;
+            this.nextWndFlag = 3;
+            this.animePlay(0);
+        } else {
+            GlobalVar.comMsg.showMsg(i18n.t('label.4000258').replace("%d", system.wOpenLevel).replace("%d", system.strName));
+        }
     },
 
     onBtnMemberStore: function () {

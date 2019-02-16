@@ -87,7 +87,7 @@ var ScenarioManager = cc.Class({
 
         if (!!this.battleManager.isEndlessFlag) {
             this.battleEndlessMode = new BattleEndlessMode();
-            this.battleEndlessMode.init();
+            this.battleEndlessMode.init(mapName);
         }
 
         if (!!this.battleManager.isShowFlag) {

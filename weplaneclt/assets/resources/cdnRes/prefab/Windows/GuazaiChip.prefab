@@ -3137,6 +3137,7 @@
     "_createItemFunc": null,
     "_updateItemFunc": null,
     "_completeFunc": null,
+    "_completeAllFunc": null,
     "_id": ""
   },
   {
@@ -3740,7 +3741,7 @@
       "__id__": 106
     },
     "_enabled": true,
-    "audioType": 5,
+    "audioType": 7,
     "_fontSize": 30,
     "_showShadow": true,
     "btnState": true,

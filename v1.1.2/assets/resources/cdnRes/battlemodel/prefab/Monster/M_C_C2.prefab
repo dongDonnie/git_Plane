@@ -1,0 +1,164 @@
+[
+  {
+    "__type__": "cc.Prefab",
+    "_name": "",
+    "_objFlags": 0,
+    "_native": "",
+    "data": {
+      "__id__": 1
+    },
+    "optimizationPolicy": 0,
+    "asyncLoadAssets": false,
+    "readonly": false
+  },
+  {
+    "__type__": "cc.Node",
+    "_name": "M_C_C2",
+    "_objFlags": 0,
+    "_parent": null,
+    "_children": [],
+    "_active": true,
+    "_level": 1,
+    "_components": [
+      {
+        "__id__": 2
+      },
+      {
+        "__id__": 3
+      },
+      {
+        "__id__": 4
+      }
+    ],
+    "_prefab": {
+      "__id__": 5
+    },
+    "_opacity": 255,
+    "_color": {
+      "__type__": "cc.Color",
+      "r": 255,
+      "g": 255,
+      "b": 255,
+      "a": 255
+    },
+    "_contentSize": {
+      "__type__": "cc.Size",
+      "width": 221.19,
+      "height": 177.24
+    },
+    "_anchorPoint": {
+      "__type__": "cc.Vec2",
+      "x": 0.5,
+      "y": 0.5
+    },
+    "_position": {
+      "__type__": "cc.Vec3",
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "_scale": {
+      "__type__": "cc.Vec3",
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "_quat": {
+      "__type__": "cc.Quat",
+      "x": 0,
+      "y": 0,
+      "z": 0,
+      "w": 1
+    },
+    "_skewX": 0,
+    "_skewY": 0,
+    "_zIndex": 0,
+    "_is3DNode": false,
+    "groupIndex": 0,
+    "_rotationX": 0,
+    "_rotationY": 0,
+    "_id": ""
+  },
+  {
+    "__type__": "cc.BoxCollider",
+    "_name": "",
+    "_objFlags": 0,
+    "node": {
+      "__id__": 1
+    },
+    "_enabled": true,
+    "tag": 0,
+    "_offset": {
+      "__type__": "cc.Vec2",
+      "x": 0,
+      "y": 20
+    },
+    "_size": {
+      "__type__": "cc.Size",
+      "width": 140,
+      "height": 130
+    },
+    "_id": ""
+  },
+  {
+    "__type__": "64d23HkdapKrrTNXSIba1Hu",
+    "_name": "",
+    "_objFlags": 0,
+    "node": {
+      "__id__": 1
+    },
+    "_enabled": true,
+    "spine": null,
+    "dragonBone": {
+      "__id__": 4
+    },
+    "dbArmature": null,
+    "dbArmatureCallback": null,
+    "collider": {
+      "__id__": 2
+    },
+    "_hasStop": false,
+    "mixTime": 0.2,
+    "objectType": 0,
+    "entity": null,
+    "defaultAction": null,
+    "tbl": null,
+    "_id": ""
+  },
+  {
+    "__type__": "dragonBones.ArmatureDisplay",
+    "_name": "",
+    "_objFlags": 0,
+    "node": {
+      "__id__": 1
+    },
+    "_enabled": true,
+    "_srcBlendFactor": 770,
+    "_dstBlendFactor": 771,
+    "_armatureName": "armatureName",
+    "_animationName": "start_1",
+    "playTimes": 0,
+    "_N$dragonAsset": {
+      "__uuid__": "6e16642c-9650-4c7b-bdec-4f7aa49aa37f"
+    },
+    "_N$dragonAtlasAsset": {
+      "__uuid__": "b7201ee6-adb9-45a1-adef-ce12dc8a44b2"
+    },
+    "_N$_defaultArmatureIndex": 0,
+    "_N$_animationIndex": 2,
+    "_N$timeScale": 1,
+    "_N$debugBones": false,
+    "_id": ""
+  },
+  {
+    "__type__": "cc.PrefabInfo",
+    "root": {
+      "__id__": 1
+    },
+    "asset": {
+      "__uuid__": "02d6aa92-8e08-4ace-a0bf-6914fe774159"
+    },
+    "fileId": "fdyhkqUv1O250OvhjK4I/W",
+    "sync": false
+  }
+]

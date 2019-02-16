@@ -111,10 +111,10 @@ const BattleManager = cc.Class({
 
         if (!this.isDemo) {
             if (this.isEndlessFlag) {
-                this.campName = 'CampEndless';
+                //this.campName = 'CampEndless';
                 this.endlessScore = base64.encode('0');
             } else if (this.isCampaignFlag) {
-                this.campName = this.campName;
+                //this.campName = this.campName;
             } else if (this.isEditorFlag) {
                 this.campName = 'CampEditor';
             } else if (this.isShowFlag) {
@@ -246,9 +246,9 @@ const BattleManager = cc.Class({
                 let plane = this.showDC.getChildByName('plane');
                 if (!!plane) {
                     this.currentTime += Defines.BATTLE_FRAME_SECOND;
-                    if (this.currentTime > 1.6) {
+                    if (this.currentTime >= 1.6) {
                         if (this.currentTime == 1.6) {
-                            plane.openShader(false);
+                            //plane.openShader(false);
                         } else {
                             if (this.show == 2) {
                                 this.showDC.removeAllChildren(false);
@@ -262,7 +262,6 @@ const BattleManager = cc.Class({
                     }
                 }
             }
-
         }
 
         if (this.show == 3 && cc.isValid(this.managers[Defines.MgrType.HERO].planeEntity)) {
@@ -526,6 +525,14 @@ const BattleManager = cc.Class({
 
     setNormalCampaign(idx) {
         this.campName = 'CampNormal' + idx;
+    },
+
+    setEndlessCampaign(idx) {
+        if (idx == 0) {
+            this.campName = 'CampEndless';
+        } else {
+            this.campName = 'CampEndless' + idx;
+        }
     },
 
     setCampName(name) {

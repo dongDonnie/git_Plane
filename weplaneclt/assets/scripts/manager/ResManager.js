@@ -177,8 +177,8 @@ var ResManager = cc.Class({
         let ready = 0;
         for (let res in this.preLoadArray) {
             this.loadRes(this.preLoadArray[res].type, this.preLoadArray[res].url, function (obj, type, path) {
-                if(!cc.isValid(obj)){
-                    if(!!callback){
+                if (!cc.isValid(obj)) {
+                    if (!!callback) {
                         callback(-1);
                     }
                     return;
@@ -203,11 +203,11 @@ var ResManager = cc.Class({
                     }
                     self.preLoadArray.splice(0, self.preLoadArray.length);
                     if (error) {
-                        if(!!callback){
+                        if (!!callback) {
                             callback(-1);
                         }
                     } else {
-                        if(!!callback){
+                        if (!!callback) {
                             callback(1);
                         }
                     }
@@ -383,65 +383,62 @@ var ResManager = cc.Class({
                 }
             }
 
-
             let campName = battleManager.getCampName();
-            if (campName != '') {
-                if (campName == 'CampDemo') {
-                    let path = 'cdnRes/battlemap/tk-e-ditu';
-                    this.pushDeep(path, ResMapping.ResType.SpriteFrame);
-                } else if (campName == 'CampEndless') {
-                    let assistID = GlobalVar.me().memberData.getAssistFighterID();
-                    if (assistID != 0) {
-                        let assistArray = this.resSliceArray[assistID];
-                        for (let aindex in assistArray) {
-                            this.pushDeep(assistArray[aindex].url, assistArray[aindex].type);
-                        }
+            if (!!battleManager.isArenaFlag) {
+                let path = 'cdnRes/battlemap/tk-e-ditu';
+                this.pushDeep(path, ResMapping.ResType.SpriteFrame);
+            } else if (!!battleManager.isEndlessFlag) {
+                let assistID = GlobalVar.me().memberData.getAssistFighterID();
+                if (assistID != 0) {
+                    let assistArray = this.resSliceArray[assistID];
+                    for (let aindex in assistArray) {
+                        this.pushDeep(assistArray[aindex].url, assistArray[aindex].type);
                     }
-
-                    let data = require(campName).data;
-                    for (let i = 0; i < data.maps.length; i++) {
-                        for (let j = 0; j < data.maps[i].length; j++) {
-                            let path = 'cdnRes/battlemap/' + data.maps[i][j];
-                            this.pushDeep(path, ResMapping.ResType.SpriteFrame);
-                        }
-                    }
-                    for (let mn in data.monstersNormal) {
-                        this.loadLoop(data.monstersNormal[mn].groups);
-                    }
-                    for (let me in data.monstersElite) {
-                        this.loadLoop(data.monstersElite[me].groups);
-                    }
-                    for (let me in data.monstersBoss) {
-                        this.loadLoop(data.monstersBoss[me].groups);
-                    }
-                    for (let me in data.monstersEilteBoss) {
-                        this.loadLoop(data.monstersEilteBoss[me].groups);
-                    }
-                    for (let me in data.monstersChest) {
-                        this.loadLoop(data.monstersChest[me].groups);
-                    }
-                    for (let ml in data.monstersLine) {
-                        this.loadLoop(data.monstersLine[ml].groups);
-                    }
-                    for (let mm in data.monstersMissile) {
-                        this.loadLoop(data.monstersMissile[mm].groups);
-                    }
-                } else {
-                    let map = require(campName).data;
-                    for (let i = 0; i < map.maps.length; i++) {
-                        for (let j = 0; j < map.maps[i].length; j++) {
-                            let path = 'cdnRes/battlemap/' + map.maps[i][j];
-                            this.pushDeep(path, ResMapping.ResType.SpriteFrame);
-                        }
-                    }
-                    for (let k = 0; k < map.monsterWaves.length; k++) {
-                        if (typeof map.monsterWaves[k].wave === 'undefined') {
-                            continue;
-                        }
-                        this.loadLoop(map.monsterWaves[k].wave.groups);
-                    }
-                    this.loadLoop(map.monsterExtra);
                 }
+
+                let data = require(campName).data;
+                for (let i = 0; i < data.maps.length; i++) {
+                    for (let j = 0; j < data.maps[i].length; j++) {
+                        let path = 'cdnRes/battlemap/' + data.maps[i][j];
+                        this.pushDeep(path, ResMapping.ResType.SpriteFrame);
+                    }
+                }
+                for (let mn in data.monstersNormal) {
+                    this.loadLoop(data.monstersNormal[mn].groups);
+                }
+                for (let me in data.monstersElite) {
+                    this.loadLoop(data.monstersElite[me].groups);
+                }
+                for (let me in data.monstersBoss) {
+                    this.loadLoop(data.monstersBoss[me].groups);
+                }
+                for (let me in data.monstersEilteBoss) {
+                    this.loadLoop(data.monstersEilteBoss[me].groups);
+                }
+                for (let me in data.monstersChest) {
+                    this.loadLoop(data.monstersChest[me].groups);
+                }
+                for (let ml in data.monstersLine) {
+                    this.loadLoop(data.monstersLine[ml].groups);
+                }
+                for (let mm in data.monstersMissile) {
+                    this.loadLoop(data.monstersMissile[mm].groups);
+                }
+            } else if (!!battleManager.isCampaignFlag) {
+                let map = require(campName).data;
+                for (let i = 0; i < map.maps.length; i++) {
+                    for (let j = 0; j < map.maps[i].length; j++) {
+                        let path = 'cdnRes/battlemap/' + map.maps[i][j];
+                        this.pushDeep(path, ResMapping.ResType.SpriteFrame);
+                    }
+                }
+                for (let k = 0; k < map.monsterWaves.length; k++) {
+                    if (typeof map.monsterWaves[k].wave === 'undefined') {
+                        continue;
+                    }
+                    this.loadLoop(map.monsterWaves[k].wave.groups);
+                }
+                this.loadLoop(map.monsterExtra);
             }
         } else if (scene == SceneDefines.MAIN_STATE) {
             this.pushDeep('cdnRes/prefab/MainScene/UIMain', ResMapping.ResType.Prefab);

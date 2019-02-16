@@ -14,6 +14,7 @@ const TblApi = require("tblapi");
 const NetWaiting=require("netwaiting");
 const config = require("config");
 const weChatAPI = require("weChatAPI");
+const StoreageData = require("storagedata");
 //const qqPlayAPI = require("qqPlayAPI");
 
 var GlobalVar = module.exports;
@@ -87,7 +88,13 @@ GlobalVar.srcSwitch = function () {
 },
 GlobalVar.shareControl = 0;
 GlobalVar.getShareControl = function () {
-    return GlobalVar.shareControl;
+    if (cc.sys.platform == cc.sys.WECHAT_GAME){
+        return GlobalVar.shareControl;
+    }else if (window && window["wywGameId"]=="5469"){
+        return 0;
+    }else {
+        return 1;
+    }
 },
 GlobalVar.shareOpen = false;
 GlobalVar.getShareSwitch = function () {
@@ -97,6 +104,9 @@ GlobalVar.getShareSwitch = function () {
         return false;
     }
     return true;
+},
+GlobalVar.canShowShare = function () {
+    return GlobalVar.getShareControl() == 1;
 },
 GlobalVar.cityFlagSwitch = false;
 GlobalVar.getCityFlagSwitch = function () {
@@ -116,6 +126,17 @@ GlobalVar.getVideoAdSwitch = function () {
         return true;
     }
     return false;
+},
+GlobalVar.canShowVideo = function (needDayLimit = false) {
+    if (GlobalVar.getShareControl() == 6){
+        return true;
+    }
+    if (!GlobalVar.getVideoAdSwitch()
+    || StoreageData.getShareTimesWithKey("rewardedVideoLimit", 99)
+    || (needDayLimit && StoreageData.getShareTimesWithKey("todayVideoPlayTimes", 99) >= this.shareSetting.todayVideoMax)){
+        return false;
+    }
+    return true;
 },
 
 GlobalVar.bannerOpen = true;

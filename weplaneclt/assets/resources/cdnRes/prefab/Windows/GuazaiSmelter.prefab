@@ -173,8 +173,8 @@
     "_srcBlendFactor": 1,
     "_dstBlendFactor": 771,
     "_useOriginalSize": false,
-    "_string": "挂载熔炉",
-    "_N$string": "挂载熔炉",
+    "_string": "挂载合成",
+    "_N$string": "挂载合成",
     "_fontSize": 40,
     "_lineHeight": 40,
     "_enableWrapText": true,
@@ -688,7 +688,7 @@
         "__id__": 33
       }
     ],
-    "_active": true,
+    "_active": false,
     "_level": 0,
     "_components": [
       {
@@ -5635,8 +5635,8 @@
     "_srcBlendFactor": 1,
     "_dstBlendFactor": 771,
     "_useOriginalSize": false,
-    "_string": "快速熔炼",
-    "_N$string": "快速熔炼",
+    "_string": "快速合成",
+    "_N$string": "快速合成",
     "_fontSize": 25,
     "_lineHeight": 25,
     "_enableWrapText": true,
@@ -5737,8 +5737,8 @@
     "_srcBlendFactor": 1,
     "_dstBlendFactor": 771,
     "_useOriginalSize": false,
-    "_string": "快速熔炼",
-    "_N$string": "快速熔炼",
+    "_string": "快速合成",
+    "_N$string": "快速合成",
     "_fontSize": 25,
     "_lineHeight": 25,
     "_enableWrapText": true,
@@ -5777,7 +5777,7 @@
     "_showShadow": true,
     "btnState": true,
     "_N$fontColor": 0,
-    "_N$textLabel": "快速熔炼",
+    "_N$textLabel": "快速合成",
     "_id": ""
   },
   {

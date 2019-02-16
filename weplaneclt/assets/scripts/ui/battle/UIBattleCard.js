@@ -1,4 +1,3 @@
-
 const UIBase = require("uibase");
 const GlobalVar = require('globalvar')
 const EventMsgID = require("eventmsgid");
@@ -7,7 +6,9 @@ const SceneDefines = require("scenedefines");
 const i18n = require('LanguageData');
 const StoreageData = require("storagedata");
 
-const RECV_CUR_REWARD = 0, RECV_ALL_REWARD = 1, RECV_ALL_REWARD_VIP = 2;
+const RECV_CUR_REWARD = 0,
+    RECV_ALL_REWARD = 1,
+    RECV_ALL_REWARD_VIP = 2;
 const RECV_ALL_NEED_VIP_LEVEL = 2;
 
 cc.Class({
@@ -44,7 +45,7 @@ cc.Class({
                     nodeButton.getChildByName("nodeVip").active = true;
                     nodeButton.getChildByName("btnRecv").active = false;
                     nodeButton.getChildByName("btnRecvNew").active = false;
-                }else if (GlobalVar.getShareSwitch()) {
+                } else if (GlobalVar.getShareSwitch()) {
                     nodeButton.getChildByName("nodeShare").x = -150
                     nodeButton.getChildByName("nodeShare").active = true;
                     nodeButton.getChildByName("nodeVip").x = 150;
@@ -71,18 +72,18 @@ cc.Class({
             nodeButton.getChildByName("nodeVip").active = false;
             nodeButton.getChildByName("btnRecv").active = false;
             nodeButton.getChildByName("btnRecvNew").active = true;
-        }else{
+        } else {
             nodeButton.getChildByName("nodeShare").active = false;
             nodeButton.getChildByName("nodeVip").active = false;
             nodeButton.getChildByName("btnRecv").active = true;
             nodeButton.getChildByName("btnRecvNew").active = false;
         }
 
-        if (nodeButton.getChildByName("nodeShare").active){
+        if (nodeButton.getChildByName("nodeShare").active) {
             // let todayRecvTimes = StoreageData.getShareTimesWithKey("drawCard", 1);
             // if (todayRecvTimes < 2){
             let platformApi = GlobalVar.getPlatformApi();
-            if (platformApi && (platformApi.canShowRewardVideo() || GlobalVar.getShareControl() == 6)) {
+            if (platformApi && GlobalVar.canShowVideo()) {
                 nodeButton.getChildByName("nodeShare").getChildByName("btnRecvAll").getChildByName("spriteShare").active = false;
                 nodeButton.getChildByName("nodeShare").getChildByName("btnRecvAll").getChildByName("spriteVideo").active = true;
                 nodeButton.getChildByName("nodeShare").getChildByName("btnRecvAll").getComponent("ButtonObject").setText("  观看视频");
@@ -92,7 +93,7 @@ cc.Class({
         }
     },
 
-    start:function(){
+    start: function () {
         GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_CAMP_DRAWREWARD_NTF, this.getDrawCardNtf, this);
         GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_CAMP_FREEDRAW_NTF, this.getFreeDrawCardNtf, this);
         this.node.getChildByName("nodeBottom").getChildByName("nodeButton").active = false;
@@ -105,43 +106,43 @@ cc.Class({
         GlobalVar.eventManager().removeListenerWithTarget(this);
     },
 
-    touchEnd:function(event, index){
-        if (!!this.canQuitUIBattleCard && !this.canClickedRecvBtn){
-            if (index == RECV_CUR_REWARD){
+    touchEnd: function (event, index) {
+        if (!!this.canQuitUIBattleCard && !this.canClickedRecvBtn) {
+            if (index == RECV_CUR_REWARD) {
                 this.canClickedRecvBtn = true;
                 let labelTip = this.node.getChildByName("nodeBottom").getChildByName("labelDrawCardTip");
                 labelTip.active = false;
                 GlobalVar.sceneManager().gotoScene(SceneDefines.MAIN_STATE);
-            } else if (index == RECV_ALL_REWARD){
+            } else if (index == RECV_ALL_REWARD) {
                 let self = this;
                 let platformApi = GlobalVar.getPlatformApi();
-                if (platformApi){
+                if (platformApi) {
                     // let todayRecvTimes = StoreageData.getShareTimesWithKey("drawCard", 1);
-                    if (platformApi.canShowRewardVideo() || GlobalVar.getShareControl() == 6){
+                    // if (GlobalVar.canShowVideo()) {
+                        self.canClickedRecvBtn = true;
                         platformApi.showRewardedVideoAd(206, function () {
-                            self.canClickedRecvBtn = true;
                             GlobalVar.handlerManager().campHandler.sendFreeDrawReq();
                             // StoreageData.setShareTimesWithKey("drawCard", 1)
                         }, function () {
                             self.canClickedRecvBtn = false;
                         }, true, true);
-                        self.canClickedRecvBtn = true;
-                    }else{
-                        platformApi.shareNormal(106, function() {
-                            self.canClickedRecvBtn = true;
-                            GlobalVar.handlerManager().campHandler.sendFreeDrawReq();
-                        });
-                    }
-                }else if (GlobalVar.configGMSwitch()){
+                    // } 
+                    // else {
+                    //     platformApi.shareNormal(106, function () {
+                    //         self.canClickedRecvBtn = true;
+                    //         GlobalVar.handlerManager().campHandler.sendFreeDrawReq();
+                    //     });
+                    // }
+                } else if (GlobalVar.configGMSwitch()) {
                     self.canClickedRecvBtn = true;
                     // console.log("发送freedraw消息");
                     GlobalVar.handlerManager().campHandler.sendFreeDrawReq();
                 }
-            } else if (index == RECV_ALL_REWARD_VIP){
-                if (GlobalVar.me().vipLevel >= RECV_ALL_NEED_VIP_LEVEL){
+            } else if (index == RECV_ALL_REWARD_VIP) {
+                if (GlobalVar.me().vipLevel >= RECV_ALL_NEED_VIP_LEVEL) {
                     this.canClickedRecvBtn = true;
                     GlobalVar.handlerManager().campHandler.sendFreeDrawReq();
-                }else{
+                } else {
                     let str = i18n.t('label.4000506')
                     str = str.replace("%count", GlobalVar.tblApi.getDataBySingleKey('TblVipRight', RECV_ALL_NEED_VIP_LEVEL).nRecharge / 10);
                     str = str.replace("%level", RECV_ALL_NEED_VIP_LEVEL);
@@ -152,7 +153,7 @@ cc.Class({
             this.touchRandomCard();
         }
     },
-    
+
     touchRandomCard: function () {
         this.touchRandom = true;
         this.clickCardSprite(null, Math.floor(Math.random() * 6));
@@ -160,24 +161,24 @@ cc.Class({
 
     initCardRewardView: function () {
         let MAX_CARD_COUNT = 6;
-        for (let i = 1;i<MAX_CARD_COUNT;i++){
+        for (let i = 1; i < MAX_CARD_COUNT; i++) {
             this.spriteNodeList[i] = cc.instantiate(this.spriteNodeList[0]);
             this.node.getChildByName("nodeCenter").addChild(this.spriteNodeList[i]);
             this.spriteNodeList[i].getComponent(cc.Button).clickEvents[0].customEventData = i;
         }
 
         let gameEndData = GlobalVar.me().campData.getGameEndData().Win;
-        if(!gameEndData){
+        if (!gameEndData) {
             this.canDrawCard = true;
             return;
         }
         let cardData = gameEndData.DrawItem;
-        this.maxDrawCount = gameEndData.Star == 3?2:1;
+        this.maxDrawCount = gameEndData.Star == 3 ? 2 : 1;
 
         let labelTip = this.node.getChildByName("nodeBottom").getChildByName("labelDrawCardTip");
-        labelTip.getComponent(cc.Label).string = gameEndData.Star == 3?"满星通关，可翻牌两次":"可翻牌一次";
+        labelTip.getComponent(cc.Label).string = gameEndData.Star == 3 ? "满星通关，可翻牌两次" : "可翻牌一次";
         labelTip.runAction(cc.repeatForever(cc.sequence(cc.fadeIn(0.7), cc.fadeOut(0.7))));
-        
+
         for (let i = 0; i < this.spriteNodeList.length; i++) {
             this.cardDrawState[i] = false;
             let itemData = this.spriteNodeList[i].getChildByName("ItemObject").getComponent("ItemObject").updateItem(cardData[i].ItemID, cardData[i].Count);
@@ -198,7 +199,7 @@ cc.Class({
     },
 
     getDrawCardNtf: function (data) {
-        if (data.ErrCode != GameServerProto.PTERR_SUCCESS){
+        if (data.ErrCode != GameServerProto.PTERR_SUCCESS) {
             GlobalVar.comMsg.errorWarning(data.ErrCode);
             setTimeout(() => {
                 GlobalVar.sceneManager().gotoScene(SceneDefines.MAIN_STATE);
@@ -207,7 +208,7 @@ cc.Class({
         }
         this.curDrawCount = data.OK.DrawCount;
         let speed = 0.125;
-        if (this.curDrawCount < this.maxDrawCount){
+        if (this.curDrawCount < this.maxDrawCount) {
             GlobalVar.soundManager().playEffect('cdnRes/audio/battle/effect/turn_card');
             let self = this;
             let scale1 = cc.scaleTo(speed, 0, 1);
@@ -226,12 +227,12 @@ cc.Class({
             this.spriteNodeList[index].runAction(cc.sequence(scale1, callFun, scale2, callFun2));
             this.canDrawCard = true;
             this.cardDrawState[index] = true;
-        } else if (this.curDrawCount == this.maxDrawCount){
+        } else if (this.curDrawCount == this.maxDrawCount) {
             GlobalVar.soundManager().playEffect('cdnRes/audio/battle/effect/turn_card');
             let self = this;
             for (let i = 0; i < this.cardDrawState.length; i++) {
                 let index = i;
-                if (index == this.clickIndex){
+                if (index == this.clickIndex) {
                     let scale1 = cc.scaleTo(speed, 0, 1);
                     let callFun = cc.callFunc(() => {
                         self.spriteNodeList[index].getChildByName("spriteCard").getComponent("RemoteSprite").setFrame(0)
@@ -245,7 +246,7 @@ cc.Class({
                     let scale2 = cc.scaleTo(speed, 1, 1);
                     this.spriteNodeList[index].runAction(cc.sequence(scale1, callFun, scale2, callFun2));
                     this.cardDrawState[index] = true;
-                }else if (!this.cardDrawState[index]){
+                } else if (!this.cardDrawState[index]) {
                     let scale1 = cc.scaleTo(speed, 0, 1);
                     let callFun = cc.callFunc(() => {
                         self.spriteNodeList[index].getChildByName("spriteCard").getComponent("RemoteSprite").setFrame(1)
@@ -272,7 +273,7 @@ cc.Class({
         let speed = 0.125;
         for (let i = 0; i < this.cardDrawState.length; i++) {
             let index = i;
-            if (!this.cardDrawState[index]){
+            if (!this.cardDrawState[index]) {
                 let scale1 = cc.scaleTo(speed, 0, 1);
                 let callFun = cc.callFunc(() => {
                     self.spriteNodeList[index].getChildByName("spriteCard").getComponent("RemoteSprite").setFrame(0)

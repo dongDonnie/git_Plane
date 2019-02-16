@@ -1,0 +1,32 @@
+{
+  "ver": "2.3.0",
+  "uuid": "90b78898-57d1-4076-acc5-753517ccbe21",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "platformSettings": {},
+  "subMetas": {
+    "quest_planetnumber_active": {
+      "ver": "1.0.3",
+      "uuid": "f93f7d1c-bab7-4111-8ffa-49111169169d",
+      "rawTextureUuid": "90b78898-57d1-4076-acc5-753517ccbe21",
+      "trimType": "auto",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 520,
+      "height": 57,
+      "rawWidth": 520,
+      "rawHeight": 57,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

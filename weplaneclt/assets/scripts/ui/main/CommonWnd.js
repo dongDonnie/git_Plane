@@ -72,6 +72,13 @@ module.exports = {
             });
     },
 
+    showLimitTimeBox: function () {
+        WindowManager.getInstance().pushView(WndTypeDefine.WindowType.E_DT_NORMAL_LIMITTIME_BOX_WND,
+            function (wnd, name, type) {
+                //wnd.getComponent(WndTypeDefine.WindowType.E_DT_NORMAL_LIMITTIME_BOX_WND).setStoreType(storeType);
+            });
+    },
+
     showItemBag: function (showType, selectCallback, choosingCallback, target, openType) {
         openType = typeof openType !== 'undefined' ? openType : -1;
         if (WindowManager.getInstance().findViewIndex(WndTypeDefine.WindowType.E_DT_NORMALROOT_WND) != -1) {
@@ -512,5 +519,24 @@ module.exports = {
 
     showTreasuryRankWnd: function () {
         WindowManager.getInstance().pushView(WndTypeDefine.WindowType.E_DT_NORMAL_TREASURY_RANK_WND);
+    },
+
+    showRoughFactory: function () {
+        WindowManager.getInstance().pushView(WndTypeDefine.WindowType.E_DT_NORMAL_ROUGH_FACTORY_WND);
+    },
+
+    showRewardCenterWnd: function () {
+        WindowManager.getInstance().pushView(WndTypeDefine.WindowType.E_DT_NORMAL_REWARD_CENTER_WND);
+    },
+
+    showSpaceExploreWnd: function () {
+        WindowManager.getInstance().insertView(WndTypeDefine.WindowType.E_DT_NORMAL_SPACE_EXPLORE_WND, WndTypeDefine.WindowType.E_DT_NORMALROOT_WND);
+    },
+    showSpaceAreaWnd: function () {
+        WindowManager.getInstance().pushView(WndTypeDefine.WindowType.E_DT_NORMAL_SPACE_EXPLORE_AREA_WND);
+    },
+
+    showSmelterWnd: function () {
+        WindowManager.getInstance().pushView(WndTypeDefine.WindowType.E_DT_NORMAL_SMELTER_WND);
     },
 };

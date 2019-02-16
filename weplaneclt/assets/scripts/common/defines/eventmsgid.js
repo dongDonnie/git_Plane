@@ -109,6 +109,7 @@ module.exports = {
     EVENT_MEMBER_STORE_FRESH: "event_member_store_fresh",
     EVENT_MEMBER_PIECE_CRYSTAL_NTF: "event_member_piece_crystal_ntf",
     EVENT_MEMBER_PIECE_CHANGE_NTF: "event_member_piece_change_ntf",
+    EVENT_MEMBER_SPECIAL_LEVELUP_ACK: "event_member_special_levelup_ack",
 
     EVENT_BAG_ADDITEM_NTF: "event_bag_additem_ntf",
 
@@ -118,6 +119,11 @@ module.exports = {
 
     EVENT_GET_MIXDRIVE_DATA: 'event_get_mixdrive_data',
     EVENT_GET_MIXDRIVE_LEVEL_NTF: 'event_get_mixdrive_level_ntf',
+
+    //限时宝箱
+    EVENT_GET_LTB_DATA: 'event_get_ltb_data',
+    EVENT_GET_LTB_REWARD: 'event_get_ltb_reward',
+    EVENT_LTB_HOT_FLAG: 'event_ltb_hot_flag',
 
     //更换挂载
     EVENT_GUAZAI_CHANGE_NTF: "EVENT_GUAZAI_CHANGE_NTF",
@@ -145,8 +151,10 @@ module.exports = {
     EVENT_ENDLESS_GET_BUY_POWERPOINT_DATA: "event_endless_get_buy_powerpoint_data",
     EVENT_GET_ASSIST_SHARE_SUCCESS: "event_get_assist_success",
 
+    EVENT_GUAZAI_MELT_ACK: "event_guazai_melt_ack",
     EVENT_GUAZAI_REBIRTH_ACK: "EVENT_GUAZAI_REBIRTH_ACK",
     EVENT_GUAZAI_COMPOSE_ACK: "EVENT_GUAZAI_COMPOSE_ACK",
+    EVENT_MEMBER_REBIRTH_ACK: "event_member_rebirth_ack",
 
     //redPoint
     EVENT_ACTIVE_FLAG_CHANGE: "event_active_flag_change",
@@ -164,6 +172,7 @@ module.exports = {
     EVENT_LIMIT_STORE_FLAG_CHANGE: 'event_limit_store_flag_change',
     EVENT_SIGN_FLAG_CHANGE: 'event_sign_flag_change',
     EVENT_TREASURE_FLAG_CHANGE: 'event_treasure_flag_change',
+    EVENT_MAINTASK_FLAG_CHANGE: "event_maintask_flag_change",
 
     //share
     EVENT_GET_FREE_GOLD: "event_get_free_gold",
@@ -210,9 +219,28 @@ module.exports = {
     EVENT_GET_RANK_STORE_DATA: "event_get_rank_store_data",
     EVENT_GET_RANK_STORE_BUY_DATA: "event_get_rank_store_buy_data",
 
+    // 领奖中心
+    EVENT_GET_REWARD_CENTER_DATA: "event_get_reward_center_data",
+    EVENT_GET_REWARD_RESULT: "event_get_reward_result",
+
     //公众号奖励
     EVENT_FOLLOW_REWARD_GET: "event_follow_reward_get",
 
     //盒子跳转奖励
     EVENT_BOX_REWARD_GET: "event_box_reward_get",
+
+    // achieve成就系统
+    EVENT_GET_ACHIEVE_DATA: "event_get_achieve_data",
+    EVENT_GET_ACHIEVE_REWARD: "event_get_achieve_reward",
+    EVENT_GET_ACHIEVE_NTF: "event_get_achieve_ntf",
+
+    // 空间探索
+    EVENT_EXPLORE_DATA_GET: "event_explore_data_get",
+
+    // maintask主线任务
+    EVENT_GET_MAINTASK_DATA: "event_get_maintask_data",
+    EVENT_GET_MAINTASK_GET_DATA: "event_get_maintask_get_data",
+    EVENT_GET_MAINTASK_REWARD_DATA: "event_get_maintask_reward_data",
+
+    EVENT_YUANSHI_COMPOSE_ACK: "EVENT_YUANSHI_COMPOSE_ACK",
 };

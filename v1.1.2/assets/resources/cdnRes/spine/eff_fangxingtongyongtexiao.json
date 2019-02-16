@@ -1,0 +1,73 @@
+{
+"skeleton": { "hash": "LljpgpJZ7ixoERUENkOG/zC6swo", "spine": "2.1.27", "width": 195, "height": 195, "images": "" },
+"bones": [
+	{ "name": "root" },
+	{ "name": "bone", "parent": "root", "x": 7.59, "y": 5.83 }
+],
+"slots": [
+	{ "name": "fangxingtongyongtexiao1", "bone": "bone", "attachment": "fangxingtongyongtexiao_0023", "blend": "additive" }
+],
+"skins": {
+	"default": {
+		"fangxingtongyongtexiao1": {
+			"fangxingtongyongtexiao_0001": { "width": 195, "height": 195 },
+			"fangxingtongyongtexiao_0002": { "width": 195, "height": 195 },
+			"fangxingtongyongtexiao_0003": { "width": 195, "height": 195 },
+			"fangxingtongyongtexiao_0004": { "width": 195, "height": 195 },
+			"fangxingtongyongtexiao_0005": { "width": 195, "height": 195 },
+			"fangxingtongyongtexiao_0006": { "width": 195, "height": 195 },
+			"fangxingtongyongtexiao_0007": { "width": 195, "height": 195 },
+			"fangxingtongyongtexiao_0008": { "width": 195, "height": 195 },
+			"fangxingtongyongtexiao_0009": { "width": 195, "height": 195 },
+			"fangxingtongyongtexiao_0010": { "width": 195, "height": 195 },
+			"fangxingtongyongtexiao_0011": { "width": 195, "height": 195 },
+			"fangxingtongyongtexiao_0012": { "width": 195, "height": 195 },
+			"fangxingtongyongtexiao_0013": { "width": 195, "height": 195 },
+			"fangxingtongyongtexiao_0014": { "width": 195, "height": 195 },
+			"fangxingtongyongtexiao_0015": { "width": 195, "height": 195 },
+			"fangxingtongyongtexiao_0016": { "width": 195, "height": 195 },
+			"fangxingtongyongtexiao_0017": { "width": 195, "height": 195 },
+			"fangxingtongyongtexiao_0018": { "width": 195, "height": 195 },
+			"fangxingtongyongtexiao_0019": { "width": 195, "height": 195 },
+			"fangxingtongyongtexiao_0020": { "width": 195, "height": 195 },
+			"fangxingtongyongtexiao_0021": { "width": 195, "height": 195 },
+			"fangxingtongyongtexiao_0022": { "width": 195, "height": 195 },
+			"fangxingtongyongtexiao_0023": { "width": 195, "height": 195 }
+		}
+	}
+},
+"animations": {
+	"animation": {
+		"slots": {
+			"fangxingtongyongtexiao1": {
+				"attachment": [
+					{ "time": 0, "name": "fangxingtongyongtexiao_0001" },
+					{ "time": 0.0666, "name": "fangxingtongyongtexiao_0002" },
+					{ "time": 0.1333, "name": "fangxingtongyongtexiao_0003" },
+					{ "time": 0.2, "name": "fangxingtongyongtexiao_0004" },
+					{ "time": 0.2666, "name": "fangxingtongyongtexiao_0005" },
+					{ "time": 0.3333, "name": "fangxingtongyongtexiao_0006" },
+					{ "time": 0.4, "name": "fangxingtongyongtexiao_0007" },
+					{ "time": 0.4666, "name": "fangxingtongyongtexiao_0008" },
+					{ "time": 0.5333, "name": "fangxingtongyongtexiao_0009" },
+					{ "time": 0.6, "name": "fangxingtongyongtexiao_0010" },
+					{ "time": 0.6666, "name": "fangxingtongyongtexiao_0011" },
+					{ "time": 0.7333, "name": "fangxingtongyongtexiao_0012" },
+					{ "time": 0.8, "name": "fangxingtongyongtexiao_0013" },
+					{ "time": 0.8666, "name": "fangxingtongyongtexiao_0014" },
+					{ "time": 0.9333, "name": "fangxingtongyongtexiao_0015" },
+					{ "time": 1, "name": "fangxingtongyongtexiao_0016" },
+					{ "time": 1.0666, "name": "fangxingtongyongtexiao_0017" },
+					{ "time": 1.1333, "name": "fangxingtongyongtexiao_0018" },
+					{ "time": 1.2, "name": "fangxingtongyongtexiao_0019" },
+					{ "time": 1.2666, "name": "fangxingtongyongtexiao_0020" },
+					{ "time": 1.3333, "name": "fangxingtongyongtexiao_0021" },
+					{ "time": 1.4, "name": "fangxingtongyongtexiao_0022" },
+					{ "time": 1.4666, "name": "fangxingtongyongtexiao_0023" },
+					{ "time": 1.5333, "name": null }
+				]
+			}
+		}
+	}
+}
+}

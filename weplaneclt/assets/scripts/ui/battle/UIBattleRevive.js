@@ -25,7 +25,7 @@ cc.Class({
 
     onLoad: function () {
         this.waitForRevive = false;
-        if (!GlobalVar.getShareSwitch() || GlobalVar.getShareControl() == 6){
+        if (!GlobalVar.getShareSwitch() || GlobalVar.canShowVideo()){
             this.node.getChildByName("spriteRevive").getChildByName("labelShareTip").active = false;
             this.node.getChildByName("spriteRevive").getChildByName("btnShare").active = false;
             this.node.getChildByName("spriteRevive").getChildByName("btnRevive").x = 0;

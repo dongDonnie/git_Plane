@@ -27,10 +27,10 @@ var BagData = cc.Class({
             this.canUseItemHotFlag.splice(this.itemData.Items.length, this.canUseItemHotFlag.length - this.itemData.Items.length);
         }
         this.totalHotFlag = false;
-        for (let i = 0; i< this.itemData.Items.length; i++){
+        for (let i = 0; i < this.itemData.Items.length; i++) {
             this.canUseItemHotFlag[i] = false;
             let item = this.itemData.Items[i];
-            if (item.Type == GameServerProto.PT_ITEMTYPE_CHEST || item.Type == GameServerProto.PT_ITEMTYPE_DROPPACKAGE || item.Type == GameServerProto.PT_ITEMTYPE_SPECIAL_DROPPACKAGE){
+            if (item.Type == GameServerProto.PT_ITEMTYPE_CHEST || item.Type == GameServerProto.PT_ITEMTYPE_DROPPACKAGE || item.Type == GameServerProto.PT_ITEMTYPE_SPECIAL_DROPPACKAGE) {
                 this.canUseItemHotFlag[i] = true;
             }
             this.totalHotFlag = this.totalHotFlag || this.canUseItemHotFlag[i];
@@ -38,7 +38,7 @@ var BagData = cc.Class({
         GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_THEBAG_FLAG_CHANGE);
     },
 
-    getHotPointData: function(){
+    getHotPointData: function () {
         return this.totalHotFlag;
     },
 
@@ -47,7 +47,7 @@ var BagData = cc.Class({
     },
 
     saveBagUnlock: function (msg) {
-        if (msg.data.ErrCode == GameServerProto.PTERR_SUCCESS){
+        if (msg.data.ErrCode == GameServerProto.PTERR_SUCCESS) {
             this.itemData.Unlock = msg.data.Unlock;
         }
         GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_BAG_UNLOCK_NTF, msg);
@@ -63,7 +63,7 @@ var BagData = cc.Class({
         if (!itemChange.Items) return;
         for (let i = 0; i < itemChange.Items.length; i++) {
             let changeItem = itemChange.Items[i];
-            if (changeItem.Type == GameServerProto.PT_ITEMTYPE_VALUE){
+            if (changeItem.Type == GameServerProto.PT_ITEMTYPE_VALUE) {
                 continue;
             }
             let j = 0;
@@ -93,14 +93,27 @@ var BagData = cc.Class({
 
     getItemById: function (id) {
         for (let i = 0; i < self.itemData.Items.length; i++) {
-            if (self.itemData.Items[i].ItemID == id)
+            if (self.itemData.Items[i].ItemID == id) {
                 return self.itemData.Items[i];
+            }
         }
+        return null;
     },
+
+    getItemsById:function(id){
+        let newArr = [];
+        for (let i = 0; i < self.itemData.Items.length; i++) {
+            if (self.itemData.Items[i].ItemID == id) {
+                newArr.push(self.itemData.Items[i]);
+            }
+        }
+        return newArr;
+    },
+
     getItemsByType: function (type) {
         let newArr = [];
-        for (let i = 0; i< self.itemData.Items.length; i++){
-            if (self.itemData.Items[i].Type == type){
+        for (let i = 0; i < self.itemData.Items.length; i++) {
+            if (self.itemData.Items[i].Type == type) {
                 newArr.push(self.itemData.Items[i]);
             }
         }
@@ -127,15 +140,19 @@ var BagData = cc.Class({
 
     getItemBySlot: function (slot) {
         for (let i = 0; i < self.itemData.Items.length; i++) {
-            if (self.itemData.Items[i].Slot == slot)
+            if (self.itemData.Items[i].Slot == slot) {
                 return self.itemData.Items[i];
+            }
         }
+        return null;
     },
     getItemIndexBySlot: function (slot) {
         for (let i = 0; i < self.itemData.Items.length; i++) {
-            if (self.itemData.Items[i].Slot == slot)
+            if (self.itemData.Items[i].Slot == slot) {
                 return i;
+            }
         }
+        return null;
     },
 
     updateItem: function (item) {
@@ -159,6 +176,7 @@ var BagData = cc.Class({
             if (self.itemData.Items[i].ItemID == id)
                 costList.push(i);
         }
+
         function compare(a, b) {
             if (self.itemData.Items[a].Count > self.itemData.Items[b].Count)
                 return 1;
@@ -171,12 +189,10 @@ var BagData = cc.Class({
             if (cost < self.itemData.Items[costList[idx]].Count) {
                 self.itemData.Items[costList[idx]].Count -= cost;
                 return true;
-            }
-            else if (cost == self.itemData.Items[costList[idx]].Count) {
+            } else if (cost == self.itemData.Items[costList[idx]].Count) {
                 self.itemData.Items.splice(costList[idx], 1);
                 return true;
-            }
-            else {
+            } else {
                 cost -= self.itemData.Items[costList[idx]].Count;
                 self.itemData.Items.splice(costList[idx], 1);
                 idx++;
@@ -186,7 +202,7 @@ var BagData = cc.Class({
         }
     },
 
-    checkBagRedPoint: function (itemArray) {      //itemArray是一个GMDT_ITEM数组
+    checkBagRedPoint: function (itemArray) { //itemArray是一个GMDT_ITEM数组
         for (let i = 0; i < itemArray.length; i++) {
             if (itemArray[i].Type == GameServerProto.PT_ITEMTYPE_CHEST || itemArray[i].Type == GameServerProto.PT_ITEMTYPE_DROPPACKAGE)
                 return true;
@@ -194,7 +210,7 @@ var BagData = cc.Class({
         return false;
     },
 
-    getGuazaiSlotById: function (id) {  //获取所有给定id的挂载在背包内的位置
+    getGuazaiSlotById: function (id) { //获取所有给定id的挂载在背包内的位置
         let slotArray = [];
         for (let i = 0; i < self.itemData.Items.length; i++) {
             if (self.itemData.Items[i].ItemID == id)
@@ -206,9 +222,9 @@ var BagData = cc.Class({
     getGuazaiQualityUpMaterialCount: function (id) {
         let slotArray = this.getGuazaiSlotById(id);
         let count = 0;
-        for (let i = 0; i<slotArray.length; i++){
+        for (let i = 0; i < slotArray.length; i++) {
             let guazaiData = GlobalVar.me().bagData.getItemBySlot(slotArray[i]);
-            if (guazaiData.GuaZai.Level<= 5){
+            if (guazaiData.GuaZai.Level <= 5) {
                 count += 1;
             }
         }
@@ -218,9 +234,9 @@ var BagData = cc.Class({
     getGuazaiQualityUpMaterialSlot: function (id) {
         let slotArray = this.getGuazaiSlotById(id);
         let materialSlotArray = [];
-        for (let i = 0; i<slotArray.length; i++){
+        for (let i = 0; i < slotArray.length; i++) {
             let guazaiData = GlobalVar.me().bagData.getItemBySlot(slotArray[i]);
-            if (guazaiData.GuaZai.Level<= 5){
+            if (guazaiData.GuaZai.Level <= 5) {
                 materialSlotArray.push(slotArray[i]);
             }
         }
@@ -236,30 +252,50 @@ var BagData = cc.Class({
         return itemArray;
     },
 
-    setDataByItem: function (item) {   //穿脱挂载
+    setDataByItem: function (item) { //穿脱挂载
         // this.itemData.Items[item.Slot] = item;
         let index = self.getItemIndexBySlot(item.Slot);
-        if (item.ItemID == 0){
+        if (item.ItemID == 0) {
             self.itemData.Items.splice(index, 1);
-        }else{
+        } else {
             self.itemData.Items[index] = item;
         }
-        
+
         this.updateHotPoint();
     },
 
-    saveItemChange:function(ack){
-        if (ack.ErrCode == GameServerProto.PTERR_SUCCESS){
+    saveItemChange: function (ack) {
+        if (ack.ErrCode == GameServerProto.PTERR_SUCCESS) {
             this.updateItemDataByGMDT_ITEM_CHANGE(ack.Items);
         }
     },
 
-    saveItemUseData: function(data){
+    saveItemUseData: function (data) {
         // console.log("data = ", data);
-        if (data.ErrCode == GameServerProto.PTERR_SUCCESS){
+        if (data.ErrCode == GameServerProto.PTERR_SUCCESS) {
             self.updateItemDataByGMDT_ITEM_CHANGE(data.ItemChange);
         }
         GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_ITEM_USE_RESULT, data);
+    },
+
+    saveMemberEquipPuton: function (data, slot) {
+        if (data.ErrCode == GameServerProto.PTERR_SUCCESS) {
+            let itemC = {};
+            itemC.Items = [];
+            if (slot != -1) {
+                let item = {}
+                item.Count = 0;
+                item.ItemID = data.OK.OnEquip.ItemID;
+                item.Slot = slot;
+                item.Type = data.OK.OnEquip.Type;
+                itemC.Items.push(item);
+            }
+            let off = data.OK.OffEquip;
+            if (off.Count != 0) {
+                itemC.Items.push(off);
+            }
+            this.updateItemDataByGMDT_ITEM_CHANGE(itemC);
+        }
     },
 });
 

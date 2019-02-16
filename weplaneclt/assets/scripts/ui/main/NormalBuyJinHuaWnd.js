@@ -119,9 +119,27 @@ cc.Class({
         let freeMax = GlobalVar.tblApi.getDataBySingleKey('TblParam', GameServerProto.PTPARAM_FULI_SHARE_GUAZAI_JINHUA_LIMIT).dValue;
         let freeTimes = GlobalVar.me().shareData.getFreeJinHuaCount();
         let remainTimes = freeMax > freeTimes ? freeMax - freeTimes : 0;
-        let leftVideoTimesTipStr = '观看视频还可免费获取' + remainTimes + '次';
+        let leftVideoTimesTipStr = GlobalVar.canShowVideo()?'观看视频还可免费获取':'分享到群还可免费获取' + remainTimes + '次';
         this.setLeftVideoTimesTip(leftVideoTimesTipStr);
         this.setLeftVideoTimes(remainTimes);
+
+        if (GlobalVar.canShowVideo()){
+            this.btnVideo.node.getChildByName("spriteVideo").active = true;
+            this.btnVideo.node.getChildByName("spriteShare").active = false;
+            this.btnVideo.node.active = true;
+            this.labelLeftVideoTimesTip.node.active = true
+            this.btnPurchase.node.x = 160;
+        }else if (GlobalVar.canShowShare()){
+            this.btnVideo.node.getChildByName("spriteVideo").active = false;
+            this.btnVideo.node.getChildByName("spriteShare").active = true;
+            this.btnVideo.node.active = true;
+            this.labelLeftVideoTimesTip.node.active = true
+            this.btnPurchase.node.x = 160;
+        }else{
+            this.btnVideo.node.active = false;
+            this.labelLeftVideoTimesTip.node.active = false
+            this.btnPurchase.node.x = 0;
+        }
     },
 
     refreshJinHuaWndUI: function () {
@@ -151,13 +169,6 @@ cc.Class({
             GlobalVar.handlerManager().shareHandler.sendGetFreeJinHuaReq();
         };
         if (platformApi) {
-            // let failCallback = () => {
-            //     if (GlobalVar.getShareControl() == 1){
-            //         platformApi.shareNormal(132, successCallback);
-            //     }else{
-            //         GlobalVar.comMsg.showMsg(i18n.t('label.4000321'));
-            //     }
-            // }
             platformApi.showRewardedVideoAd(232, successCallback);
         } else {
             successCallback();

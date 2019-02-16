@@ -94,21 +94,21 @@ cc.Class({
         let title = i18n.t('label.4000230')
         let shareName = "";
         let leftShareTimesTipStr = "";
-        if (GlobalVar.getShareControl() == 1){
+        let curTime = GlobalVar.me().spData.getSpFreeCount();
+        let maxTime = GlobalVar.tblApi.getDataBySingleKey('TblParam', GameServerProto.PTPARAM_SP_FREE_GET_MAX).dValue;
+        let leftShareTime = maxTime - curTime;
+        if (GlobalVar.canShowShare()){
             shareName = "  " + i18n.t("label.4000304");
             this.btnShare.node.getChildByName("spriteShare").active = true;
             this.btnShare.node.getChildByName("spriteVideo").active = false;
             leftShareTimesTipStr = i18n.t("label.4000312").replace("%d", leftShareTime);
-        }else if (GlobalVar.getShareControl() == 6){
+        }else if (GlobalVar.canShowVideo()){
             shareName = "  " + i18n.t("label.4000336");
             this.btnShare.node.getChildByName("spriteShare").active = false;
             this.btnShare.node.getChildByName("spriteVideo").active = true;
             leftShareTimesTipStr = i18n.t("label.4000340").replace("%d", leftShareTime);
         }
         let purchaseName = i18n.t("label.4000214");
-        let curTime = GlobalVar.me().spData.getSpFreeCount();
-        let maxTime = GlobalVar.tblApi.getDataBySingleKey('TblParam', GameServerProto.PTPARAM_SP_FREE_GET_MAX).dValue;
-        let leftShareTime = maxTime - curTime;
         // let leftShareTimesTipStr = i18n.t("label.4000312").replace("%d", leftShareTime);
 
         let spData = GlobalVar.me().getSpData();
@@ -159,23 +159,17 @@ cc.Class({
         }
 
         this.canOperata = true;
-        if (cc.sys.platform == cc.sys.WECHAT_GAME && GlobalVar.getShareControl() == 1){
+        let platformApi = GlobalVar.getPlatformApi();
+        if (platformApi && GlobalVar.canShowShare()){
             CommonWnd.showMessage(null, CommonWnd.oneConfirm, i18n.t('label.4000216'), i18n.t('label.4000317'), null, function () {
                 weChatAPI.shareNeedClick(131, function () {
                     GlobalVar.handlerManager().spHandler.sendSpBuyReq(1);
                 });
             });
-        } else if (cc.sys.platform == cc.sys.WECHAT_GAME && GlobalVar.getShareControl() == 6){
+        } else if (platformApi && GlobalVar.canShowVideo()){
             weChatAPI.showRewardedVideoAd(231, function () {
                 GlobalVar.handlerManager().spHandler.sendSpBuyReq(1);
             });
-        } else{
-            let platformApi = GlobalVar.getPlatformApi();
-            if (platformApi){
-                platformApi.shareNormal(131, function () {
-                    GlobalVar.handlerManager().spHandler.sendSpBuyReq(1);
-                });
-            }
         }
     },
 

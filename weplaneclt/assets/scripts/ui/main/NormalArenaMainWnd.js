@@ -317,10 +317,12 @@ var NormalArenaMainWnd = cc.Class({
         let item = model.getChildByName("ItemObject").getComponent("ItemObject");
         if (data.Avatar == "") {
             item.updateItem(data.MemberID);
+            item.setClick(false);
             item.setSpriteEdgeData(data.Quality < 100 ? data.Quality * 100 : data.Quality);
             item.setSpritePieceVisible(false);
         } else {
             item.setAllVisible(false);
+            item.setClick(false);
 
             cc.loader.load({
                 url: data.Avatar,
@@ -414,7 +416,6 @@ var NormalArenaMainWnd = cc.Class({
         clearTimeout(this.timeoutId);
         //BattleManager.getInstance().quitOutSide();
         BattleManager.getInstance().isArenaFlag = true;
-        BattleManager.getInstance().setCampName('CampDemo');
         BattleManager.getInstance().setMusic('audio/battle/music/Boss_Room');
         BattleManager.getInstance().setBattleMsg(event.OK);
         GlobalVar.sceneManager().gotoScene(SceneDefines.BATTLE_STATE);

@@ -85,6 +85,15 @@ WndTypeDefine.WindowType = {
     E_DT_NORMAL_INVITE_REWARD_WND: "NormalInviteRewardWnd",
     E_DT_NORMAL_SPECIAL_ACTIVE_WND: "NormalSpecialActiveWnd",
     E_DT_NORMAL_TREASURY_RANK_WND: "NormalTreasuryRankWnd",
+    E_DT_NORMAL_MASTERY_WND: "NormalMasteryWnd",
+    E_DT_NORMAL_ROUGH_FACTORY_WND: "NormalRoughFactoryWnd",
+    E_DT_NORMAL_ROUGH_LAB_WND: "NormalRoughLabWnd",
+    E_DT_NORMAL_REWARD_CENTER_WND: "NormalRewardCenterWnd",
+    E_DT_NORMAL_LIMITTIME_BOX_WND: "NormalLimitTimeBoxWnd",
+    E_DT_CHALLENGE_WND: "NormalChallengeWnd",
+    E_DT_NORMAL_SPACE_EXPLORE_WND: "NormalSpaceExploreWnd",
+    E_DT_NORMAL_SPACE_EXPLORE_AREA_WND: "NormalExploreAreaWnd",
+    E_DT_NORMAL_SMELTER_WND: "NormalSmelterWnd",
 };
 
 WndTypeDefine.WindowTypeID = {

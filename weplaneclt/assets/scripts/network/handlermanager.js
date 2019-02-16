@@ -68,7 +68,11 @@ var HandlerManager = cc.Class({
         self.adHandler = self._createHandler("AdHandler");
         self.followRewardHandler = self._createHandler("FollowRewardHandler");
         self.boxRewardHandler = self._createHandler("BoxRewardHandler");
-        
+        // self.achieveHandler = self._createHandler("AchieveHandler");
+        self.mainTaskHandler = self._createHandler("MainTaskHandler");
+        self.rewardCenterHandler = self._createHandler('RewardCenterHandler');
+        self.limitTimeBoxHandler = self._createHandler("LimitTimeBoxHandler");
+        self.spaceExploreHandler = self._createHandler("SpaceExploreHandler");
     },
 
     unInitHandlers: function () {

@@ -116,6 +116,9 @@ BattleDefines.DEMOCOUNT = 3;
 BattleDefines.FRIENDDURATION = 30.0;
 BattleDefines.REVIVECOUNTCAMPAIGN = 3;
 BattleDefines.REVIVECOUNTENDLESS = 2;
+BattleDefines.MP_LIMIT = 10000;
+BattleDefines.MP_INCREASE = 5000;
+BattleDefines.MP_INCREASE_GHOST = 800;
 
 BattleDefines.GameResult = cc.Enum({
     NONE: 0,

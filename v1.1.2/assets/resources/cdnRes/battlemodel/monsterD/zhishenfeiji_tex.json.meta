@@ -1,0 +1,7 @@
+{
+  "ver": "1.0.0",
+  "uuid": "7f78ceaf-ee0d-4712-81c0-63099ebcb5a6",
+  "atlasJson": "{\"width\":512,\"imagePath\":\"zhishenfeiji_tex.png\",\"height\":1024,\"name\":\"zhishenfeiji\",\"SubTexture\":[{\"width\":53,\"y\":928,\"height\":49,\"name\":\"12\",\"x\":237},{\"width\":53,\"y\":928,\"height\":49,\"name\":\"11\",\"x\":292},{\"width\":126,\"y\":806,\"height\":100,\"name\":\"10\",\"x\":367},{\"width\":268,\"y\":600,\"height\":204,\"name\":\"9\",\"x\":1},{\"width\":268,\"y\":394,\"height\":204,\"name\":\"8\",\"x\":1},{\"width\":446,\"y\":1,\"height\":391,\"name\":\"7\",\"x\":1},{\"width\":91,\"y\":908,\"height\":92,\"name\":\"6\",\"x\":367},{\"width\":128,\"y\":806,\"height\":120,\"name\":\"4\",\"x\":237},{\"width\":40,\"y\":908,\"height\":106,\"name\":\"3\",\"x\":460},{\"width\":36,\"y\":1,\"height\":113,\"name\":\"2\",\"x\":449},{\"width\":38,\"y\":979,\"height\":17,\"name\":\"1\",\"x\":237},{\"frameY\":-1,\"y\":806,\"frameWidth\":247,\"frameX\":0,\"frameHeight\":182,\"width\":234,\"height\":182,\"name\":\"55\",\"x\":1}]}",
+  "texture": "db17f910-9036-4e47-b593-e8d008f06051",
+  "subMetas": {}
+}

@@ -1,0 +1,32 @@
+{
+  "ver": "2.3.0",
+  "uuid": "47523a47-add6-47d9-8fd5-1b8176ebe77d",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "platformSettings": {},
+  "subMetas": {
+    "explore_img_engineroom": {
+      "ver": "1.0.3",
+      "uuid": "23b564f8-861a-4e01-8416-0832e6215232",
+      "rawTextureUuid": "47523a47-add6-47d9-8fd5-1b8176ebe77d",
+      "trimType": "auto",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": -0.5,
+      "trimX": 0,
+      "trimY": 1,
+      "width": 640,
+      "height": 755,
+      "rawWidth": 640,
+      "rawHeight": 756,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

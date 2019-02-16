@@ -1,4 +1,5 @@
 const Defines = require('BattleDefines');
+const SceneDefines = require("scenedefines");
 const GlobalVar = require('globalvar');
 const PlaneEntity = require('PlaneEntity');
 const WingmanEntity = require('WingmanEntity');
@@ -39,7 +40,11 @@ const HeroManager = cc.Class({
     },
 
     start(mgr) {
-
+        if (cc.isValid(mgr.rootNode) && GlobalVar.sceneManager().getCurrentSceneType() == SceneDefines.BATTLE_STATE) {
+            this.showDangerous = mgr.rootNode.getChildByName('UINode').getChildByName('UIBattle').getChildByName('btnoAssist').getChildByName('dangerous');
+            this.dangerousSwitch = true;
+            this.entityManager = mgr.entityManager.getInstance();
+        }
     },
 
     release() {
@@ -97,6 +102,11 @@ const HeroManager = cc.Class({
                 if (typeof this.wingmanEntity[i] !== 'undefined') {
                     this.wingmanEntity[i].update(dt);
                 }
+            }
+        } else {
+            if (this.planeEntity.hp <= this.planeEntity.maxHp * 0.15 && this.entityManager.entityMonBltList.length >= 20 && !!this.dangerousSwitch) {
+                this.dangerous(true)
+                this.dangerousSwitch = false;
             }
         }
 
@@ -176,6 +186,12 @@ const HeroManager = cc.Class({
         //         this.wingmanEntity[i] = null;
         //     }
         // }
+
+        if(!!BattleManager.getInstance().isEndlessFlag){
+            this.dangerousSwitch = true;
+        }else{
+            this.dangerousSwitch = false;
+        }
 
         this.planeEntity = new PlaneEntity();
         this.planeEntity.newPart('Fighter/Fighter_' + member, Defines.ObjectType.OBJ_HERO, 'PlaneObject', this.showType, 0, 0);
@@ -353,15 +369,15 @@ const HeroManager = cc.Class({
     },
 
     openShader: function (open) {
-        this.planeEntity.openShader(open);
-        for (let i = 0; i < 2; i++) {
-            if (typeof this.assistEntity[i] !== 'undefined') {
-                this.assistEntity[i].openShader(open);
-            }
-            if (typeof this.wingmanEntity[i] !== 'undefined') {
-                this.wingmanEntity[i].openShader(open);
-            }
-        }
+        // this.planeEntity.openShader(open);
+        // for (let i = 0; i < 2; i++) {
+        //     if (typeof this.assistEntity[i] !== 'undefined') {
+        //         this.assistEntity[i].openShader(open);
+        //     }
+        //     if (typeof this.wingmanEntity[i] !== 'undefined') {
+        //         this.wingmanEntity[i].openShader(open);
+        //     }
+        // }
     },
 
     flyIntoScreen: function () {
@@ -401,6 +417,7 @@ const HeroManager = cc.Class({
     },
 
     selfDestroy: function () {
+        this.dangerous(false);
         require('AIInterface').eliminateBulletByOwner(this.planeEntity, false, false);
         var self = this;
         self.controllable = false;
@@ -436,7 +453,7 @@ const HeroManager = cc.Class({
 
     openDash: function (open) {
         open = typeof open !== 'undefined' ? open : false;
-        if(open==-2 || !open){
+        if (open == -2 || !open) {
             this.skillDelayLevelUp();
         }
         this.planeEntity.addDashTime(open);
@@ -444,6 +461,7 @@ const HeroManager = cc.Class({
 
     skillLevelUp: function (level) {
         if (!BattleManager.getInstance().isDemo) {
+            GlobalVar.soundManager().playEffect('cdnRes/audio/battle/effect/weapon_up');
             if (level == 1) {
                 this.planeEntity.showGetBuffEffect(Defines.Assist.WEAPON_UP);
             } else {
@@ -519,8 +537,15 @@ const HeroManager = cc.Class({
         }
     },
 
+    dangerous: function (show) {
+        if (cc.isValid(this.showDangerous)) {
+            this.showDangerous.active = typeof show !== 'undefined' ? show : false;
+        }
+    },
+
     onTouchBegan: function (event) {
         // this.planeEntity.setPosition(this.planeEntity.getPosition() + event.getDelta());
+        this.dangerous(false);
     },
 
     onTouchMoved: function (event) {

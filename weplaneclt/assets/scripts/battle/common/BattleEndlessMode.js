@@ -220,10 +220,21 @@ const Mode = cc.Class({
         }
     },
 
-    init: function () {
+    init: function (mapName) {
         this.battleManager = require('BattleManager').getInstance();
         this.solution = require('BulletSolutions');
-        this.data = require('CampEndless').data;
+
+        let endlessModeNum = GlobalVar.me().endlessData.getRankID();
+        this.endlessMode = GlobalVar.tblApi.getDataBySingleKey('TblEndlessRank', endlessModeNum);
+        if (cc.isValid(this.endlessMode)) {
+            this.rushRank = typeof this.endlessMode.nRushRank !== 'undefined' ? this.endlessMode.nRushRank : 0;
+            this.campaignType = this.endlessMode.byCampaignType;
+        } else {
+            this.rushRank = 0;
+            this.campaignType = 1;
+        }
+
+        this.data = require(mapName).data;
 
         this.actuallyChest = 0;
         if (GlobalVar.me().endlessData.getHistoryMaxScore() == 0) {
@@ -236,18 +247,12 @@ const Mode = cc.Class({
             this.interval.push(0);
         }
         this.animeIndex = 0;
-        let endlessModeNum = GlobalVar.me().endlessData.getRankID();
-        this.endlessMode = GlobalVar.tblApi.getDataBySingleKey('TblEndlessRank', endlessModeNum);
-        //this.defaultLv = typeof this.endlessMode.nMonsterBasisGrade !== 'undefined' ? (this.endlessMode.nMonsterBasisGrade != 0 ? this.endlessMode.nMonsterBasisGrade : 2) : 2;
+
         this.defaultLv = 2;
-        //let origin = typeof this.endlessMode.nMonsterBasisFraction !== 'undefined' ? (this.endlessMode.nMonsterBasisFraction != 0 ? this.endlessMode.nMonsterBasisFraction : 1000) : 1000;
+
         let origin = 1000;
         this.endlessScore = base64.encode(origin.toString());
-        if(cc.isValid(this.endlessMode)){
-            this.rushRank = typeof this.endlessMode.nRushRank !== 'undefined' ? this.endlessMode.nRushRank : 0;
-        }else{
-            this.rushRank = 0;
-        }
+
         this.killRecord = 0;
 
         this.waveCount = 0;
@@ -258,11 +263,20 @@ const Mode = cc.Class({
         this.configList = [];
 
         this.totalWave = 0;
-        let tbl = GlobalVar.tblApi.getData('TblEndlessCampaign');
-        for (let key in tbl) {
-            this.configList.push(tbl[key]);
-            this.totalWave++;
+
+        for (let w = 1; w <= 30; w++) {
+            let wave = GlobalVar.tblApi.getDataByMultiKey('TblEndlessCampaign', this.campaignType, w);
+            if (!!wave) {
+                this.configList.push(wave);
+                this.totalWave++;
+            }
         }
+
+        // let tbl = GlobalVar.tblApi.getData('TblEndlessCampaign');
+        // for (let key in tbl) {
+        //     this.configList.push(tbl[key]);
+        //     this.totalWave++;
+        // }
 
         this.mapControlList = [];
         for (let i = 0; i < 5; i++) {

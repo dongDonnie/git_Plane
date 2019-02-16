@@ -261,12 +261,12 @@ cc.Class({
 
             if (plusData.byStatusID == 4 && GlobalVar.getShareSwitch()) {
                 plus.getChildByName("nodeBuy").active = false;
-                plus.getChildByName("btnShare").active = GlobalVar.getShareControl() != 6;
-                plus.getChildByName("btnVideo").active = GlobalVar.getShareControl() == 6;
+                plus.getChildByName("btnShare").active = GlobalVar.canShowShare();
+                plus.getChildByName("btnVideo").active = !GlobalVar.canShowShare();
             } else if (plusData.byStatusID == 3 && GlobalVar.getShareSwitch()) {
                 plus.getChildByName("nodeBuy").active = false;
-                plus.getChildByName("btnVideo").active = !StoreageData.getShareTimesWithKey("rewardedVideoLimit", 99) || GlobalVar.getShareControl() == 6;
-                plus.getChildByName("btnShare").active = !!StoreageData.getShareTimesWithKey("rewardedVideoLimit", 99) && GlobalVar.getShareControl() != 6;
+                plus.getChildByName("btnVideo").active = GlobalVar.canShowVideo();
+                plus.getChildByName("btnShare").active = !GlobalVar.canShowVideo();
             } else {
                 plus.getChildByName("nodeBuy").active = true;
                 plus.getChildByName("btnShare").active = false;
@@ -617,17 +617,17 @@ cc.Class({
         this.btnYellowAnime.getComponent("BtnAnime").setCallBack(function () {
             BattleManager.getInstance().setBattleMsg(event.OK);
             BattleManager.getInstance().isEndlessFlag = true;
-            BattleManager.getInstance().setCampName('CampEndless');
+            let endlessMode = GlobalVar.tblApi.getDataBySingleKey('TblEndlessRank', GlobalVar.me().endlessData.getRankID());
+            if (!!endlessMode) {
+                BattleManager.getInstance().setEndlessCampaign(endlessMode.byCampaignType);
+            } else {
+                BattleManager.getInstance().setEndlessCampaign(0);
+            }
             BattleManager.getInstance().setMusic('audio/battle/music/battle_bk0');
             BattleManager.getInstance().setAnotherFighter();
             GlobalVar.sceneManager().gotoScene(SceneDefines.BATTLE_STATE);
         })
         GlobalVar.soundManager().playEffect('cdnRes/audio/main/effect/click_gobattle');
-        // BattleManager.getInstance().setBattleMsg(event.OK);
-        // BattleManager.getInstance().isEndlessFlag = true;
-        // BattleManager.getInstance().setCampName('CampEndless');
-        // BattleManager.getInstance().setMusic('audio/battle/music/battle_bk0');
-        // GlobalVar.sceneManager().gotoScene(SceneDefines.BATTLE_STATE);
     },
 
     getRankUpResult: function (event) {
@@ -662,7 +662,7 @@ cc.Class({
                     i -= 1;
                 }
             }
-            for (let i = 0; i < ids.length; i++) { 
+            for (let i = 0; i < ids.length; i++) {
                 if (totalMemberData[ids[i]].stPingJia.byStarNum <= highestStar) {
                     ids.splice(i, 1);
                     i -= 1;

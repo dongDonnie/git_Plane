@@ -141,7 +141,7 @@ cc.Class({
             this.node.getChildByName("btnUseOne").active = false;
             this.node.getChildByName("btnVideo").active = false;
             this.btnConfirm.node.active = true;
-        }else {
+        } else {
             this.node.getChildByName("nodeTips").getChildByName("spriteNumberBg").active = true;
             this.node.getChildByName("nodeTips").getChildByName("btnSell").active = true;
             this.node.getChildByName("nodeTips").getComponent(cc.Widget).horizontalCenter = 0;
@@ -174,7 +174,7 @@ cc.Class({
         let itemData = this.itemData;
         if (itemData.bySellType == ITEM_SELL_TYPE_FORBIDEN) {
             this.btnSell.interactable = false;
-        }else{
+        } else {
             this.btnSell.interactable = true;
         }
 
@@ -211,7 +211,7 @@ cc.Class({
             this.node.getChildByName("btnUseMore").active = false;
             this.node.getChildByName("btnUseOne").active = false;
             this.btnConfirm.node.active = false;
-        } else{
+        } else {
             this.node.getChildByName("btnVideo").active = false;
             this.node.getChildByName("btnUseMore").active = false;
             this.node.getChildByName("btnUseOne").active = false;
@@ -314,20 +314,22 @@ cc.Class({
     onBtnUseItemClick: function (event, times) {
         // console.log("use item " + times + " times!!!");
 
-        if (this.itemID) {
+        if (!!this.itemID) {
             let itemData = GlobalVar.me().bagData.getItemById(this.itemID);
-            GlobalVar.handlerManager().bagHandler.sendItemUseReq(itemData.Slot, times, itemData.Type);
+            if (!!itemData) {
+                GlobalVar.handlerManager().bagHandler.sendItemUseReq(itemData.Slot, times, itemData.Type);
+            }
         }
     },
     onBtnVideo: function () {
-        if (this.itemID){
+        if (this.itemID) {
             let itemData = GlobalVar.me().bagData.getItemById(this.itemID);
             let platfromApi = GlobalVar.getPlatformApi();
-            if (platfromApi){
+            if (platfromApi) {
                 platfromApi.showRewardedVideoAd(238, function () {
                     GlobalVar.handlerManager().bagHandler.sendItemUseReq(itemData.Slot, 1, itemData.Type);
                 })
-            }else if (GlobalVar.configGMSwitch()){
+            } else if (GlobalVar.configGMSwitch()) {
                 GlobalVar.handlerManager().bagHandler.sendItemUseReq(itemData.Slot, 1, itemData.Type);
             }
         }
@@ -378,8 +380,8 @@ cc.Class({
         this.labelItemDescription.string = text;
     },
     setLabelNumberData: function (text) {
-        if (parseInt(text) > 99999){
-            text = Math.floor(text/10000) + "万";
+        if (parseInt(text) > 99999) {
+            text = Math.floor(text / 10000) + "万";
         }
         this.labelNumber.string = text;
     },

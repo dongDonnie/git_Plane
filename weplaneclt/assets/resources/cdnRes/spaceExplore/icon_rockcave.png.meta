@@ -1,0 +1,32 @@
+{
+  "ver": "2.3.0",
+  "uuid": "353ddde2-5e5e-4688-b546-e960b9837143",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "platformSettings": {},
+  "subMetas": {
+    "icon_rockcave": {
+      "ver": "1.0.3",
+      "uuid": "ce02b86c-9b4b-4c86-bc46-a188c0ceae0b",
+      "rawTextureUuid": "353ddde2-5e5e-4688-b546-e960b9837143",
+      "trimType": "auto",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 94,
+      "height": 91,
+      "rawWidth": 94,
+      "rawHeight": 91,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

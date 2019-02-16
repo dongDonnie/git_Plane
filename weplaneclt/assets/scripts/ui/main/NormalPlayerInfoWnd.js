@@ -284,7 +284,8 @@ cc.Class({
                     color: '#ffffff',
                     textAlign: 'center',
                     fontSize: 16,
-                    borderRadius: 4
+                    borderRadius: 4,
+                    lineHeight: height,
                 }
             })
         

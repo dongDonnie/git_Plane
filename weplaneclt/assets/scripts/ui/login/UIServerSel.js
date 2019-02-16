@@ -1,6 +1,7 @@
 const UIBase = require("uibase");
 const GlobalVar = require("globalvar");
 const EventMsgID = require("eventmsgid");
+const config = require("config");
 
 var UIServerSel = cc.Class({
     extends: UIBase,
@@ -121,6 +122,7 @@ var UIServerSel = cc.Class({
             this.selServerIndex = serverIndex;
             let labelServerName = this.node.getChildByName("labelServerName");
             labelServerName.getComponent(cc.Label).string = this.serverList[serverIndex].name;
+            this.node.getChildByName("spriteServerState").getComponent("RemoteSprite").setFrame(this.serverList[serverIndex].status - 1);
         }
     },
 
@@ -132,6 +134,7 @@ var UIServerSel = cc.Class({
         if (!this.canSelect) return;
         if (GlobalVar.getPlatformApi()){
             this.canSelect = false;
+            config.NEED_GUIDE = false;
             // console.log("点击登陆按钮")
             let serverData = this.serverList[this.selServerIndex];
             // console.log("serverData :", serverData);

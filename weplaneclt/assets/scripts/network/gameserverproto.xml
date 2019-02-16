@@ -29,7 +29,7 @@
         <define name="PT_CONST_1000"            value="1000" />
         <define name="PT_MAX_INT32"             value="2147483647" />
 
-        <define name="PT_SERVER_VERSION"        value="110" />
+        <define name="PT_SERVER_VERSION"        value="120" />
 
         <define name="PT_SVRTYPE_ALL"           value="0" />
         <define name="PT_SVRTYPE_GAMESERVER"    value="1" />
@@ -319,7 +319,8 @@
         <define name="PTERR_FULI_SHARE_INVITE_TICKET_NOT_MATCH" value="688" />
         <define name="PTERR_FULI_SHARE_INVITE_COUNT_LACK" value="689"/>
         <define name="PTERR_FULI_SHARE_GUAZAI_JINHUA_COUNT_LIMIT" value="690"/>
-
+        <define name="PTERR_FULI_ONLINE_REWARD_LACK_TIME" value="691"/>
+      
         <define name="PTERR_MAIL_NO_ATTACHMENT" value="931" />
         <define name="PTERR_MAIL_ATTACHMENT_ALREADYGOT" value="932" />
         <define name="PTERR_MAIL_NOT_EXIST" value="933" />
@@ -605,6 +606,7 @@
         <define name="PTERR_EXPLORE_GEM_CLOSE" value="2405" />
         <define name="PTERR_EXPLORE_NAILI_MAX" value="2406" />
         <define name="PTERR_EXPLORE_GEM_TIMES_LACK" value="2407" />
+        <define name="PTERR_EXPLORE_XINGBI_LACK" value="2408" />
 
         <define name="PTERR_HONOR_LACK" value="2451" />
         <define name="PTERR_HONOR_RANK_MAX" value="2452" />
@@ -622,6 +624,8 @@
         <define name="PTERR_MAINTASK_BUILD_BOOM_LACK" value="2469" />
         <define name="PTERR_MAINTASK_BOSSTOWER_FLOOR_LACK" value="2470" />
         <define name="PTERR_MAINTASK_HEROCAMP_NOT_PASS" value="2471" />
+        <define name="PTERR_MAINTASK_MEMBER_LEVEL_LACK" value="2472" />
+        <define name="PTERR_MAINTASK_GUAZAI_LEVEL_LACK" value="2473" />
 
         <define name="PTERR_BUILD_IS_BUILDING" value="2501" />
         <define name="PTERR_BUILD_NOT_BUILDING" value="2502" />
@@ -775,6 +779,8 @@
         <define name="PTPARAM_FULI_GC_HEZI_DROPPACKAGE" value="322"/>
         <define name="PTPARAM_FULI_SHARE_GUAZAI_JINHUA_DROPPACKAGE" value="323"/>
         <define name="PTPARAM_FULI_SHARE_GUAZAI_JINHUA_LIMIT" value="324"/>
+        <define name="PTPARAM_FULI_GC_HUIGUIGIFT_DROPPACKAGE" value="325" />
+        <define name="PTPARAM_FULI_GC_DAILYGIFT_DROPPACKAGE" value="326" />
       
         <!-- param info -->
         <!-- ###########################################################################################################################-->
@@ -957,6 +963,7 @@
         <define name="PT_ITEMID_GOLD_1W"        value="2" />
         <define name="PT_ITEMID_DIAMOND_1"      value="3" />
         <define name="PT_ITEMID_PIECE_CRYSTAL"  value="4" />
+        <define name="PT_ITEMID_XINGBI"         value="5" />
         <define name="PT_ITEMID_ARENA_POINT"    value="7" />
         <define name="PT_ITEMID_ZIZUAN"         value="10" />
         <define name="PT_ITEMID_NEBULA_ENERGY"  value="11" />
@@ -970,8 +977,6 @@
         <define name="PT_ITEMID_COPPER"         value="31" />
         <define name="PT_ITEMID_QUARTZ"         value="32" />
         <define name="PT_ITEMID_TRIAL"          value="35" />
-        <define name="PT_ITEMID_RENAME_CARD"    value="5500" />
-        <define name="PT_ITEMID_MONEY_MAX"      value="5" />
 
         <define name="PT_ITEMID_SAODANG_TICKET" value="211" />
         <define name="PT_ITEMID_ARENA_CHALLENGE_TICKET" value="213" />
@@ -1319,6 +1324,8 @@
 
         <define name="PT_FULI_MILLION_MAX" value="999" />
         <define name="PT_FULI_GC_TESTPLAY_REWARD_MAX" value="999999" />
+        <define name="PT_FULI_ONLINE_COUNT_MAX" value="9999" />
+        <define name="PT_FULI_GC_DAILYGIFT_ID_MAX" value="256"/>
 
         <!--Arena-->
         <define name="PT_ARENA_HIS_MSG_MAX" value="10" />
@@ -1578,6 +1585,8 @@
         <define name="PT_MAINTASK_TYPE9" value="9" />
         <define name="PT_MAINTASK_TYPE10" value="10" />
         <define name="PT_MAINTASK_TYPE11" value="11" />
+        <define name="PT_MAINTASK_TYPE12" value="12" />
+        <define name="PT_MAINTASK_TYPE13" value="13" />
 
         <!--建筑-->
         <define name="PT_BUILD_QUEUE_MAX" value="3" />
@@ -1662,8 +1671,9 @@
         <define name="PT_CPS_TYPE_CREATE" value="1" />
         <define name="PT_CPS_TYPE_LOGIN" value="2" />
         <define name="PT_CPS_TYPE_RCG" value="3" />
+           
     </defines>
-
+  
     <!-- ###########################################################################################################################-->
     <!-- ###########################################################################################################################-->
     <!-- ###########################################################################################################################-->
@@ -1951,6 +1961,7 @@
             <item name="FuLiMillionFlag" type="UINT8"/>
             <item name="AMSFlag" type="UINT8"/>
             <item name="FuLiLimitGiftFlag" type="UINT8" />
+            <item name="FuliOnlineFlag" type="UINT8"/>
         </type>
 
         <type name="GMDT_SPBAG">
@@ -2015,7 +2026,7 @@
 
         <type name="GMDT_MEMBER_EQUIP">
             <item name="Level" type="UINT16"/>
-            <item name="LevelGold" type="INT32"/>
+            <item name="ReturnBi" type="INT32"/>
             <item name="StarLevel" type="UINT16"/>
             <item name="StarExp" type="INT32"/>
             <item name="ReturnItem" type="vector" member_type="GMDT_ITEM_COUNT" max_count="PT_BAG_ITEM_MAX"/>
@@ -2215,6 +2226,7 @@
             <item name="BossTowerMaxFloor" type="UINT16" />
             <item name="FuliSevenAct" type="UINT8" />
             <item name="FirstOpenTime" type="UINT32" />
+            <item name="XingBi" type="INT32" />
         </type>
 
         <type name="GMDT_MYSTERY">
@@ -2380,8 +2392,15 @@
             <item name="SuperInduceCount" type="UINT8" />
             <item name="OfficialAccountDraingetFlag" type="UINT8" />
             <item name="HeZiReward" type="UINT8"/>
+            <item name="HuiGuiGift" type="UINT8"/>
+            <item name="DailyGift" type="vector" member_type="UINT8" max_count="PT_FULI_GC_DAILYGIFT_ID_MAX" />
         </type>
-        
+
+        <type name="GMDT_FULI_ONLINE_BAG">
+            <item name="OnlineTime" type="UINT32"/>
+            <item name="Step" type="UINT8" />
+        </type>
+      
         <type name="GMDT_PLAYER">
             <item name="RoleID" type="UINT64"/>
             <item name="RoleName" type="string" max_count="PT_MAX_ROLENAME_LEN"/>
@@ -2399,6 +2418,7 @@
             <item name="EndlessRankID" type="UINT8"/>
             <item name="Guest" type="UINT8"/>
             <item name="CombatPoint" type="INT32" />
+            <item name="LogoutTime" type="UINT32" />
             <item name="PropBag" type="GMDT_PROP_BAG"/>
             <item name="StatFlags" type="GMDT_STAT_FLAGS"/>
             <item name="SpBag" type="GMDT_SPBAG"/>
@@ -2418,6 +2438,7 @@
             <item name="FlyingChessBag" type="GMDT_FLYING_CHESS_BAG" />
             <item name="ShareBag" type="GMDT_SHARE_BAG" />
             <item name="FuLiGCBag" type="GMDT_FULI_GC_BAG" />
+            <item name="FuliOnlineBag" type="GMDT_FULI_ONLINE_BAG" />
         </type>
 
         <type name="GMDT_PLAYER_LESSINFO">
@@ -2717,6 +2738,16 @@
             <item name="OK" type="GMDT_ITEM_COMPOSE_BUY_OK" select="ErrCode" id="PTERR_SUCCESS"/>
         </type>
 
+        <type name="GMPKG_ITEM_YUANSHI_COMPOSE_REQ">
+            <item name="YuanShiID" type="UINT16"/>
+        </type>
+      
+        <type name="GMPKG_ITEM_YUANSHI_COMPOSE_ACK">
+            <item name="ErrCode" type="INT32" />
+            <item name="ItemChange" type="GMDT_ITEM_CHANGE" />
+            <item name="ItemGet" type="vector" member_type="GMDT_ITEM_COUNT" max_count="PT_BAG_MAX_SIZE" />
+        </type>
+      
         <type name="GMPKG_LEADER_SEL_ICON_REQ">
             <item name="IconID" type="UINT16"/>
         </type>
@@ -2937,7 +2968,7 @@
         <type name="GMDT_MEMBER_EQUIP_QUALITYUP_OK">
             <item name="MemberID" type="UINT16" />
             <item name="Equip" type="GMDT_ITEM" />
-            <item name="GoldCur" type="INT32"/>
+            <item name="XingBi" type="INT32"/>
             <item name="DiamondCur" type="INT32"/>
             <item name="ItemChange" type="GMDT_ITEM_CHANGE" />
         </type>
@@ -2949,25 +2980,28 @@
 
         <type name="GMPKG_MEMBER_EQUIP_SPLIT_REQ">
             <item name="BagSlot" type="vector" member_type="UINT16" max_count="PT_BAG_MAX_SIZE" />
+            <item name="IsShow" type="UINT8" />
         </type>
 
         <type name="GMPKG_MEMBER_EQUIP_SPLIT_ACK">
             <item name="ErrCode" type="INT32" />
-            <item name="Gold" type="INT32"/>
+            <item name="XingBi" type="INT32"/>
             <item name="GetItems" type="vector" member_type="GMDT_ITEM_COUNT" max_count="PT_BAG_MAX_SIZE"/>
             <item name="ItemChange" type="GMDT_ITEM_CHANGE" />
+            <item name="IsShow" type="UINT8" />
         </type>
 
         <type name="GMPKG_MEMBER_EQUIP_LEVELUP_REQ">
             <item name="MemberID" type="UINT16" />
             <item name="EquipPos" type="UINT16" />
+            <item name="Num" type="UINT8"/>
         </type>
 
         <type name="GMDT_MEMBER_EQUIP_LEVELUP_OK">
             <item name="MemberID" type="UINT16" />
             <item name="LevelAdd" type="UINT16" />
             <item name="Equip" type="GMDT_ITEM" />
-            <item name="GoldCur" type="INT32"/>
+            <item name="XingBi" type="INT32"/>
         </type>
 
         <type name="GMPKG_MEMBER_EQUIP_LEVELUP_ACK">
@@ -3024,14 +3058,16 @@
 
         <type name="GMPKG_MEMBER_EQUIP_REBIRTH_REQ">
             <item name="BagSlot" type="vector" member_type="UINT16" max_count="PT_BAG_MAX_SIZE" />
+            <item name="IsShow" type="UINT8" />
         </type>
 
         <type name="GMPKG_MEMBER_EQUIP_REBIRTH_ACK">
             <item name="ErrCode" type="INT32" />
-            <item name="Gold" type="INT32"/>
+            <item name="XingBi" type="INT32"/>
             <item name="Diamond" type="INT32"/>
             <item name="GetItems" type="vector" member_type="GMDT_ITEM_COUNT" max_count="PT_BAG_MAX_SIZE"/>
             <item name="ItemChange" type="GMDT_ITEM_CHANGE" />
+            <item name="IsShow" type="UINT8" />
         </type>
 
         <type name="GMPKG_BAG_ITEM_CHANGE_NTF">
@@ -3054,22 +3090,14 @@
             <item name="ItemChange" type="GMDT_ITEM_CHANGE" />
         </type>
 
-        <type name="GMPKG_MEMBER_REBIRTH_SHOW_REQ">
-            <item name="MemberID" type="UINT16" />
-        </type>
-
-        <type name="GMPKG_MEMBER_REBIRTH_SHOW_ACK">
-            <item name="ErrCode" type="INT32" />
-            <item name="ReturnGold" type="INT32"/>
-            <item name="ReturnItem" type="vector" member_type="GMDT_ITEM_COUNT" max_count="PT_BAG_MAX_SIZE"/>
-        </type>
-
         <type name="GMPKG_MEMBER_REBIRTH_REQ">
             <item name="MemberID" type="UINT16" />
+            <item name="IsShow" type="UINT8" />
         </type>
 
         <type name="GMPKG_MEMBER_REBIRTH_ACK">
             <item name="ErrCode" type="INT32" />
+            <item name="IsShow" type="UINT8" />
             <item name="Gold" type="INT32"/>
             <item name="Diamond" type="INT32"/>
             <item name="GetItems" type="vector" member_type="GMDT_ITEM_COUNT" max_count="PT_BAG_MAX_SIZE"/>
@@ -3124,7 +3152,7 @@
         <type name="GMPKG_MEMBER_EQUIP_LEVELUP_YJ_ACK">
             <item name="ErrCode" type="INT32" />
             <item name="MemberID" type="UINT16" />
-            <item name="Gold" type="INT32"/>
+            <item name="XingBi" type="INT32"/>
             <item name="Equips" type="vector" member_type="GMDT_ITEM" max_count="PT_MEMBER_EQUIP_POSCOUNT" />
             <item name="ChangeEquip" type="vector" member_type="UINT16" max_count="PT_MEMBER_EQUIP_POSCOUNT" />
         </type>
@@ -4125,7 +4153,7 @@
             <item name="SpBack" type="UINT16"/>
             <item name="LastRecoverTime" type="UINT32"/>
         </type>
-
+          
         <type name="GMPKG_STORE_DATA_REQ">
             <item name="Type" type="UINT8"/>
         </type>
@@ -5209,7 +5237,53 @@
              <item name="ItemGet" type="vector" member_type="GMDT_ITEM_COUNT" max_count="PT_BAG_MAX_SIZE"/>
              <item name="HeZiReward" type="UINT8"/>
         </type>
-
+        
+        <type name="GMPKG_FULI_GC_HUIGUIGIFT_REQ">
+             <item name="Reserved" type="UINT8"/>
+        </type>
+        
+        <type name="GMPKG_FULI_GC_HUIGUIGIFT_ACK">
+              <item name="ErrCode" type="INT32"/>
+              <item name="ItemGet" type="vector" member_type="GMDT_ITEM_COUNT" max_count="PT_BAG_MAX_SIZE"/>
+              <item name="HuiGuiGift" type="UINT8" />
+        </type>
+        
+        <type name="GMPKG_FULI_GC_DAILYGIFT_REQ">
+              <item name="Reserved" type="UINT8" />
+              <item name="DailyGift" type="UINT8" />
+        </type>
+        
+        <type name="GMPKG_FULI_GC_DAILYGIFT_ACK">
+              <item name="ErrCode" type="INT32" />
+              <item name="ItemGet" type="vector" member_type="GMDT_ITEM_COUNT" max_count="PT_BAG_MAX_SIZE"/>
+              <item name="DailyGift" type="vector" member_type="UINT8" max_count="PT_FULI_GC_DAILYGIFT_ID_MAX"/>
+        </type>
+      
+        <type name="GMPKG_FULI_ONLINE_REWARD_REQ">
+              <item name="Flag" type="UINT8" />
+        </type>
+      
+        <type name="GMPKG_FULI_ONLINE_REWARD_ACK">
+              <item name="ErrCode" type="INT32"/>
+              <item name="ItemGet" type="vector" member_type="GMDT_ITEM_COUNT" max_count="PT_BAG_MAX_SIZE"/>
+              <item name="OnlineTime" type="UINT32" />
+              <item name="Step" type="UINT8" />
+        </type>
+        
+        <type name="GMPKG_FULI_ONLINE_DATA_REQ">
+              <item name="Reserved" type="UINT8"/>
+        </type>
+        
+        <type name="GMPKG_FULI_ONLINE_DATA_ACK">
+              <item name="ErrCode" type="INT32" />
+              <item name="OnlineTime" type="UINT32" />
+              <item name="Step" type="UINT8" />
+        </type>
+        
+        <type name="GMPKG_FULI_ONLINE_NTF">
+              <item name="StatFlag" type="UINT8"/>
+        </type>
+                  
         <type name="GMPKG_LEVELUP_DOUBLE_REWARD_REQ" >
             <item name="OldLevel" type="UINT16" />
         </type>
@@ -6979,6 +7053,18 @@
             <item name="ItemChange" type="GMDT_ITEM_CHANGE" />
         </type>
 
+        <type name="GMPKG_GUAZAI_SPLIT_REQ">
+            <item name="BagSlot" type="vector" member_type="UINT16" max_count="PT_BAG_MAX_SIZE" />
+            <item name="IsShow" type="UINT8" />
+        </type>
+
+        <type name="GMPKG_GUAZAI_SPLIT_ACK">
+            <item name="ErrCode" type="INT32" />
+            <item name="IsShow" type="UINT8" />
+            <item name="GetItems" type="vector" member_type="GMDT_ITEM_COUNT" max_count="PT_BAG_MAX_SIZE"/>
+            <item name="ItemChange" type="GMDT_ITEM_CHANGE" />
+        </type>
+
         <type name="GMPKG_GUAZAI_HECHENG_REQ">
             <item name="BagSlot" type="vector" member_type="UINT16" max_count="PT_BAG_MAX_SIZE" />
         </type>
@@ -7206,6 +7292,7 @@
             <item name="GemEndTime" type="UINT32" />
             <item name="GemTimes" type="UINT16" />
             <item name="Chest" type="vector" member_type="GMDT_EXPLORE_CHEST" max_count="PT_EXPLORE_CHEST_MAX" />
+            <item name="XingBi" type="INT32" />
         </type>
 
         <type name="GMPKG_EXPLORE_DATA_ACK">
@@ -7229,8 +7316,8 @@
         <type name="GMDT_EXPLORE_REWARD_VALUE">
             <item name="Crit" type="UINT8" />
             <item name="AddExp" type="INT32" />
-            <item name="AddGold" type="INT32" />
-            <item name="GoldCur" type="INT32" />
+            <item name="AddXingBi" type="INT32" />
+            <item name="XingBiCur" type="INT32" />
         </type>
 
         <type name="GMDT_EXPLORE_REWARD_ITEM">
@@ -7288,6 +7375,10 @@
             <item name="Chest" type="vector" member_type="GMDT_EXPLORE_CHEST" max_count="PT_EXPLORE_CHEST_MAX" />
         </type>
 
+        <type name="GMPKG_EXPLORE_XINGBI_NTF">
+            <item name="XingBi" type="INT32" />
+        </type>
+        
         <type name="GMPKG_HONOR_RANKUP_REQ">
             <item name="Reserved" type="UINT8" />
         </type>
@@ -7334,6 +7425,7 @@
         <type name="GMDT_MAINTASK">
             <item name="Type" type="UINT8" />
             <item name="ID" type="UINT16" />
+            <item name="Var" type="INT32" />
         </type>
 
         <type name="GMPKG_MAINTASK_DATA_ACK">
@@ -7996,7 +8088,7 @@
 
         <type name="DBDT_MEMBER_EQUIP">
             <item name="Level" type="UINT16"/>
-            <item name="LevelGold" type="INT32"/>
+            <item name="ReturnBi" type="INT32"/>
             <item name="StarLevel" type="UINT16"/>
             <item name="StarExp" type="INT32"/>
             <item name="ReturnItem" type="vector" member_type="DBDT_ITEM_COUNT" max_count="PT_BAG_ITEM_MAX"/>
@@ -8514,15 +8606,21 @@
             <item name="InviteGiftBag" type="UINT8"/>
             <item name="JinHuaCount" type="UINT8"/>
         </type>
-               
+      
         <type name="DBDT_FULI_GC">
             <item name="TestPlayReward" type="vector" member_type="UINT32" max_count="PT_FULI_GC_TESTPLAY_REWARD_MAX" />
             <item name="SuperInduceCount" type="UINT8" />
             <item name="OfficialAccountDraingetFlag" type="UINT8" />
             <item name="HeZiReward" type="UINT8"/>
-            
+            <item name="HuiGuiGift" type="UINT8"/>
+            <item name="DailyGift" type="vector" member_type="UINT8" max_count="PT_FULI_GC_DAILYGIFT_ID_MAX" />
         </type>
 
+        <type name="DBDT_FULI_ONLINE_BAG">
+            <item name="OnlineTime" type="UINT32"/>
+            <item name="Step" type="UINT8" />
+        </type>
+      
         <type name="DBDT_FULI_BAG">
             <item name="GiftBag" type="DBDT_FULI_GIFT_BAG" />
             <item name="SevenBag" type="DBDT_FULI_SEVEN_BAG" />
@@ -8532,8 +8630,9 @@
             <item name="Million" type="DBDT_FULI_MILLION" />
             <item name="Share" type="DBDT_FULI_SHARE" />
             <item name="GC" type="DBDT_FULI_GC" />
+            <item name="OnlineBag" type="DBDT_FULI_ONLINE_BAG" />
         </type>
-
+      
         <type name="DBDT_ARENA_HIS_MSG">
             <item name="Time" type="UINT32" />
             <item name="Result" type="UINT8" />
@@ -8790,6 +8889,7 @@
             <item name="GemEndTime" type="UINT32" />
             <item name="GemTimes" type="UINT16" />
             <item name="Chest" type="vector" member_type="DBDT_EXPLORE_CHEST" max_count="PT_EXPLORE_CHEST_MAX" />
+            <item name="XingBi" type="INT32" />
         </type>
 
         <type name="DBDT_TONGSHUAI">
@@ -10823,8 +10923,11 @@
         <message name="GMID_ITEM_LIFE_ACK" id="120" type="GMPKG_ITEM_LIFE_ACK" />
         <message name="GMID_ITEMBAG_UNLOCK_REQ" id="121" type="GMPKG_ITEMBAG_UNLOCK_REQ" />
         <message name="GMID_ITEMBAG_UNLOCK_ACK" id="122" type="GMPKG_ITEMBAG_UNLOCK_ACK" />
+        <message name="GMID_ITEM_YUANSHI_COMPOSE_REQ" id="123" type="GMPKG_ITEM_YUANSHI_COMPOSE_REQ" />
+        <message name="GMID_ITEM_YUANSHI_COMPOSE_ACK" id="124" type="GMPKG_ITEM_YUANSHI_COMPOSE_ACK" />
 
-        <message name="GMID_LEADER_SEL_ICON_REQ" id="181" type="GMPKG_LEADER_SEL_ICON_REQ" />
+
+      <message name="GMID_LEADER_SEL_ICON_REQ" id="181" type="GMPKG_LEADER_SEL_ICON_REQ" />
         <message name="GMID_LEADER_SEL_ICON_ACK" id="182" type="GMPKG_LEADER_SEL_ICON_ACK" />
 
         <message name="GMID_SAVE_CHUZHAN_CONF_REQ" id="191" type="GMPKG_SAVE_CHUZHAN_CONF_REQ" />
@@ -10873,10 +10976,8 @@
 
         <message name="GMID_MEMBER_STAR_UP_REQ" id="281" type="GMPKG_MEMBER_STAR_UP_REQ" />
         <message name="GMID_MEMBER_STAR_UP_ACK" id="282" type="GMPKG_MEMBER_STAR_UP_ACK" />
-        <message name="GMID_MEMBER_REBIRTH_SHOW_REQ" id="283" type="GMPKG_MEMBER_REBIRTH_SHOW_REQ" />
-        <message name="GMID_MEMBER_REBIRTH_SHOW_ACK" id="284" type="GMPKG_MEMBER_REBIRTH_SHOW_ACK" />
-        <message name="GMID_MEMBER_REBIRTH_REQ" id="285" type="GMPKG_MEMBER_REBIRTH_REQ" />
-        <message name="GMID_MEMBER_REBIRTH_ACK" id="286" type="GMPKG_MEMBER_REBIRTH_ACK" />
+        <message name="GMID_MEMBER_REBIRTH_REQ" id="283" type="GMPKG_MEMBER_REBIRTH_REQ" />
+        <message name="GMID_MEMBER_REBIRTH_ACK" id="284" type="GMPKG_MEMBER_REBIRTH_ACK" />
 
         <message name="GMID_MEMBER_SPECIAL_LEVELUP_REQ" id="291" type="GMPKG_MEMBER_SPECIAL_LEVELUP_REQ" />
         <message name="GMID_MEMBER_SPECIAL_LEVELUP_ACK" id="292" type="GMPKG_MEMBER_SPECIAL_LEVELUP_ACK" />
@@ -11414,6 +11515,8 @@
         <message name="GMID_GUAZAI_STARUP_ACK" id="1907" type="GMPKG_GUAZAI_STARUP_ACK" />
         <message name="GMID_GUAZAI_REBIRTH_REQ" id="1908" type="GMPKG_GUAZAI_REBIRTH_REQ" />
         <message name="GMID_GUAZAI_REBIRTH_ACK" id="1909" type="GMPKG_GUAZAI_REBIRTH_ACK" />
+        <message name="GMID_GUAZAI_SPLIT_REQ" id="1910" type="GMPKG_GUAZAI_SPLIT_REQ" />
+        <message name="GMID_GUAZAI_SPLIT_ACK" id="1911" type="GMPKG_GUAZAI_SPLIT_ACK" />
         <message name="GMID_GUAZAI_HECHENG_REQ" id="1912" type="GMPKG_GUAZAI_HECHENG_REQ" />
         <message name="GMID_GUAZAI_HECHENG_ACK" id="1913" type="GMPKG_GUAZAI_HECHENG_ACK" />
         <message name="GMID_GUAZAI_AWAKE_REQ" id="1914" type="GMPKG_GUAZAI_AWAKE_REQ" />
@@ -11477,6 +11580,7 @@
         <message name="GMID_EXPLORE_OPEN_ACK" id="2411" type="GMPKG_EXPLORE_OPEN_ACK" />
         <message name="GMID_EXPLORE_FLAG_NTF" id="2412" type="GMPKG_EXPLORE_FLAG_NTF" />
         <message name="GMID_EXPLORE_CHEST_NTF" id="2413" type="GMPKG_EXPLORE_CHEST_NTF" />
+        <message name="GMID_EXPLORE_XINGBI_NTF" id="2414" type="GMPKG_EXPLORE_XINGBI_NTF" />
 
         <message name="GMID_HONOR_RANKUP_REQ" id="2450" type="GMPKG_HONOR_RANKUP_REQ" />
         <message name="GMID_HONOR_RANKUP_ACK" id="2451" type="GMPKG_HONOR_RANKUP_ACK" />
@@ -11598,10 +11702,20 @@
         <message name="GMID_FULI_GC_OFFICIALACCOUNT_DRAINAGE_ACK" id="2907" type="GMPKG_FULI_GC_OFFICIALACCOUNT_DRAINAGE_ACK" />
         <message name="GMID_FULI_GC_HEZI_REWARD_REQ" id="2908" type="GMPKG_FULI_GC_HEZI_REWARD_REQ" />
         <message name="GMID_FULI_GC_HEZI_REWARD_ACK" id="2909" type="GMPKG_FULI_GC_HEZI_REWARD_ACK" />
+        <message name="GMID_FULI_GC_HUIGUIGIFT_REQ" id="2910" type="GMPKG_FULI_GC_HUIGUIGIFT_REQ" />
+        <message name="GMID_FULI_GC_HUIGUIGIFT_ACK" id="2911" type="GMPKG_FULI_GC_HUIGUIGIFT_ACK" />
+        <message name="GMID_FULI_GC_DAILYGIFT_REQ" id="2912" type="GMPKG_FULI_GC_DAILYGIFT_REQ" />
+        <message name="GMID_FULI_GC_DAILYGIFT_ACK" id="2913" type="GMPKG_FULI_GC_DAILYGIFT_ACK" />
 
         <message name="GMID_LEVELUP_DOUBLE_REWARD_REQ" id="3000" type="GMPKG_LEVELUP_DOUBLE_REWARD_REQ" />
         <message name="GMID_LEVELUP_DOUBLE_REWARD_ACK" id="3001" type="GMPKG_LEVELUP_DOUBLE_REWARD_ACK" />
       
+        <message name="GMID_FULI_ONLINE_REWARD_REQ" id="3101" type="GMPKG_FULI_ONLINE_REWARD_REQ"/>
+        <message name="GMID_FULI_ONLINE_REWARD_ACK" id="3102" type="GMPKG_FULI_ONLINE_REWARD_ACK"/>
+        <message name="GMID_FULI_ONLINE_DATA_REQ" id="3103" type="GMPKG_FULI_ONLINE_DATA_REQ" />
+        <message name="GMID_FULI_ONLINE_DATA_ACK" id="3104" type="GMPKG_FULI_ONLINE_DATA_ACK" />
+        <message name="GMID_FULI_ONLINE_NTF" id="3105" type="GMPKG_FULI_ONLINE_NTF"/>
+  
         <!-- ###########################################################################################################################-->
         <!-- ###########################################################################################################################-->
         <!-- ###########################################################################################################################-->

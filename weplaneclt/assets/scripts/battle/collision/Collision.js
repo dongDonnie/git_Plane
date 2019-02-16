@@ -355,15 +355,15 @@ cc.Class({
     collisionHeroWithBuff(buff, hero) {
         buff.isDead = true;
         if (buff.objectID == Defines.Assist.WEAPON_UP) {
-            GlobalVar.soundManager().playEffect('cdnRes/audio/battle/effect/weapon_up');
             this.heroManager.skillLevelUp(1);
         } else if (buff.objectID == Defines.Assist.SUPER) {
-            GlobalVar.soundManager().playEffect('cdnRes/audio/battle/effect/weapon_up');
             this.heroManager.skillLevelUp(3);
         } else if (buff.objectID == Defines.Assist.PROTECT) {
             hero.addProtectTime(Defines.PROTECT_TIME);
         } else if (buff.objectID == Defines.Assist.HP) {
             hero.addHP();
+        } else if (buff.objectID == Defines.Assist.MP) {
+            hero.addMP();
         } else if (buff.objectID == Defines.Assist.DASH) {
             hero.addDashTime(Defines.DASH_TIME);
         } else if (buff.objectID == Defines.Assist.GREENSTONE) {

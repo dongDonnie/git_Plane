@@ -1,0 +1,32 @@
+{
+  "ver": "2.3.0",
+  "uuid": "4d8c9be1-0a42-48b7-b14e-8e2fb3ec26e2",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "platformSettings": {},
+  "subMetas": {
+    "quest_selected_circle_3": {
+      "ver": "1.0.3",
+      "uuid": "959ffe5b-c877-4645-9e05-04445871c897",
+      "rawTextureUuid": "4d8c9be1-0a42-48b7-b14e-8e2fb3ec26e2",
+      "trimType": "auto",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": -0.5,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 149,
+      "height": 150,
+      "rawWidth": 150,
+      "rawHeight": 150,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "ver": "1.2.0",
+  "uuid": "b42e25a3-a260-4f9c-93af-d783e50b4154",
+  "maxWidth": 2048,
+  "maxHeight": 2048,
+  "padding": 2,
+  "allowRotation": false,
+  "forceSquared": false,
+  "powerOfTwo": false,
+  "heuristices": "BestAreaFit",
+  "format": "png",
+  "quality": 80,
+  "contourBleed": true,
+  "paddingBleed": true,
+  "filterUnused": false,
+  "platformSettings": {
+    "default": {
+      "formats": [
+        {
+          "name": "png",
+          "quality": 80
+        }
+      ]
+    },
+    "wechatgame": {
+      "formats": [
+        {
+          "name": "png",
+          "quality": 80
+        }
+      ]
+    }
+  },
+  "subMetas": {}
+}

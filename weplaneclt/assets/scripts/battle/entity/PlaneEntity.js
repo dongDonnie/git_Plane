@@ -273,6 +273,12 @@ cc.Class({
         this.showGetBuffEffect(Defines.Assist.HP);
     },
 
+    addMP(plus){
+        GlobalVar.soundManager().playEffect('cdnRes/audio/battle/effect/weapon_up');
+        this._super(plus);
+        this.showGetBuffEffect(Defines.Assist.MP);
+    },
+
     addProtectTime(time) {
         GlobalVar.soundManager().playEffect('cdnRes/audio/battle/effect/blood_cure');
         this._super(time);
@@ -423,8 +429,8 @@ cc.Class({
                 animeName = "Tx_GetBuff_Hd";
             } else if (type == Defines.Assist.HP) {
                 animeName = "Tx_GetBuff_Hf";
-            } else if (type == Defines.Assist.HP) {
-                animeName = "Tx_GetBuff_Hf";
+            } else if (type == Defines.Assist.MP) {
+                animeName = "Tx_GetBuff_Cn";
             } else if (type >= Defines.Assist.CHEST1 && type <= Defines.Assist.CHEST9) {
                 animeName = "Tx_GetBuff_Bx";
             }

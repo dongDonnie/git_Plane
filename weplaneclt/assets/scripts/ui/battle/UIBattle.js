@@ -76,6 +76,10 @@ var UIBattle = cc.Class({
             default: null,
             type: cc.ProgressBar
         },
+        btnoAssist: {
+            default: null,
+            type: cc.Node
+        },
         nodeBeyoundFriend: {
             default: null,
             type: cc.Node,
@@ -454,6 +458,7 @@ var UIBattle = cc.Class({
             if (this.barAssistCD.progress != 0) {
                 return;
             }
+            this.btnoAssist.getChildByName('dangerous').active = false;
             if (this.assistBtnStatusCount > 0 && this.assistBtnStatus > 0) {
                 GlobalVar.handlerManager().endlessHandler.sendEndlessUseStatusReq(this.assistBtnStatus)
             } else if (this.assistBtnStatusCount == 0 && GlobalVar.getShareSwitch() && GlobalVar.getShareControl() == 1) {

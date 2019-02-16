@@ -52,7 +52,7 @@ CampEndless.data = {
         {groups:[78],wait:0,delay:[0]},
         {groups:[81],wait:0,delay:[0]},
         {groups:[83],wait:0,delay:[0]},
-        
+        {groups:[92],wait:0,delay:[0]},
     ],
     monstersEilteBoss:[
      

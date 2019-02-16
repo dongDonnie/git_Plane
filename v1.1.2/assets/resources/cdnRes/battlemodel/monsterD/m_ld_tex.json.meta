@@ -1,0 +1,7 @@
+{
+  "ver": "1.0.0",
+  "uuid": "1fe103d2-ec20-4f5e-b3e0-3e56e47609a3",
+  "atlasJson": "{\"width\":227,\"imagePath\":\"m_ld_tex.png\",\"SubTexture\":[{\"frameWidth\":197,\"y\":269,\"frameHeight\":142,\"width\":195,\"frameX\":-1,\"height\":141,\"name\":\"m_ld (2)\",\"frameY\":-1,\"x\":1},{\"frameWidth\":225,\"y\":1,\"frameHeight\":267,\"width\":224,\"frameX\":-1,\"height\":266,\"name\":\"m_ld (1)\",\"frameY\":-1,\"x\":1}],\"height\":412,\"name\":\"m_ld\"}",
+  "texture": "ea503117-43d3-4615-8a08-aea15a957cb6",
+  "subMetas": {}
+}

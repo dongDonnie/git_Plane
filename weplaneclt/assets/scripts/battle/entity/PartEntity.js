@@ -30,6 +30,9 @@ cc.Class({
 
         this.hp = this.maxHp = this.prop[Defines.PropName.Life];
 
+        this.mp = 0;
+        this.maxMp = Defines.MP_LIMIT;
+
         this.lastCrazyCount = Defines.CRAZYCOUNT;
         this.lastSkillTime = 0;
         this.skillCD = Defines.SKILLCD;
@@ -48,10 +51,6 @@ cc.Class({
 
         this.side = 0;
         this.pos = 0;
-
-        // this.shader=false;
-        // this.shaderRender=null;
-        // this.shaderStartTime=0;
     },
 
     reset: function () {
@@ -104,7 +103,6 @@ cc.Class({
                             self.partObject.setPosition(cc.v3(0, 20));
                         }
                     }
-                    //self.shaderRender=self.part.getSpine();
                     if (self.objectType == Defines.ObjectType.OBJ_HERO && self.showType == 0) {
                         self.addMotionStreak('huoyan');
                     }
@@ -125,7 +123,6 @@ cc.Class({
             let sp = this.partObject.addComponent(cc.Sprite);
             sp.spriteFrame = GlobalVar.resManager().loadRes(ResMapping.ResType.SpriteFrame, path);
             this.addChild(this.partObject);
-            //this.shaderRender=sp;
         }
         return false;
     },
@@ -161,30 +158,16 @@ cc.Class({
     },
 
     openShader: function (open) {
-        return;
-        // if(this.shaderRender==null){
-        //     this.shader = false;
-        //     this.shaderStartTime = 0;
-        //     return;
-        // }
-
-        // this.shader = typeof open !== 'undefined' ? open : false;
-        // if (this.shader) {
-        //     this.shaderStartTime = Date.now()-5000;
-        // }else{
-        //     this.shaderStartTime = 0;
-        // }
+        if (!this.partObject || !this.part) {
+            return;
+        }
+        this.part.openShader(open);
     },
 
     update(dt) {
         if (!this.partObject) {
             return;
         }
-
-        // if (this.shader && !!this.shaderRender) {
-        //     let time = (Date.now() - this.shaderStartTime) / 1000;
-        //     ShaderUtils.setShader(this.shaderRender, "projective", time);
-        // }
 
         if (BattleManager.getInstance().isEditorFlag) {
             return;
@@ -313,6 +296,11 @@ cc.Class({
     addHP(plus) {
         plus = typeof plus !== 'undefined' ? plus : this.maxHp * 0.3;
         this.hp = Math.min(this.maxHp, this.hp + plus);
+    },
+
+    addMP(plus) {
+        plus = typeof plus !== 'undefined' ? plus : Defines.MP_INCREASE;
+        this.mp = Math.min(this.maxMp, this.mp + plus);
     },
 
     addDashTime(time) {

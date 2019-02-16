@@ -20,6 +20,8 @@ var BattleScene = cc.Class({
         this.sceneName = "BattleScene";
         this.battleManager = BattleManager.getInstance();
         this.uiNode = cc.find("Canvas/UINode");
+        this.showDangerous = this.uiNode.getChildByName('UIBattle').getChildByName('btnoAssist').getChildByName('dangerous');
+        this.showDangerousTime = 0;
         this.openScene();
         if (!!this.battleManager.isArenaFlag) {
             this.battleManager.startArena(this.node, cc.find('Canvas/ArenaSelfNode'), cc.find('Canvas/ArenaRivalNode'), cc.find('Canvas/GameNode'));
@@ -89,12 +91,27 @@ var BattleScene = cc.Class({
                 this.battleManager.gameState = BattleDefines.GameResult.PAUSE;
             }
         }
+
+        if (!!this.showDangerous.active) {
+            this.showDangerousTime += dt;
+            if (this.showDangerousTime >= 10) {
+                this.showDangerous.active = false;
+                this.showDangerousTime = 0;
+            }
+        } else {
+            this.showDangerousTime = 0;
+        }
     },
 
     releaseScene: function () {
         this._super();
         this.battleManager.release();
         BattleManager.destroyInstance();
+    },
+
+    loadPrefab: function (prefabName, callback) {
+        this.showDangerous.active = false;
+        this._super(prefabName, callback);
     },
 
     showPauseWnd() {

@@ -10,7 +10,7 @@ const i18n = require('LanguageData');
 const GlobalFunc = require('GlobalFunctions');
 const StoreageData = require("storagedata");
 
-const TAB_NEWTASK = 0, TAB_DAILYMISSION = 1;
+const TAB_NEWTASK = 0, TAB_DAILYMISSION = 1, TAB_MAINTASK = 2;
 const BUTTON_INACTIVE = 0, BUTTON_ACTIVE = 1;
 
 const AUDIO_COMMIT_MISSTION = 'cdnRes/audio/main/effect/zhihuiguan-zhuangbeihecheng';
@@ -39,6 +39,10 @@ cc.Class({
             default: null,
             type: cc.Node,
         },
+        nodeMainTaskModel: {
+            default: null,
+            type: cc.Node,
+        },
         nodeQuestModel: {
             default: null,
             type: cc.Node,
@@ -47,19 +51,11 @@ cc.Class({
             default: 0,
             visible: false,
         },
-        dailyNotInit: {
-            default: true,
-            visible: false,
-        },
-        newTaskNotInit: {
-            default: true,
-            visible: false,
-        },
-        alreadSaveData: {
-            default: false,
-            visible: false,
-        },
         dailyScroll: {
+            default: null,
+            type: cc.ScrollView,
+        },
+        mainTaskScroll: {
             default: null,
             type: cc.ScrollView,
         },
@@ -76,10 +72,16 @@ cc.Class({
         this.animeStartParam(0, 0);
         // this.onBtnTapClick();
         this.isFirstIn = true;
+        this.dailyNotInit = true;
+        this.newTaskNotInit = true;
+        this.mainTaskNotInit = true;
         this.nodeTabContent[TAB_DAILYMISSION].getChildByName("nodeRewards").active = false;
     },
 
     onDestroy: function(){
+        this.dailyNotInit = true;
+        this.newTaskNotInit = true;
+        this.mainTaskNotInit = true;
         GlobalVar.eventManager().removeListenerWithTarget(this);
     },
 
@@ -91,13 +93,16 @@ cc.Class({
     animePlayCallBack(name) {
         if (name == "Escape") {
             this._super("Escape");
+            
+            this.dailyNotInit = true;
+            this.newTaskNotInit = true;
+            this.mainTaskNotInit = true;
             GlobalVar.eventManager().removeListenerWithTarget(this);
             WindowManager.getInstance().popView(false, null, false, false);
         } else if (name == "Enter") {
             this._super("Enter");
             //接到消息后再初始化窗口
             this.recvLock = false;
-            this.alreadSaveData = false;
             this.nodeTabContent[TAB_DAILYMISSION].getChildByName("nodeRewards").active = true;
             this.registerEvent();
             this.initDailyWnd();
@@ -126,16 +131,10 @@ cc.Class({
     },
 
     close: function () {
-        // if (this.nodeTabContent[TAB_DAILYMISSION].active){
-        //     this.dailyScroll.loopScroll.releaseViewItems();
-        // }
-        // // this.nodeTabContent[TAB_DAILYMISSION].active = false;
-        // this.nodeTabContent[TAB_DAILYMISSION].getChildByName("nodeRewards").active = false;
-        // if (this.nodeTabContent[TAB_NEWTASK].active){
-        //     this.nodeTabContent[TAB_NEWTASK].active = false
-        // }
-        if (this.curTab == TAB_DAILYMISSION){
+        if (this.curTab == TAB_DAILYMISSION) {
             this.dailyScroll.loopScroll.releaseViewItems();
+        }else if (this.curTab == TAB_MAINTASK) {
+            this.mainTaskScroll.loopScroll.releaseViewItems();
         }
         this.nodeTabContent[this.curTab].active = false;
         
@@ -148,6 +147,12 @@ cc.Class({
         GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_GETDAILY_ACTIVE_REWARD, this.showDailyActiveReward, this);
         GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_NEWTASK_REWARD, this.showNewTaskReward, this);
         GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_DAILY_FLAG_CHANGE, this.setDailyFlag, this);
+
+        // 主线任务
+        GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_GET_MAINTASK_DATA, this.setSaveData, this);
+        GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_GET_MAINTASK_REWARD_DATA, this.getMainTaskRewardData, this);
+        GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_GET_MAINTASK_GET_DATA, this.getMainTaskGetData, this);
+        GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_MAINTASK_FLAG_CHANGE, this.setMainTaskFlag, this);
     },
 
     setDefaultTab: function (index) {
@@ -159,7 +164,6 @@ cc.Class({
     },
 
     setSaveData: function () {
-        this.alreadSaveData = true;
         this.initDailyWnd();
     },
 
@@ -172,6 +176,9 @@ cc.Class({
         // } else if (this.curTab == TAB_NEWTASK && this.newTaskNotInit) {
             this.initChallengeTab();
             this.newTaskNotInit = false;
+        } else if (this.curTab == TAB_MAINTASK) {
+            this.initMainTaskTab();
+            this.mainTaskNotInit = false;
         }
     },
     checkRedPoint: function (){
@@ -192,14 +199,21 @@ cc.Class({
         //今日任务的红点
         let flags = GlobalVar.me().statFlags;
         this.node.getChildByName("btnDaily").getChildByName("spriteHot").active = !!flags.DailyFlag;
+
+        this.node.getChildByName("btnMainTask").getChildByName("spriteHot").active = !!flags.MainTaskFlag;
     },
     setDailyFlag: function(event){
         let flags = GlobalVar.me().statFlags;
         this.node.getChildByName("btnDaily").getChildByName("spriteHot").active = !!flags.DailyFlag;
     },
 
+    setMainTaskFlag: function (event) {
+        let flags = GlobalVar.me().statFlags;
+        this.node.getChildByName("btnMainTask").getChildByName("spriteHot").active = !!flags.MainTaskFlag;
+    },
+
     onBtnTapClick: function (event, index) {
-        if (typeof index == 'undefined' || index < TAB_NEWTASK || index > TAB_DAILYMISSION) {
+        if (typeof index == 'undefined' || index < TAB_NEWTASK || index > TAB_MAINTASK) {
             index = TAB_DAILYMISSION;
         }
         if (this.curTab == index){
@@ -207,12 +221,18 @@ cc.Class({
         }
         this.curTab = index;
         if (index == TAB_DAILYMISSION) {
-            if (this.alreadSaveData) {
+            if (!this.dailyNotInit) {
                 this.initDailyWnd();
             } else {
                 GlobalVar.handlerManager().dailyHandler.sendGetDailyDataReq();
             }
-        }else{
+        }else if (index == TAB_MAINTASK) {
+            if (!this.mainTaskNotInit) {
+                this.initDailyWnd();
+            } else {
+                GlobalVar.handlerManager().mainTaskHandler.sendGetMainTaskDataReq();
+            }
+        } else {
             this.initDailyWnd();
         }
 
@@ -275,14 +295,14 @@ cc.Class({
                 // 按钮
                 let platformApi = GlobalVar.getPlatformApi();
                 if (curRate == maxRate) {
-                    if (newTaskRate.TaskID % 3 == 0) {
+                    if (newTaskRate.TaskID % 3 == 0 && GlobalVar.getShareSwitch()) {
                         nodeChallenge.getChildByName("btnRecv").active = false;
                         nodeChallenge.getChildByName("btnWatchVideo").active = true;
                         nodeChallenge.getChildByName("btnRecvText").active = true;
-                        if (platformApi && !platformApi.canShowRewardVideo()) {
-                            nodeChallenge.getChildByName('btnWatchVideo').getChildByName('videoIcon').getComponent('RemoteSprite').setFrame(1);
-                        } else {
+                        if (platformApi && (platformApi.canShowRewardVideo() || GlobalVar.getShareControl() == 6)) {
                             nodeChallenge.getChildByName('btnWatchVideo').getChildByName('videoIcon').getComponent('RemoteSprite').setFrame(0);
+                        } else if (platformApi && !platformApi.canShowRewardVideo()){
+                            nodeChallenge.getChildByName('btnWatchVideo').getChildByName('videoIcon').getComponent('RemoteSprite').setFrame(1);
                         }
                     } else {
                         nodeChallenge.getChildByName("btnRecv").active = true;
@@ -357,6 +377,11 @@ cc.Class({
         this.initDailyMisstion();
     },
 
+    initMainTaskTab: function () {
+        this.initMainTaskProgress();
+        this.initMainTaskMisstion();
+    },
+
     initDailyMisstion: function(){
 
         let showDataList = [];
@@ -404,8 +429,6 @@ cc.Class({
             let campTblID = GlobalVar.tblApi.getDataBySingleKey('TblChapter', GameServerProto.PT_CAMPTYPE_MAIN)[chapterID - 1].oVecCampaigns[campaignIndex]
             let campName = GlobalVar.tblApi.getDataBySingleKey('TblCampaign', campTblID).strCampaignName;
             strTips = strTips.replace("%campName", campName);
-
-
             this.labelCompleteQuestName.string = strTips;
         }
 
@@ -482,6 +505,87 @@ cc.Class({
         }
     },
 
+    initMainTaskProgress: function () {
+        let nodeMainTask = this.nodeTabContent[TAB_MAINTASK];
+        let progress = GlobalVar.me().mainTaskData.getMainTaskProgress() || 0;
+        let index = GlobalVar.me().mainTaskData.getMainTaskRewardIndex();
+        let rewardBoxData = GlobalVar.tblApi.getDataBySingleKey('TblMainTaskReward', index);
+        nodeMainTask.getChildByName("labelRate").getComponent(cc.Label).string = progress + "/" + rewardBoxData.wProgress;
+        nodeMainTask.getChildByName("progressActiveBar").getComponent(cc.ProgressBar).progress = progress / rewardBoxData.wProgress;
+
+        if (progress >= rewardBoxData.wProgress){
+            nodeMainTask.getChildByName("btnMainTaskRewardBox").getComponent("RemoteSprite").setFrame(1);
+        }else{
+            nodeMainTask.getChildByName("btnMainTaskRewardBox").getComponent("RemoteSprite").setFrame(0);
+        }
+    },
+
+    initMainTaskMisstion: function () {
+        let nodeMainTask = this.nodeTabContent[TAB_MAINTASK];
+        let mainTaskData = GlobalVar.me().mainTaskData.getMainTaskData();
+
+        let showDataList = [];
+        for (let i = 0; i< mainTaskData.length || 0; i++){
+            let taskType = mainTaskData[i].Type;
+            let id = mainTaskData[i].ID;
+            showDataList.push(GlobalVar.tblApi.getDataBySingleKey("TblMainTask", taskType)[id]);
+        }
+
+        if (showDataList.length > 0){
+            let self = this;
+            this.mainTaskScroll.loopScroll.setTotalNum(showDataList.length);
+            this.mainTaskScroll.loopScroll.setCreateModel(this.nodeMainTaskModel);
+            this.mainTaskScroll.loopScroll.saveCreatedModel(this.mainTaskScroll.content.children);
+            this.mainTaskScroll.loopScroll.registerUpdateItemFunc(function(model, index){
+                self.updateMainTaskModel(model, showDataList[index]);
+            });
+            this.mainTaskScroll.loopScroll.resetView();
+        }
+    },
+
+    updateMainTaskModel: function (model, data) {
+        // 当前进度
+        
+        let curRate = GlobalVar.me().mainTaskData.getTaskCurValueByType(data.byType);
+        let maxRate = data.nVar;
+        model.getChildByName("btnRecv").active = curRate >= maxRate;
+        model.getChildByName("btnGo").active = curRate < maxRate;
+
+        model.getChildByName("nodeRequire").getChildByName("labelGoalRate").getComponent(cc.Label).string = maxRate > 9999 ? (maxRate>99999?parseInt(maxRate/10000) : parseInt(maxRate/1000)/10) + "万" : maxRate;
+        model.getChildByName("nodeRequire").getChildByName("labelCurRate").getComponent(cc.Label).string = curRate > 9999 ? (curRate>99999?parseInt(curRate/10000) : parseInt(curRate/1000)/10) + "万" : curRate;
+        model.getChildByName("btnRecv").getComponent(cc.Button).clickEvents[0].customEventData = data.byType + "." + data.wID;
+        model.getChildByName("btnGo").getComponent(cc.Button).clickEvents[0].customEventData = data.wWindowID;
+
+        // 主线任务标题
+        model.getChildByName("labelName").getComponent(cc.Label).string = data.strName;
+        // 奖励描述
+        let rewardDesc = "";
+        for (let i = 0; i < data.oVecReward.length; i++) {
+            let itemData = GlobalVar.tblApi.getDataBySingleKey('TblItem', data.oVecReward[i].wItemID);
+            if (!itemData){
+                continue;
+            }
+            let itemName = itemData.strName;
+            if (data.oVecReward[i].wItemID == GameServerProto.PT_ITEMID_EXP_1){
+                itemName = "经验";
+            }
+            let itemCount = data.oVecReward[i].nCount > 9999 ? parseInt(data.oVecReward[i].nCount/10000) + "万" : data.oVecReward[i].nCount;
+            rewardDesc += itemName + "*" + itemCount + "  ";
+        }
+        model.getChildByName("labelRewardDesc").getComponent(cc.Label).string = rewardDesc;
+        // 图标
+        // let path = 'cdnRes/itemicon/99/' + data.wIcon;
+        let path = 'cdnRes/itemicon/99/' + 1;
+        model.getChildByName("ItemObject").getChildByName("spriteItemIcon").getComponent("RemoteSprite").loadFrameFromLocalRes(path);
+    },
+
+    onMainTaskRecvBtnClick: function (event, customEventData) {
+        let arr = customEventData.split('.');
+        let taskType = arr[0];
+        let taskID = arr[1];
+        GlobalVar.handlerManager().mainTaskHandler.sendGetMainTaskGetReq(taskType, taskID);
+    },
+
     onActiveRewardBoxClick: function (event, active) {
         // 是否达到领取条件
         let condition = GlobalVar.me().dailyData.getActive() >= active;
@@ -555,6 +659,17 @@ cc.Class({
 
         if (rewardBoxData) {
             CommonWnd.showRewardBoxWnd(null, mode, "活跃宝箱", condition, rewardBoxData, confirm, confirmText);
+        }
+    },
+    onMainTaskRewardBoxClick: function () {
+        let progress = GlobalVar.me().mainTaskData.getMainTaskProgress() || 0;
+        let index = GlobalVar.me().mainTaskData.getMainTaskRewardIndex();
+        let rewardBoxData = GlobalVar.tblApi.getDataBySingleKey('TblMainTaskReward', index);
+        if (progress >= rewardBoxData.wProgress){
+            GlobalVar.handlerManager().mainTaskHandler.sendGetMainTaskRewardReq();
+        }else{
+            let rewardBoxData = GlobalVar.tblApi.getDataBySingleKey('TblMainTaskReward', index);
+            CommonWnd.showRewardBoxWnd(null, 0, "任务宝箱", false, rewardBoxData.oVecReward, null, "领取");
         }
     },
 
@@ -688,25 +803,6 @@ cc.Class({
             self.recvLock = false;
             CommonWnd.showTreasureExploit(event.Item);
         })
-        // effect.active = true;
-        // // effect.getComponent(dragonBones.ArmatureDisplay).stop();
-        // effect.getComponent(dragonBones.ArmatureDisplay).playAnimation("animation", 1);
-        // let self = this;
-        // effect.getComponent(dragonBones.ArmatureDisplay).addEventListener(
-        //     dragonBones.EventObject.COMPLETE, DBEvent => {
-        //         effect.active = false;
-
-        //         self.initActiveBoxList();
-        //         self.initActiveBar();
-        //         self.count = -1;
-        //         self.complete = false;
-        //         self.dailyCount = 0;
-        
-        //         self.initDailyMisstion();
-        //         self.recvLock = false;
-        //         CommonWnd.showTreasureExploit(event.Item);
-        //     }
-        // );
     },
 
     showNewTaskReward: function (event) {
@@ -716,6 +812,24 @@ cc.Class({
         }
         CommonWnd.showTreasureExploit(event.Item);
         this.initChallengeTab();
+    },
+
+    getMainTaskRewardData: function (event) {
+        if (event.ErrCode && event.ErrCode != GameServerProto.PTERR_SUCCESS) {
+            GlobalVar.comMsg.errorWarning(event.ErrCode);
+            return;
+        }
+        this.initDailyWnd();
+        CommonWnd.showTreasureExploit(event.Item);
+    },
+
+    getMainTaskGetData: function (event) {
+        if (event.ErrCode && event.ErrCode != GameServerProto.PTERR_SUCCESS) {
+            GlobalVar.comMsg.errorWarning(event.ErrCode);
+            return;
+        }
+        this.initDailyWnd();
+        CommonWnd.showTreasureExploit(event.Item);
     },
 
     onNewTaskBtnRecvClick: function (event, customEventData) {
@@ -747,6 +861,10 @@ cc.Class({
 
     removeListennerAndBanner: function () {
         this.dailyScroll.loopScroll && this.dailyScroll.loopScroll.releaseViewItems();
+        this.mainTaskScroll.loopScroll && this.mainTaskScroll.loopScroll.releaseViewItems();
+        this.dailyNotInit = true;
+        this.newTaskNotInit = true;
+        this.mainTaskNotInit = true;
         GlobalVar.eventManager().removeListenerWithTarget(this);
     },
 

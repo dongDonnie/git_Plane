@@ -29,6 +29,71 @@ cc.Class({
 
         GlobalVar.messageDispatcher.bindMsg(GameServerProto.GMID_CHUZHAN_DATA_ACK, self.recvMixDriveDataAck, self);
         GlobalVar.messageDispatcher.bindMsg(GameServerProto.GMID_CHUZHAN_MIX_LEVEL_NTF, self.recvMixLevelNtf, self);
+
+        GlobalVar.messageDispatcher.bindMsg(GameServerProto.GMID_MEMBER_EQUIP_PUTON_ACK, self.recvMemberEquipPutonAck, self);
+        GlobalVar.messageDispatcher.bindMsg(GameServerProto.GMID_MEMBER_EQUIP_LEVELUP_ACK, self.recvMemberEquipLevelupAck, self);
+        GlobalVar.messageDispatcher.bindMsg(GameServerProto.GMID_MEMBER_EQUIP_QUALITYUP_ACK, self.recvMemberEquipQualityupAck, self);
+
+        GlobalVar.messageDispatcher.bindMsg(GameServerProto.GMID_MEMBER_SPECIAL_LEVELUP_ACK, self.recvMasteryLevelUpAck, self);
+        GlobalVar.messageDispatcher.bindMsg(GameServerProto.GMID_MEMBER_SPECIAL_QUALITYUP_ACK, self.recvMasteryQualityUpAck, self);
+        GlobalVar.messageDispatcher.bindMsg(GameServerProto.GMID_MEMBER_REBIRTH_ACK, self.recvRebirthAck, self);
+        GlobalVar.messageDispatcher.bindMsg(GameServerProto.GMID_ITEM_YUANSHI_COMPOSE_ACK, self.recvYuanShiComposeAck, self);
+    },
+
+    sendMemberEquipQualityUpReq: function (memberID, pos, slots) {
+        let msg = {
+            MemberID: memberID,
+            DstPos: pos,
+            SrcPos: slots,
+        }
+        this.sendMsg(GameServerProto.GMID_MEMBER_EQUIP_QUALITYUP_REQ, msg);
+    },
+
+    recvMemberEquipQualityupAck: function (msgId, msg) {
+        if (typeof msg != "object") {
+            return;
+        }
+        GlobalVar.me().memberData.saveMemberEquipQualityUp(msg.data);
+    },
+
+    sendMemberEquipLevelupReq: function (memberID, pos, num) {
+        let msg = {
+            MemberID: memberID,
+            EquipPos: pos,
+            Num: num,
+        }
+        this.sendMsg(GameServerProto.GMID_MEMBER_EQUIP_LEVELUP_REQ, msg);
+    },
+
+    recvMemberEquipLevelupAck: function (msgId, msg) {
+        if (typeof msg != "object") {
+            return;
+        }
+        GlobalVar.me().memberData.saveMemberEquipLevelUp(msg.data);
+    },
+
+    sendMemberEquipPutonReq: function (slot, memberID, pos) {
+        let msg = {
+            BagSlot: slot,
+            MemberID: memberID,
+            EquipPos: pos,
+        }
+        this.sendMsg(GameServerProto.GMID_MEMBER_EQUIP_PUTON_REQ, msg);
+    },
+
+    sendYuanShiComposeReq: function (YuanShiID){
+        let msg = {
+            YuanShiID: YuanShiID
+        };
+        this.sendMsg(GameServerProto.GMID_ITEM_YUANSHI_COMPOSE_REQ, msg);
+    },
+
+    recvMemberEquipPutonAck: function (msgId, msg) {
+        if (typeof msg != "object") {
+            return;
+        }
+        GlobalVar.me().bagData.saveMemberEquipPuton(msg.data, GlobalVar.me().memberData.memberEquipSelectSlotInBag);
+        GlobalVar.me().memberData.saveMemberEquipPuton(msg.data);
     },
 
     recvMemberPieceCrystalNtf: function (msgId, msg) {
@@ -39,7 +104,7 @@ cc.Class({
         GlobalVar.me().memberData.saveRefreshData(msgId, msg);
     },
 
-    recvBuyAck:  function (msgId, msg) {
+    recvBuyAck: function (msgId, msg) {
         GlobalVar.me().memberData.saveBuyData(msgId, msg);
     },
 
@@ -137,8 +202,8 @@ cc.Class({
     },
     sendLeaderEquipLevelUpReq: function (pos, num) {
         let msg = {
-            Pos : pos,
-            Num : num,
+            Pos: pos,
+            Num: num,
         };
         this.sendMsg(GameServerProto.GMID_LEADEREQUIP_LEVELUP_REQ, msg);
     },
@@ -151,20 +216,20 @@ cc.Class({
     },
     sendLeaderEquipQualityUpReq: function (pos) {
         let msg = {
-            Pos : pos,
+            Pos: pos,
         };
         this.sendMsg(GameServerProto.GMID_LEADEREQUIP_QUALITYUP_REQ, msg);
     },
 
-    recvMemberPropNtf: function(msgId, msg){
+    recvMemberPropNtf: function (msgId, msg) {
         if (typeof msg != "object") {
             return;
         }
         GlobalVar.me().propData.setPropDataNtf(msg);
     },
 
-    sendPlayerPropReq: function(reserved){
-        reserved = reserved?reserved:1;
+    sendPlayerPropReq: function (reserved) {
+        reserved = reserved ? reserved : 1;
         let msg = {
             Reserved: reserved,
         };
@@ -199,5 +264,41 @@ cc.Class({
             return;
         }
         GlobalVar.me().memberData.setMixDriveLevelNtf(msg.data);
+    },
+
+    sendMasteryLevelUpReq: function (msg) {
+        self.sendMsg(GameServerProto.GMID_MEMBER_SPECIAL_LEVELUP_REQ, msg);
+    },
+
+    recvMasteryLevelUpAck: function (msgId, msg) {
+        if (typeof msg != "object") {
+            return;
+        }
+        GlobalVar.me().memberData.setMasteryLevelUpAck(msg.data);
+    },
+
+    sendMasteryQualityUpReq: function (msg) {
+        self.sendMsg(GameServerProto.GMID_MEMBER_SPECIAL_QUALITYUP_REQ, msg);
+    },
+
+    recvMasteryQualityUpAck: function (msgId, msg) {
+        if (typeof msg != "object") {
+            return;
+        }
+        GlobalVar.me().memberData.setMasteryQualityUpAck(msg.data);
+    },
+
+    recvRebirthAck: function (msgId, msg) {
+        if (typeof msg != "object") {
+            return;
+        }
+        GlobalVar.me().memberData.setRebirthAck(msg.data);
+    },
+
+    recvYuanShiComposeAck: function (msgId, msg) {
+        if (typeof msg != "object") {
+            return;
+        }
+        GlobalVar.me().memberData.saveRoughComposeData(msg.data);
     },
 });

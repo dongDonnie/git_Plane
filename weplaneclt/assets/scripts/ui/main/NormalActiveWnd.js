@@ -349,7 +349,7 @@ cc.Class({
                 let curStep = StoreageData.getShareTimesWithKey(data.Act.Actid, data.Act.Limit, data.Act.EndTime);
                 requireStr = requireData.strRuleName.replace("{0}", (curStep > rule.Var ? rule.Var : curStep) + "/" + rule.Var)
             } else {
-                requireStr = requireData.strRuleName.replace("{0}", rule.Compare.replace(">=", "达到").replace("==", "").replace("<=", "小于") + rule.Var > 10000 ? (parseInt(rule.Var / 10000)) : rule.Var);
+                requireStr = requireData.strRuleName.replace("{0}", rule.Compare.replace(">=", "达到").replace("==", "").replace("<=", "小于") + (rule.Var > 10000 ? (parseInt(rule.Var / 10000) + "万") : rule.Var));
             }
             labelRequire.getComponent(cc.Label).string = requireStr;
 

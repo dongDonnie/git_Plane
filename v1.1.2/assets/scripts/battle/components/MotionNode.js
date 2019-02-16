@@ -1,0 +1,34 @@
+const GlobalVar = require('globalvar');
+const ResMapping = require("resmapping");
+cc.Class({
+    extends: cc.Node,
+
+    ctor: function () {
+        this.tailPos = cc.v3(0, 0);
+    },
+
+    initMotion: function (res, tailPos, color, fadeTime, minSeg, stroke, fastMode) {
+        var motion = null;
+        res = typeof res !== 'undefined' ? res : 'huoyan_jin';
+        if (this.getComponent(cc.MotionStreak) == null) {
+            motion = this.addComponent(cc.MotionStreak);
+            GlobalVar.resManager().loadRes(ResMapping.ResType.Texture2D, 'cdnRes/battlemodel/motionstreak/' + res, function (tex) {
+                if (tex != null) {
+                    motion.texture = tex;
+                }
+            });
+        } else {
+            motion = this.getComponent(cc.MotionStreak);
+        }
+        motion.fadeTime = typeof fadeTime !== 'undefined' ? fadeTime : 0.5;
+        motion.minSeg = typeof minSeg !== 'undefined' ? minSeg : 1;
+        motion.stroke = typeof stroke !== 'undefined' ? stroke : 30;
+        motion.fastMode = typeof fastMode !== 'undefined' ? fastMode : false;
+        motion.color = typeof color !== 'undefined' ? color : new cc.Color(255, 255, 255);
+        this.tailPos = typeof tailPos !== 'undefined' ? tailPos : cc.v3(0, 0);
+    },
+
+    updatePosition: function (pos) {
+        this.setPosition(pos);
+    }
+});

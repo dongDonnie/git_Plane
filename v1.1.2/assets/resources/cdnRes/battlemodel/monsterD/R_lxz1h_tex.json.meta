@@ -1,0 +1,7 @@
+{
+  "ver": "1.0.0",
+  "uuid": "7da8ab67-55c0-4b40-821c-0d58e55eb720",
+  "atlasJson": "{\"imagePath\":\"R_lxz1h_tex.png\",\"width\":512,\"SubTexture\":[{\"y\":1,\"frameY\":-1,\"frameWidth\":318,\"width\":316,\"frameX\":-1,\"frameHeight\":292,\"height\":290,\"name\":\"R_lxz1h (1)\",\"x\":1},{\"y\":1,\"frameY\":-1,\"frameWidth\":51,\"width\":49,\"frameX\":-1,\"frameHeight\":51,\"height\":49,\"name\":\"R_lxz1h (2)\",\"x\":319}],\"height\":512,\"name\":\"R_lxz1h\"}",
+  "texture": "bb3ae699-b86a-41ce-9e6f-d2809fe8b705",
+  "subMetas": {}
+}

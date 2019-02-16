@@ -11,7 +11,8 @@ var Me = cc.Class({
                 Me.instance = new Me();
             }
             return Me.instance;
-        }, destroyInstance: function () {
+        },
+        destroyInstance: function () {
             if (Me.instance != null) {
                 delete Me.instance;
                 Me.instance = null;
@@ -43,6 +44,7 @@ var Me = cc.Class({
         self.guazaiData = null;
         self.propData = null;
         self.limitStoreData = null;
+        self.limitTimeBoxData = null;
         self.drawData = null;
         self.mailData = null;
         self.noticeData = null;
@@ -57,6 +59,8 @@ var Me = cc.Class({
         self.signData = null;
         self.adData = null;
         self.bannerYdData = null;
+        self.achieveData = null;
+        self.rewardCenterData = null;
 
         self.level = null;
         self.roleID = null;
@@ -65,6 +69,7 @@ var Me = cc.Class({
         self.gold = null;
         self.diamond = null;
         self.diamondCz = null;
+        self.XingBi = null;
         self.voucher = null;
         self.endlessRankID = null;
         self.vipExp = null;
@@ -99,6 +104,7 @@ var Me = cc.Class({
         self.guazaiData = self._createData("GuazaiData");
         self.propData = self._createData("PropData");
         self.limitStoreData = self._createData("LimitStoreData");
+        self.limitTimeBoxData = self._createData("LimitTimeBoxData");
         self.drawData = self._createData("DrawData");
         self.mailData = self._createData("MailData");
         self.noticeData = self._createData("NoticeData");
@@ -118,6 +124,10 @@ var Me = cc.Class({
         self.arenaData = self._createData("ArenaData");
         self.followRewardData = self._createData("FollowRewardData");
         self.boxRewardData = self._createData("BoxRewardData");
+        // self.achieveData = self._createData("AchieveData");
+        self.mainTaskData = self._createData("MainTaskData");
+        self.rewardCenterData = self._createData("RewardCenterData");
+        self.spaceExploreData = self._createData("SpaceExploreData");
     },
 
     setMyselfData: function (playerData) {
@@ -128,6 +138,7 @@ var Me = cc.Class({
         self.gold = playerData.Gold;
         self.diamond = playerData.Diamond;
         self.diamondCz = playerData.DiamondCZ;
+        self.XingBi = playerData.ExtBag.XingBi;
         self.endlessRankID = playerData.EndlessRankID;
         self.vipExp = playerData.VIPExp;
         self.vipLevel = playerData.VIPLevel;
@@ -153,6 +164,12 @@ var Me = cc.Class({
         GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_GOLD_NTF);
         self.guazaiData.updateHotPoint();
         self.leaderData.updateHotPoint();
+    },
+    getXingBi: function () {
+        return self.XingBi;
+    },
+    setXingBi: function (XingBi) {
+        self.XingBi = XingBi;
     },
     getVoucher: function () {
         return self.voucher;

@@ -1,0 +1,7 @@
+{
+  "ver": "1.0.0",
+  "uuid": "30129e3a-fd15-4aa4-a631-d110f326d72a",
+  "atlasJson": "{\"width\":512,\"SubTexture\":[{\"y\":880,\"frameWidth\":92,\"x\":85,\"frameHeight\":96,\"width\":90,\"frameY\":-1,\"height\":94,\"name\":\"gr (2)\",\"frameX\":-1},{\"y\":348,\"frameWidth\":121,\"x\":1,\"frameHeight\":236,\"width\":119,\"frameY\":-1,\"height\":234,\"name\":\"gr (4)\",\"frameX\":-1},{\"y\":778,\"frameWidth\":177,\"x\":1,\"frameHeight\":102,\"width\":175,\"frameY\":-1,\"height\":100,\"name\":\"gr (6)\",\"frameX\":-1},{\"width\":411,\"y\":1,\"height\":345,\"name\":\"gr (8)\",\"x\":1},{\"y\":584,\"frameWidth\":144,\"x\":1,\"frameHeight\":194,\"width\":142,\"frameY\":-1,\"height\":192,\"name\":\"gr (3)\",\"frameX\":-1},{\"y\":348,\"frameWidth\":129,\"x\":122,\"frameHeight\":157,\"width\":127,\"frameY\":-1,\"height\":155,\"name\":\"gr (7)\",\"frameX\":-1},{\"y\":880,\"frameWidth\":84,\"x\":1,\"frameHeight\":136,\"width\":82,\"frameY\":-1,\"height\":134,\"name\":\"gr (5)\",\"frameX\":-1}],\"height\":1024,\"name\":\"M_C_SB_08\",\"imagePath\":\"M_C_SB_08_tex.png\"}",
+  "texture": "470c5572-5702-4a37-96b4-9fb88b901577",
+  "subMetas": {}
+}

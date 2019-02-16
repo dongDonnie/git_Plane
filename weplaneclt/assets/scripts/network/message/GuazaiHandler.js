@@ -17,6 +17,7 @@ cc.Class({
         GlobalVar.messageDispatcher.bindMsg(GameServerProto.GMID_GUAZAI_LEVELUP_ACK, self._recvLvUpAck, self);
         GlobalVar.messageDispatcher.bindMsg(GameServerProto.GMID_GUAZAI_QUALITYUP_ACK, self._recvQaUpAck, self);
         GlobalVar.messageDispatcher.bindMsg(GameServerProto.GMID_GUAZAI_HECHENG_ACK, self._recvCpsAck, self);
+        GlobalVar.messageDispatcher.bindMsg(GameServerProto.GMID_GUAZAI_SPLIT_ACK, self._recvSplitAck, self);
         GlobalVar.messageDispatcher.bindMsg(GameServerProto.GMID_GUAZAI_REBIRTH_ACK, self._recvRebirthAck, self);
         GlobalVar.messageDispatcher.bindMsg(GameServerProto.GMID_GUAZAI_COMPOSE_ACK, self._recvComposeAck, self);
     },
@@ -53,6 +54,13 @@ cc.Class({
             return;
         }
         GlobalVar.me().guazaiData.saveCpsData(msg);
+    },
+
+    _recvSplitAck: function (msgId, msg) {
+        if (typeof msg != "object") {
+            return;
+        }
+        GlobalVar.me().guazaiData.saveSplitData(msg);
     },
 
     _recvRebirthAck: function (msgId, msg) {

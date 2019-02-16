@@ -33,7 +33,11 @@ cc.Class({
         itemPrefabs: {
             default: null,
             type: cc.Prefab
-        }
+        },
+        labelTips: {
+            default: null,
+            type: cc.Label,
+        },
     },
 
     onLoad: function () {
@@ -44,7 +48,9 @@ cc.Class({
             this.fixViewComplete = true;
             this.fixView();
         }
-        
+        this.curPage = 0;
+        this.maxPage = 1;
+        this.pageCount = 0;
     },
 
     animeStartParam(num) {
@@ -69,27 +75,44 @@ cc.Class({
         GlobalVar.eventManager().addEventListener(EventMsgID.EVENT_ACTIVE_RANK_RESULT, this.initTreasuryRankWnd, this);
     },
 
-    initTreasuryRankWnd: function () {
+    initTreasuryRankWnd: function (event) {
+        if (event && event.ErrCode != GameServerProto.PTERR_SUCCESS){
+            GlobalVar.comMsg.errorWarning(event.ErrCode);
+            return;
+        }
+        // this.rankData = [];
         this.rankData = GlobalVar.me().activeData.rankResultData;
+        let contentHeight = this.panelScroll[0].node.height;
+        this.pageCount = Math.floor(contentHeight/(this.nodeModels[0].height + 10));
+        // for (let i = 0; i < 20; i++){
+        //     this.rankData.Members.push(this.rankData.Members[0]);
+        // }
+        this.maxPage = Math.ceil(this.rankData.Members.length / this.pageCount) || 1;
         let act = GlobalVar.me().activeData.getActiveListDataByType(GameServerProto.PT_AMS_ACT_TYPE_TREASURY);
         if (!this.rankData) {
-            GlobalVar.handlerManager().activeHandler.sendActiveRankReq(act.Actid, act.Type);
+            GlobalVar.handlerManager().activeHandler.sendActiveRankReq(act.Actid, GameServerProto.PT_AMS_RANK_ALL);
             return;
         }
         this.labelMyRank.string = this.rankData.MyMember.Rank;
         this.labelMyScore.string = this.rankData.MyMember.Integral;
+
+        let data = GlobalVar.me().activeData.getActiveDataByActID(act.Actid);
+        this.rankData.MyMember.Integral < data.Act.OpCfg.RankLimit.Integral ? this.labelMyRank.string = '未上榜' : '';
+        this.labelTips.string = i18n.t("label.4002007").replace("%value", data.Act.OpCfg.RankLimit.Integral);
+
+
         this.clickToggle(null, 0);
     },
 
     updateRankPanel: function (model, index) {
         model.active = true;
-        let data = this.rankData.Members[index];
-        if (data.Rank > 3 || data.Rank < 1) {
+        let data = this.rankData.Members[this.pageCount * this.curPage + index];
+        if (data && (data.Rank > 3 || data.Rank < 1)) {
             model.getChildByName("spriteRank").getComponent("RemoteSprite").setFrame(0);
             model.getChildByName("spriteRank").getChildByName("labelRank").getComponent(cc.Label).string = data.Rank;
             model.getChildByName("spriteRank").getChildByName("labelRank").active = true;
         } else {
-            model.getChildByName("spriteRank").getComponent("RemoteSprite").setFrame(data.Rank);
+            model.getChildByName("spriteRank").getComponent("RemoteSprite").setFrame(data.Rank||0);
             model.getChildByName("spriteRank").getChildByName("labelRank").active = false;
         }
 
@@ -116,6 +139,8 @@ cc.Class({
                 model.getChildByName("head").getComponent("RemoteSprite").spriteFrame = spriteFrame;
             })
         }
+
+        model.getChildByName("score").getComponent(cc.Label).string = data.Integral;
     },
 
     updateAwardPanel: function (model, index) {
@@ -155,7 +180,12 @@ cc.Class({
     initRankLoop: function () {
         let scroll = this.panelScroll[0];
         let updateItem = this.updateRankPanel.bind(this);
-        this.initScroll(scroll, this.nodeModels[0], updateItem, this.rankData.Members.length);
+        // this.initScroll(scroll, this.nodeModels[0], updateItem, this.rankData.Members.length);
+        let pageCount = this.pageCount;
+        if (this.curPage == this.maxPage - 1){
+            pageCount = this.rankData.Members.length - (this.pageCount * this.curPage)
+        }
+        this.initScroll(scroll, this.nodeModels[0], updateItem, pageCount);
     },
 
     initAwardLoop: function () {
@@ -207,6 +237,15 @@ cc.Class({
         this.toggles[1].getComponent('RemoteSprite').setFrame(t2 ? 1 : 0);
     },
 
+    onBtnChangePage: function (event, operate) {
+        operate = parseInt(operate);
+        let curPage = this.curPage;
+        if (curPage + operate >= 0 && curPage + operate < this.maxPage){
+            this.curPage = curPage + operate;
+            this.initRankLoop();
+        }
+    },
+
     enter: function (isRefresh) {
         if (isRefresh) {
             this._super(true);
@@ -235,6 +274,9 @@ cc.Class({
 
     close: function () {
         this.chooseToggle(true, false);
+        
+        this.panelScroll[0].loopScroll && this.panelScroll[0].loopScroll.releaseViewItems();
+        this.panelScroll[1].loopScroll && this.panelScroll[1].loopScroll.releaseViewItems();
         this._super()
     },
 

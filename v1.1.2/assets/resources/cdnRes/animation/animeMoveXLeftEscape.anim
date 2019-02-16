@@ -1,0 +1,44 @@
+{
+  "__type__": "cc.AnimationClip",
+  "_name": "animeMoveXLeftEscape",
+  "_objFlags": 0,
+  "_native": "",
+  "_duration": 1,
+  "sample": 60,
+  "speed": 2,
+  "wrapMode": 1,
+  "curveData": {
+    "paths": {
+      "mainWnd": {
+        "props": {
+          "x": [
+            {
+              "frame": 0,
+              "value": -82
+            },
+            {
+              "frame": 1,
+              "value": -736
+            }
+          ]
+        }
+      }
+    }
+  },
+  "events": [
+    {
+      "frame": 0,
+      "func": "animeStartParam",
+      "params": [
+        255
+      ]
+    },
+    {
+      "frame": 1,
+      "func": "animePlayCallBack",
+      "params": [
+        "Escape"
+      ]
+    }
+  ]
+}

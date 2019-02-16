@@ -90,9 +90,8 @@ var GuazaiData = cc.Class({
             self.levelUpHotFlag[position - 1] = levelUpNeedExp > 0 && canProvideExp >= levelUpNeedExp && self.guazaiWear[i].GuaZai.Level < levelLimit;
 
             self.totalHotFlag[position - 1] = self.wearHotFlag[position - 1] || self.qualityUpHotFlag[position - 1] || self.levelUpHotFlag[position - 1];
-
-            self.updateComposeHotPointData();
         }
+        self.updateComposeHotPointData();
         GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_GUAZAI_FLAG_CHANGE);
     },
 
@@ -334,6 +333,17 @@ var GuazaiData = cc.Class({
         }
         else
             GlobalVar.comMsg.errorWarning(msg.data.ErrCode);
+    },
+
+    saveSplitData: function (msg) {
+        if (msg.data.ErrCode == 0) {
+            if (msg.data.IsShow == 0) {
+                GlobalVar.me().bagData.updateItemDataByGMDT_ITEM_CHANGE(msg.data.ItemChange);
+            }
+            GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_GUAZAI_MELT_ACK, msg.data);
+        }
+        else
+            GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_GUAZAI_MELT_ACK, msg.data);
     },
 
     saveRebirthData: function (msg) {

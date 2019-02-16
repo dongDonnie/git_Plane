@@ -1,0 +1,7 @@
+{
+  "ver": "1.0.0",
+  "uuid": "f0395234-5329-4431-b58a-9a05f85de5ae",
+  "atlasJson": "{\"imagePath\":\"M_C_RMGY_tex.png\",\"width\":512,\"SubTexture\":[{\"width\":160,\"y\":1,\"height\":224,\"name\":\"18\",\"x\":1},{\"width\":44,\"y\":1,\"height\":77,\"name\":\"17\",\"x\":341},{\"width\":44,\"y\":80,\"height\":77,\"name\":\"16\",\"x\":348},{\"width\":65,\"y\":1,\"height\":51,\"name\":\"15\",\"x\":387},{\"width\":64,\"y\":132,\"height\":95,\"name\":\"14\",\"x\":163},{\"width\":64,\"y\":1,\"height\":66,\"name\":\"13\",\"x\":275},{\"frameWidth\":138,\"y\":1,\"frameX\":0,\"frameHeight\":70,\"frameY\":0,\"width\":42,\"height\":70,\"name\":\"12\",\"x\":454},{\"width\":42,\"y\":73,\"height\":66,\"name\":\"11\",\"x\":454},{\"width\":57,\"y\":132,\"height\":75,\"name\":\"10\",\"x\":289},{\"width\":58,\"y\":132,\"height\":75,\"name\":\"9\",\"x\":229},{\"width\":30,\"y\":54,\"height\":77,\"name\":\"8\",\"x\":394},{\"width\":30,\"y\":133,\"height\":76,\"name\":\"7\",\"x\":394},{\"width\":39,\"y\":159,\"height\":43,\"name\":\"6\",\"x\":348},{\"width\":39,\"y\":80,\"height\":43,\"name\":\"5\",\"x\":275},{\"width\":29,\"y\":204,\"height\":46,\"name\":\"4\",\"x\":348},{\"width\":29,\"y\":80,\"height\":46,\"name\":\"3\",\"x\":316},{\"width\":54,\"y\":1,\"height\":129,\"name\":\"2\",\"x\":163},{\"width\":54,\"y\":1,\"height\":129,\"name\":\"1\",\"x\":219}],\"height\":256,\"name\":\"M_C_RMGY\"}",
+  "texture": "993219fa-8ad4-4a44-8fbd-5765d2dab615",
+  "subMetas": {}
+}

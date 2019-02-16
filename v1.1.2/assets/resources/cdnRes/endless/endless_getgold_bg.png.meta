@@ -1,0 +1,32 @@
+{
+  "ver": "2.3.0",
+  "uuid": "c569d961-a023-4537-91b6-07a57381e211",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "platformSettings": {},
+  "subMetas": {
+    "endless_getgold_bg": {
+      "ver": "1.0.3",
+      "uuid": "4f1a8821-4ffc-428d-8073-770934542fec",
+      "rawTextureUuid": "c569d961-a023-4537-91b6-07a57381e211",
+      "trimType": "custom",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 640,
+      "height": 81,
+      "rawWidth": 640,
+      "rawHeight": 81,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

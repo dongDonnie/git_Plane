@@ -20,6 +20,7 @@ cc.Class({
         GlobalVar.messageDispatcher.bindMsg(GameServerProto.GMID_PING, self._recvPing, self);
         GlobalVar.messageDispatcher.bindMsg(GameServerProto.GMID_KICK_PLAYER_NTF, self._recvKickPlayerNtf, self);
         GlobalVar.messageDispatcher.bindMsg(GameServerProto.GMID_LEVELUP_DOUBLE_REWARD_ACK, self._recvDoubleReward, self);
+        GlobalVar.messageDispatcher.bindMsg(GameServerProto.GMID_EXPLORE_XINGBI_NTF, self._recvXingBiChangeNtf, self);
     },
 
     _recvKickPlayerNtf:function(msgId,msg){
@@ -30,6 +31,13 @@ cc.Class({
         GlobalVar.me().isKickedOut = true;
         GlobalVar.networkManager().needReConnected = false;
         GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_RETURNTO_LOGINSCENE);
+    },
+
+    _recvXingBiChangeNtf:function(msgId, msg){
+        if (typeof msg != "object") {
+            return;
+        }
+        GlobalVar.me().setXingBi(msg.data.XingBi);
     },
 
     _recvGoldChangeNtf: function (msgId, msg) {

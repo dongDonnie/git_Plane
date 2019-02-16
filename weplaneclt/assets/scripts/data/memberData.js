@@ -58,6 +58,8 @@ var memberData = cc.Class({
         this.oneTimeChuZhanMemberID = 0;
         this.assistFighterID = 0;
         this.memberPieceCrystal = 0;
+        this.memberEquipSelectSlotInBag = -1;
+        this.roughComposeHotFlag = [false, false, false];
     },
 
     setMemberData: function (data) {
@@ -106,6 +108,7 @@ var memberData = cc.Class({
             this.totalHotFlag[i] = this.unLockHotFlag[i] || this.qualityUpHotFlag[i] || this.levelUpHotFlag[i];
         }
         this.updateMixDriveHotPoint();
+        this.updateRoughComposeHotPoint();
         GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_MEMBER_FLAG_CHANGE);
     },
 
@@ -114,7 +117,7 @@ var memberData = cc.Class({
         let restMemberNum = this.getRestMemberIDList().length;
         this.mixDriveHotFlag = false;
         for (let i = 0; i < 4; i++) {
-            if (GlobalVar.me().level >= mixOpenData[i+1].wLevelReq) {
+            if (GlobalVar.me().level >= mixOpenData[i + 1].wLevelReq) {
                 let mixMemberId = this.getMixMemberIDByIndex(i);
                 if (!mixMemberId && restMemberNum > 0) {
                     this.mixDriveHotFlag = true;
@@ -134,7 +137,7 @@ var memberData = cc.Class({
 
     getStandingByFighterHotPointData: function () {
         let flag = false;
-        for (let i in this.unLockHotFlag){
+        for (let i in this.unLockHotFlag) {
             flag = flag || this.unLockHotFlag[i];
         }
         let standingByFighterID = this.getStandingByFighterID();
@@ -190,7 +193,7 @@ var memberData = cc.Class({
         this.oneTimeChuZhanMemberID = typeof id !== 'undefined' ? id : 0;
     },
 
-    getOneTimeChuZhanMemberID:function(){
+    getOneTimeChuZhanMemberID: function () {
         return this.oneTimeChuZhanMemberID;
     },
 
@@ -205,12 +208,56 @@ var memberData = cc.Class({
         return this.standingbyData.ChuZhanConf;
     },
 
-    setAssistFighterID:function(id){
-        this.assistFighterID=typeof id !== 'undefined' ? id : 0;
+    setAssistFighterID: function (id) {
+        this.assistFighterID = typeof id !== 'undefined' ? id : 0;
     },
 
-    getAssistFighterID:function(){
+    getAssistFighterID: function () {
         return this.assistFighterID;
+    },
+
+    saveMemberEquipQualityUp: function (data) {
+        if (data.ErrCode == GameServerProto.PTERR_SUCCESS) {
+
+        }
+        GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_MEMBER_EQUIP_QUALITYUP_NTF, data);
+    },
+
+    saveMemberEquipLevelUp: function (data) {
+        if (data.ErrCode == GameServerProto.PTERR_SUCCESS) {
+            GlobalVar.me().setXingBi(data.OK.XingBi);
+            let memberData = this.getMemberByID(data.OK.MemberID);
+            if (!!memberData) {
+                for (let key in memberData.Equips) {
+                    if (memberData.Equips[key].Slot == data.OK.Equip.Slot) {
+                        memberData.Equips[key] = data.OK.Equip;
+                        break;
+                    }
+                }
+            }
+        }
+        GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_MEMBER_EQUIP_LEVELUP_NTF, data);
+    },
+
+    saveMemberEquipPuton: function (data) {
+        if (data.ErrCode == GameServerProto.PTERR_SUCCESS) {
+            let memberData = this.getMemberByID(data.OK.MemberID);
+            if (!!memberData) {
+                let isEmpty = true;
+                for (let key in memberData.Equips) {
+                    if (memberData.Equips[key].Slot == data.OK.OnEquip.Slot) {
+                        memberData.Equips[key] = data.OK.OnEquip;
+                        isEmpty = false;
+                        break;
+                    }
+                }
+                if (isEmpty) {
+                    memberData.Equips.push(data.OK.OnEquip);
+                }
+            }
+        }
+        this.memberEquipSelectSlotInBag = -1;
+        GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_MEMBER_EQUIP_PUTON_NTF, data);
     },
 
     saveMemberPieceCrystal: function (msgId, msg) { //msgId: GameServerProto.GMID_MEMBER_PIECE_CRYSTAL_NTF
@@ -421,7 +468,81 @@ var memberData = cc.Class({
 
     getMixDriveHotFlag: function () {
         return this.mixDriveHotFlag;
-    }
+    },
+
+    saveRoughComposeData: function (msg) {
+        if (msg.ErrCode == 0) {
+            this.updateRoughComposeHotPoint();
+        }
+        GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_YUANSHI_COMPOSE_ACK, msg);
+    },
+
+    getRoughComposeHotFlagByPos: function (pos) {
+        return this.roughComposeHotFlag[pos];
+    },
+
+    getRoughComposeHotPoint: function () {
+        for (let i = 0; i < this.roughComposeHotFlag.length; i++) {
+            if (this.roughComposeHotFlag[i]) {
+                return true;
+            }
+        }
+        return false;
+    },
+
+    updateRoughComposeHotPoint: function () {
+        this.roughComposeHotFlag = [false, false, false];
+        let tabObj = GlobalVar.tblApi.getData('TblYuanShiCompose');
+        for (let key in tabObj) {
+            let data = tabObj[key];
+            let pos = data.byTab - 1;
+            if (!this.roughComposeHotFlag[pos]) {
+                let nowChipCount = GlobalVar.me().bagData.getItemCountById(data.stItem.wItemID);
+                let needChipCount = data.stItem.nCount;
+                let nowResCount = GlobalVar.me().bagData.getItemCountById(data.stSpecialItem.wItemID);
+                let needResCount = data.stSpecialItem.nCount;
+                if (nowChipCount >= needChipCount && nowResCount >= needResCount) {
+                    this.roughComposeHotFlag[pos] = true;
+                }
+            }
+        }
+    },
+
+
+    setMasteryLevelUpAck: function (data) {
+        if (data.ErrCode == GameServerProto.PTERR_SUCCESS) {
+            let member = this.getMemberByID(data.MemberID);
+            for (let i = 0; i < member.Special.length; i++) {
+                if (member.Special[i].ID == data.SpecialID) {
+                    member.Special[i].Level = data.SpecialLevel;
+                    break;
+                }
+            }
+        }
+        GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_MEMBER_SPECIAL_LEVELUP_ACK, data);
+    },
+
+    setMasteryQualityUpAck: function (data) {
+        if (data.ErrCode == GameServerProto.PTERR_SUCCESS) {
+            let member = this.getMemberByID(data.MemberID);
+            for (let i = 0; i < member.Special.length; i++) {
+                if (member.Special[i].ID == data.SpecialID) {
+                    member.Special[i].Quality = data.SpecialQuality;
+                    break;
+                }
+            }
+        }
+        GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_MEMBER_SPECIAL_LEVELUP_ACK, data);
+    },
+
+    setRebirthAck: function (data) {
+        if (data.ErrCode == GameServerProto.PTERR_SUCCESS) {
+            GlobalVar.me().setDiamond(data.Diamond);
+            GlobalVar.me().setGold(data.Gold);
+            GlobalVar.me().bagData.updateItemDataByGMDT_ITEM_CHANGE(data.ItemChange);
+        }
+        GlobalVar.eventManager().dispatchEvent(EventMsgID.EVENT_MEMBER_REBIRTH_ACK, data);
+    },
 });
 
 module.exports = memberData;

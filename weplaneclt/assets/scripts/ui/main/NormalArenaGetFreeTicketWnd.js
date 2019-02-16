@@ -5,6 +5,7 @@ const RootBase = require("RootBase");
 const EventMsgID = require("eventmsgid");
 const GameServerProto = require("GameServerProto");
 const CommonWnd = require("CommonWnd");
+const StoreageData = require("storagedata");
 
 cc.Class({
     extends: RootBase,
@@ -64,6 +65,12 @@ cc.Class({
         let maxTimes = GlobalVar.tblApi.getDataBySingleKey('TblParam', GameServerProto.PTPARAM_ARENA_CHALLENGE_COUNT_FREE_BUY_LIMIT).dValue;
         let curTimes = GlobalVar.me().arenaData.getArenaFreeGetCount();
         this.labelFreeGetCount.string = (maxTimes - curTimes) + "/" + maxTimes;
+
+        let platformApi = GlobalVar.getPlatformApi();
+        if (platformApi){
+            this.node.getChildByName("btnVideo").getChildByName("spriteVideo").active = GlobalVar.canShowVideo();
+            this.node.getChildByName("btnVideo").getChildByName("spriteShare").active = !GlobalVar.canShowVideo();
+        }
     },
 
     getArenaChallengeCountBuyData: function (event) {
@@ -91,11 +98,11 @@ cc.Class({
             return;
         }
         let platformApi = GlobalVar.getPlatformApi();
-        if (cc.isValid(platformApi)){
+        if (platformApi){
             platformApi.showRewardedVideoAd(228, function () {
                 GlobalVar.handlerManager().arenaHandler.sendArenaChallengeCountFreeGetReq();
             });
-        }else if (GlobalVar.configGMSwitch()){
+        } else if (GlobalVar.configGMSwitch()){
            GlobalVar.handlerManager().arenaHandler.sendArenaChallengeCountFreeGetReq();
         }
     },

@@ -1,0 +1,7 @@
+{
+  "ver": "1.0.0",
+  "uuid": "67cf9e07-2cea-4a77-a24d-180c98019ae9",
+  "atlasJson": "{\"width\":256,\"imagePath\":\"R_ax_tex.png\",\"height\":512,\"name\":\"R_ax\",\"SubTexture\":[{\"frameY\":0,\"y\":1,\"frameWidth\":165,\"frameX\":0,\"frameHeight\":150,\"width\":164,\"height\":149,\"name\":\"R_ax (1)\",\"x\":1},{\"frameY\":0,\"y\":1,\"frameWidth\":27,\"frameX\":0,\"frameHeight\":52,\"width\":26,\"height\":52,\"name\":\"R_ax (2)\",\"x\":167},{\"frameY\":0,\"y\":55,\"frameWidth\":8,\"frameX\":0,\"frameHeight\":18,\"width\":7,\"height\":17,\"name\":\"R_ax (3)\",\"x\":167},{\"frameY\":0,\"y\":152,\"frameWidth\":157,\"frameX\":0,\"frameHeight\":146,\"width\":156,\"height\":145,\"name\":\"R_ax (5)\",\"x\":1},{\"frameY\":0,\"y\":152,\"frameWidth\":52,\"frameX\":0,\"frameHeight\":118,\"width\":52,\"height\":117,\"name\":\"R_ax (4)\",\"x\":159}]}",
+  "texture": "d9aabe49-7310-467a-b8bb-1044b2116572",
+  "subMetas": {}
+}

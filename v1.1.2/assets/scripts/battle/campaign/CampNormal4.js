@@ -1,0 +1,46 @@
+var CampNormal4 = module.exports;
+
+CampNormal4.data = {
+    maps:[
+        ["tk-e-ditu","tk-e-ditu","tk-e-ditu"],
+        ["tk-e-ditu","tk-e-ditu","tk-f-bossditu"],
+    ],
+    monsterWaves:[
+        {wave:{groups:[674,18],wait:0,delay:[2,3.5]},maps:{mapIndex:[0],mapSpeed:[500],mapScale:[1],mapLoop:[1]}},
+        {wave:{groups:[675,50],wait:0,delay:[0,0.9]}},
+        {wave:{groups:[676],wait:0,delay:[0]}},
+        {wave:{groups:[86],wait:0,delay:[0],anime:1,isBOSS:1},maps:{mapIndex:[1],mapSpeed:[500],mapScale:[1],mapLoop:[0]}},
+    ],
+    monsterExtra:[23,24,25,559,560,552,1308,1309,1310,1311,1312,39,43,44,45,41,40,1308,1309,1310,1311,1312],
+    totalHint:[
+        {
+            checkTime:-1,
+            condition:[
+                {interval:12},
+            ],
+            effect:[
+                {drop:10000},
+            ]
+        },
+        {
+            eventKey:0,
+            checkTime:1,
+            condition:[
+                {wave:{index:2,step:8}},
+            ],
+            effect:[
+                {extra:{open:-1,delay:1}},
+            ],
+        },
+        {
+            eventKey:0,
+            checkTime:1,
+            condition:[
+                {wave:{index:3,step:5}},
+            ],
+            effect:[
+                {extra:{open:-2}},
+            ],
+        },
+    ],
+}

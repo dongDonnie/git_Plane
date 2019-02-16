@@ -1,0 +1,7 @@
+{
+  "ver": "1.0.0",
+  "uuid": "df1d7219-19f5-485c-8813-58e8bc90c787",
+  "atlasJson": "{\"width\":497,\"imagePath\":\"M_C_SB_04_A_tex.png\",\"SubTexture\":[{\"width\":139,\"y\":1,\"height\":150,\"name\":\"images/1\",\"x\":356},{\"width\":353,\"y\":1,\"height\":550,\"name\":\"images/8\",\"x\":1},{\"width\":18,\"y\":153,\"height\":39,\"name\":\"images/2\",\"x\":434},{\"width\":19,\"y\":153,\"height\":41,\"name\":\"images/3\",\"x\":413},{\"width\":24,\"y\":153,\"height\":84,\"name\":\"images/4\",\"x\":356},{\"width\":29,\"y\":153,\"height\":65,\"name\":\"images/5\",\"x\":382},{\"width\":18,\"y\":153,\"height\":13,\"name\":\"images/15\",\"x\":454}],\"height\":553,\"name\":\"M_C_SB_04_A\"}",
+  "texture": "299b5488-c7b3-40cd-88c3-0dd7e3c44df1",
+  "subMetas": {}
+}

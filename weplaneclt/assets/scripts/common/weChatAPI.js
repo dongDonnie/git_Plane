@@ -115,7 +115,7 @@ module.exports = {
         let showTime = this.getOnShowTime();
         let hideTime = this.getOnHideTime();
         let shareTimeGap = showTime - hideTime;
-        console.log("本次分享切回界面耗时：", shareTimeGap/1000 , "秒");
+        console.log("本次分享切回界面耗时：", shareTimeGap / 1000, "秒");
         let setting = this.shareSetting;
         if (this.shareMessageFlag) {
             this.shareMessageFlag = false;
@@ -179,7 +179,7 @@ module.exports = {
             setting.superBannerMax = data.superBannerMax;
             setting.vpnaFlag = data.vpnaFlag;
             setting.heziFlag = data.heziFlag;
-            (data.videoMax >=0) && (setting.todayVideoMax = data.videoMax);
+            (data.videoMax >= 0) && (setting.todayVideoMax = data.videoMax);
         }, null, GET_METHOD, GET_HEADER);
     },
 
@@ -613,9 +613,9 @@ module.exports = {
     },
     setOffShowListener: function (offFunc) {
         if (cc.sys.platform === cc.sys.WECHAT_GAME && !!offFunc) {
-            let index = this._onShowListener.indexOf(offFunc); 
-            if (index > -1) { 
-                this._onShowListener.splice(index, 1); 
+            let index = this._onShowListener.indexOf(offFunc);
+            if (index > -1) {
+                this._onShowListener.splice(index, 1);
             }
             wx.offShow(offFunc);
         }
@@ -629,19 +629,19 @@ module.exports = {
     },
     setOffHideListener: function (offFunc) {
         if (cc.sys.platform === cc.sys.WECHAT_GAME && !!offFunc) {
-            let index = this._onHideListener.indexOf(offFunc); 
-            if (index > -1) { 
-                this._onHideListener.splice(index, 1); 
+            let index = this._onHideListener.indexOf(offFunc);
+            if (index > -1) {
+                this._onHideListener.splice(index, 1);
             }
             wx.offHide(offFunc);
         }
     },
     removeAllShowHideListener: function () {
-        for (let i in this._onShowListener){
+        for (let i in this._onShowListener) {
             wx.offShow(this._onShowListener[i]);
         }
         this._onShowListener = [];
-        for (let i in this._onHideListener){
+        for (let i in this._onHideListener) {
             wx.offHide(this._onHideListener[i]);
         }
         this._onHideListener = [];
@@ -1224,7 +1224,10 @@ module.exports = {
             StoreageData.setShareTimesWithKey("rewardedVideoLimit", 99);
             console.log("广告组件拉取广告异常, errCode:", res.errCode, "  errMsg:", res.errMsg);
         })
-        this._rewardedVideoAd.load();
+        this._rewardedVideoAd.load().catch(err => {
+            console.log("(create onload catch)拉取广告失败：", err);
+            StoreageData.setShareTimesWithKey("rewardedVideoLimit", 99);
+        });;
     },
 
     /**
@@ -1238,10 +1241,12 @@ module.exports = {
         if (cc.sys.platform != cc.sys.WECHAT_GAME) {
             return;
         }
-        let turnToShare = function (){
+        let self = this;
+        let turnToShare = function () {
             if (needTurnToShare && GlobalVar.getShareControl() == 1) {
-                this.shareNormal(videoPointID - 100, successCallback, cancelCallback);
-            }else{
+                self.shareNormal(videoPointID - 100, successCallback, cancelCallback);
+            } else {
+                console.log("安全模式或不转为分享的情况下无法转为分享");
                 cancelCallback && cancelCallback();
                 GlobalVar.comMsg.showMsg(i18n.t('label.4000321'));
             }
@@ -1264,7 +1269,7 @@ module.exports = {
             return;
         }
 
-        if (needTodayLimit && StoreageData.getShareTimesWithKey("todayVideoPlayTimes", 99) >= this.shareSetting.todayVideoMax){
+        if (needTodayLimit && StoreageData.getShareTimesWithKey("todayVideoPlayTimes", 99) >= this.shareSetting.todayVideoMax) {
             console.log("今日视频次数已达配置上限，转为分享");
             turnToShare();
             return;
@@ -1287,7 +1292,6 @@ module.exports = {
             needTodayLimit && console.log("特定点视频观看次数:", StoreageData.getShareTimesWithKey("todayVideoPlayTimes", 99));
         }
         this._videoAdCancelCallback = cancelCallback;
-        let self = this;
         videoAd.load()
             .then(() => {
                 self.reportVideoStart(videoPointID);
@@ -1305,16 +1309,16 @@ module.exports = {
             });
     },
 
-    canShowRewardVideo: function () {
-        if (!GlobalVar.getVideoAdSwitch()
-        || StoreageData.getShareTimesWithKey("rewardedVideoLimit", 99)
-        || StoreageData.getShareTimesWithKey("todayVideoPlayTimes", 99) >= this.shareSetting.todayVideoMax){
+    canShowRewardVideo: function (needDayLimit = false) {
+        if (!GlobalVar.getVideoAdSwitch() ||
+            StoreageData.getShareTimesWithKey("rewardedVideoLimit", 99) ||
+            (needDayLimit && StoreageData.getShareTimesWithKey("todayVideoPlayTimes", 99) >= this.shareSetting.todayVideoMax)) {
             return false;
         }
         return true;
     },
     canShowShare: function () {
-        if (GlobalVar.getShareSwitch() && GlobalVar.getShareControl() != 6){
+        if (GlobalVar.getShareControl() == 1) {
             return true;
         }
         return false;
@@ -1480,10 +1484,10 @@ module.exports = {
             return;
         } else {
             wx.vibrateShort({
-                success: res => {
+                success: function () {
                     self.showLog('short shock success');
                 },
-                fail: res => {
+                fail: function () {
                     self.showLog("short shock fail");
                 }
             })
@@ -1498,10 +1502,10 @@ module.exports = {
         } else {
             wx.setKeepScreenOn({
                 keepScreenOn: true,
-                success: res => {
+                success: function () {
                     self.showLog('device keep success');
                 },
-                fail: res => {
+                fail: function () {
                     self.showLog("device keep failed");
                 }
             })
@@ -1531,13 +1535,13 @@ module.exports = {
     getNetWorkStatus: function (callback) {
         if (cc.sys.platform === cc.sys.WECHAT_GAME) {
             wx.getNetworkType({
-                success: res => {
+                success: function (res) {
                     let networkType = res.networkType;
                     if (!!callback) {
                         callback(networkType);
                     }
                 },
-                fail: res => {
+                fail: function () {
                     if (!!callback) {
                         callback('none');
                     }
@@ -1599,7 +1603,7 @@ module.exports = {
                                         callback();
                                     }
                                 },
-                                fail: function (res) {
+                                fail: function () {
                                     // cc.warn('Failed to remove file(' + path + '): ' + res ? res.errMsg : 'unknown error');
                                     self.assetsCacheCount--;
                                     if (self.assetsCacheCount == 0 && !!callback) {
@@ -1615,7 +1619,7 @@ module.exports = {
                     }
                 }
             },
-            fail: function (res) {
+            fail: function () {
                 // cc.warn('Failed to list all saved files: ' + res ? res.errMsg : 'unknown error');
                 if (!!callback) {
                     callback();
@@ -1638,7 +1642,7 @@ module.exports = {
                         if (!!callback) {
                             callback();
                         } else {
-                            if (!this.checkWeChatAPI(0, '1.9.90')) {
+                            if (!self.checkWeChatAPI(0, '1.9.90')) {
                                 return;
                             }
                             let updateManager = wx.getUpdateManager();

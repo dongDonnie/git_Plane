@@ -218,7 +218,7 @@ const guide = cc.Class({
         if (!config.NEED_GUIDE)
             return;
         
-        if (!self.canClick && btnNode) {
+        if (!self.canClick && btnNode || (self.step == 16 && btnNode.name == 'btnoPause')) {
             btnNode.getComponent(cc.Button)._pressed = false;
             return;
         }
@@ -232,18 +232,16 @@ const guide = cc.Class({
         if (clickBtnName == 'btnoPause') {
             cc.director.getScheduler().pauseTarget(self);
             return;
-        } else if (clickBtnName == 'btnRecv' || clickBtnName == 'btnEnd') {
-            return;
         } else if (clickBtnName == 'btnoContinue') {
             setTimeout(() => {
                 cc.director.getScheduler().resumeTarget(self);
             }, 3000);
             return;
-        } else if (clickBtnName == 'NormalEquipQualityUpWnd') {
-            return;
-        } else if (clickBtnName == 'btn_active') {
-            return;
-        } else if ((clickBtnName == 'ItemObject' && self.step != 11) || clickBtnName == 'btnoSkill' || clickBtnName == 'btnoAssist') return;
+        }
+        else if (clickBtnName == 'ItemObject' && self.step != 11) return;
+        else if (clickBtnName == 'btnRecv' || clickBtnName == 'btnEnd' || clickBtnName == 'btn_active') return;
+        else if (clickBtnName == 'NormalEquipQualityUpWnd' || clickBtnName == 'btnoSkill' || clickBtnName == 'btnoAssist') return;
+        else if (clickBtnName == 'btnRecvNew' || clickBtnName == 'btnRecvAll' || clickBtnName == 'btnVipRecvAll') return;
 
         var cbtn = cc.find('Canvas/GuideNode/btnClone');
         self.fingerSprite.active = false;
@@ -413,7 +411,9 @@ const guide = cc.Class({
                     self.guideOverCallback();
                 }
             }
-            self.maskSprite.once('touchend', over, self);
+            setTimeout(() => {
+                self.maskSprite.once('touchend', over, self);
+            }, 2000);
         }
     },
 
@@ -464,7 +464,7 @@ const guide = cc.Class({
         if (btn == null) {
             setTimeout(() => {
                 self.cloneBtn(nodename);
-            }, 300);
+            }, 400);
             return;
         }
 
@@ -521,10 +521,10 @@ const guide = cc.Class({
 
     showRecv: function (target) {
         if (config.NEED_GUIDE) {
-            this.seekNodeByName(target.node, 'btnRecv').active = true;
-            this.seekNodeByName(target.node, 'btnRecvNew').active = false;
-            this.seekNodeByName(target.node, 'nodeShare').active = false;
-            this.seekNodeByName(target.node, 'nodeVip').active = false;
+            // this.seekNodeByName(target.node, 'btnRecv').active = true;
+            // this.seekNodeByName(target.node, 'btnRecvNew').active = false;
+            // this.seekNodeByName(target.node, 'nodeShare').active = false;
+            // this.seekNodeByName(target.node, 'nodeVip').active = false;
         }
     },
 
@@ -610,7 +610,7 @@ const guide = cc.Class({
 
     update: function (dt) {
         if (!!self.mapLoop) {
-            let campaignMode = BattleManager.getInstance().managers[Defines.MgrType.SCENARIO].battleCampaignMode;
+            let campaignMode = BattleManager.getInstance().scenarioManager.getInstance().battleCampaignMode;
             if (cc.isValid(campaignMode)) {
                 campaignMode.mapUpdate(Defines.BATTLE_FRAME_SECOND);
             }

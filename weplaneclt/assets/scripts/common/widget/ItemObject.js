@@ -133,6 +133,14 @@ var ItemObject = cc.Class({
         return this.itemData;
     },
 
+    setItemData: function (id) {
+        this.itemData = GlobalVar.tblApi.getDataBySingleKey('TblItem', id);
+        if (this.itemData == null) {
+            this.itemData = GlobalVar.tblApi.getDataBySingleKey('TblItem', 1);
+        }
+        return this.itemData;
+    },
+
     setClick: function (enableBtn, btnCallBackType, btnCallBackFun, closeTarget) {
         enableBtn = typeof enableBtn !== 'undefined' ? enableBtn : false;
         this.nodeObject.getComponent(cc.Button).interactable = enableBtn;
@@ -200,6 +208,9 @@ var ItemObject = cc.Class({
         if (this.itemData != null) {
             let path = '';
             if (this.itemData.byType != 53 && this.itemData.byType != 59) {
+                // if (this.itemData.byType == 9) {
+                //     icon = Math.floor(icon / 10) * 10;
+                // }
                 path = 'cdnRes/itemicon/' + this.itemData.byType + '/' + icon;
             } else {
                 if (this.itemData.byColor != 6) {
@@ -361,7 +372,7 @@ var ItemObject = cc.Class({
     },
 
     setLabelNumberData: function (num, canOverLap) {
-        if (this.itemData == null || typeof num === 'undefined' || num == -1/* || this.itemData.byType == GameServerProto.PT_ITEMTYPE_GUAZAI || this.itemData.byType == GameServerProto.PT_ITEMTYPE_MEMBER_EQUIP*/) {
+        if (this.itemData == null || typeof num === 'undefined' || num == -1 /* || this.itemData.byType == GameServerProto.PT_ITEMTYPE_GUAZAI || this.itemData.byType == GameServerProto.PT_ITEMTYPE_MEMBER_EQUIP*/ ) {
             this.setLabelNumberVisible(false);
             this.labelNumber.string = 0;
         } else {
@@ -389,7 +400,7 @@ var ItemObject = cc.Class({
         return this.labelNumber.string;
     },
 
-    getBagNumberData:  function () {
+    getBagNumberData: function () {
         return GlobalVar.me().bagData.getItemCountById(this.itemID) || 0;
     },
 

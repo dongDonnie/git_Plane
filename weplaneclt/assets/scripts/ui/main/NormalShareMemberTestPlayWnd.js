@@ -48,10 +48,10 @@ cc.Class({
             this.setPlane();
 
             let platformApi = GlobalVar.getPlatformApi();
-            if (platformApi && !platformApi.canShowRewardVideo()) {
-                this.getNodeByName('videoIcon').getComponent('RemoteSprite').setFrame(1);
-            } else {
+            if (platformApi && GlobalVar.canShowVideo()) {
                 this.getNodeByName('videoIcon').getComponent('RemoteSprite').setFrame(0);
+            } else {
+                this.getNodeByName('videoIcon').getComponent('RemoteSprite').setFrame(1);
             }
         }
     },
@@ -59,17 +59,12 @@ cc.Class({
     onBtnShare: function (event) {
         let self = this;
         let platformApi = GlobalVar.getPlatformApi();
-        if (platformApi && (platformApi.canShowRewardVideo() || GlobalVar.getShareControl() == 6)  ){
+        if (platformApi){
             platformApi.showRewardedVideoAd(218, function () {
                 GlobalVar.me().shareData.testPlayMemberID = self.memberID;
                 self.close();
             }, null, true, true);
-        }else if (platformApi && !platformApi.canShowRewardVideo()) {
-            platformApi.shareNormal(118, function () {
-                GlobalVar.me().shareData.testPlayMemberID = self.memberID;
-                self.close();
-            });
-        }else if (GlobalVar.configGMSwitch()){
+        } else if (GlobalVar.configGMSwitch()){
             GlobalVar.me().shareData.testPlayMemberID = self.memberID;
             self.close();
         }
